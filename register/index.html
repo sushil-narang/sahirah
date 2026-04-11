@@ -965,4 +965,12 @@ function updateRankNums(container) {
   container.querySelectorAll('.rank-item').forEach((item, i) => {
     const numEl = item.querySelector('.rank-num');
     if(numEl) numEl.textContent = i+1;
-  
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  initDrag('rank-q7');
+});
+</script>
+</body>
+</html>
