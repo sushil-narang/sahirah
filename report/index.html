@@ -198,7 +198,7 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
     <div class="ls-step active" id="ls3"><div class="ls-step-dot"></div>Calculating stream probability scores</div>
     <div class="ls-step" id="ls4"><div class="ls-step-dot"></div>Matching careers within your stream</div>
     <div class="ls-step" id="ls5"><div class="ls-step-dot"></div>Building your entrance exam roadmap</div>
-    <div class="ls-step" id="ls6"><div class="ls-step-dot"></div>Writing your AI narrative with Sahira</div>
+    <div class="ls-step" id="ls6"><div class="ls-step-dot"></div>Writing your AI narrative with Avanya</div>
   </div>
 </div>
 
@@ -249,14 +249,14 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
   <div class="report-section">
     <div class="rs-header">
       <div class="rs-icon" style="background:var(--gold-pale);">✨</div>
-      <div class="rs-title">Sahira's Personal Assessment</div>
+      <div class="rs-title">Avanya's Personal Assessment</div>
       <div class="rs-sub">AI-generated</div>
     </div>
     <div class="ai-narrative">
       <div class="ain-header">
         <div class="ain-avatar">S</div>
         <div>
-          <div class="ain-name">Sahira</div>
+          <div class="ain-name">Avanya</div>
           <div class="ain-role">AI Counsellor · Sahirah.in</div>
         </div>
       </div>
@@ -556,7 +556,7 @@ function renderNarrative(el, text) {
 
 // ---- AI NARRATIVE ----
 async function buildAIReport(S) {
-  const prompt = `You are Sahira, the AI counsellor for Sahirah.in — India's psychometric platform for school children. Write a warm, personalised, insightful assessment narrative for ${S.name}, age ${S.age}, ${S.cls}, from ${S.city}.
+  const prompt = `You are Avanya, the AI counsellor for Sahirah.in — India's psychometric platform for school children. Write a warm, personalised, insightful assessment narrative for ${S.name}, age ${S.age}, ${S.cls}, from ${S.city}.
 
 Their scores:
 - Primary stream: ${S.primaryStream === 'non' ? 'Non-Medical' : S.primaryStream} (${S.streams[S.primaryStream]}% match)

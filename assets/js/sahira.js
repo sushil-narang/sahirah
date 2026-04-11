@@ -1,5 +1,5 @@
 /**
- * Sahirah.in — Sahira AI Assistant
+ * Sahirah.in — Avanya AI Assistant
  * Handles all Claude API calls for the chat widget
  *
  * Usage:
@@ -14,7 +14,7 @@
  *   This widget falls back to pre-written responses when no key is provided.
  */
 
-const SAHIRA_SYSTEM_PROMPT = `You are Sahira, the friendly and knowledgeable AI guide for Sahirah.in — India's psychometric testing platform for school children. "Sahirah" means "Sahi Raah" — the right path in Hindi.
+const SAHIRA_SYSTEM_PROMPT = `You are Avanya, the friendly and knowledgeable AI guide for Sahirah.in — India's psychometric testing platform for school children. "Sahirah" means "Sahi Raah" — the right path in Hindi.
 
 Your role:
 - Help parents and students understand the four Indian education streams: Humanities, Commerce, Medical, Non-Medical
@@ -110,7 +110,7 @@ class SahiraChat {
     if (q.includes('register') || q.includes('sign up') || q.includes('book')) {
       return 'Bilkul! Registering is simple — fill in your child\'s details, answer 12 quick discovery questions, and pick an appointment slot. The whole process takes about 10 minutes. Shall I guide you to the registration page?';
     }
-    return 'Namaste! I\'m Sahira, your guide on Sahirah.in — Sahi Raah, the right path. I can help you understand streams, explore careers, learn about our evaluation, and figure out if this is the right step for your child. What would you like to know?';
+    return 'Namaste! I\'m Avanya, your guide on Sahirah.in — Sahi Raah, the right path. I can help you understand streams, explore careers, learn about our evaluation, and figure out if this is the right step for your child. What would you like to know?';
   }
 
   getNextSuggestions() {

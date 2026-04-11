@@ -5,7 +5,7 @@
 - Any modern browser (Chrome, Edge, Firefox, Safari)
 - A text editor (VS Code recommended)
 - Git (for version control)
-- An Anthropic API key (optional — for Sahira AI and report narrative)
+- An Anthropic API key (optional — for Avanya AI and report narrative)
 
 ---
 
@@ -29,7 +29,7 @@ That's it. No npm install. No build step.
 ## Adding Your Anthropic API Key
 
 The Claude API powers two features:
-1. **Sahira chat widget** — in `pages/sahirah.html`
+1. **Avanya chat widget** — in `pages/sahirah.html`
 2. **AI report narrative** — in `pages/sahirah-report.html`
 
 ### For local testing only
@@ -121,7 +121,7 @@ Install the VS Code **Live Server** extension:
 
 | What | File | Username/ID | Password |
 |------|------|-------------|----------|
-| Student demo | sahirah-login.html | `demo2025` | `Sahira@9999` |
+| Student demo | sahirah-login.html | `demo2025` | `Avanya@9999` |
 | Admin panel | sahirah-admin.html | `admin` | `sahirah@admin2025` |
 | Real student | After registering | Auto-generated | Shown on confirmation |
 
@@ -129,8 +129,8 @@ Install the VS Code **Live Server** extension:
 
 ## Troubleshooting
 
-**Sahira chat not responding?**
-The Claude API requires a valid key. Without it, Sahira falls back to pre-written responses. Check the browser console for errors.
+**Avanya chat not responding?**
+The Claude API requires a valid key. Without it, Avanya falls back to pre-written responses. Check the browser console for errors.
 
 **PDF download not working?**
 jsPDF loads from cdnjs CDN. Make sure you have an internet connection. If offline, the PDF button will silently fail.

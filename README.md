@@ -16,11 +16,11 @@ Or deploy to GitHub Pages: `Settings → Pages → Deploy from main → /root`
 
 | Portal | URL | Username / ID | Password |
 |--------|-----|---------------|----------|
-| Student demo | pages/sahirah-login.html | `demo2025` | `Sahira@9999` |
+| Student demo | pages/sahirah-login.html | `demo2025` | `Avanya@9999` |
 | Admin panel | pages/sahirah-admin.html | `admin` | `sahirah@admin2025` |
 | Real student | After registering | Auto-generated | Auto-generated (shown on confirmation screen) |
 
-> **Note:** The Anthropic API key is required for Sahira AI chat and the AI-generated report narrative. Without it, both features fall back to pre-written responses gracefully. See [API Setup](#-api-setup) below.
+> **Note:** The Anthropic API key is required for Avanya AI chat and the AI-generated report narrative. Without it, both features fall back to pre-written responses gracefully. See [API Setup](#-api-setup) below.
 
 ---
 
@@ -34,7 +34,7 @@ sahirah/
 ├── .gitignore
 │
 ├── pages/                        ← All 5 phase HTML files
-│   ├── sahirah.html              ← Phase 1: Landing page + Sahira AI
+│   ├── sahirah.html              ← Phase 1: Landing page + Avanya AI
 │   ├── sahirah-register.html     ← Phase 2: Registration + sign-up
 │   ├── sahirah-login.html        ← Phase 3: Login + test portal (2 hrs)
 │   ├── sahirah-report.html       ← Phase 4: AI report + PDF download
@@ -47,7 +47,7 @@ sahirah/
 │   ├── js/
 │   │   ├── questions.js          ← Question bank data (all 6 modules)
 │   │   ├── scoring.js            ← Stream + career scoring engine
-│   │   └── sahira.js             ← Sahira AI chat logic
+│   │   └── sahira.js             ← Avanya AI chat logic
 │   ├── images/
 │   │   ├── logo.svg              ← Sahirah.in logo
 │   │   ├── favicon.ico
@@ -120,7 +120,7 @@ git push origin main
 
 ## 🔑 API Setup
 
-Sahira (AI assistant) and the AI-generated report narrative are powered by the **Anthropic Claude API**.
+Avanya (AI assistant) and the AI-generated report narrative are powered by the **Anthropic Claude API**.
 
 ### For local testing
 
@@ -146,7 +146,7 @@ Create a function at `netlify/functions/claude.js` that holds the key server-sid
 
 ### Without an API key
 
-Both Sahira chat and the report narrative fall back to high-quality pre-written responses automatically. The rest of the platform (charts, PDF, scoring, admin panel) works fully without any API key.
+Both Avanya chat and the report narrative fall back to high-quality pre-written responses automatically. The rest of the platform (charts, PDF, scoring, admin panel) works fully without any API key.
 
 ---
 
@@ -217,7 +217,7 @@ MIT License — free to use, modify, and distribute with attribution.
 
 - Science: Big Five personality model, Holland RIASEC, psychometric best practices
 - Design: Playfair Display + DM Sans, warm cream and gold palette
-- AI: Anthropic Claude (Sahira assistant + report generation)
+- AI: Anthropic Claude (Avanya assistant + report generation)
 - Love: For India's children — Sahi Raah, the right path 🇮🇳
 
 ---
