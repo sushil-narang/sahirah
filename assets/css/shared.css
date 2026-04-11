@@ -1,0 +1,102 @@
+/*
+ * Sahirah.in — Shared Styles
+ * Common layout, nav, footer, buttons, utility classes
+ * Usage: <link rel="stylesheet" href="../assets/css/shared.css"/>
+ */
+
+/* RESET */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* TYPOGRAPHY */
+h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; line-height: 1.12; }
+a { color: inherit; }
+
+/* BUTTONS */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.85rem 2rem;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+  text-decoration: none;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.btn-primary   { background: var(--ink);  color: var(--cream); border-color: var(--ink); }
+.btn-primary:hover   { background: var(--gold); color: var(--ink); border-color: var(--gold); transform: translateY(-2px); }
+.btn-secondary { background: transparent; color: var(--ink); border-color: var(--border); }
+.btn-secondary:hover { border-color: var(--ink); transform: translateY(-2px); }
+.btn-gold      { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+.btn-gold:hover      { background: var(--gold-light); }
+
+/* SECTION LABEL */
+.section-label {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: var(--gold-pale);
+  border: 1px solid var(--gold-light);
+  padding: 4px 14px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 1rem;
+}
+
+/* CARDS */
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+}
+.card:hover { box-shadow: var(--shadow-sm); }
+
+/* REVEAL ANIMATION */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+
+/* GRID HELPERS */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.grid-auto { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+@media (max-width: 768px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+}
+
+/* STATUS PILLS */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+}
+.pill-registered  { background: var(--non-light); color: var(--non); }
+.pill-scheduled   { background: var(--gold-pale); color: var(--gold); }
+.pill-inprogress  { background: #FFF3CD; color: #856404; }
+.pill-completed   { background: var(--teal-light); color: var(--teal); }
+.pill-cancelled   { background: var(--hum-light); color: var(--hum); }

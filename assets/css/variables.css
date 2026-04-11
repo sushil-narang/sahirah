@@ -1,0 +1,54 @@
+/*
+ * Sahirah.in — Shared CSS Custom Properties
+ * Import this file into any page for consistent theming
+ * Usage: <link rel="stylesheet" href="../assets/css/variables.css"/>
+ */
+
+:root {
+  /* Brand colours */
+  --cream:        #FDF8F0;
+  --ink:          #1A1208;
+  --gold:         #C8860A;
+  --gold-light:   #F5D98A;
+  --gold-pale:    #FDF0CC;
+  --teal:         #0A6B5E;
+  --teal-light:   #E0F2EE;
+
+  /* Stream colours */
+  --hum:          #C0410A;   /* Humanities */
+  --hum-light:    #FFF0EB;
+  --com:          #0A6B5E;   /* Commerce */
+  --com-light:    #E8F7F4;
+  --med:          #7B2FBE;   /* Medical */
+  --med-light:    #F5EEFF;
+  --non:          #1A5FA8;   /* Non-Medical */
+  --non-light:    #E8F2FF;
+
+  /* UI tokens */
+  --border:       rgba(26, 18, 8, 0.1);
+  --shadow:       0 4px 40px rgba(26, 18, 8, 0.08);
+  --shadow-sm:    0 2px 20px rgba(26, 18, 8, 0.06);
+
+  /* Typography */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'DM Sans', system-ui, sans-serif;
+  --font-mono:    'DM Mono', 'Courier New', monospace;
+
+  /* Border radius */
+  --radius-sm:    8px;
+  --radius-md:    12px;
+  --radius-lg:    18px;
+  --radius-xl:    24px;
+  --radius-pill:  100px;
+
+  /* Spacing scale */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.5rem;
+  --space-6:  2rem;
+  --space-8:  3rem;
+  --space-10: 4rem;
+  --space-12: 5rem;
+}

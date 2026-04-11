@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin Panel — Sahirah.in</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none';"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js" integrity="sha512-SIMGYRUjwY8+gKg7nn9EItdD8LCADSDfJNutF9TPrvEo86sQmFMh6MyralfIyhADlajSxqc7G0gs7+MwWF/ogQ==" crossorigin="anonymous"></script>
+<style>
+:root{
+  --cream:#FDF8F0;--ink:#1A1208;--gold:#C8860A;--gold-light:#F5D98A;--gold-pale:#FDF0CC;
+  --teal:#0A6B5E;--teal-light:#E0F2EE;--border:rgba(26,18,8,0.1);--shadow:0 2px 20px rgba(26,18,8,0.07);
+  --blue:#1A5FA8;--blue-light:#E8F2FF;--red:#C0410A;--red-light:#FFF0EB;
+  --sidebar-w:240px;
+  --fd:'Playfair Display',Georgia,serif;--fb:'DM Sans',sans-serif;--fm:'DM Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;display:flex;flex-direction:column;}
+
+/* LOGIN GATE */
+#admin-login{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--ink);padding:2rem;}
+.al-card{background:#fff;border-radius:20px;padding:2.5rem;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.al-logo{font-family:var(--fd);font-size:1.3rem;font-weight:700;text-align:center;margin-bottom:.3rem;}
+.al-logo span{color:var(--gold);}
+.al-sub{font-size:.78rem;color:rgba(26,18,8,.4);text-align:center;margin-bottom:2rem;}
+.al-field{margin-bottom:1rem;}
+.al-field label{display:block;font-size:.72rem;font-weight:600;color:rgba(26,18,8,.55);margin-bottom:.35rem;}
+.al-field input{width:100%;background:#FAFAF7;border:1.5px solid var(--border);border-radius:10px;padding:.7rem 1rem;font-size:.88rem;outline:none;font-family:var(--fb);transition:border-color .2s;}
+.al-field input:focus{border-color:var(--gold);}
+.al-btn{width:100%;background:var(--ink);color:#fff;border:none;border-radius:100px;padding:.85rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:background .2s;margin-top:.25rem;}
+.al-btn:hover{background:var(--gold);color:var(--ink);}
+.al-err{background:var(--red-light);border:1px solid rgba(192,65,10,.2);border-radius:8px;padding:.6rem .9rem;font-size:.78rem;color:var(--red);margin-bottom:.85rem;display:none;}
+.al-hint{text-align:center;font-size:.72rem;color:rgba(26,18,8,.3);margin-top:1rem;}
+
+/* MAIN LAYOUT */
+#admin-app{display:none;flex:1;min-height:100vh;}
+#admin-app.show{display:flex;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);background:var(--ink);display:flex;flex-direction:column;flex-shrink:0;min-height:100vh;position:fixed;top:0;left:0;bottom:0;z-index:50;}
+.sb-brand{padding:1.5rem 1.25rem 1rem;border-bottom:1px solid rgba(255,255,255,.07);}
+.sb-brand-logo{font-family:var(--fd);font-size:1.15rem;font-weight:700;color:var(--cream);}
+.sb-brand-logo span{color:var(--gold);}
+.sb-brand-tag{font-size:.65rem;color:rgba(253,248,240,.3);font-weight:500;letter-spacing:.05em;text-transform:uppercase;margin-top:2px;}
+.sb-nav{flex:1;padding:1rem .75rem;display:flex;flex-direction:column;gap:2px;}
+.sb-section-label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(253,248,240,.2);padding:.5rem .5rem .3rem;margin-top:.5rem;}
+.sb-item{display:flex;align-items:center;gap:9px;padding:.6rem .75rem;border-radius:10px;cursor:pointer;transition:background .2s;color:rgba(253,248,240,.5);font-size:.82rem;font-weight:500;}
+.sb-item:hover{background:rgba(255,255,255,.07);color:rgba(253,248,240,.8);}
+.sb-item.active{background:rgba(200,134,10,.15);color:var(--gold-light);}
+.sb-item-icon{font-size:.95rem;flex-shrink:0;width:18px;text-align:center;}
+.sb-item-badge{margin-left:auto;background:var(--red);color:#fff;font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:100px;font-family:var(--fm);}
+.sb-item-badge.gold{background:var(--gold);}
+.sb-footer{padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,.07);}
+.sb-user{display:flex;align-items:center;gap:.6rem;}
+.sb-avatar{width:30px;height:30px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--ink);flex-shrink:0;}
+.sb-uname{font-size:.78rem;font-weight:600;color:rgba(253,248,240,.7);}
+.sb-urole{font-size:.65rem;color:rgba(253,248,240,.3);}
+.sb-logout{margin-left:auto;background:none;border:none;color:rgba(253,248,240,.25);cursor:pointer;font-size:.78rem;transition:color .2s;}
+.sb-logout:hover{color:var(--red-light);}
+
+/* MAIN */
+.main-area{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+
+/* TOP BAR */
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 2rem;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;}
+.tb-title{font-family:var(--fd);font-size:1.1rem;font-weight:700;}
+.tb-right{display:flex;align-items:center;gap:.75rem;}
+.tb-search{display:flex;align-items:center;gap:6px;background:#F5F0E8;border:1px solid var(--border);border-radius:100px;padding:.4rem 1rem;font-size:.8rem;color:rgba(26,18,8,.5);}
+.tb-search input{background:transparent;border:none;outline:none;font-size:.8rem;font-family:var(--fb);color:var(--ink);width:160px;}
+.tb-search input::placeholder{color:rgba(26,18,8,.35);}
+.tb-btn{display:inline-flex;align-items:center;gap:5px;padding:.42rem 1rem;border-radius:100px;font-size:.78rem;font-weight:600;border:none;cursor:pointer;transition:all .2s;}
+.tb-btn-gold{background:var(--gold);color:var(--ink);}
+.tb-btn-gold:hover{background:var(--gold-light);}
+.tb-btn-outline{background:transparent;border:1.5px solid var(--border);color:rgba(26,18,8,.6);}
+.tb-btn-outline:hover{border-color:var(--ink);color:var(--ink);}
+.tb-notif{position:relative;width:32px;height:32px;border-radius:50%;background:#F5F0E8;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;}
+.tb-notif-dot{position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--red);border:2px solid #fff;}
+
+/* CONTENT */
+.page-content{padding:2rem;flex:1;}
+.page-view{display:none;}
+.page-view.active{display:block;animation:fadeIn .25s ease both;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+/* METRIC CARDS */
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:2rem;}
+.metric-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.25rem 1.5rem;transition:box-shadow .2s;}
+.metric-card:hover{box-shadow:var(--shadow);}
+.mc-label{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:rgba(26,18,8,.4);margin-bottom:.4rem;}
+.mc-val{font-family:var(--fd);font-size:2.2rem;font-weight:700;line-height:1;margin-bottom:.2rem;}
+.mc-change{font-size:.72rem;font-weight:500;}
+.mc-change.up{color:var(--teal);}
+.mc-change.down{color:var(--red);}
+.mc-icon{font-size:1.4rem;margin-bottom:.5rem;}
+
+/* TABLE */
+.table-wrap{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.table-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);}
+.table-title{font-size:.9rem;font-weight:600;}
+.table-actions{display:flex;gap:.5rem;}
+table{width:100%;border-collapse:collapse;}
+thead tr{background:#FAFAF7;}
+th{text-align:left;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(26,18,8,.35);padding:.75rem 1rem;border-bottom:1px solid var(--border);}
+th:first-child{padding-left:1.5rem;}
+td{padding:.75rem 1rem;border-bottom:1px solid rgba(26,18,8,.04);font-size:.82rem;vertical-align:middle;}
+td:first-child{padding-left:1.5rem;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(26,18,8,.015);}
+.td-name{font-weight:600;}
+.td-meta{font-size:.72rem;color:rgba(26,18,8,.4);}
+.td-mono{font-family:var(--fm);font-size:.75rem;color:rgba(26,18,8,.5);}
+.status-pill{display:inline-flex;align-items:center;gap:4px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:3px 9px;border-radius:100px;}
+.sp-registered{background:#E8F2FF;color:#1A5FA8;}
+.sp-scheduled{background:var(--gold-pale);color:var(--gold);}
+.sp-inprogress{background:#FFF3CD;color:#856404;}
+.sp-completed{background:var(--teal-light);color:var(--teal);}
+.sp-cancelled{background:var(--red-light);color:var(--red);}
+.action-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:3px 9px;font-size:.72rem;cursor:pointer;font-family:var(--fb);transition:all .15s;color:rgba(26,18,8,.6);}
+.action-btn:hover{border-color:var(--ink);color:var(--ink);}
+.action-btn.primary{background:var(--ink);color:#fff;border-color:var(--ink);}
+.action-btn.primary:hover{background:var(--gold);color:var(--ink);border-color:var(--gold);}
+.action-btn.danger{border-color:rgba(192,65,10,.3);color:var(--red);}
+.action-btn.danger:hover{background:var(--red-light);}
+
+/* STREAM DOT */
+.stream-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;}
+
+/* SLOT GRID */
+.slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;}
+.slot-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;transition:box-shadow .2s;}
+.slot-card:hover{box-shadow:var(--shadow);}
+.sc-date{font-family:var(--fd);font-size:1rem;font-weight:700;margin-bottom:.2rem;}
+.sc-time{font-size:.8rem;font-weight:600;color:rgba(26,18,8,.6);}
+.sc-fills{margin-top:.75rem;height:6px;background:rgba(26,18,8,.06);border-radius:100px;overflow:hidden;}
+.sc-fills-bar{height:100%;border-radius:100px;transition:width .6s ease;}
+.sc-meta{display:flex;justify-content:space-between;margin-top:.4rem;font-size:.68rem;color:rgba(26,18,8,.4);}
+.sc-actions{display:flex;gap:.4rem;margin-top:.75rem;}
+
+/* CHARTS ROW */
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem;}
+@media(max-width:900px){.charts-row{grid-template-columns:1fr;}}
+.chart-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.25rem;}
+.chart-card-title{font-size:.82rem;font-weight:600;margin-bottom:1rem;color:rgba(26,18,8,.7);}
+.chart-wrap{position:relative;height:200px;}
+
+/* DETAIL MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(26,18,8,.5);z-index:200;display:none;align-items:flex-start;justify-content:flex-end;padding:1rem;}
+.modal-overlay.show{display:flex;}
+.modal-panel{background:#fff;border-radius:18px;width:420px;max-width:100%;max-height:calc(100vh - 2rem);overflow-y:auto;box-shadow:0 8px 48px rgba(26,18,8,.2);animation:slidePanel .3s ease both;}
+@keyframes slidePanel{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:none;}}
+.mp-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1;}
+.mp-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;}
+.mp-close{background:rgba(26,18,8,.06);border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;}
+.mp-body{padding:1.25rem 1.5rem;}
+.mp-row{display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid rgba(26,18,8,.04);font-size:.82rem;}
+.mp-row:last-child{border-bottom:none;}
+.mp-key{color:rgba(26,18,8,.4);font-weight:500;}
+.mp-val{font-weight:500;text-align:right;}
+.mp-section-title{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(26,18,8,.3);margin:.75rem 0 .4rem;}
+.mp-score-bar{height:6px;background:rgba(26,18,8,.06);border-radius:100px;overflow:hidden;margin-top:.3rem;}
+.mp-score-fill{height:100%;border-radius:100px;}
+.mp-qa{font-size:.78rem;color:rgba(26,18,8,.55);background:#FAFAF7;border-radius:8px;padding:.6rem .8rem;margin-bottom:.4rem;line-height:1.5;}
+.mp-qa strong{display:block;color:var(--ink);font-weight:600;margin-bottom:2px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:var(--cream);padding:.7rem 1.25rem;border-radius:100px;font-size:.82rem;font-weight:500;z-index:300;display:none;animation:toastIn .3s ease both;}
+.toast.show{display:block;}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);transition:transform .3s;}
+  .sidebar.open{transform:none;}
+  .main-area{margin-left:0;}
+  .metric-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ADMIN LOGIN -->
+<div id="admin-login">
+  <div class="al-card">
+    <div class="al-logo">Sahir<span>ah</span>.in</div>
+    <div class="al-sub">Admin Panel — Authorised Access Only</div>
+    <div class="al-err" id="al-err">Incorrect credentials. Please try again.</div>
+    <div class="al-field"><label>Admin Username</label><input type="text" id="al-user" placeholder="admin" onkeydown="if(event.key==='Enter')adminLogin()"/></div>
+    <div class="al-field"><label>Password</label><input type="password" id="al-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')adminLogin()"/></div>
+    <button class="al-btn" onclick="adminLogin()">Sign In to Admin Panel →</button>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div id="admin-app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-brand-logo">Sahir<span>ah</span>.in</div>
+      <div class="sb-brand-tag">Admin Dashboard</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-section-label">Overview</div>
+      <div class="sb-item active" onclick="showPage('dashboard',this)" data-page="dashboard"><span class="sb-item-icon">📊</span>Dashboard</div>
+
+      <div class="sb-section-label">Registrations</div>
+      <div class="sb-item" onclick="showPage('registrations',this)" data-page="registrations"><span class="sb-item-icon">📋</span>All Registrations<span class="sb-item-badge" id="badge-reg">0</span></div>
+      <div class="sb-item" onclick="showPage('pending',this)" data-page="pending"><span class="sb-item-icon">⏳</span>Pending Tests<span class="sb-item-badge gold" id="badge-pend">0</span></div>
+      <div class="sb-item" onclick="showPage('completed',this)" data-page="completed"><span class="sb-item-icon">✅</span>Completed</div>
+
+      <div class="sb-section-label">Scheduling</div>
+      <div class="sb-item" onclick="showPage('slots',this)" data-page="slots"><span class="sb-item-icon">📅</span>Appointment Slots</div>
+      <div class="sb-item" onclick="showPage('calendar',this)" data-page="calendar"><span class="sb-item-icon">🗓</span>Calendar View</div>
+
+      <div class="sb-section-label">Reports</div>
+      <div class="sb-item" onclick="showPage('reports',this)" data-page="reports"><span class="sb-item-icon">📄</span>All Reports</div>
+      <div class="sb-item" onclick="showPage('analytics',this)" data-page="analytics"><span class="sb-item-icon">📈</span>Analytics</div>
+
+      <div class="sb-section-label">Settings</div>
+      <div class="sb-item" onclick="showPage('questions',this)" data-page="questions"><span class="sb-item-icon">🧠</span>Question Bank</div>
+      <div class="sb-item" onclick="showPage('settings',this)" data-page="settings"><span class="sb-item-icon">⚙️</span>Settings</div>
+    </div>
+    <div class="sb-footer">
+      <div class="sb-user">
+        <div class="sb-avatar">AD</div>
+        <div><div class="sb-uname">Admin</div><div class="sb-urole">Super Admin</div></div>
+        <button class="sb-logout" onclick="adminLogout()">Sign out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-area">
+    <div class="topbar">
+      <div class="tb-title" id="tb-title">Dashboard</div>
+      <div class="tb-right">
+        <div class="tb-search"><span>🔍</span><input type="text" placeholder="Search child, parent, ID…" id="global-search" oninput="globalSearch(this.value)"/></div>
+        <button class="tb-btn tb-btn-outline" onclick="exportCSV()">↓ Export CSV</button>
+        <button class="tb-btn tb-btn-gold" onclick="showPage('registrations',null)">+ New Registration</button>
+        <div class="tb-notif" onclick="showToast('No new notifications')"><span>🔔</span><div class="tb-notif-dot"></div></div>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <!-- DASHBOARD -->
+      <div class="page-view active" id="page-dashboard">
+        <div class="metric-grid" id="metric-grid"></div>
+        <div class="charts-row">
+          <div class="chart-card"><div class="chart-card-title">Registrations this month</div><div class="chart-wrap"><canvas id="chart-reg"></canvas></div></div>
+          <div class="chart-card"><div class="chart-card-title">Stream distribution</div><div class="chart-wrap"><canvas id="chart-streams"></canvas></div></div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-header"><span class="table-title">Recent Registrations</span><div class="table-actions"><button class="tb-btn tb-btn-outline" onclick="showPage('registrations',null)">View all →</button></div></div>
+          <table><thead><tr><th>Child</th><th>Parent</th><th>Class</th><th>City</th><th>Slot</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="dash-recent-tbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- ALL REGISTRATIONS -->
+      <div class="page-view" id="page-registrations">
+        <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center;">
+          <select id="filter-status" onchange="renderRegistrations()" style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:.45rem .85rem;font-size:.8rem;font-family:var(--fb);outline:none;">
+            <option value="">All statuses</option>
+            <option value="Registered">Registered</option>
+            <option value="Scheduled">Scheduled</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+          <select id="filter-stream" onchange="renderRegistrations()" style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:.45rem .85rem;font-size:.8rem;font-family:var(--fb);outline:none;">
+            <option value="">All streams</option>
+            <option value="Non-Medical">Non-Medical</option>
+            <option value="Medical">Medical</option>
+            <option value="Commerce">Commerce</option>
+            <option value="Humanities">Humanities</option>
+            <option value="Pending">Pending</option>
+          </select>
+          <select id="filter-class" onchange="renderRegistrations()" style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:.45rem .85rem;font-size:.8rem;font-family:var(--fb);outline:none;">
+            <option value="">All classes</option>
+            <option>Class 7</option><option>Class 8</option><option>Class 9</option><option>Class 10</option><option>Class 11</option>
+          </select>
+          <span id="filter-count" style="font-size:.78rem;color:rgba(26,18,8,.4);margin-left:auto;"></span>
+        </div>
+        <div class="table-wrap">
+          <div class="table-header"><span class="table-title" id="reg-table-title">All Registrations</span><div class="table-actions"><button class="tb-btn tb-btn-outline" onclick="exportCSV()">↓ CSV</button></div></div>
+          <table><thead><tr><th>Reg ID</th><th>Child</th><th>Age/Class</th><th>Parent</th><th>City</th><th>Slot</th><th>Stream</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="reg-tbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- PENDING -->
+      <div class="page-view" id="page-pending">
+        <div class="table-wrap">
+          <div class="table-header"><span class="table-title">Pending Tests — Upcoming Appointments</span></div>
+          <table><thead><tr><th>Child</th><th>Class</th><th>Slot Date & Time</th><th>Registered</th><th>Login ID</th><th>Action</th></tr></thead>
+          <tbody id="pending-tbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- COMPLETED -->
+      <div class="page-view" id="page-completed">
+        <div class="table-wrap">
+          <div class="table-header"><span class="table-title">Completed Evaluations</span><div class="table-actions"><button class="tb-btn tb-btn-outline" onclick="exportCSV()">↓ Export</button></div></div>
+          <table><thead><tr><th>Child</th><th>Completed On</th><th>Primary Stream</th><th>Top Career</th><th>Overall Score</th><th>Report</th></tr></thead>
+          <tbody id="completed-tbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- SLOTS -->
+      <div class="page-view" id="page-slots">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem;">
+          <div style="font-size:.82rem;color:rgba(26,18,8,.5);">Manage available appointment slots. Add new slots or close existing ones.</div>
+          <button class="tb-btn tb-btn-gold" onclick="addSlotDialog()">+ Add New Slot</button>
+        </div>
+        <div class="slot-grid" id="slot-grid"></div>
+      </div>
+
+      <!-- CALENDAR -->
+      <div class="page-view" id="page-calendar">
+        <div class="table-wrap" style="padding:1.5rem;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+            <div style="font-family:var(--fd);font-size:1.1rem;font-weight:700;" id="cal-month-title"></div>
+            <div style="display:flex;gap:.5rem;">
+              <button class="tb-btn tb-btn-outline" onclick="changeMonth(-1)">← Prev</button>
+              <button class="tb-btn tb-btn-outline" onclick="changeMonth(1)">Next →</button>
+            </div>
+          </div>
+          <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;"></div>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div class="page-view" id="page-reports">
+        <div class="table-wrap">
+          <div class="table-header"><span class="table-title">Generated Reports</span><div class="table-actions"><button class="tb-btn tb-btn-outline" onclick="exportCSV()">↓ Bulk Export</button></div></div>
+          <table><thead><tr><th>Child</th><th>Report ID</th><th>Generated</th><th>Stream</th><th>Top Career</th><th>Score</th><th>Actions</th></tr></thead>
+          <tbody id="reports-tbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- ANALYTICS -->
+      <div class="page-view" id="page-analytics">
+        <div class="metric-grid" id="analytics-metrics"></div>
+        <div class="charts-row">
+          <div class="chart-card"><div class="chart-card-title">Stream match distribution</div><div class="chart-wrap"><canvas id="chart-ana-streams"></canvas></div></div>
+          <div class="chart-card"><div class="chart-card-title">Registrations by class</div><div class="chart-wrap"><canvas id="chart-ana-class"></canvas></div></div>
+        </div>
+        <div class="charts-row">
+          <div class="chart-card"><div class="chart-card-title">Top career recommendations</div><div class="chart-wrap"><canvas id="chart-ana-careers"></canvas></div></div>
+          <div class="chart-card"><div class="chart-card-title">City-wise distribution</div><div class="chart-wrap"><canvas id="chart-ana-cities"></canvas></div></div>
+        </div>
+      </div>
+
+      <!-- QUESTION BANK -->
+      <div class="page-view" id="page-questions">
+        <div class="metric-grid">
+          <div class="metric-card"><div class="mc-icon">🎯</div><div class="mc-label">Aptitude</div><div class="mc-val" style="color:var(--gold);">65</div><div class="mc-change">Across 3 tiers</div></div>
+          <div class="metric-card"><div class="mc-icon">🧠</div><div class="mc-label">Personality</div><div class="mc-val" style="color:#7B2FBE;">32</div><div class="mc-change">Big Five model</div></div>
+          <div class="metric-card"><div class="mc-icon">🌱</div><div class="mc-label">Interest</div><div class="mc-val" style="color:var(--teal);">24</div><div class="mc-change">RIASEC model</div></div>
+          <div class="metric-card"><div class="mc-icon">❤️</div><div class="mc-label">EQ</div><div class="mc-val" style="color:var(--red);">24</div><div class="mc-change">4 dimensions</div></div>
+          <div class="metric-card"><div class="mc-icon">⭐</div><div class="mc-label">Values</div><div class="mc-val" style="color:var(--blue);">20</div><div class="mc-change">Motivation mapping</div></div>
+          <div class="metric-card"><div class="mc-icon">⚡</div><div class="mc-label">Situational</div><div class="mc-val" style="color:#5F5E5A;">20</div><div class="mc-change">Scenario-based</div></div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-header"><span class="table-title">Question Bank Overview</span><div class="table-actions"><button class="tb-btn tb-btn-gold" onclick="showToast('Question editor coming in next update')">+ Add Question</button></div></div>
+          <table><thead><tr><th>Module</th><th>Type</th><th>Tier</th><th>Total Questions</th><th>Core (75%)</th><th>Variable (25%)</th><th>Status</th></tr></thead>
+          <tbody id="qbank-tbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="page-view" id="page-settings">
+        <div style="max-width:600px;">
+          <div class="table-wrap" style="padding:1.5rem;margin-bottom:1rem;">
+            <div style="font-family:var(--fd);font-size:1rem;font-weight:700;margin-bottom:1.25rem;">Platform Settings</div>
+            <div style="display:flex;flex-direction:column;gap:1rem;">
+              <div class="mp-row"><span class="mp-key">Max slots per day</span><input type="number" value="20" style="width:80px;text-align:right;border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:.82rem;"/></div>
+              <div class="mp-row"><span class="mp-key">Test duration (minutes)</span><input type="number" value="120" style="width:80px;text-align:right;border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:.82rem;"/></div>
+              <div class="mp-row"><span class="mp-key">Variable question % </span><input type="number" value="25" style="width:80px;text-align:right;border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:.82rem;"/></div>
+              <div class="mp-row"><span class="mp-key">Auto-generate report after test</span><input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--gold);"/></div>
+              <div class="mp-row"><span class="mp-key">Send email on registration</span><input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--gold);"/></div>
+              <div class="mp-row"><span class="mp-key">Send reminder 24h before slot</span><input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--gold);"/></div>
+              <div class="mp-row"><span class="mp-key">AI report language</span>
+                <select style="border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:.82rem;font-family:var(--fb);">
+                  <option>English</option><option>Hindi</option><option>Bilingual</option>
+                </select>
+              </div>
+            </div>
+            <button class="tb-btn tb-btn-gold" style="margin-top:1.25rem;width:100%;justify-content:center;" onclick="showToast('Settings saved successfully')">Save Settings</button>
+          </div>
+          <div class="table-wrap" style="padding:1.5rem;">
+            <div style="font-family:var(--fd);font-size:1rem;font-weight:700;margin-bottom:1rem;">Admin Accounts</div>
+            <div class="mp-row"><span class="mp-key">Primary admin</span><span class="mp-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ee8f8a838780ae9d8f86879c8f86c08780">[email&#160;protected]</a></span></div>
+            <div class="mp-row"><span class="mp-key">Role</span><span class="mp-val">Super Admin</span></div>
+            <button class="tb-btn tb-btn-outline" style="margin-top:1rem;" onclick="showToast('Password reset email sent')">Change Password</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detail-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-panel">
+    <div class="mp-header">
+      <div class="mp-title" id="modal-title">Registration Detail</div>
+      <button class="mp-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="mp-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ================================================================
+// MOCK DATA
+// ================================================================
+const STREAMS = ['Non-Medical','Medical','Commerce','Humanities','Pending'];
+const STREAM_COLORS = {'Non-Medical':'#1A5FA8','Medical':'#7B2FBE','Commerce':'#0A6B5E','Humanities':'#C0410A','Pending':'#888'};
+const STATUSES = ['Registered','Scheduled','Completed','Completed','Scheduled','In Progress','Registered','Completed'];
+const CITIES = ['Ludhiana','Chandigarh','Delhi','Amritsar','Patiala','Jalandhar','Mohali','Ambala','Jaipur','Mumbai'];
+const CLASSES = ['Class 7','Class 8','Class 9','Class 9','Class 10','Class 10','Class 11'];
+const FIRST_NAMES = ['Arjun','Priya','Rahul','Ananya','Vikram','Simran','Rohan','Kavya','Aditya','Meera','Harsh','Nidhi','Karan','Pooja','Siddharth'];
+const LAST_NAMES = ['Sharma','Singh','Patel','Kumar','Gupta','Malhotra','Verma','Joshi','Kapoor','Mehta'];
+const CAREERS = ['Computer Science / AI','MBBS / Medicine','CA / Finance','IAS Civil Services','Architecture','Electronics Engg','Biotechnology','Law / Judiciary','MBA Finance','Mechanical Engg'];
+const TIMES = ['08:00 AM','10:00 AM','12:00 PM','02:00 PM','04:00 PM','06:00 PM'];
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DAYS_FULL = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+function rnd(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function rndInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function rndId(prefix){ return prefix+'-'+Math.random().toString(36).substring(2,8).toUpperCase(); }
+
+// Generate 40 mock registrations
+function genRegistrations() {
+  const regs = [];
+  const today = new Date();
+  for(let i=0;i<40;i++){
+    const fn = rnd(FIRST_NAMES), ln = rnd(LAST_NAMES);
+    const daysAgo = rndInt(0,30);
+    const regDate = new Date(today); regDate.setDate(today.getDate()-daysAgo);
+    const slotDate = new Date(regDate); slotDate.setDate(regDate.getDate()+rndInt(2,14));
+    const status = rnd(STATUSES);
+    const stream = status==='Completed'?rnd(STREAMS.slice(0,4)):'Pending';
+    const score = status==='Completed'?rndInt(55,96):null;
+    regs.push({
+      id: rndId('SHR'),
+      childName: fn+' '+ln,
+      firstName: fn,
+      age: rndInt(12,16),
+      cls: rnd(CLASSES),
+      city: rnd(CITIES),
+      state: 'Punjab',
+      parentName: rnd(FIRST_NAMES)+' '+ln,
+      email: fn.toLowerCase()+'.'+ln.toLowerCase()+'@gmail.com',
+      mobile: '98'+rndInt(10000000,99999999),
+      loginId: fn.toLowerCase().slice(0,3)+ln.toLowerCase().slice(0,3)+rndInt(100,999),
+      regDate: regDate,
+      slotDate: slotDate,
+      slotTime: rnd(TIMES),
+      status: status,
+      stream: stream,
+      topCareer: status==='Completed'?rnd(CAREERS):null,
+      score: score,
+      reportId: status==='Completed'?rndId('RPT'):null,
+      preAssess: {
+        favSubject: rnd(['Maths','Science','English','Social Studies','Computer']),
+        problemStyle: rnd(['Think alone','Ask others','Research first','Try solutions']),
+        values: rnd(['Impact','Wealth','Creativity','Stability']),
+      }
+    });
+  }
+  // Add real registrations from localStorage
+  try {
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k&&k.startsWith('sahirah_reg_')){
+        const r=JSON.parse(localStorage.getItem(k));
+        regs.unshift({
+          id:r.regId||rndId('SHR'), childName:r.name, firstName:r.name.split(' ')[0],
+          age:14, cls:r.class||'Class 9', city:'Registered via platform', state:'',
+          parentName:'Parent', email:r.email, mobile:'—', loginId:r.loginId,
+          regDate:new Date(), slotDate:new Date(), slotTime:r.slot||'—',
+          status:'Scheduled', stream:'Pending', topCareer:null, score:null, reportId:null,
+          preAssess:{favSubject:'—',problemStyle:'—',values:'—'}
+        });
+      }
+    }
+  } catch(e){}
+  return regs;
+}
+
+let ALL_REGS = genRegistrations();
+let filteredRegs = [...ALL_REGS];
+let calMonth = new Date();
+calMonth.setDate(1);
+
+// ================================================================
+// SECURITY HELPERS
+// ================================================================
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#x27;');
+}
+
+async function hashPassword(password) {
+  const data = new TextEncoder().encode('sahirah.in:' + password);
+  const buf = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// Pre-computed SHA-256 hash of the admin password (salted)
+const ADMIN_HASH = '14bf7cc80f025328c1c7b5b20e581249ebef992b5d9e6eec23aa6aa6fc54cc83';
+
+let adminLoginAttempts = 0;
+let adminLockUntil = 0;
+
+// ================================================================
+// ADMIN LOGIN
+// ================================================================
+async function adminLogin(){
+  const now = Date.now();
+  if(now < adminLockUntil){
+    const secs = Math.ceil((adminLockUntil - now) / 1000);
+    document.getElementById('al-err').textContent = `Too many attempts. Try again in ${secs}s.`;
+    document.getElementById('al-err').style.display='block';
+    return;
+  }
+  const u=document.getElementById('al-user').value.trim();
+  const p=document.getElementById('al-pass').value.trim();
+  const hash = await hashPassword(p);
+  if(u==='admin' && hash===ADMIN_HASH){
+    adminLoginAttempts = 0;
+    document.getElementById('admin-login').style.display='none';
+    document.getElementById('admin-app').classList.add('show');
+    initAdmin();
+  } else {
+    adminLoginAttempts++;
+    if(adminLoginAttempts >= 5){ adminLockUntil = Date.now() + 30000; adminLoginAttempts = 0; }
+    document.getElementById('al-err').textContent = 'Incorrect credentials. Please try again.';
+    document.getElementById('al-err').style.display='block';
+    setTimeout(()=>document.getElementById('al-err').style.display='none',3000);
+  }
+}
+function adminLogout(){
+  document.getElementById('admin-app').classList.remove('show');
+  document.getElementById('admin-login').style.display='flex';
+  document.getElementById('al-user').value='';
+  document.getElementById('al-pass').value='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('admin-login').style.display!=='none')adminLogin();});
+
+// ================================================================
+// INIT
+// ================================================================
+function initAdmin(){
+  updateBadges();
+  buildDashboard();
+  renderRegistrations();
+  renderPending();
+  renderCompleted();
+  renderSlots();
+  renderReports();
+  renderAnalytics();
+  renderQBank();
+  buildCalendar();
+}
+
+function updateBadges(){
+  document.getElementById('badge-reg').textContent = ALL_REGS.length;
+  document.getElementById('badge-pend').textContent = ALL_REGS.filter(r=>r.status==='Scheduled'||r.status==='Registered').length;
+}
+
+// ================================================================
+// PAGE NAV
+// ================================================================
+const PAGE_TITLES = {dashboard:'Dashboard',registrations:'All Registrations',pending:'Pending Tests',completed:'Completed Evaluations',slots:'Appointment Slots',calendar:'Calendar View',reports:'Reports',analytics:'Analytics',questions:'Question Bank',settings:'Settings'};
+function showPage(page, el){
+  document.querySelectorAll('.page-view').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  if(el) el.classList.add('active');
+  else { const found=document.querySelector(`[data-page="${page}"]`); if(found) found.classList.add('active'); }
+  document.getElementById('tb-title').textContent = PAGE_TITLES[page]||page;
+}
+
+// ================================================================
+// DASHBOARD
+// ================================================================
+function buildDashboard(){
+  const completed=ALL_REGS.filter(r=>r.status==='Completed').length;
+  const scheduled=ALL_REGS.filter(r=>r.status==='Scheduled').length;
+  const avgScore=Math.round(ALL_REGS.filter(r=>r.score).reduce((s,r)=>s+r.score,0)/Math.max(1,completed));
+  const metrics=[
+    {label:'Total Registrations',val:ALL_REGS.length,change:'+12 this week',dir:'up',icon:'👤'},
+    {label:'Tests Completed',val:completed,change:'+5 this week',dir:'up',icon:'✅'},
+    {label:'Tests Scheduled',val:scheduled,change:'Next 14 days',dir:'',icon:'📅'},
+    {label:'Avg Score',val:avgScore,change:'Out of 100',dir:'',icon:'🎯'},
+    {label:'Reports Generated',val:completed,change:'All auto-sent',dir:'up',icon:'📄'},
+    {label:'Slots Available',val:rndInt(28,55),change:'Next 30 days',dir:'',icon:'🕐'},
+  ];
+  const grid=document.getElementById('metric-grid'); grid.innerHTML='';
+  metrics.forEach(m=>{
+    const card=document.createElement('div'); card.className='metric-card';
+    card.innerHTML=`<div class="mc-icon">${m.icon}</div><div class="mc-label">${m.label}</div><div class="mc-val">${m.val}</div><div class="mc-change ${m.dir}">${m.change}</div>`;
+    grid.appendChild(card);
+  });
+
+  // Recent table
+  const tbody=document.getElementById('dash-recent-tbody'); tbody.innerHTML='';
+  ALL_REGS.slice(0,8).forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><div class="td-name">${esc(r.childName)}</div><div class="td-meta">${esc(r.age)} yrs</div></td>
+    <td><div>${esc(r.parentName)}</div><div class="td-meta">${esc(r.email)}</div></td>
+    <td>${esc(r.cls)}</td><td>${esc(r.city)}</td>
+    <td><div class="td-mono">${r.slotDate.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</div><div class="td-meta">${esc(r.slotTime)}</div></td>
+    <td>${statusPill(r.status)}</td>
+    <td><button class="action-btn primary" onclick="openDetail('${esc(r.id)}')">View</button></td>`;
+    tbody.appendChild(tr);
+  });
+
+  // Charts
+  buildRegChart();
+  buildStreamChart('chart-streams',ALL_REGS);
+}
+
+function buildRegChart(){
+  const ctx=document.getElementById('chart-reg').getContext('2d');
+  const days=[]; const counts=[];
+  for(let i=13;i>=0;i--){
+    const d=new Date(); d.setDate(d.getDate()-i);
+    days.push(d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}));
+    counts.push(ALL_REGS.filter(r=>r.regDate.toDateString()===d.toDateString()).length);
+  }
+  new Chart(ctx,{type:'line',data:{labels:days,datasets:[{data:counts,borderColor:'#C8860A',backgroundColor:'rgba(200,134,10,0.08)',borderWidth:2,pointRadius:3,pointBackgroundColor:'#C8860A',tension:0.4,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{font:{family:'DM Mono',size:9}},grid:{color:'rgba(26,18,8,.05)'}},x:{ticks:{font:{family:'DM Sans',size:9}},grid:{display:false}}}}});
+}
+
+function buildStreamChart(canvasId, data){
+  const ctx=document.getElementById(canvasId).getContext('2d');
+  const counts={};
+  STREAMS.forEach(s=>counts[s]=0);
+  data.filter(r=>r.stream).forEach(r=>{ if(counts[r.stream]!==undefined) counts[r.stream]++; });
+  new Chart(ctx,{type:'doughnut',data:{labels:Object.keys(counts),datasets:[{data:Object.values(counts),backgroundColor:Object.keys(counts).map(s=>STREAM_COLORS[s]+'CC'),borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{family:'DM Sans',size:10},boxWidth:10}}}}});
+}
+
+// ================================================================
+// REGISTRATIONS TABLE
+// ================================================================
+function renderRegistrations(){
+  const statusF=document.getElementById('filter-status').value;
+  const streamF=document.getElementById('filter-stream').value;
+  const classF=document.getElementById('filter-class').value;
+  filteredRegs=ALL_REGS.filter(r=>{
+    return (!statusF||r.status===statusF)&&(!streamF||r.stream===streamF)&&(!classF||r.cls===classF);
+  });
+  document.getElementById('filter-count').textContent=`Showing ${filteredRegs.length} of ${ALL_REGS.length}`;
+  const tbody=document.getElementById('reg-tbody'); tbody.innerHTML='';
+  filteredRegs.forEach(r=>{
+    const tr=document.createElement('tr');
+    const dot=`<span class="stream-dot" style="background:${STREAM_COLORS[r.stream]||'#888'};"></span>`;
+    tr.innerHTML=`<td class="td-mono">${esc(r.id)}</td>
+    <td><div class="td-name">${esc(r.childName)}</div><div class="td-meta">${esc(r.email)}</div></td>
+    <td>${esc(r.age)} · ${esc(r.cls)}</td>
+    <td><div>${esc(r.parentName)}</div><div class="td-meta">${esc(r.mobile)}</div></td>
+    <td>${esc(r.city)}</td>
+    <td><div class="td-mono">${r.slotDate.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</div><div class="td-meta">${esc(r.slotTime)}</div></td>
+    <td>${dot}${esc(r.stream)}</td>
+    <td>${statusPill(r.status)}</td>
+    <td style="display:flex;gap:.35rem;flex-wrap:wrap;">
+      <button class="action-btn primary" onclick="openDetail('${esc(r.id)}')">View</button>
+      ${r.reportId?`<button class="action-btn" onclick="showToast('Opening report')">Report</button>`:''}
+      <button class="action-btn danger" onclick="cancelReg('${esc(r.id)}')">Cancel</button>
+    </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ================================================================
+// PENDING TABLE
+// ================================================================
+function renderPending(){
+  const pending=ALL_REGS.filter(r=>r.status==='Scheduled'||r.status==='Registered');
+  const tbody=document.getElementById('pending-tbody'); tbody.innerHTML='';
+  pending.sort((a,b)=>a.slotDate-b.slotDate).forEach(r=>{
+    const isToday=r.slotDate.toDateString()===new Date().toDateString();
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><div class="td-name">${esc(r.childName)}</div><div class="td-meta">${esc(r.parentName)} · ${esc(r.mobile)}</div></td>
+    <td>${esc(r.cls)}</td>
+    <td><div style="font-weight:${isToday?'700':'400'};color:${isToday?'var(--teal)':'inherit'}">${r.slotDate.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})}</div><div class="td-meta">${esc(r.slotTime)}</div></td>
+    <td class="td-meta">${r.regDate.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</td>
+    <td class="td-mono">${esc(r.loginId)}</td>
+    <td style="display:flex;gap:.35rem;">
+      <button class="action-btn" onclick="showToast('Reminder sent')">📧 Remind</button>
+      <button class="action-btn" onclick="openDetail('${esc(r.id)}')">View</button>
+      <button class="action-btn danger" onclick="cancelReg('${esc(r.id)}')">Cancel</button>
+    </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ================================================================
+// COMPLETED TABLE
+// ================================================================
+function renderCompleted(){
+  const done=ALL_REGS.filter(r=>r.status==='Completed');
+  const tbody=document.getElementById('completed-tbody'); tbody.innerHTML='';
+  done.forEach(r=>{
+    const dot=`<span class="stream-dot" style="background:${STREAM_COLORS[r.stream]||'#888'};"></span>`;
+    const scoreColor=r.score>=80?'var(--teal)':r.score>=60?'var(--gold)':'var(--red)';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><div class="td-name">${esc(r.childName)}</div><div class="td-meta">${esc(r.cls)} · ${esc(r.city)}</div></td>
+    <td class="td-meta">${r.slotDate.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'})}</td>
+    <td>${dot}${esc(r.stream)}</td>
+    <td style="font-size:.8rem;">${esc(r.topCareer||'—')}</td>
+    <td><span style="font-family:var(--fm);font-weight:700;color:${scoreColor};">${esc(String(r.score))}/100</span></td>
+    <td><button class="action-btn primary" onclick="showToast('Downloading report')">⬇ Download</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ================================================================
+// SLOTS
+// ================================================================
+function renderSlots(){
+  const container=document.getElementById('slot-grid'); container.innerHTML='';
+  const today=new Date();
+  for(let i=1;i<=12;i++){
+    const d=new Date(today); d.setDate(today.getDate()+i);
+    if(d.getDay()===0) continue;
+    TIMES.slice(0,4).forEach(t=>{
+      const total=rndInt(3,8); const booked=rndInt(0,total);
+      const pct=Math.round(booked/total*100);
+      const fillColor=pct>=100?'var(--red)':pct>=70?'var(--gold)':'var(--teal)';
+      const card=document.createElement('div'); card.className='slot-card';
+      card.innerHTML=`<div class="sc-date">${d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})}</div>
+      <div class="sc-time">${t}</div>
+      <div class="sc-fills"><div class="sc-fills-bar" style="width:${pct}%;background:${fillColor};"></div></div>
+      <div class="sc-meta"><span>${booked}/${total} booked</span><span>${pct}%</span></div>
+      <div class="sc-actions">
+        <button class="action-btn" onclick="showToast('Slot details: ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})} ${t}')">View</button>
+        ${pct<100?`<button class="action-btn danger" onclick="showToast('Slot closed')">Close</button>`:`<span style="font-size:.65rem;color:var(--red);font-weight:600;">FULL</span>`}
+      </div>`;
+      container.appendChild(card);
+    });
+  }
+}
+
+function addSlotDialog(){ showToast('Slot creation dialog — coming in next update'); }
+
+// ================================================================
+// CALENDAR
+// ================================================================
+function buildCalendar(){
+  const container=document.getElementById('cal-grid'); container.innerHTML='';
+  document.getElementById('cal-month-title').textContent=calMonth.toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+  const dayLabels=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  dayLabels.forEach(d=>{
+    const cell=document.createElement('div');
+    cell.style.cssText='text-align:center;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:rgba(26,18,8,.3);padding:.35rem 0;';
+    cell.textContent=d; container.appendChild(cell);
+  });
+  const firstDay=new Date(calMonth.getFullYear(),calMonth.getMonth(),1).getDay();
+  const daysInMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()+1,0).getDate();
+  for(let i=0;i<firstDay;i++){
+    const empty=document.createElement('div'); container.appendChild(empty);
+  }
+  for(let d=1;d<=daysInMonth;d++){
+    const cell=document.createElement('div');
+    const thisDate=new Date(calMonth.getFullYear(),calMonth.getMonth(),d);
+    const dayRegs=ALL_REGS.filter(r=>r.slotDate.toDateString()===thisDate.toDateString());
+    const isToday=thisDate.toDateString()===new Date().toDateString();
+    const isSunday=thisDate.getDay()===0;
+    cell.style.cssText=`text-align:center;padding:.4rem .2rem;border-radius:8px;font-size:.8rem;cursor:pointer;transition:background .15s;${isToday?'background:var(--ink);color:var(--cream);font-weight:700;':isSunday?'color:rgba(26,18,8,.2);':'background:#fff;border:1px solid var(--border);'}`;
+    cell.innerHTML=`<div>${d}</div>${dayRegs.length>0?`<div style="width:6px;height:6px;border-radius:50%;background:${isToday?'var(--gold)':'var(--gold)'};margin:2px auto;"></div><div style="font-size:.6rem;color:${isToday?'var(--gold-light)':'var(--gold)'};">${dayRegs.length}</div>`:''}`;
+    if(dayRegs.length>0) cell.onclick=()=>showToast(`${dayRegs.length} test${dayRegs.length>1?'s':''} on ${thisDate.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}`);
+    container.appendChild(cell);
+  }
+}
+
+function changeMonth(dir){ calMonth.setMonth(calMonth.getMonth()+dir); buildCalendar(); }
+
+// ================================================================
+// REPORTS TABLE
+// ================================================================
+function renderReports(){
+  const done=ALL_REGS.filter(r=>r.status==='Completed'&&r.reportId);
+  const tbody=document.getElementById('reports-tbody'); tbody.innerHTML='';
+  done.forEach(r=>{
+    const dot=`<span class="stream-dot" style="background:${STREAM_COLORS[r.stream]||'#888'};"></span>`;
+    const scoreColor=r.score>=80?'var(--teal)':r.score>=60?'var(--gold)':'var(--red)';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><div class="td-name">${esc(r.childName)}</div><div class="td-meta">${esc(r.cls)} · ${esc(r.city)}</div></td>
+    <td class="td-mono" style="font-size:.72rem;">${esc(r.reportId)}</td>
+    <td class="td-meta">${r.slotDate.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'})}</td>
+    <td>${dot}${esc(r.stream)}</td>
+    <td style="font-size:.78rem;">${esc(r.topCareer||'—')}</td>
+    <td><span style="font-family:var(--fm);font-weight:700;color:${scoreColor};">${esc(String(r.score))}</span></td>
+    <td style="display:flex;gap:.35rem;">
+      <button class="action-btn primary" onclick="window.open('sahirah-report.html','_blank')">View</button>
+      <button class="action-btn" onclick="showToast('Downloading PDF')">⬇ PDF</button>
+      <button class="action-btn" onclick="showToast('Report shared')">📧 Share</button>
+    </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ================================================================
+// ANALYTICS
+// ================================================================
+function renderAnalytics(){
+  const done=ALL_REGS.filter(r=>r.status==='Completed');
+  const avgScore=done.length?Math.round(done.reduce((s,r)=>s+r.score,0)/done.length):0;
+  const nonMed=done.filter(r=>r.stream==='Non-Medical').length;
+  const metrics=[
+    {label:'Total Evaluated',val:done.length,icon:'✅'},{label:'Avg Overall Score',val:avgScore,icon:'📊'},
+    {label:'Non-Medical %',val:Math.round(nonMed/Math.max(1,done.length)*100)+'%',icon:'⚙️'},
+    {label:'Completion Rate',val:Math.round(done.length/Math.max(1,ALL_REGS.length)*100)+'%',icon:'🎯'},
+  ];
+  const grid=document.getElementById('analytics-metrics'); grid.innerHTML='';
+  metrics.forEach(m=>{
+    const card=document.createElement('div'); card.className='metric-card';
+    card.innerHTML=`<div class="mc-icon">${m.icon}</div><div class="mc-label">${m.label}</div><div class="mc-val">${m.val}</div>`;
+    grid.appendChild(card);
+  });
+
+  buildStreamChart('chart-ana-streams',ALL_REGS);
+
+  // By class
+  const ctx2=document.getElementById('chart-ana-class').getContext('2d');
+  const classCounts={};
+  CLASSES.forEach(c=>classCounts[c]=0);
+  ALL_REGS.forEach(r=>{ if(classCounts[r.cls]!==undefined) classCounts[r.cls]++; });
+  new Chart(ctx2,{type:'bar',data:{labels:Object.keys(classCounts),datasets:[{data:Object.values(classCounts),backgroundColor:'#1A5FA833',borderColor:'#1A5FA8',borderWidth:2,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{font:{family:'DM Mono',size:9}}},x:{ticks:{font:{family:'DM Sans',size:10}},grid:{display:false}}}}});
+
+  // Top careers
+  const ctx3=document.getElementById('chart-ana-careers').getContext('2d');
+  const careerCounts={};
+  done.forEach(r=>{ if(r.topCareer){ careerCounts[r.topCareer]=(careerCounts[r.topCareer]||0)+1; } });
+  const topCareers=Object.entries(careerCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  new Chart(ctx3,{type:'bar',data:{labels:topCareers.map(([k])=>k.length>18?k.slice(0,18)+'…':k),datasets:[{data:topCareers.map(([,v])=>v),backgroundColor:'#C8860A33',borderColor:'#C8860A',borderWidth:2,borderRadius:6}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{font:{family:'DM Mono',size:9}}},y:{ticks:{font:{family:'DM Sans',size:9}},grid:{display:false}}}}});
+
+  // City distribution
+  const ctx4=document.getElementById('chart-ana-cities').getContext('2d');
+  const cityCounts={};
+  ALL_REGS.forEach(r=>{ cityCounts[r.city]=(cityCounts[r.city]||0)+1; });
+  const topCities=Object.entries(cityCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  new Chart(ctx4,{type:'bar',data:{labels:topCities.map(([k])=>k),datasets:[{data:topCities.map(([,v])=>v),backgroundColor:'#0A6B5E33',borderColor:'#0A6B5E',borderWidth:2,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{font:{family:'DM Mono',size:9}}},x:{ticks:{font:{family:'DM Sans',size:9}},grid:{display:false}}}}});
+}
+
+// ================================================================
+// QUESTION BANK
+// ================================================================
+function renderQBank(){
+  const tbody=document.getElementById('qbank-tbody'); tbody.innerHTML='';
+  const modules=[
+    {name:'Aptitude Assessment',type:'MCQ / Scenario / Pattern',tier:'T1 / T2 / T3',total:65,core:49,variable:16,color:'#C8860A'},
+    {name:'Personality Profile',type:'Likert / Matrix',tier:'—',total:32,core:24,variable:8,color:'#7B2FBE'},
+    {name:'Interest Inventory',type:'MCQ / Likert',tier:'—',total:24,core:18,variable:6,color:'#0A6B5E'},
+    {name:'Emotional Intelligence',type:'Scenario / Likert',tier:'—',total:24,core:18,variable:6,color:'#C0410A'},
+    {name:'Values & Motivation',type:'MCQ / Likert',tier:'—',total:20,core:15,variable:5,color:'#1A5FA8'},
+    {name:'Situational Judgement',type:'Scenario',tier:'—',total:20,core:15,variable:5,color:'#5F5E5A'},
+  ];
+  modules.forEach(m=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><div class="td-name" style="color:${m.color};">${m.name}</div></td>
+    <td style="font-size:.78rem;">${m.type}</td><td class="td-mono">${m.tier}</td>
+    <td style="font-weight:600;">${m.total}</td>
+    <td style="color:var(--teal);">${m.core}</td>
+    <td style="color:var(--gold);">${m.variable}</td>
+    <td><span class="status-pill sp-completed">Active</span></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ================================================================
+// DETAIL MODAL
+// ================================================================
+function openDetail(id){
+  const r=ALL_REGS.find(x=>x.id===id); if(!r) return;
+  const dot=`<span class="stream-dot" style="background:${STREAM_COLORS[r.stream]||'#888'};display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:middle;"></span>`;
+  document.getElementById('modal-title').textContent=r.childName+' — Registration Detail';
+  document.getElementById('modal-body').innerHTML=`
+    <div class="mp-section-title">Child Information</div>
+    <div class="mp-row"><span class="mp-key">Full name</span><span class="mp-val">${esc(r.childName)}</span></div>
+    <div class="mp-row"><span class="mp-key">Age</span><span class="mp-val">${esc(String(r.age))} years</span></div>
+    <div class="mp-row"><span class="mp-key">Class</span><span class="mp-val">${esc(r.cls)}</span></div>
+    <div class="mp-row"><span class="mp-key">City</span><span class="mp-val">${esc(r.city)}</span></div>
+    <div class="mp-row"><span class="mp-key">Registration ID</span><span class="mp-val" style="font-family:var(--fm);font-size:.75rem;">${esc(r.id)}</span></div>
+    <div class="mp-row"><span class="mp-key">Status</span><span class="mp-val">${statusPill(r.status)}</span></div>
+
+    <div class="mp-section-title">Parent / Guardian</div>
+    <div class="mp-row"><span class="mp-key">Name</span><span class="mp-val">${esc(r.parentName)}</span></div>
+    <div class="mp-row"><span class="mp-key">Email</span><span class="mp-val">${esc(r.email)}</span></div>
+    <div class="mp-row"><span class="mp-key">Mobile</span><span class="mp-val">${esc(r.mobile)}</span></div>
+
+    <div class="mp-section-title">Appointment</div>
+    <div class="mp-row"><span class="mp-key">Slot</span><span class="mp-val">${r.slotDate.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'long'})} · ${esc(r.slotTime)}</span></div>
+    <div class="mp-row"><span class="mp-key">Login ID</span><span class="mp-val" style="font-family:var(--fm);">${esc(r.loginId)}</span></div>
+    <div class="mp-row"><span class="mp-key">Registered on</span><span class="mp-val">${r.regDate.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</span></div>
+
+    <div class="mp-section-title">Pre-Assessment Signals</div>
+    <div class="mp-qa"><strong>Favourite subject</strong>${esc(r.preAssess.favSubject)}</div>
+    <div class="mp-qa"><strong>Problem-solving style</strong>${esc(r.preAssess.problemStyle)}</div>
+    <div class="mp-qa"><strong>Top value</strong>${esc(r.preAssess.values)}</div>
+
+    ${r.status==='Completed'?`
+    <div class="mp-section-title">Test Results</div>
+    <div class="mp-row"><span class="mp-key">Primary stream</span><span class="mp-val">${dot}${esc(r.stream)}</span></div>
+    <div class="mp-row"><span class="mp-key">Top career</span><span class="mp-val">${esc(r.topCareer)}</span></div>
+    <div class="mp-row"><span class="mp-key">Overall score</span><span class="mp-val" style="font-family:var(--fm);font-weight:700;color:${r.score>=80?'var(--teal)':'var(--gold)'};">${esc(String(r.score))}/100</span></div>
+    <div class="mp-row"><span class="mp-key">Report ID</span><span class="mp-val" style="font-family:var(--fm);font-size:.72rem;">${esc(r.reportId)}</span></div>
+    <div style="margin-top:1rem;display:flex;gap:.5rem;">
+      <button class="action-btn primary" style="flex:1;" onclick="window.open('sahirah-report.html','_blank')">View Full Report</button>
+      <button class="action-btn" style="flex:1;" onclick="showToast('PDF downloaded')">⬇ Download PDF</button>
+    </div>`:''}
+
+    <div style="display:flex;gap:.5rem;margin-top:1rem;">
+      <button class="action-btn" onclick="showToast('Reminder sent')">📧 Send Reminder</button>
+      <button class="action-btn danger" onclick="cancelReg('${esc(r.id)}');closeModal();">Cancel Registration</button>
+    </div>`;
+  document.getElementById('detail-modal').classList.add('show');
+}
+
+function closeModal(){ document.getElementById('detail-modal').classList.remove('show'); }
+
+// ================================================================
+// ACTIONS
+// ================================================================
+function cancelReg(id){
+  const r=ALL_REGS.find(x=>x.id===id); if(!r) return;
+  r.status='Cancelled';
+  renderRegistrations(); renderPending(); updateBadges();
+  showToast('Registration cancelled for '+r.childName);
+}
+
+function globalSearch(val){
+  if(!val.trim()){ filteredRegs=[...ALL_REGS]; }
+  else {
+    const q=val.toLowerCase();
+    filteredRegs=ALL_REGS.filter(r=>r.childName.toLowerCase().includes(q)||r.parentName.toLowerCase().includes(q)||r.id.toLowerCase().includes(q)||r.email.toLowerCase().includes(q)||r.city.toLowerCase().includes(q));
+  }
+  document.getElementById('filter-count').textContent=`${filteredRegs.length} result${filteredRegs.length!==1?'s':''}`;
+  const tbody=document.getElementById('reg-tbody'); tbody.innerHTML='';
+  filteredRegs.forEach(r=>{
+    const dot=`<span class="stream-dot" style="background:${STREAM_COLORS[r.stream]||'#888'};"></span>`;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="td-mono">${esc(r.id)}</td>
+    <td><div class="td-name">${esc(r.childName)}</div><div class="td-meta">${esc(r.email)}</div></td>
+    <td>${esc(String(r.age))} · ${esc(r.cls)}</td><td>${esc(r.parentName)}</td><td>${esc(r.city)}</td>
+    <td class="td-mono">${r.slotDate.toLocaleDateString('en-IN',{day:'numeric',month:'short'})} ${esc(r.slotTime)}</td>
+    <td>${dot}${esc(r.stream)}</td><td>${statusPill(r.status)}</td>
+    <td><button class="action-btn primary" onclick="openDetail('${esc(r.id)}')">View</button></td>`;
+    tbody.appendChild(tr);
+  });
+  if(val.trim()) showPage('registrations',document.querySelector('[data-page="registrations"]'));
+}
+
+function exportCSV(){
+  const rows=[['Reg ID','Child Name','Age','Class','City','Parent','Email','Mobile','Slot Date','Slot Time','Stream','Status','Score','Report ID']];
+  filteredRegs.forEach(r=>rows.push([r.id,r.childName,r.age,r.cls,r.city,r.parentName,r.email,r.mobile,r.slotDate.toLocaleDateString('en-IN'),r.slotTime,r.stream,r.status,r.score||'',r.reportId||'']));
+  const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='sahirah_registrations_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click(); showToast('CSV exported successfully');
+}
+
+// ================================================================
+// HELPERS
+// ================================================================
+function statusPill(status){
+  const map={'Registered':'sp-registered','Scheduled':'sp-scheduled','In Progress':'sp-inprogress','Completed':'sp-completed','Cancelled':'sp-cancelled'};
+  return `<span class="status-pill ${map[status]||'sp-registered'}">${status}</span>`;
+}
+
+let toastTimer;
+fu

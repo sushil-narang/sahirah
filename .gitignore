@@ -1,0 +1,37 @@
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Environment / secrets — NEVER commit API keys
+.env
+.env.local
+.env.development
+.env.production
+*.env
+
+# Editor directories
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Node (if you add a backend later)
+node_modules/
+dist/
+build/
+
+# Netlify
+.netlify/
+
+# Temporary files
+*.tmp
+*.bak

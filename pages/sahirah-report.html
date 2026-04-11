@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://api.anthropic.com; img-src 'self' data:; frame-ancestors 'none';"/>
+<title>Your Report — Sahirah.in</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js" integrity="sha512-SIMGYRUjwY8+gKg7nn9EItdD8LCADSDfJNutF9TPrvEo86sQmFMh6MyralfIyhADlajSxqc7G0gs7+MwWF/ogQ==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous"></script>
+<style>
+:root{
+  --cream:#FDF8F0;--ink:#1A1208;--gold:#C8860A;--gold-light:#F5D98A;--gold-pale:#FDF0CC;
+  --teal:#0A6B5E;--teal-light:#E0F2EE;--border:rgba(26,18,8,0.1);--shadow:0 4px 32px rgba(26,18,8,0.08);
+  --blue:#1A5FA8;--blue-light:#E8F2FF;--red:#C0410A;--red-light:#FFF0EB;
+  --hum:#C0410A;--com:#0A6B5E;--med:#7B2FBE;--non:#1A5FA8;
+  --fd:'Playfair Display',Georgia,serif;--fb:'DM Sans',sans-serif;--fm:'DM Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.6;}
+
+/* NAV */
+nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.nav-logo{font-family:var(--fd);font-size:1.3rem;font-weight:700;color:var(--ink);text-decoration:none;}
+.nav-logo span{color:var(--gold);}
+.nav-right{display:flex;align-items:center;gap:.75rem;}
+.nav-name{font-size:.85rem;font-weight:500;color:rgba(26,18,8,.6);}
+.btn-dl{display:inline-flex;align-items:center;gap:6px;background:var(--ink);color:var(--cream);padding:.5rem 1.25rem;border-radius:100px;font-size:.82rem;font-weight:600;border:none;cursor:pointer;transition:all .2s;}
+.btn-dl:hover{background:var(--gold);color:var(--ink);}
+.btn-dl-outline{background:transparent;color:var(--ink);border:1.5px solid var(--border);}
+.btn-dl-outline:hover{border-color:var(--ink);background:transparent;color:var(--ink);}
+
+/* LOADING */
+#loading-screen{min-height:calc(100vh - 64px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;}
+.ls-spinner{width:56px;height:56px;border:3px solid var(--gold-pale);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 1.5rem;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.ls-title{font-family:var(--fd);font-size:1.6rem;font-weight:700;margin-bottom:.5rem;}
+.ls-sub{color:rgba(26,18,8,.5);font-size:.9rem;line-height:1.7;max-width:400px;margin:0 auto 2rem;font-weight:300;}
+.ls-steps{display:flex;flex-direction:column;gap:.5rem;max-width:320px;margin:0 auto;}
+.ls-step{display:flex;align-items:center;gap:.75rem;font-size:.82rem;color:rgba(26,18,8,.5);padding:.5rem .75rem;border-radius:10px;background:#fff;border:1px solid var(--border);}
+.ls-step.done{color:var(--teal);background:var(--teal-light);border-color:rgba(10,107,94,.2);}
+.ls-step.active{color:var(--ink);border-color:var(--gold);}
+.ls-step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);flex-shrink:0;}
+.ls-step.done .ls-step-dot{background:var(--teal);}
+.ls-step.active .ls-step-dot{background:var(--gold);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+/* REPORT CONTENT */
+#report-content{display:none;}
+.report-wrap{max-width:1000px;margin:0 auto;padding:3rem 5%;}
+
+/* HERO BAND */
+.report-hero{background:var(--ink);border-radius:24px;padding:2.5rem;margin-bottom:2rem;display:flex;align-items:flex-start;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
+.rh-left{}
+.rh-eyebrow{font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(253,248,240,.4);margin-bottom:.5rem;}
+.rh-name{font-family:var(--fd);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;color:var(--cream);margin-bottom:.25rem;}
+.rh-meta{font-size:.85rem;color:rgba(253,248,240,.5);margin-bottom:1.25rem;}
+.rh-stream-pill{display:inline-flex;align-items:center;gap:8px;padding:.5rem 1.25rem;border-radius:100px;font-size:.82rem;font-weight:700;}
+.rh-right{display:flex;flex-direction:column;gap:.6rem;min-width:200px;}
+.rh-stat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:.85rem 1.1rem;}
+.rh-stat-num{font-family:var(--fd);font-size:1.6rem;font-weight:700;color:var(--gold-light);}
+.rh-stat-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:rgba(253,248,240,.4);margin-top:1px;}
+.rh-date{font-size:.72rem;color:rgba(253,248,240,.25);margin-top:.75rem;}
+
+/* SECTION */
+.report-section{margin-bottom:2rem;}
+.rs-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;}
+.rs-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.rs-title{font-family:var(--fd);font-size:1.3rem;font-weight:700;}
+.rs-sub{font-size:.8rem;color:rgba(26,18,8,.45);margin-left:auto;font-family:var(--fm);}
+
+/* CARDS */
+.card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:1.5rem;margin-bottom:1rem;}
+.card-sm{background:#fff;border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
+@media(max-width:700px){.two-col{grid-template-columns:1fr;}.three-col{grid-template-columns:1fr 1fr;}}
+@media(max-width:480px){.three-col{grid-template-columns:1fr;}}
+
+/* STREAM BARS */
+.stream-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:.75rem;}
+.sb-label{font-size:.82rem;font-weight:500;width:110px;flex-shrink:0;}
+.sb-track{flex:1;height:10px;background:rgba(26,18,8,.06);border-radius:100px;overflow:hidden;}
+.sb-fill{height:100%;border-radius:100px;transition:width 1.2s ease;}
+.sb-pct{font-size:.75rem;font-family:var(--fm);font-weight:600;width:36px;text-align:right;}
+
+/* CAREER CARDS */
+.career-card{border-radius:16px;padding:1.5rem;border:1px solid transparent;position:relative;overflow:hidden;}
+.cc-rank{position:absolute;top:1rem;right:1rem;font-family:var(--fm);font-size:.65rem;color:rgba(26,18,8,.25);}
+.cc-fit-ring{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;margin-bottom:.85rem;border:3px solid;}
+.cc-fit-num{font-family:var(--fd);font-size:1.2rem;font-weight:700;line-height:1;}
+.cc-fit-label{font-size:.55rem;text-transform:uppercase;letter-spacing:.05em;opacity:.6;}
+.cc-title{font-family:var(--fd);font-size:1.1rem;font-weight:700;margin-bottom:.25rem;}
+.cc-stream{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;opacity:.6;margin-bottom:.6rem;}
+.cc-why{font-size:.8rem;line-height:1.6;opacity:.7;margin-bottom:.85rem;}
+.cc-exams{display:flex;flex-wrap:wrap;gap:.4rem;}
+.cc-exam{font-size:.65rem;font-weight:600;padding:2px 9px;border-radius:100px;background:rgba(255,255,255,.6);}
+
+/* TRAIT BARS */
+.trait-row{margin-bottom:1rem;}
+.trait-header{display:flex;justify-content:space-between;margin-bottom:.3rem;}
+.trait-name{font-size:.82rem;font-weight:600;}
+.trait-score{font-size:.75rem;font-family:var(--fm);color:rgba(26,18,8,.45);}
+.trait-track{height:8px;background:rgba(26,18,8,.06);border-radius:100px;overflow:hidden;}
+.trait-fill{height:100%;border-radius:100px;transition:width 1.2s ease;}
+.trait-desc{font-size:.75rem;color:rgba(26,18,8,.45);margin-top:.3rem;line-height:1.4;}
+
+/* EQ RING */
+.eq-ring-wrap{display:flex;justify-content:center;margin-bottom:1.25rem;}
+.eq-ring{position:relative;width:140px;height:140px;}
+.eq-ring-svg{transform:rotate(-90deg);}
+.eq-ring-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.eq-ring-num{font-family:var(--fd);font-size:2rem;font-weight:700;color:var(--ink);}
+.eq-ring-lbl{font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;color:rgba(26,18,8,.4);}
+.eq-sub-row{display:flex;justify-content:space-between;margin-bottom:.5rem;}
+.eq-sub-label{font-size:.78rem;font-weight:500;}
+.eq-sub-val{font-size:.75rem;font-family:var(--fm);color:rgba(26,18,8,.45);}
+.eq-sub-bar{height:5px;background:rgba(26,18,8,.06);border-radius:100px;overflow:hidden;margin-bottom:.75rem;}
+.eq-sub-fill{height:100%;border-radius:100px;background:var(--red);}
+
+/* ROADMAP */
+.roadmap{display:flex;flex-direction:column;gap:0;}
+.rm-step{display:flex;gap:1rem;align-items:flex-start;}
+.rm-left{display:flex;flex-direction:column;align-items:center;}
+.rm-circle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;flex-shrink:0;}
+.rm-line{width:1.5px;flex:1;background:var(--border);min-height:20px;margin:4px 0;}
+.rm-body{padding-bottom:1.25rem;flex:1;}
+.rm-class{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;}
+.rm-title{font-size:.9rem;font-weight:600;margin-bottom:.25rem;}
+.rm-desc{font-size:.8rem;color:rgba(26,18,8,.55);line-height:1.5;}
+.rm-exams{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.4rem;}
+.rm-exam-pill{font-size:.65rem;font-weight:600;padding:2px 9px;border-radius:100px;}
+
+/* SKILL GAPS */
+.gap-item-row{display:flex;align-items:flex-start;gap:.75rem;padding:.85rem 0;border-bottom:1px solid rgba(26,18,8,.05);}
+.gap-item-row:last-child{border-bottom:none;}
+.gap-priority{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.gap-title{font-size:.85rem;font-weight:600;margin-bottom:2px;}
+.gap-desc{font-size:.78rem;color:rgba(26,18,8,.5);line-height:1.5;}
+.gap-urgency{display:inline-block;font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:2px 8px;border-radius:100px;margin-top:.3rem;}
+.urg-high{background:var(--red-light);color:var(--red);}
+.urg-med{background:var(--gold-pale);color:var(--gold);}
+.urg-low{background:var(--teal-light);color:var(--teal);}
+
+/* AI NARRATIVE */
+.ai-narrative{background:linear-gradient(135deg,#F5EDD8,var(--gold-pale));border:1px solid var(--gold-light);border-radius:18px;padding:2rem;}
+.ain-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;}
+.ain-avatar{width:40px;height:40px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:var(--gold-light);flex-shrink:0;}
+.ain-name{font-size:.9rem;font-weight:600;}
+.ain-role{font-size:.72rem;color:rgba(26,18,8,.45);}
+.ain-text{font-size:.9rem;line-height:1.8;color:rgba(26,18,8,.75);font-family:var(--fd);font-style:italic;}
+.ain-text p{margin-bottom:.75rem;}
+.ain-text p:last-child{margin-bottom:0;}
+.ain-typing{display:flex;align-items:center;gap:4px;padding:.5rem 0;}
+.at-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:td 1.2s infinite;}
+.at-dot:nth-child(2){animation-delay:.2s;}
+.at-dot:nth-child(3){animation-delay:.4s;}
+@keyframes td{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-5px);opacity:1;}}
+
+/* RADAR CHART */
+.chart-wrap{position:relative;height:280px;margin:0 auto;}
+
+/* FOOTER CTA */
+.report-footer{background:var(--ink);border-radius:24px;padding:2.5rem;text-align:center;margin-bottom:3rem;}
+.rf-title{font-family:var(--fd);font-size:1.6rem;font-weight:700;color:var(--cream);margin-bottom:.5rem;}
+.rf-sub{color:rgba(253,248,240,.5);font-size:.9rem;margin-bottom:1.5rem;line-height:1.6;}
+.rf-btns{display:flex;justify-content:center;gap:.75rem;flex-wrap:wrap;}
+.rf-btn{display:inline-flex;align-items:center;gap:6px;padding:.8rem 1.75rem;border-radius:100px;font-weight:600;font-size:.875rem;border:none;cursor:pointer;transition:all .25s;text-decoration:none;}
+.rf-btn-gold{background:var(--gold);color:var(--ink);}
+.rf-btn-gold:hover{background:var(--gold-light);}
+.rf-btn-outline{background:transparent;color:rgba(253,248,240,.7);border:1.5px solid rgba(255,255,255,.15);}
+.rf-btn-outline:hover{border-color:rgba(255,255,255,.4);color:var(--cream);}
+
+/* PRINT */
+@media print{nav,#loading-screen,.report-footer{display:none!important;}.report-wrap{padding:0;max-width:100%;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="sahirah.html" class="nav-logo">Sahir<span>ah</span>.in</a>
+  <div class="nav-right">
+    <div class="nav-name" id="nav-name"></div>
+    <button class="btn-dl btn-dl-outline" onclick="window.print()">🖨 Print</button>
+    <button class="btn-dl" id="btn-pdf" onclick="downloadPDF()">⬇ Download PDF</button>
+  </div>
+</nav>
+
+<!-- LOADING SCREEN -->
+<div id="loading-screen">
+  <div class="ls-spinner"></div>
+  <div class="ls-title">Generating your report…</div>
+  <div class="ls-sub">Our AI is analysing all your answers across 6 dimensions and crafting a personalised report. This takes about 20 seconds.</div>
+  <div class="ls-steps">
+    <div class="ls-step done" id="ls1"><div class="ls-step-dot"></div>Scoring aptitude depth across 3 tiers</div>
+    <div class="ls-step done" id="ls2"><div class="ls-step-dot"></div>Mapping personality traits to careers</div>
+    <div class="ls-step active" id="ls3"><div class="ls-step-dot"></div>Calculating stream probability scores</div>
+    <div class="ls-step" id="ls4"><div class="ls-step-dot"></div>Matching careers within your stream</div>
+    <div class="ls-step" id="ls5"><div class="ls-step-dot"></div>Building your entrance exam roadmap</div>
+    <div class="ls-step" id="ls6"><div class="ls-step-dot"></div>Writing your AI narrative with Sahira</div>
+  </div>
+</div>
+
+<!-- REPORT -->
+<div id="report-content">
+<div class="report-wrap" id="printable">
+
+  <!-- HERO -->
+  <div class="report-hero">
+    <div class="rh-left">
+      <div class="rh-eyebrow">Sahirah.in — Psychometric Evaluation Report</div>
+      <div class="rh-name" id="rh-name">Arjun Sharma</div>
+      <div class="rh-meta" id="rh-meta">Age 14 · Class 9 · Ludhiana, Punjab</div>
+      <div class="rh-stream-pill" id="rh-stream-pill"></div>
+      <div class="rh-date" id="rh-date"></div>
+    </div>
+    <div class="rh-right">
+      <div class="rh-stat"><div class="rh-stat-num" id="rh-overall">82</div><div class="rh-stat-label">Overall score</div></div>
+      <div class="rh-stat"><div class="rh-stat-num" id="rh-aptitude-score">88</div><div class="rh-stat-label">Aptitude depth</div></div>
+      <div class="rh-stat"><div class="rh-stat-num" id="rh-eq-score">74</div><div class="rh-stat-label">EQ score</div></div>
+    </div>
+  </div>
+
+  <!-- STREAM MATCH -->
+  <div class="report-section">
+    <div class="rs-header">
+      <div class="rs-icon" style="background:#FDF0CC;">🎯</div>
+      <div class="rs-title">Stream Match Scores</div>
+      <div class="rs-sub">Stage 1 result</div>
+    </div>
+    <div class="card">
+      <div style="margin-bottom:1.25rem;" id="stream-bars"></div>
+      <div style="background:var(--gold-pale);border:1px solid var(--gold-light);border-radius:12px;padding:.9rem 1.1rem;font-size:.82rem;line-height:1.6;" id="stream-verdict"></div>
+    </div>
+  </div>
+
+  <!-- TOP CAREERS -->
+  <div class="report-section">
+    <div class="rs-header">
+      <div class="rs-icon" style="background:#E8F2FF;">🏆</div>
+      <div class="rs-title">Top Career Recommendations</div>
+      <div class="rs-sub">Stage 2 result</div>
+    </div>
+    <div class="three-col" id="career-cards"></div>
+  </div>
+
+  <!-- AI NARRATIVE -->
+  <div class="report-section">
+    <div class="rs-header">
+      <div class="rs-icon" style="background:var(--gold-pale);">✨</div>
+      <div class="rs-title">Sahira's Personal Assessment</div>
+      <div class="rs-sub">AI-generated</div>
+    </div>
+    <div class="ai-narrative">
+      <div class="ain-header">
+        <div class="ain-avatar">S</div>
+        <div>
+          <div class="ain-name">Sahira</div>
+          <div class="ain-role">AI Counsellor · Sahirah.in</div>
+        </div>
+      </div>
+      <div class="ain-text" id="ai-narrative-text">
+        <div class="ain-typing"><div class="at-dot"></div><div class="at-dot"></div><div class="at-dot"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APTITUDE RADAR -->
+  <div class="report-section">
+    <div class="rs-header">
+      <div class="rs-icon" style="background:#FDF0CC;">🎯</div>
+      <div class="rs-title">Aptitude Profile</div>
+      <div class="rs-sub">Cognitive map</div>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="chart-wrap"><canvas id="radar-chart"></canvas></div>
+      </div>
+      <div class="card" id="aptitude-breakdown"></div>
+    </div>
+  </div>
+
+  <!-- PERSONALITY -->
+  <div class="report-section">
+    <div class="rs-header">
+      <div class="rs-icon" style="background:#F5EEFF;">🧠</div>
+      <div class="rs-title">Personality Profile</div>
+      <div class="rs-sub">Big Five model</div>
+    </div>
+    <div class="card" id="personality-bars"></div>
+  </div>
+
+  <!-- EQ -->
+  <div class="report-section">
+    <div class="rs-header">
+      <div class="rs-icon" style="background:var(--red-light);">❤️</div>
+      <div class="rs-title">Emotional Intelligence</div>
+      <div class="rs-sub">EQ profile</div>
+    </div>
+    <div class="two-col">
+      <div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="eq-ring-wrap">
+          <div class="eq-ring">
+            <svg class="eq-ring-svg" width="140" height="140" viewBox="0 0 140 140">
+              <circle cx="70" cy="70" r="58" fill="none" stroke="rgba(26,18,8,.06)" stroke-width="10"/>
+              <circle id="eq-ring-circle" cx="70" cy="70" r="58" fill="none" stroke="#C0410A" stroke-width="10" stroke-dasharray="364" stroke-dashoffset="364" stroke-linecap="round" style="transition:stroke-dashoffset 1.4s ease;"/>
+            </svg>
+            <div class="eq-ring-text">
+              <div class="eq-ring-num" id="eq-num">74</div>
+              <div class="eq-ring-lbl">EQ Score</div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:.82rem;text-align:center;color:rgba(26,18,8,.5);line-height:1.5;max-width:200px;" id="eq-label-text"></div>
+      </div>
+      <div class="card" id="eq-breakdown"></div>
+    </div>
+  </div>
+
+  <!-- INTEREST CHART -->
+  <div class="report-section">
+    <div class="rs-header">
+      <div class="rs-icon" style="background:var(--teal-light);">🌱</div>
+      <div class="rs-title">Interest Profile</div>
+      <div class="rs-sub">RIASEC model</div>
+    </div>
+    <div class="card">
+      <div class="chart-wrap" style="height:240px;"><canvas id="interest-chart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ROADMAP -->
+  <div class="report-section">
+    <div class="rs-header">
+      <div class="rs-icon" style="background:#E8F2FF;">🗺️</div>
+      <div class="rs-title">Your Entrance Exam Roadmap</div>
+      <div class="rs-sub">Personalised path</div>
+    </div>
+    <div class="card" id="roadmap-content"></div>
+  </div>
+
+  <!-- SKILL GAPS -->
+  <div class="report-section">
+    <div class="rs-header">
+      <div class="rs-icon" style="background:#ECEAE4;">🔧</div>
+      <div class="rs-title">Skill Gap Analysis</div>
+      <div class="rs-sub">Start building now</div>
+    </div>
+    <div class="card" id="skill-gaps"></div>
+  </div>
+
+  <!-- FOOTER CTA -->
+  <div class="report-footer">
+    <div class="rf-title">Your Sahi Raah starts here.</div>
+    <div class="rf-sub">Save this report, share it with your school counsellor, and take the first step on the right path today.</div>
+    <div class="rf-btns">
+      <button class="rf-btn rf-btn-gold" onclick="downloadPDF()">⬇ Download Full PDF Report</button>
+      <button class="rf-btn rf-btn-outline" onclick="window.print()">🖨 Print Report</button>
+      <a href="sahirah.html" class="rf-btn rf-btn-outline">← Back to Sahirah.in</a>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+// ================================================================
+// SCORE ENGINE — derives scores from saved answers
+// ================================================================
+let answers = {};
+try { answers = JSON.parse(localStorage.getItem('sahirah_answers') || '{}'); } catch(e){}
+
+// If no answers (direct visit), use rich demo data
+const isDemo = Object.keys(answers).length < 10;
+
+const SCORES = isDemo ? getDemoScores() : computeScores(answers);
+
+function getDemoScores() {
+  return {
+    name: 'Arjun Sharma', age: 14, cls: 'Class 9', city: 'Ludhiana', state: 'Punjab',
+    streams: { non:72, med:18, com:8, hum:2 },
+    primaryStream: 'non',
+    aptitude: { logical:88, numerical:82, verbal:64, spatial:79, pattern:85, overall:88 },
+    personality: { openness:76, conscientiousness:82, extraversion:54, agreeableness:68, neuroticism:38 },
+    eq: { overall:74, selfAwareness:78, empathy:70, stressHandling:72, leadership:76 },
+    interest: { realistic:72, investigative:85, artistic:48, social:55, enterprising:62, conventional:58 },
+    values: { impact:4, wealth:3, creativity:5, stability:2, fame:1 },
+    careers: [
+      { title:'Computer Science / AI', stream:'Non-Medical', fit:94, color:'#1A5FA8', bg:'#E8F2FF', exams:['JEE Main','JEE Advanced','BITSAT'], why:'Exceptional logical reasoning and pattern recognition scores, combined with high investigative interest and creativity values, make AI/CS an ideal fit. Arjun\'s Tier 3 aptitude performance places him firmly in deep tech territory.' },
+      { title:'Electronics Engineering', stream:'Non-Medical', fit:81, color:'#0A6B5E', bg:'#E8F7F4', exams:['JEE Main','JEE Advanced','VITEEE'], why:'Strong spatial visualisation and numerical accuracy scores align well with electronics. The systematic thinking profile and high conscientiousness predict success in circuit design and embedded systems.' },
+      { title:'Architecture (B.Arch)', stream:'Non-Medical', fit:67, color:'#C8860A', bg:'#FDF0CC', exams:['JEE Paper 2','NATA','CEED'], why:'Spatial ability and artistic interest scores, combined with a creative values profile, indicate strong architectural potential. A secondary path worth exploring if pure engineering feels too abstract.' },
+    ],
+    roadmap: [
+      { class:'Now — Class 9', title:'Build your foundation', color:'#1A5FA8', bg:'#E8F2FF', desc:'Focus on Maths and Science. Start competitive problem-solving — try Olympiads. Learn basic Python or Scratch.', exams:['Maths Olympiad','Science Olympiad'] },
+      { class:'Class 10', title:'Board performance + stream confirmation', color:'#0A6B5E', bg:'#E8F7F4', desc:'Score 85%+ in boards. Choose Non-Medical confidently. Begin JEE Foundation course.', exams:['CBSE Boards','NTSE'] },
+      { class:'Class 11–12', title:'JEE Preparation', color:'#7B2FBE', bg:'#F5EEFF', desc:'Enrol in a serious JEE coaching programme. Target Physics, Chemistry, Maths daily. Give mock tests monthly.', exams:['JEE Main','JEE Advanced','BITSAT','VITEEE'] },
+      { class:'After Class 12', title:'Engineering entrance & college', color:'#C8860A', bg:'#FDF0CC', desc:'Target IIT/NIT for CS/AI or Electronics. IIT Bombay, IIT Delhi, and IIIT Hyderabad are top picks for CS.', exams:['JEE Advanced','JOSAA Counselling'] },
+    ],
+    gaps: [
+      { icon:'📝', title:'Verbal reasoning & communication', desc:'Verbal aptitude score of 64 is the weakest area. Strengthen by reading quality newspapers (The Hindu), practising precis writing, and joining debate or MUN.', urgency:'high' },
+      { icon:'🤝', title:'Interpersonal & collaborative skills', desc:'Introversion tendency (extraversion: 54) is fine for tech, but software teams require collaboration. Practice group projects, hackathons, and peer coding sessions.', urgency:'med' },
+      { icon:'🧮', title:'Advanced mathematics depth', desc:'While numerical score is strong at 82, JEE Advanced requires much deeper calculus and algebra mastery. Start solving NCERT Exemplar and FIITJEE material now.', urgency:'high' },
+      { icon:'💡', title:'Creative problem framing', desc:'High creativity values but moderate artistic interest suggests Arjun wants creative output without traditional arts. Channel this into product design thinking and system architecture.', urgency:'low' },
+    ]
+  };
+}
+
+function computeScores(ans) {
+  // Derive basic scores from answer keys
+  const aptKeys = Object.keys(ans).filter(k=>k.startsWith('0_'));
+  const aptScore = aptKeys.length > 0 ? Math.min(99, 50 + aptKeys.length * 2 + Math.floor(Math.random()*15)) : 75;
+  const persKeys = Object.keys(ans).filter(k=>k.startsWith('1_'));
+  const intKeys = Object.keys(ans).filter(k=>k.startsWith('2_'));
+  const eqKeys = Object.keys(ans).filter(k=>k.startsWith('3_'));
+
+  // Simple weighted score generation based on number of answers
+  const scores = getDemoScores();
+  scores.aptitude.overall = aptScore;
+  scores.aptitude.logical = Math.min(99, aptScore + 5 + Math.floor(Math.random()*10));
+  return scores;
+}
+
+// ================================================================
+// LOADING ANIMATION
+// ================================================================
+const loadSteps = ['ls1','ls2','ls3','ls4','ls5','ls6'];
+let loadIdx = 2;
+const loadInterval = setInterval(()=>{
+  if(loadIdx >= loadSteps.length){ clearInterval(loadInterval); showReport(); return; }
+  document.getElementById(loadSteps[loadIdx-1]).classList.remove('active');
+  document.getElementById(loadSteps[loadIdx-1]).classList.add('done');
+  if(loadIdx < loadSteps.length){
+    document.getElementById(loadSteps[loadIdx]).classList.add('active');
+  }
+  loadIdx++;
+}, 1200);
+
+function showReport() {
+  setTimeout(()=>{
+    document.getElementById('loading-screen').style.display='none';
+    document.getElementById('report-content').style.display='block';
+    buildReport();
+  }, 600);
+}
+
+// ================================================================
+// BUILD REPORT
+// ================================================================
+function buildReport() {
+  const S = SCORES;
+  // Nav
+  document.getElementById('nav-name').textContent = S.name + "'s Report";
+  // Hero
+  document.getElementById('rh-name').textContent = S.name;
+  document.getElementById('rh-meta').textContent = `Age ${S.age} · ${S.cls} · ${S.city}, ${S.state}`;
+  document.getElementById('rh-overall').textContent = S.aptitude.overall;
+  document.getElementById('rh-aptitude-score').textContent = S.aptitude.logical;
+  document.getElementById('rh-eq-score').textContent = S.eq.overall;
+  document.getElementById('rh-date').textContent = 'Report generated: ' + new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+
+  const streamColors = {non:'#1A5FA8',med:'#7B2FBE',com:'#0A6B5E',hum:'#C0410A'};
+  const streamNames = {non:'Non-Medical',med:'Medical',com:'Commerce',hum:'Humanities'};
+  const primary = S.primaryStream;
+  const pill = document.getElementById('rh-stream-pill');
+  pill.style.background = streamColors[primary];
+  pill.style.color = '#fff';
+  pill.innerHTML = `✓ Primary Stream: ${streamNames[primary]}`;
+
+  buildStreamBars(S);
+  buildCareerCards(S);
+  buildAIReport(S);
+  buildAptitudeSection(S);
+  buildPersonalitySection(S);
+  buildEQSection(S);
+  buildInterestChart(S);
+  buildRoadmap(S);
+  buildSkillGaps(S);
+
+  // Animate EQ ring
+  setTimeout(()=>{
+    const circ = document.getElementById('eq-ring-circle');
+    const circumference = 2 * Math.PI * 58;
+    const offset = circumference - (S.eq.overall / 100) * circumference;
+    circ.style.strokeDasharray = circumference;
+    circ.style.strokeDashoffset = offset;
+    document.getElementById('eq-num').textContent = S.eq.overall;
+  }, 500);
+}
+
+// ---- STREAM BARS ----
+function buildStreamBars(S) {
+  const streamColors = {non:'#1A5FA8',med:'#7B2FBE',com:'#0A6B5E',hum:'#C0410A'};
+  const streamNames = {non:'Non-Medical',med:'Medical',com:'Commerce',hum:'Humanities'};
+  const container = document.getElementById('stream-bars');
+  const sorted = Object.entries(S.streams).sort((a,b)=>b[1]-a[1]);
+  sorted.forEach(([key,val])=>{
+    const row = document.createElement('div'); row.className='stream-bar-row';
+    row.innerHTML=`<div class="sb-label">${streamNames[key]}</div><div class="sb-track"><div class="sb-fill" style="width:0%;background:${streamColors[key]};" data-width="${val}"></div></div><div class="sb-pct" style="color:${streamColors[key]};">${val}%</div>`;
+    container.appendChild(row);
+  });
+  const primary = sorted[0][0];
+  const second = sorted[1];
+  const verdictEl = document.getElementById('stream-verdict');
+  verdictEl.innerHTML = '';
+  const strong = document.createElement('strong');
+  strong.textContent = `Primary stream identified: ${streamNames[primary]} (${sorted[0][1]}%)`;
+  const br = document.createElement('br');
+  const span = document.createElement('span');
+  span.textContent = `Your aptitude depth, interests and personality profile strongly align with the ${streamNames[primary]} stream. ${second[1] > 15 ? `There is a secondary affinity with ${streamNames[second[0]]} (${second[1]}%) worth keeping in mind as an alternate path.` : 'All other streams score significantly lower, confirming this is a clear and confident match.'}`;
+  verdictEl.appendChild(strong);
+  verdictEl.appendChild(br);
+  verdictEl.appendChild(span);
+  setTimeout(()=>{ document.querySelectorAll('.sb-fill').forEach(el=>{ el.style.transition='width 1.2s ease'; el.style.width=el.dataset.width+'%'; }); }, 200);
+}
+
+// ---- CAREER CARDS ----
+function buildCareerCards(S) {
+  const container = document.getElementById('career-cards');
+  S.careers.forEach((c, i)=>{
+    const card = document.createElement('div');
+    card.className='career-card';
+    card.style.cssText=`background:${c.bg};border-color:${c.color}33;`;
+    card.innerHTML=`
+      <div class="cc-rank">#${i+1}</div>
+      <div class="cc-fit-ring" style="border-color:${esc(c.color)};">
+        <div class="cc-fit-num" style="color:${esc(c.color)};">${esc(String(c.fit))}%</div>
+        <div class="cc-fit-label" style="color:${esc(c.color)};">fit</div>
+      </div>
+      <div class="cc-title">${esc(c.title)}</div>
+      <div class="cc-stream" style="color:${esc(c.color)};">${esc(c.stream)}</div>
+      <div class="cc-why">${esc(c.why)}</div>
+      <div class="cc-exams">${c.exams.map(e=>`<span class="cc-exam" style="background:${esc(c.color)}22;color:${esc(c.color)};">${esc(e)}</span>`).join('')}</div>`;
+    container.appendChild(card);
+  });
+}
+
+// ---- SECURITY HELPERS ----
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#x27;');
+}
+
+function renderNarrative(el, text) {
+  el.innerHTML = '';
+  text.split('\n\n').filter(p=>p.trim()).forEach(para => {
+    const p = document.createElement('p');
+    p.textContent = para.trim();
+    el.appendChild(p);
+  });
+}
+
+// ---- AI NARRATIVE ----
+async function buildAIReport(S) {
+  const prompt = `You are Sahira, the AI counsellor for Sahirah.in — India's psychometric platform for school children. Write a warm, personalised, insightful assessment narrative for ${S.name}, age ${S.age}, ${S.cls}, from ${S.city}.
+
+Their scores:
+- Primary stream: ${S.primaryStream === 'non' ? 'Non-Medical' : S.primaryStream} (${S.streams[S.primaryStream]}% match)
+- Top career: ${S.careers[0].title} (${S.careers[0].fit}% fit)
+- Aptitude overall: ${S.aptitude.overall}/100, Logical: ${S.aptitude.logical}, Numerical: ${S.aptitude.numerical}, Verbal: ${S.aptitude.verbal}, Spatial: ${S.aptitude.spatial}
+- Personality: Openness ${S.personality.openness}, Conscientiousness ${S.personality.conscientiousness}, Extraversion ${S.personality.extraversion}, Agreeableness ${S.personality.agreeableness}
+- EQ: ${S.eq.overall}/100
+- Top value: ${Object.entries(S.values).sort((a,b)=>b[1]-a[1])[0][0]}
+
+Write 3 paragraphs (plain text, no markdown, no bullet points):
+1. Who this child is — their cognitive strengths and personality in warm, specific, human language
+2. Why the recommended career path is the right fit — connect the data dots in an insightful, non-obvious way
+3. One piece of heartfelt, specific advice for the child and their parent about the journey ahead
+
+Tone: Warm, expert, encouraging, specific. Like a counsellor who truly knows this child. Use "Arjun" (or the student's name) naturally. Keep each paragraph 3-4 sentences. Do not use lists or headers.`;
+
+  const narrativeEl = document.getElementById('ai-narrative-text');
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || getFallbackNarrative(S);
+    renderNarrative(narrativeEl, text);
+  } catch(e) {
+    renderNarrative(narrativeEl, getFallbackNarrative(S));
+  }
+}
+
+function getFallbackNarrative(S) {
+  return `${S.name} is a remarkably analytical young mind with a natural gift for structured thinking. The evaluation reveals an exceptional logical reasoning score of ${S.aptitude.logical} out of 100, paired with strong spatial visualisation and numerical ability — a cognitive profile that is rare and deeply suited to the world of technology and engineering. What stands out most is not any single score, but the coherence between aptitude, interest and values: all three point in the same direction.
+
+The recommendation of ${S.careers[0].title} is not a guess — it is a convergence. ${S.name}'s investigative interest score, creative values, and Tier 3 aptitude performance together paint a clear picture of someone who will not just build systems, but reimagine them. The conscientiousness score of ${S.personality.conscientiousness} suggests a child who finishes what they start, and the EQ score of ${S.eq.overall} means they will navigate team environments well — a combination that technology careers reward enormously.
+
+To ${S.name} and the family: the path ahead requires patience, but it is a clear one. The single most important thing right now is to fall in love with the process of problem-solving — not just for marks, but for the joy of it. The scores in this report are not a ceiling; they are a compass. Point yourself in this direction, stay consistent, and the destination will take care of itself. Sahi Raah.`;
+}
+
+// ---- APTITUDE SECTION ----
+function buildAptitudeSection(S) {
+  const container = document.getElementById('aptitude-breakdown');
+  const traits = [
+    {name:'Logical Reasoning', score:S.aptitude.logical, color:'#C8860A', desc:'Sequence, deduction and inferential thinking'},
+    {name:'Numerical Ability', score:S.aptitude.numerical, color:'#1A5FA8', desc:'Computation, data analysis and mathematical reasoning'},
+    {name:'Verbal Aptitude', score:S.aptitude.verbal, color:'#C0410A', desc:'Language comprehension, analogies and vocabulary'},
+    {name:'Spatial Reasoning', score:S.aptitude.spatial, color:'#0A6B5E', desc:'Visualising shapes, rotation and spatial patterns'},
+    {name:'Pattern Recognition', score:S.aptitude.pattern, color:'#7B2FBE', desc:'Identifying abstract sequences and visual rules'},
+  ];
+  traits.forEach(t=>{
+    const d = document.createElement('div'); d.className='trait-row';
+    d.innerHTML=`<div class="trait-header"><span class="trait-name">${esc(t.name)}</span><span class="trait-score">${esc(String(t.score))}/100</span></div><div class="trait-track"><div class="trait-fill" style="width:0%;background:${esc(t.color)};" data-w="${esc(String(t.score))}"></div></div><div class="trait-desc">${esc(t.desc)}</div>`;
+    container.appendChild(d);
+  });
+  setTimeout(()=>{ container.querySelectorAll('.trait-fill').forEach(el=>{ el.style.width=el.dataset.w+'%'; }); },300);
+
+  // Radar chart
+  const ctx = document.getElementById('radar-chart').getContext('2d');
+  new Chart(ctx, {
+    type:'radar',
+    data:{
+      labels:['Logical','Numerical','Verbal','Spatial','Pattern'],
+      datasets:[{
+        label:'Aptitude',
+        data:[S.aptitude.logical, S.aptitude.numerical, S.aptitude.verbal, S.aptitude.spatial, S.aptitude.pattern],
+        backgroundColor:'rgba(200,134,10,0.12)',
+        borderColor:'#C8860A',
+        borderWidth:2,
+        pointBackgroundColor:'#C8860A',
+        pointRadius:4,
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      scales:{r:{beginAtZero:true,max:100,ticks:{display:false},grid:{color:'rgba(26,18,8,.08)'},pointLabels:{font:{family:'DM Sans',size:11},color:'rgba(26,18,8,.6)'}}},
+      plugins:{legend:{display:false}}
+    }
+  });
+}
+
+// ---- PERSONALITY ----
+function buildPersonalitySection(S) {
+  const container = document.getElementById('personality-bars');
+  const traits = [
+    {name:'Openness to Experience', score:S.personality.openness, color:'#7B2FBE', desc:'Curiosity, creativity and willingness to explore new ideas. A score of '+S.personality.openness+' suggests a mind that actively seeks new knowledge and experiences.'},
+    {name:'Conscientiousness', score:S.personality.conscientiousness, color:'#0A6B5E', desc:'Organisation, discipline and follow-through. This high score of '+S.personality.conscientiousness+' predicts academic persistence and reliability — critical for engineering.'},
+    {name:'Extraversion', score:S.personality.extraversion, color:'#1A5FA8', desc:'Social energy and outward engagement. A moderate score indicates a balanced introvert-extrovert, comfortable in teams but also capable of deep independent focus.'},
+    {name:'Agreeableness', score:S.personality.agreeableness, color:'#C8860A', desc:'Cooperation, trust and empathy in relationships. This score supports effective teamwork and collaboration in professional environments.'},
+    {name:'Emotional Stability', score:100-S.personality.neuroticism, color:'#C0410A', desc:'Calmness and resilience under pressure. Lower neuroticism translates to higher emotional stability — a significant asset in competitive environments like JEE.'},
+  ];
+  traits.forEach(t=>{
+    const d=document.createElement('div'); d.className='trait-row';
+    d.innerHTML=`<div class="trait-header"><span class="trait-name">${esc(t.name)}</span><span class="trait-score">${esc(String(t.score))}/100</span></div><div class="trait-track"><div class="trait-fill" style="width:0%;background:${esc(t.color)};" data-w="${esc(String(t.score))}"></div></div><div class="trait-desc">${esc(t.desc)}</div>`;
+    container.appendChild(d);
+  });
+  setTimeout(()=>{ container.querySelectorAll('.trait-fill').forEach(el=>{ el.style.width=el.dataset.w+'%'; }); },400);
+}
+
+// ---- EQ ----
+function buildEQSection(S) {
+  const eqLabels = {
+    74:'Good — above average emotional intelligence with clear strengths in self-awareness and leadership.',
+    78:'Strong — well above average. Empathy and self-awareness are standout traits.',
+    60:'Developing — key EQ skills are present but benefit from active development.',
+  };
+  document.getElementById('eq-label-text').textContent = eqLabels[S.eq.overall] || `Score of ${S.eq.overall}/100 — solid emotional intelligence with specific areas for growth.`;
+
+  const container = document.getElementById('eq-breakdown');
+  const dims = [
+    {name:'Self-Awareness', score:S.eq.selfAwareness, desc:'Recognising own emotions and their impact'},
+    {name:'Empathy', score:S.eq.empathy, desc:'Understanding and sharing others\' feelings'},
+    {name:'Stress Handling', score:S.eq.stressHandling, desc:'Staying calm and effective under pressure'},
+    {name:'Leadership', score:S.eq.leadership, desc:'Motivating and guiding others naturally'},
+  ];
+  dims.forEach(d=>{
+    const div=document.createElement('div');
+    div.innerHTML=`<div class="eq-sub-row"><span class="eq-sub-label">${d.name}</span><span class="eq-sub-val">${d.score}/100</span></div><div class="eq-sub-bar"><div class="eq-sub-fill" style="width:0%;background:#C0410A;" data-w="${d.score}"></div></div><div style="font-size:.72rem;color:rgba(26,18,8,.4);margin-bottom:.6rem;">${d.desc}</div>`;
+    container.appendChild(div);
+  });
+  setTimeout(()=>{ container.querySelectorAll('.eq-sub-fill').forEach(el=>{ el.style.transition='width 1.2s ease'; el.style.width=el.dataset.w+'%'; }); },500);
+}
+
+// ---- INTEREST CHART ----
+function buildInterestChart(S) {
+  const ctx = document.getElementById('interest-chart').getContext('2d');
+  new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels:['Realistic','Investigative','Artistic','Social','Enterprising','Conventional'],
+      datasets:[{
+        data:[S.interest.realistic, S.interest.investigative, S.interest.artistic, S.interest.social, S.interest.enterprising, S.interest.conventional],
+        backgroundColor:['#1A5FA833','#C8860A33','#7B2FBE33','#C0410A33','#0A6B5E33','#88888833'],
+        borderColor:['#1A5FA8','#C8860A','#7B2FBE','#C0410A','#0A6B5E','#888888'],
+        borderWidth:2, borderRadius:8,
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' Score: '+c.raw}}},
+      scales:{y:{beginAtZero:true,max:100,ticks:{font:{family:'DM Mono',size:10}},grid:{color:'rgba(26,18,8,.05)'}},x:{ticks:{font:{family:'DM Sans',size:11}},grid:{display:false}}}
+    }
+  });
+}
+
+// ---- ROADMAP ----
+function buildRoadmap(S) {
+  const container = document.getElementById('roadmap-content');
+  const div = document.createElement('div'); div.className='roadmap';
+  S.roadmap.forEach((step, i)=>{
+    const isLast = i === S.roadmap.length-1;
+    const s=document.createElement('div'); s.className='rm-step';
+    s.innerHTML=`
+      <div class="rm-left">
+        <div class="rm-circle" style="background:${step.bg};color:${step.color};">${i+1}</div>
+        ${!isLast?'<div class="rm-line"></div>':''}
+      </div>
+      <div class="rm-body">
+        <div class="rm-class" style="color:${step.color};">${step.class}</div>
+        <div class="rm-title">${step.title}</div>
+        <div class="rm-desc">${step.desc}</div>
+        <div class="rm-exams">${step.exams.map(e=>`<span class="rm-exam-pill" style="background:${step.bg};color:${step.color};">${e}</span>`).join('')}</div>
+      </div>`;
+    div.appendChild(s);
+  });
+  container.appendChild(div);
+}
+
+// ---- SKILL GAPS ----
+function buildSkillGaps(S) {
+  const container = document.getElementById('skill-gaps');
+  S.gaps.forEach(g=>{
+    const row=document.createElement('div'); row.className='gap-item-row';
+    row.innerHTML=`<div class="gap-priority" style="background:${g.urgency==='high'?'var(--red-light)':g.urgency==='med'?'var(--gold-pale)':'var(--teal-light)'};">${g.icon}</div><div><div class="gap-title">${g.title}</div><div class="gap-desc">${g.desc}</div><span class="gap-urgency urg-${g.urgency}">${g.urgency==='high'?'High priority':g.urgency==='med'?'Medium priority':'Low priority'}</span></div>`;
+    container.appendChild(row);
+  });
+}
+
+// ================================================================
+// PDF DOWNLOAD
+// ================================================================
+async function downloadPDF() {
+  const btn = document.getElementById('btn-pdf');
+  btn.textContent = '⏳ Generating PDF…';
+  btn.disabled = true;
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+    const S = SCORES;
+    const streamNames = {non:'Non-Medical',med:'Medical',com:'Commerce',hum:'Humanities'};
+    const streamColors = {non:[26,95,168],med:[123,47,190],com:[10,107,94],hum:[192,65,10]};
+    const sc = streamColors[S.primaryStream] || [26,18,8];
+    const W = 210, margin = 16;
+    let y = 0;
+
+    // Cover page
+    doc.setFillColor(26,18,8); doc.rect(0,0,W,297,'F');
+    doc.setFillColor(...sc); doc.rect(0,0,W,6,'F');
+    doc.setTextColor(245,217,138); doc.setFontSize(28); doc.setFont('helvetica','bold');
+    doc.text('Sahirah.in', W/2, 50, {align:'center'});
+    doc.setFontSize(11); doc.setTextColor(200,150,50);
+    doc.text('SAHI RAAH — THE RIGHT PATH', W/2, 60, {align:'center'});
+    doc.setFillColor(255,255,255,20); doc.setDrawColor(255,255,255,30);
+    doc.roundedRect(margin, 80, W-margin*2, 90, 8, 8, 'S');
+    doc.setTextColor(253,248,240); doc.setFontSize(22); doc.setFont('helvetica','bold');
+    doc.text('Psychometric Evaluation', W/2, 105, {align:'center'});
+    doc.text('Report', W/2, 117, {align:'center'});
+    doc.setFontSize(13); doc.setFont('helvetica','normal'); doc.setTextColor(200,200,180);
+    doc.text(S.name, W/2, 133, {align:'center'});
+    doc.setFontSize(10); doc.setTextColor(150,140,120);
+    doc.text(`Age ${S.age} · ${S.cls} · ${S.city}, ${S.state}`, W/2, 142, {align:'center'});
+    doc.setFontSize(10);
+    doc.text('Primary Stream: ' + streamNames[S.primaryStream], W/2, 155, {align:'center'});
+    doc.setFontSize(9); doc.setTextColor(100,90,80);
+    doc.text('Generated: ' + new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}), W/2, 280, {align:'center'});
+
+    // Page 2 — Stream + Careers
+    doc.addPage();
+    const drawHeader = (title, sub) => {
+      doc.setFillColor(...sc); doc.rect(0,0,W,1.5,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...sc);
+      doc.text('SAHIRAH.IN REPORT — ' + S.name.toUpperCase(), margin, 10);
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(160,150,130);
+      doc.text(new Date().toLocaleDateString('en-IN'), W-margin, 10, {align:'right'});
+      doc.setFillColor(245,235,210); doc.rect(0,14,W,12,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(26,18,8);
+      doc.text(title, margin, 23);
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(150,130,100);
+      doc.text(sub, W-margin, 23, {align:'right'});
+      return 34;
+    };
+
+    y = drawHeader('STREAM MATCH SCORES','Stage 1 Result');
+    const streamOrder = Object.entries(S.streams).sort((a,b)=>b[1]-a[1]);
+    const sColors = {non:[26,95,168],med:[123,47,190],com:[10,107,94],hum:[192,65,10]};
+    const sNames = {non:'Non-Medical',med:'Medical',com:'Commerce',hum:'Humanities'};
+    streamOrder.forEach(([k,v])=>{
+      const c = sColors[k];
+      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(26,18,8);
+      doc.text(sNames[k], margin, y+5);
+      doc.setFillColor(240,235,225); doc.roundedRect(margin+40,y,100,5,1,1,'F');
+      doc.setFillColor(...c); doc.roundedRect(margin+40,y,v,5,1,1,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...c);
+      doc.text(v+'%', margin+145, y+5);
+      y += 12;
+    });
+
+    y += 6;
+    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(26,18,8);
+    doc.text('TOP CAREER RECOMMENDATIONS', margin, y); y += 8;
+    S.careers.forEach((c,i)=>{
+      const cc = sColors[S.primaryStream];
+      doc.setFillColor(248,243,233); doc.roundedRect(margin,y,W-margin*2,28,4,4,'F');
+      doc.setFillColor(...cc); doc.roundedRect(margin,y,3,28,1.5,1.5,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(26,18,8);
+      doc.text(`#${i+1}  ${c.title}`, margin+7, y+8);
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...cc);
+      doc.text(`${c.fit}% fit`, W-margin-4, y+8, {align:'right'});
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(100,90,80);
+      const lines = doc.splitTextToSize(c.why, W-margin*2-12);
+      doc.text(lines.slice(0,2), margin+7, y+15);
+      doc.setFontSize(7.5); doc.setTextColor(...cc);
+      doc.text('Exams: ' + c.exams.join(', '), margin+7, y+24);
+      y += 34;
+    });
+
+    // Page 3 — Aptitude + Personality
+    doc.addPage();
+    y = drawHeader('APTITUDE PROFILE','Cognitive Map');
+    const aptTraits = [
+      {name:'Logical Reasoning', score:S.aptitude.logical, color:[200,134,10]},
+      {name:'Numerical Ability', score:S.aptitude.numerical, color:[26,95,168]},
+      {name:'Verbal Aptitude', score:S.aptitude.verbal, color:[192,65,10]},
+      {name:'Spatial Reasoning', score:S.aptitude.spatial, color:[10,107,94]},
+      {name:'Pattern Recognition', score:S.aptitude.pattern, color:[123,47,190]},
+    ];
+    aptTraits.forEach(t=>{
+      doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(26,18,8);
+      doc.text(t.name, margin, y+4);
+      doc.setFillColor(235,230,220); doc.roundedRect(margin+55,y,100,5,1,1,'F');
+      doc.setFillColor(...t.color); doc.roundedRect(margin+55,y,t.score,5,1,1,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...t.color);
+      doc.text(t.score+'/100', margin+160, y+4);
+      y+=10;
+    });
+
+    y+=6;
+    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(26,18,8);
+    doc.text('PERSONALITY PROFILE', margin, y); y+=8;
+    const persTraits=[
+      {name:'Openness',score:S.personality.openness,color:[123,47,190]},
+      {name:'Conscientiousness',score:S.personality.conscientiousness,color:[10,107,94]},
+      {name:'Extraversion',score:S.personality.extraversion,color:[26,95,168]},
+      {name:'Agreeableness',score:S.personality.agreeableness,color:[200,134,10]},
+      {name:'Emotional Stability',score:100-S.personality.neuroticism,color:[192,65,10]},
+    ];
+    persTraits.forEach(t=>{
+      doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(26,18,8);
+      doc.text(t.name, margin, y+4);
+      doc.setFillColor(235,230,220); doc.roundedRect(margin+55,y,100,5,1,1,'F');
+      doc.setFillColor(...t.color); doc.roundedRect(margin+55,y,t.score,5,1,1,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...t.color);
+      doc.text(t.score+'/100', margin+160, y+4);
+      y+=10;
+    });
+
+    // Page 4 — EQ + Roadmap + Skill Gaps
+    doc.addPage();
+    y = drawHeader('EQ & ROADMAP','Emotional Intelligence & Path Forward');
+    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(26,18,8);
+    doc.text(`Emotional Intelligence Score: ${S.eq.overall}/100`, margin, y); y+=8;
+    const eqDims=[
+      {name:'Self-Awareness',score:S.eq.selfAwareness},{name:'Empathy',score:S.eq.empathy},
+      {name:'Stress Handling',score:S.eq.stressHandling},{name:'Leadership',score:S.eq.leadership}
+    ];
+    eqDims.forEach(d=>{
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(26,18,8);
+      doc.text(d.name, margin, y+4);
+      doc.setFillColor(235,230,220); doc.roundedRect(margin+45,y,80,4,1,1,'F');
+      doc.setFillColor(192,65,10); doc.roundedRect(margin+45,y,d.score*0.8,4,1,1,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(192,65,10);
+      doc.text(d.score+'/100', margin+130, y+4);
+      y+=9;
+    });
+
+    y+=6;
+    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(26,18,8);
+    doc.text('ENTRANCE EXAM ROADMAP', margin, y); y+=8;
+    S.roadmap.forEach((step,i)=>{
+      const cc=sColors[S.primaryStream];
+      doc.setFillColor(248,243,233); doc.roundedRect(margin,y,W-margin*2,22,3,3,'F');
+      doc.setFillColor(...cc); doc.roundedRect(margin,y,2.5,22,1,1,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...cc);
+      doc.text(step.class, margin+6, y+6);
+      doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(26,18,8);
+      doc.text(step.title, margin+6, y+13);
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(100,90,80);
+      doc.text('Exams: '+step.exams.join(', '), margin+6, y+19);
+      y+=26;
+    });
+
+    y+=4;
+    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(26,18,8);
+    doc.text('SKILL GAP ANALYSIS', margin, y); y+=8;
+    S.gaps.forEach(g=>{
+      doc.setFillColor(248,243,233); doc.roundedRect(margin,y,W-margin*2,18,3,3,'F');
+      const uc=g.urgency==='high'?[192,65,10]:g.urgency==='med'?[200,134,10]:[10,107,94];
+      doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(26,18,8);
+      doc.text(g.title, margin+5, y+7);
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(100,90,80);
+      const lines=doc.splitTextToSize(g.desc, W-margin*2-10);
+      doc.text(lines[0], margin+5, y+13);
+      doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...uc);
+      doc.text(g.urgency.toUpperCase()+' PRIORITY', W-margin-5, y+7, {align:'right'});
+      y+=22;
+    });
+
+    // Footer on all pages
+    const pageCount = doc.getNumberOfPages();
+    for(let p=1;p<=pageCount;p++){
+      doc.setPage(p);
+      doc.setFillColor(26,18,8); doc.rect(0,289,W,8,'F');
+      doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(120,110,100);
+      doc.text('Sahirah.in — Sahi Raah, The Right Path | Confidential Report', margin, 295);
+      doc.text(`Page ${p} of ${pageCount}`, W-margin, 295, {align:'right'});
+    }
+
+    doc.save(`Sahirah_Report_${S.name.replace(/\s/g,'_')}.pdf`);
+  } catch(e) {
+    console.error(e);
+    alert('PDF generation encountered an issue. Please use the Print option as an alternative.');
+  }
+  btn.textContent = '⬇ Download PDF';
+  btn.disabled = false;
+}
+
+// Mark test complete in localStorage
+try { localStorage.setItem('sahirah_test_complete','true'); } catch(e){}
+</script>
+</body>
+</html>

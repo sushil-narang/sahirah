@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 48" fill="none">
+  <!-- S mark -->
+  <rect width="40" height="40" x="4" y="4" rx="10" fill="#1A1208"/>
+  <path d="M14 18c0-3.3 2.7-6 6-6h8c3.3 0 6 2.7 6 6v2c0 1.1-.9 2-2 2H16c-1.1 0-2 .9-2 2v4c0 3.3 2.7 6 6 6h8c3.3 0 6-2.7 6-6" stroke="#C8860A" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Wordmark -->
+  <text x="54" y="32" font-family="Georgia, serif" font-size="22" font-weight="700" fill="#1A1208" letter-spacing="-0.5">Sahir<tspan fill="#C8860A">ah</tspan>.in</text>
+</svg>
