@@ -194,7 +194,7 @@ body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16
   <div class="login-grid"></div>
   <div class="login-card">
     <div class="lc-logo">
-      <a href="sahirah.html" style="text-decoration:none;"><div class="lc-logo-text">Sahir<span>ah</span>.in</div></a>
+      <a href="../" style="text-decoration:none;"><div class="lc-logo-text">Sahir<span>ah</span>.in</div></a>
     </div>
     <div class="lc-title">Welcome back</div>
     <div class="lc-sub">Enter your login credentials to access your scheduled evaluation. These were sent to your registered email at the time of registration.</div>
@@ -225,8 +225,8 @@ body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16
     </div>
 
     <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid rgba(26,18,8,.08);text-align:center;display:flex;justify-content:space-between;font-size:.78rem;">
-      <a href="sahirah.html" style="color:rgba(26,18,8,.4);text-decoration:none;font-weight:500;">← Back to home</a>
-      <a href="sahirah-register.html" style="color:var(--gold);text-decoration:none;font-weight:600;">Register now →</a>
+      <a href="../" style="color:rgba(26,18,8,.4);text-decoration:none;font-weight:500;">← Back to home</a>
+      <a href="../register/" style="color:var(--gold);text-decoration:none;font-weight:600;">Register now →</a>
     </div>
   </div>
 </div>
@@ -289,7 +289,7 @@ body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16
     <div class="modal-icon">⏰</div>
     <div class="modal-title">Time's up!</div>
     <div class="modal-sub">Your 2-hour evaluation window has ended. All your answers have been saved automatically. Your personalised report is being generated now.</div>
-    <button class="modal-btn" onclick="window.location.href='sahirah-report.html'">View My Report →</button>
+    <button class="modal-btn" onclick="window.location.href='../report/'">View My Report →</button>
   </div>
 </div>
 
@@ -871,7 +871,7 @@ function saveProgress() {
 function submitTest() {
   clearInterval(state.timerInterval);
   saveProgress();
-  window.location.href = 'sahirah-report.html';
+  window.location.href = '../report/';
 }
 
 // ================================================================

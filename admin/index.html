@@ -807,7 +807,7 @@ function renderReports(){
     <td style="font-size:.78rem;">${esc(r.topCareer||'—')}</td>
     <td><span style="font-family:var(--fm);font-weight:700;color:${scoreColor};">${esc(String(r.score))}</span></td>
     <td style="display:flex;gap:.35rem;">
-      <button class="action-btn primary" onclick="window.open('sahirah-report.html','_blank')">View</button>
+      <button class="action-btn primary" onclick="window.open('../report/','_blank')">View</button>
       <button class="action-btn" onclick="showToast('Downloading PDF')">⬇ PDF</button>
       <button class="action-btn" onclick="showToast('Report shared')">📧 Share</button>
     </td>`;
@@ -921,7 +921,7 @@ function openDetail(id){
     <div class="mp-row"><span class="mp-key">Overall score</span><span class="mp-val" style="font-family:var(--fm);font-weight:700;color:${r.score>=80?'var(--teal)':'var(--gold)'};">${esc(String(r.score))}/100</span></div>
     <div class="mp-row"><span class="mp-key">Report ID</span><span class="mp-val" style="font-family:var(--fm);font-size:.72rem;">${esc(r.reportId)}</span></div>
     <div style="margin-top:1rem;display:flex;gap:.5rem;">
-      <button class="action-btn primary" style="flex:1;" onclick="window.open('sahirah-report.html','_blank')">View Full Report</button>
+      <button class="action-btn primary" style="flex:1;" onclick="window.open('../report/','_blank')">View Full Report</button>
       <button class="action-btn" style="flex:1;" onclick="showToast('PDF downloaded')">⬇ Download PDF</button>
     </div>`:''}
 
