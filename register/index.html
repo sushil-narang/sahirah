@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none';"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co; img-src 'self' data:; frame-ancestors 'none';"/>
 <title>Register — Sahirah.in</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
@@ -738,6 +738,8 @@ nav{position:sticky;top:0;z-index:100;padding:0 5%;background:rgba(253,248,240,0
 
 </div><!-- end page -->
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../assets/js/db.js"></script>
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ---- STEP NAVIGATION ----
 let currentStep = 1;
@@ -930,9 +932,55 @@ async function submitForm() {
   document.getElementById('conf-id').textContent = regId;
   document.getElementById('conf-login').textContent = loginId;
   document.getElementById('conf-pass').textContent = password;
-  // Store in localStorage — password saved as hash only, never in plaintext
-  const reg = { name: fn+' '+ln, email, loginId, passwordHash, regId, slot: document.getElementById('sum-slot').textContent, class: document.getElementById('child-class').value };
-  try { localStorage.setItem('sahirah_reg_'+regId, JSON.stringify(reg)); } catch(e){}
+
+  // Collect full registration data for Supabase
+  const regRow = {
+    reg_id:           regId,
+    child_first_name: fn,
+    child_last_name:  ln,
+    child_dob:        document.getElementById('child-dob').value || null,
+    child_gender:     document.getElementById('child-gender').value || null,
+    child_class:      document.getElementById('child-class').value,
+    child_age:        document.getElementById('child-age').value || null,
+    child_school:     document.getElementById('child-school').value.trim() || null,
+    child_city:       document.getElementById('child-city').value.trim() || null,
+    child_state:      document.getElementById('child-state').value || null,
+    parent_name:      document.getElementById('parent-name').value.trim() || null,
+    parent_mobile:    document.getElementById('parent-mobile').value.trim() || null,
+    parent_email:     email,
+    parent_rel:       document.getElementById('parent-rel').value || null,
+    referral:         document.getElementById('referral').value || null,
+    login_id:         loginId,
+    password_hash:    passwordHash,
+    slot:             document.getElementById('sum-slot').textContent,
+    test_language:    document.getElementById('test-lang').value,
+    test_device:      document.getElementById('test-device').value,
+    status:           'Registered',
+  };
+
+  // Collect discovery answers (q1–q12)
+  const disc = {};
+  for (let i = 1; i <= 11; i++) {
+    const el = document.querySelector(`input[name="q${i}"]:checked`);
+    if (el) disc[`q${i}`] = el.value;
+  }
+  const q12el = document.getElementById('q12-text');
+  if (q12el && q12el.value.trim()) disc['q12'] = q12el.value.trim();
+  // Rank question (q7): read current drag order via data-val attributes
+  const rankOrder = Array.from(document.querySelectorAll('#rank-q7 .rank-item')).map(el => el.dataset.val);
+  if (rankOrder.length) disc['q7_rank'] = rankOrder.join(',');
+
+  const submitBtn = document.querySelector('.btn-submit');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Saving…'; }
+  try {
+    await SahirahDB.saveRegistration(regRow, disc);
+  } catch(e) {
+    console.error('Registration save failed:', e);
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '✓ Confirm Registration'; }
+    alert('Registration could not be saved. Please try again.');
+    return;
+  }
+
   document.getElementById('step4').classList.remove('active');
   document.getElementById('step5').classList.add('active');
   document.getElementById('topbar').style.width = '100%';

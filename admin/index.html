@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Admin Panel — Sahirah.in</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none';"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co; img-src 'self' data:; frame-ancestors 'none';"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js" integrity="sha512-SIMGYRUjwY8+gKg7nn9EItdD8LCADSDfJNutF9TPrvEo86sQmFMh6MyralfIyhADlajSxqc7G0gs7+MwWF/ogQ==" crossorigin="anonymous"></script>
 <style>
 :root{
@@ -418,6 +418,8 @@ tr:hover td{background:rgba(26,18,8,.015);}
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../assets/js/db.js"></script>
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ================================================================
 // MOCK DATA
@@ -477,23 +479,6 @@ function genRegistrations() {
       }
     });
   }
-  // Add real registrations from localStorage
-  try {
-    for(let i=0;i<localStorage.length;i++){
-      const k=localStorage.key(i);
-      if(k&&k.startsWith('sahirah_reg_')){
-        const r=JSON.parse(localStorage.getItem(k));
-        regs.unshift({
-          id:r.regId||rndId('SHR'), childName:r.name, firstName:r.name.split(' ')[0],
-          age:14, cls:r.class||'Class 9', city:'Registered via platform', state:'',
-          parentName:'Parent', email:r.email, mobile:'—', loginId:r.loginId,
-          regDate:new Date(), slotDate:new Date(), slotTime:r.slot||'—',
-          status:'Scheduled', stream:'Pending', topCareer:null, score:null, reportId:null,
-          preAssess:{favSubject:'—',problemStyle:'—',values:'—'}
-        });
-      }
-    }
-  } catch(e){}
   return regs;
 }
 
@@ -564,7 +549,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementB
 // ================================================================
 // INIT
 // ================================================================
-function initAdmin(){
+async function initAdmin(){
+  // Render immediately with mock data so the dashboard feels instant
   updateBadges();
   buildDashboard();
   renderRegistrations();
@@ -575,6 +561,48 @@ function initAdmin(){
   renderAnalytics();
   renderQBank();
   buildCalendar();
+
+  // Then fetch real registrations from Supabase and merge them in
+  try {
+    const realRegs = await SahirahDB.getAllRegistrations();
+    const mapped = realRegs.map(r => ({
+      id:         r.reg_id,
+      childName:  (r.child_first_name + ' ' + r.child_last_name).trim(),
+      firstName:  r.child_first_name,
+      age:        r.child_age ? parseInt(r.child_age) : 14,
+      cls:        r.child_class,
+      city:       r.child_city  || '—',
+      state:      r.child_state || '',
+      parentName: r.parent_name || '—',
+      email:      r.parent_email,
+      mobile:     r.parent_mobile || '—',
+      loginId:    r.login_id,
+      regDate:    new Date(r.created_at),
+      slotDate:   new Date(),
+      slotTime:   r.slot   || '—',
+      status:     r.status || 'Registered',
+      stream:     'Pending',
+      topCareer:  null,
+      score:      null,
+      reportId:   null,
+      preAssess:  {},
+    }));
+    // Prepend real registrations; skip any whose reg_id already exists in mock data
+    const existingIds = new Set(ALL_REGS.map(r => r.id));
+    const fresh = mapped.filter(r => !existingIds.has(r.id));
+    ALL_REGS     = [...fresh, ...ALL_REGS];
+    filteredRegs = [...ALL_REGS];
+    // Re-render everything with the combined dataset
+    updateBadges();
+    buildDashboard();
+    renderRegistrations();
+    renderPending();
+    renderCompleted();
+    renderReports();
+    renderAnalytics();
+  } catch(e) {
+    console.warn('Supabase fetch failed, showing mock data only:', e);
+  }
 }
 
 function updateBadges(){

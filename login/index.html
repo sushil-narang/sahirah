@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none';"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co; img-src 'self' data:; frame-ancestors 'none';"/>
 <title>Login — Sahirah.in</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
@@ -293,6 +293,8 @@ body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../assets/js/db.js"></script>
 <script>
 // ================================================================
 // DATA & STATE
@@ -327,6 +329,7 @@ let state = {
   testStarted: false,
   currentUser: null,
   slotTime: null,
+  sessionId: null,   // Supabase test_sessions.id, set when test starts
 };
 
 // ================================================================
@@ -484,22 +487,19 @@ async function doLogin() {
     return;
   }
 
-  // Check localStorage registrations (passwords stored as SHA-256 hashes)
+  // Check Supabase registrations
   let found = null;
   try {
-    for(let i=0; i<localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if(k && k.startsWith('sahirah_reg_')) {
-        const reg = JSON.parse(localStorage.getItem(k));
-        if(reg.loginId === id) {
-          // Support both hashed (new) and legacy plaintext (old) registrations
-          // Support hashed (new) and legacy plaintext (old) registrations
-          const storedHash = reg.passwordHash || await hashPassword(reg.password || '');
-          if(storedHash === inputHash) { found = reg; break; }
-        }
-      }
+    const reg = await SahirahDB.getByLoginId(id);
+    if (reg && reg.password_hash === inputHash) {
+      found = {
+        loginId: reg.login_id,
+        name:    reg.child_first_name + ' ' + reg.child_last_name,
+        reg_id:  reg.reg_id,
+        slot:    reg.slot,
+      };
     }
-  } catch(e){}
+  } catch(e) {}
 
   if(found) {
     loginAttempts = 0;
@@ -550,6 +550,12 @@ function startTest() {
   buildModuleSidebar();
   renderModule(0);
   startTimer();
+  // Create a session record in Supabase (non-blocking — UI starts immediately)
+  if (state.currentUser && state.currentUser.reg_id) {
+    SahirahDB.startSession(state.currentUser.reg_id)
+      .then(s => { state.sessionId = s.id; })
+      .catch(e => console.warn('DB session start failed:', e));
+  }
 }
 
 // ================================================================
@@ -868,9 +874,17 @@ function saveProgress() {
   try { localStorage.setItem('sahirah_answers', JSON.stringify(state.answers)); } catch(e){}
 }
 
-function submitTest() {
+async function submitTest() {
   clearInterval(state.timerInterval);
-  saveProgress();
+  saveProgress(); // keep localStorage as backup
+  try {
+    if (state.sessionId) {
+      await SahirahDB.submitSession(state.sessionId, state.answers);
+    }
+  } catch(e) {
+    console.warn('Could not save responses to DB:', e);
+    // Navigate anyway — answers are still in localStorage as backup
+  }
   window.location.href = '../report/';
 }
 
