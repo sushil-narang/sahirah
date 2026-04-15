@@ -446,6 +446,27 @@ function buildSituational() {
 const DEMO_HASH = '398c942da98a2556ea65ce5b561b345e568b983165e2d43ff17e39e91706d149';
 const DEMO_USER = { loginId:'demo2025', name:'Arjun Sharma', slot: null };
 
+// Parse a slot string like "15 Apr · 10:00 AM" into a Date object
+function parseSlotDate(slotStr) {
+  if (!slotStr) return null;
+  const match = slotStr.match(/(\d{1,2})\s+(\w{3})\s+[·•]\s+(\d{1,2}):(\d{2})\s+(AM|PM)/i);
+  if (!match) return null;
+  const [, day, mon, hour, min, ampm] = match;
+  const months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+  const monIdx = months[mon.charAt(0).toUpperCase() + mon.slice(1).toLowerCase()];
+  if (monIdx === undefined) return null;
+  let h = parseInt(hour, 10);
+  if (ampm.toUpperCase() === 'PM' && h !== 12) h += 12;
+  if (ampm.toUpperCase() === 'AM' && h === 12) h = 0;
+  const d = new Date();
+  d.setMonth(monIdx);
+  d.setDate(parseInt(day, 10));
+  d.setHours(h, parseInt(min, 10), 0, 0);
+  // If the resulting date is more than a day in the past, it must be next year
+  if (d < new Date(Date.now() - 86400000)) d.setFullYear(d.getFullYear() + 1);
+  return d;
+}
+
 async function hashPassword(password) {
   const data = new TextEncoder().encode('sahirah.in:' + password);
   const buf = await crypto.subtle.digest('SHA-256', data);
@@ -504,10 +525,18 @@ async function doLogin() {
   if(found) {
     loginAttempts = 0;
     state.currentUser = found;
+    const slotDate = parseSlotDate(found.slot);
     const now2 = new Date();
-    state.slotTime = new Date(now2.getTime() + 5000);
     document.getElementById('screen-login').classList.remove('active');
-    startTest();
+    if (slotDate && slotDate > now2) {
+      // Slot is in the future — show countdown waiting screen
+      state.slotTime = slotDate;
+      showWaiting();
+    } else {
+      // Slot time has passed (or no slot set) — allow test to start
+      state.slotTime = new Date(now2.getTime() + 2000);
+      startTest();
+    }
   } else {
     loginAttempts++;
     if(loginAttempts >= 5){ loginLockUntil = Date.now() + 30000; loginAttempts = 0; }

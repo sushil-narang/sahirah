@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co; img-src 'self' data:; frame-ancestors 'none';"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co https://api.emailjs.com; img-src 'self' data:; frame-ancestors 'none';"/>
 <title>Register — Sahirah.in</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
@@ -739,6 +739,7 @@ nav{position:sticky;top:0;z-index:100;padding:0 5%;background:rgba(253,248,240,0
 </div><!-- end page -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="../assets/js/db.js"></script>
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ---- STEP NAVIGATION ----
@@ -899,6 +900,15 @@ function populateSummary() {
   document.getElementById('sum-device').textContent = device;
 }
 
+// ---- EMAIL CONFIG (EmailJS) ----
+// Setup: sign up at https://emailjs.com (free), then replace these three values.
+// Dashboard → Email Services → Add Service (connect Gmail)  → copy Service ID
+// Dashboard → Email Templates → Create Template             → copy Template ID
+// Dashboard → Account → Public Key                          → copy Public Key
+const EMAILJS_SERVICE  = 'YOUR_SERVICE_ID';   // ← replace
+const EMAILJS_TEMPLATE = 'YOUR_TEMPLATE_ID';  // ← replace
+const EMAILJS_KEY      = 'YOUR_PUBLIC_KEY';   // ← replace
+
 // ---- PASSWORD HASHING ----
 async function hashPassword(password) {
   const data = new TextEncoder().encode('sahirah.in:' + password);
@@ -979,6 +989,23 @@ async function submitForm() {
     if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '✓ Confirm Registration'; }
     alert('Registration could not be saved. Please try again.');
     return;
+  }
+
+  // Send login credentials email (non-fatal — user already sees them on screen)
+  try {
+    emailjs.init(EMAILJS_KEY);
+    emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+      to_email:    email,
+      to_name:     document.getElementById('parent-name').value.trim(),
+      child_name:  fn + ' ' + ln,
+      reg_id:      regId,
+      login_id:    loginId,
+      password:    password,
+      slot:        document.getElementById('sum-slot').textContent,
+      portal_url:  window.location.origin + '/login',
+    });
+  } catch(e) {
+    console.warn('Email send failed:', e);
   }
 
   document.getElementById('step4').classList.remove('active');
