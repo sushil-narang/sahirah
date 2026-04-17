@@ -30,8 +30,6 @@ const SahirahDB = {
     }
   },
 
-  // ---- LOGIN ----
-  // Returns the full registration row, or null if not found.
   async getByLoginId(loginId) {
     const { data } = await _db
       .from('registrations')
