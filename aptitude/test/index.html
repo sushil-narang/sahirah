@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none';"/>
+<title>CSE Aptitude Test — Sahirah.in</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --cream:#FDF8F0;--ink:#1A1208;--gold:#C8860A;--gold-light:#F5D98A;--gold-pale:#FDF0CC;
+  --cse:#1A5FA8;--cse-light:#E8F2FF;--cse-dark:#0D3D6B;--teal:#0A6B5E;--teal-light:#E0F2EE;
+  --border:rgba(26,18,8,0.1);--shadow:0 4px 32px rgba(26,18,8,0.08);
+  --red:#C0410A;--red-light:#FFF0EB;
+  --fd:'Playfair Display',Georgia,serif;--fb:'DM Sans',sans-serif;--fm:'DM Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{background:#F5F2EC;color:var(--ink);font-family:var(--fb);font-size:15px;}
+
+/* ===== MODAL ===== */
+.overlay{position:fixed;inset:0;background:rgba(26,18,8,.7);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(6px);}
+.modal{background:#fff;border-radius:24px;padding:2.5rem;max-width:480px;width:100%;box-shadow:0 20px 80px rgba(0,0,0,.3);text-align:center;}
+.modal-icon{font-size:2.5rem;margin-bottom:1rem;}
+.modal h2{font-family:var(--fd);font-size:1.6rem;font-weight:700;margin-bottom:.75rem;letter-spacing:-.02em;}
+.modal p{font-size:.9rem;color:rgba(26,18,8,.6);line-height:1.7;margin-bottom:1.75rem;}
+.modal-meta{display:flex;gap:1rem;justify-content:center;margin-bottom:2rem;flex-wrap:wrap;}
+.mm{background:var(--cse-light);border:1px solid rgba(26,95,168,.15);border-radius:12px;padding:.65rem 1.1rem;text-align:center;}
+.mm-num{font-family:var(--fd);font-size:1.3rem;font-weight:700;color:var(--cse);line-height:1;}
+.mm-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;color:rgba(26,95,168,.6);font-weight:600;margin-top:2px;}
+.modal-btns{display:flex;flex-direction:column;gap:.75rem;}
+.btn-start{background:var(--cse);color:#fff;border:none;border-radius:100px;padding:.9rem 2rem;font-size:.95rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:background .2s;}
+.btn-start:hover{background:var(--cse-dark);}
+.btn-later{background:transparent;color:rgba(26,18,8,.5);border:1.5px solid var(--border);border-radius:100px;padding:.85rem 2rem;font-size:.9rem;font-weight:500;cursor:pointer;font-family:var(--fb);transition:all .2s;}
+.btn-later:hover{border-color:var(--ink);color:var(--ink);}
+.modal-warning{font-size:.75rem;color:rgba(26,18,8,.35);margin-top:1.25rem;line-height:1.55;}
+
+/* ===== COME BACK SCREEN ===== */
+#screen-comeback{display:none;min-height:100vh;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:2rem;background:var(--cream);}
+#screen-comeback .cb-icon{font-size:3rem;margin-bottom:1rem;}
+#screen-comeback h2{font-family:var(--fd);font-size:1.8rem;font-weight:700;margin-bottom:.75rem;}
+#screen-comeback p{color:rgba(26,18,8,.55);max-width:420px;font-size:.92rem;line-height:1.7;margin-bottom:2rem;}
+.cb-btn{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--cream);padding:.85rem 2rem;border-radius:100px;text-decoration:none;font-weight:600;font-size:.9rem;transition:background .2s;}
+.cb-btn:hover{background:var(--cse);}
+
+/* ===== TEST SCREEN ===== */
+#screen-test{display:none;flex-direction:column;height:100vh;overflow:hidden;}
+.test-nav{background:#fff;border-bottom:1px solid var(--border);padding:0 1.5rem;height:58px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:10;}
+.tn-logo{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--ink);}
+.tn-logo span{color:var(--gold);}
+.tn-center{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.tn-section{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(26,18,8,.4);}
+.tn-progress-wrap{width:180px;height:5px;background:rgba(26,18,8,.08);border-radius:3px;overflow:hidden;}
+.tn-progress-fill{height:100%;background:var(--cse);border-radius:3px;transition:width .3s;}
+.tn-timer{display:flex;align-items:center;gap:6px;font-family:var(--fm);font-size:1rem;font-weight:600;background:var(--ink);color:var(--gold-light);padding:.32rem .85rem;border-radius:100px;}
+.tn-timer.warn{background:#C0410A;color:#fff;animation:tPulse 1s infinite;}
+@keyframes tPulse{0%,100%{opacity:1;}50%{opacity:.7;}}
+
+.test-body{display:flex;flex:1;overflow:hidden;}
+
+/* SIDEBAR */
+.test-sidebar{width:210px;background:#fff;border-right:1px solid var(--border);padding:1.25rem .85rem;overflow-y:auto;flex-shrink:0;}
+.ts-title{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(26,18,8,.3);margin-bottom:.75rem;padding:0 .25rem;}
+.ts-section{margin-bottom:.25rem;}
+.ts-sec-header{display:flex;align-items:center;gap:7px;padding:.5rem .6rem;border-radius:9px;cursor:pointer;transition:background .2s;}
+.ts-sec-header.active{background:var(--cse-light);}
+.ts-sec-dot{width:8px;height:8px;border-radius:50%;background:rgba(26,18,8,.2);flex-shrink:0;}
+.ts-sec-header.active .ts-sec-dot{background:var(--cse);}
+.ts-sec-header.done .ts-sec-dot{background:var(--teal);}
+.ts-sec-name{font-size:.75rem;font-weight:500;flex:1;line-height:1.3;}
+.ts-sec-count{font-size:.63rem;font-family:var(--fm);color:rgba(26,18,8,.35);flex-shrink:0;}
+.ts-sec-header.done .ts-sec-name{color:var(--teal);}
+.ts-sec-header.done .ts-sec-count{color:var(--teal);}
+.ts-q-dots{display:flex;flex-wrap:wrap;gap:4px;padding:.4rem .6rem .65rem 1.3rem;}
+.ts-q-dot{width:14px;height:14px;border-radius:4px;background:#F0EBE3;cursor:pointer;transition:background .15s;border:1.5px solid transparent;}
+.ts-q-dot.answered{background:var(--cse);border-color:var(--cse-dark);}
+.ts-q-dot.current{border-color:var(--gold);outline:2px solid rgba(200,134,10,.3);}
+@media(max-width:740px){.test-sidebar{display:none;}}
+
+/* MAIN QUESTION AREA */
+.test-main{flex:1;overflow-y:auto;padding:1.75rem 2rem;}
+@media(max-width:600px){.test-main{padding:1.25rem 1rem;}}
+.q-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;}
+.q-cat-badge{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:4px 12px;border-radius:100px;background:var(--cse-light);color:var(--cse);}
+.q-diff-badge{font-size:.65rem;font-weight:600;padding:3px 10px;border-radius:100px;}
+.diff-moderate{background:#E0F2EE;color:var(--teal);}
+.diff-hard{background:var(--gold-pale);color:var(--gold);}
+.diff-very-hard,.diff-very_hard{background:var(--red-light);color:var(--red);}
+.q-counter{font-size:.72rem;font-family:var(--fm);color:rgba(26,18,8,.35);margin-left:auto;}
+.q-card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:2rem;box-shadow:var(--shadow);margin-bottom:1.5rem;}
+.q-text{font-size:1.02rem;font-weight:500;line-height:1.7;color:var(--ink);margin-bottom:1.75rem;font-family:var(--fb);}
+.q-options{display:flex;flex-direction:column;gap:.65rem;}
+.q-option{display:flex;align-items:flex-start;gap:.85rem;padding:.9rem 1.1rem;border-radius:12px;border:1.75px solid var(--border);cursor:pointer;transition:all .18s;background:var(--cream);}
+.q-option:hover{border-color:rgba(26,95,168,.4);background:var(--cse-light);}
+.q-option.selected{border-color:var(--cse);background:var(--cse-light);}
+.q-option-letter{width:26px;height:26px;border-radius:8px;background:rgba(26,18,8,.08);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;font-family:var(--fm);flex-shrink:0;}
+.q-option.selected .q-option-letter{background:var(--cse);color:#fff;}
+.q-option-text{font-size:.9rem;line-height:1.55;padding-top:2px;}
+.q-nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-top:.5rem;}
+.btn-nav{display:inline-flex;align-items:center;gap:6px;padding:.7rem 1.5rem;border-radius:100px;font-size:.85rem;font-weight:600;cursor:pointer;border:1.75px solid var(--border);background:#fff;color:var(--ink);transition:all .2s;font-family:var(--fb);}
+.btn-nav:hover{border-color:var(--cse);color:var(--cse);}
+.btn-nav:disabled{opacity:.35;cursor:not-allowed;}
+.btn-submit-test{background:var(--cse);color:#fff;border-color:var(--cse);padding:.7rem 1.75rem;}
+.btn-submit-test:hover{background:var(--cse-dark);border-color:var(--cse-dark);}
+.q-nav-center{font-size:.78rem;font-family:var(--fm);color:rgba(26,18,8,.4);}
+
+/* SUBMIT CONFIRM MODAL */
+.submit-modal{background:#fff;border-radius:24px;padding:2.25rem;max-width:420px;width:100%;box-shadow:0 20px 80px rgba(0,0,0,.3);text-align:center;}
+.submit-modal h2{font-family:var(--fd);font-size:1.4rem;font-weight:700;margin-bottom:.65rem;}
+.submit-modal p{font-size:.88rem;color:rgba(26,18,8,.6);line-height:1.65;margin-bottom:1.5rem;}
+.sm-stats{display:flex;justify-content:center;gap:1.5rem;margin-bottom:1.75rem;}
+.sm-stat{text-align:center;}
+.sm-stat-num{font-family:var(--fd);font-size:1.5rem;font-weight:700;line-height:1;}
+.sm-stat-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;color:rgba(26,18,8,.4);margin-top:3px;}
+.sm-btns{display:flex;flex-direction:column;gap:.65rem;}
+.btn-confirm{background:var(--cse);color:#fff;border:none;border-radius:100px;padding:.85rem;font-size:.9rem;font-weight:600;cursor:pointer;font-family:var(--fb);}
+.btn-confirm:hover{background:var(--cse-dark);}
+.btn-cancel{background:transparent;border:1.5px solid var(--border);border-radius:100px;padding:.8rem;font-size:.85rem;font-weight:500;cursor:pointer;color:rgba(26,18,8,.5);font-family:var(--fb);}
+.btn-cancel:hover{border-color:var(--ink);color:var(--ink);}
+
+/* COMPLETE SCREEN */
+#screen-complete{display:none;min-height:100vh;align-items:center;justify-content:center;flex-direction:column;padding:2rem;background:var(--cream);text-align:center;}
+.complete-icon{font-size:4rem;margin-bottom:1.5rem;animation:bounce .8s ease both;}
+@keyframes bounce{0%{transform:scale(0);}70%{transform:scale(1.15);}100%{transform:scale(1);}}
+#screen-complete h1{font-family:var(--fd);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:.85rem;letter-spacing:-.02em;}
+#screen-complete h1 em{font-style:italic;color:var(--cse);}
+#screen-complete .tagline{font-size:1rem;color:rgba(26,18,8,.55);max-width:480px;line-height:1.75;margin-bottom:2rem;}
+.score-preview{background:#fff;border:1px solid var(--border);border-radius:20px;padding:1.75rem 2.5rem;margin-bottom:2rem;box-shadow:var(--shadow);display:inline-flex;flex-direction:column;align-items:center;gap:.5rem;}
+.sp-score{font-family:var(--fd);font-size:3.5rem;font-weight:900;color:var(--cse);line-height:1;}
+.sp-max{font-size:.85rem;color:rgba(26,18,8,.4);}
+.sp-rating{font-size:.85rem;font-weight:600;color:var(--ink);margin-top:.25rem;}
+.email-note{background:var(--gold-pale);border:1px solid rgba(200,134,10,.2);border-radius:14px;padding:1rem 1.5rem;margin-bottom:2.5rem;max-width:460px;font-size:.875rem;line-height:1.65;color:var(--ink);}
+.email-note strong{display:block;margin-bottom:.2rem;}
+.complete-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
+.btn-report{display:inline-flex;align-items:center;gap:8px;background:var(--cse);color:#fff;padding:.9rem 2rem;border-radius:100px;font-weight:600;font-size:.9rem;text-decoration:none;transition:background .2s;}
+.btn-report:hover{background:var(--cse-dark);}
+.btn-home{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--ink);padding:.9rem 2rem;border-radius:100px;font-weight:500;font-size:.9rem;text-decoration:none;border:1.75px solid var(--border);transition:all .2s;}
+.btn-home:hover{border-color:var(--ink);}
+</style>
+</head>
+<body>
+
+<!-- PERMISSION MODAL -->
+<div class="overlay" id="modal-permission">
+  <div class="modal">
+    <div class="modal-icon">🧠</div>
+    <h2>Ready to begin?</h2>
+    <p>You are about to start the <strong>CSE Aptitude Psychometric Assessment</strong>. Once started, the 60-minute timer runs continuously and cannot be paused.</p>
+    <div class="modal-meta">
+      <div class="mm"><div class="mm-num">75</div><div class="mm-label">Questions</div></div>
+      <div class="mm"><div class="mm-num">60</div><div class="mm-label">Minutes</div></div>
+      <div class="mm"><div class="mm-num">5</div><div class="mm-label">Domains</div></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-start" onclick="startTest()">Yes, Start the Test Now →</button>
+      <button class="btn-later" onclick="comeLater()">Not Now — Come Back Later</button>
+    </div>
+    <p class="modal-warning">Ensure you have a quiet environment and 60 uninterrupted minutes before you begin.</p>
+  </div>
+</div>
+
+<!-- COME BACK LATER -->
+<div id="screen-comeback">
+  <div class="cb-icon">🕐</div>
+  <h2>No worries!</h2>
+  <p>Come back whenever you're ready. Simply log in again and you can start the test at a time that suits you.</p>
+  <a href="../" class="cb-btn">← Back to CSE Aptitude</a>
+</div>
+
+<!-- TEST SCREEN -->
+<div id="screen-test">
+  <div class="test-nav">
+    <div class="tn-logo">Sahir<span>ah</span>.in <span style="font-family:var(--fm);font-size:.7rem;color:rgba(26,18,8,.3);font-weight:400;margin-left:6px;">CSE Aptitude</span></div>
+    <div class="tn-center">
+      <div class="tn-section" id="tn-section-name">Loading…</div>
+      <div class="tn-progress-wrap"><div class="tn-progress-fill" id="tn-prog" style="width:0%"></div></div>
+      <div style="font-size:.62rem;color:rgba(26,18,8,.35);text-align:center;" id="tn-q-count"></div>
+    </div>
+    <div class="tn-timer" id="timer">60:00</div>
+  </div>
+  <div class="test-body">
+    <aside class="test-sidebar">
+      <div class="ts-title">Sections</div>
+      <div id="sidebar-sections"></div>
+    </aside>
+    <main class="test-main">
+      <div class="q-header">
+        <span class="q-cat-badge" id="q-cat-badge"></span>
+        <span class="q-diff-badge" id="q-diff-badge"></span>
+        <span class="q-counter" id="q-counter"></span>
+      </div>
+      <div class="q-card">
+        <div class="q-text" id="q-text"></div>
+        <div class="q-options" id="q-options"></div>
+      </div>
+      <div class="q-nav">
+        <button class="btn-nav" id="btn-prev" onclick="navigate(-1)">← Previous</button>
+        <span class="q-nav-center" id="q-nav-center"></span>
+        <button class="btn-nav" id="btn-next" onclick="navigate(1)">Next →</button>
+        <button class="btn-nav btn-submit-test" id="btn-submit" onclick="showSubmitModal()" style="display:none;">Submit Test</button>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- SUBMIT CONFIRM MODAL -->
+<div class="overlay" id="modal-submit" style="display:none;">
+  <div class="submit-modal">
+    <div class="modal-icon">📋</div>
+    <h2>Submit your test?</h2>
+    <p>Once submitted, you cannot go back and change your answers.</p>
+    <div class="sm-stats">
+      <div class="sm-stat"><div class="sm-stat-num" id="sm-answered" style="color:var(--cse)">0</div><div class="sm-stat-label">Answered</div></div>
+      <div class="sm-stat"><div class="sm-stat-num" id="sm-unanswered" style="color:var(--red)">0</div><div class="sm-stat-label">Unanswered</div></div>
+      <div class="sm-stat"><div class="sm-stat-num" style="color:rgba(26,18,8,.5)">75</div><div class="sm-stat-label">Total</div></div>
+    </div>
+    <div class="sm-btns">
+      <button class="btn-confirm" onclick="submitTest()">Yes, Submit Now</button>
+      <button class="btn-cancel" onclick="hideSubmitModal()">Continue Answering</button>
+    </div>
+  </div>
+</div>
+
+<!-- COMPLETE SCREEN -->
+<div id="screen-complete">
+  <div class="complete-icon">🎉</div>
+  <h1>Thank you for<br/><em>taking the test!</em></h1>
+  <p class="tagline">You have successfully completed the CSE Aptitude Psychometric Assessment. We truly appreciate the time and effort you put in.</p>
+  <div class="score-preview">
+    <div class="sp-score" id="complete-score">—</div>
+    <div class="sp-max">out of 75 marks</div>
+    <div class="sp-rating" id="complete-rating">—</div>
+  </div>
+  <div class="email-note">
+    <strong>📧 Your detailed report is on its way</strong>
+    Your full CSE Aptitude Report — with domain-wise breakdowns, your aptitude rating, and programme recommendations — will be sent to <strong id="complete-email">your registered email</strong>.
+  </div>
+  <div class="complete-btns">
+    <a href="../report/" class="btn-report">View My Report →</a>
+    <a href="../../" class="btn-home">Back to Home</a>
+  </div>
+</div>
+
+<script>
+// ---- AUTH GUARD ----
+const USERS_KEY = 'cse_aptitude_users';
+const SESSION_KEY = 'cse_aptitude_current_user';
+const SESSIONS_KEY = 'cse_aptitude_sessions';
+
+const currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+if (!currentUser) { location.href = '../auth/'; }
+
+// ---- DATA ----
+let allQuestions = [];
+let answers = {};
+let currentIdx = 0;
+let timerInterval = null;
+let timeLeft = 60 * 60; // seconds
+let testSession = null;
+let sections = [];
+
+// ---- TIMER ----
+function formatTime(s) {
+  const m = Math.floor(s / 60), sec = s % 60;
+  return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+}
+function startTimer() {
+  const el = document.getElementById('timer');
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    el.textContent = formatTime(timeLeft);
+    if (timeLeft <= 300) el.classList.add('warn');
+    if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(); }
+  }, 1000);
+}
+
+// ---- MODAL ACTIONS ----
+function startTest() {
+  document.getElementById('modal-permission').style.display = 'none';
+  const session = {
+    id: 'sess-' + Math.random().toString(36).substr(2,8),
+    user_id: currentUser.id,
+    user_name: currentUser.name,
+    user_email: currentUser.email,
+    started_at: new Date().toISOString(),
+    completed_at: null,
+    status: 'in_progress',
+    answers: {},
+    score: null
+  };
+  testSession = session;
+  saveSessions();
+  document.getElementById('screen-test').style.display = 'flex';
+  loadQuestions();
+}
+
+function comeLater() {
+  document.getElementById('modal-permission').style.display = 'none';
+  document.getElementById('screen-comeback').style.display = 'flex';
+}
+
+// ---- LOAD QUESTIONS ----
+function loadQuestions() {
+  fetch('/data/test_questions_v6.json')
+    .then(r => r.json())
+    .then(data => {
+      sections = data.sections || [];
+      allQuestions = sections.flatMap(s => s.questions || []);
+      buildSidebar();
+      renderQuestion(0);
+      startTimer();
+    })
+    .catch(() => {
+      document.querySelector('.q-text').textContent = 'Error loading questions. Please refresh.';
+    });
+}
+
+// ---- SIDEBAR ----
+function buildSidebar() {
+  const el = document.getElementById('sidebar-sections');
+  el.innerHTML = '';
+  let qOffset = 0;
+  sections.forEach((sec, si) => {
+    const secEl = document.createElement('div');
+    secEl.className = 'ts-section';
+    secEl.id = 'ts-sec-' + si;
+    const qs = sec.questions || [];
+    const dots = qs.map((q, qi) => {
+      const i = qOffset + qi;
+      return `<div class="ts-q-dot" id="ts-dot-${i}" onclick="jumpTo(${i})" title="Q${i+1}"></div>`;
+    }).join('');
+    secEl.innerHTML = `
+      <div class="ts-sec-header" id="ts-sec-h-${si}">
+        <div class="ts-sec-dot"></div>
+        <div class="ts-sec-name">${sec.name || ('Section ' + (si+1))}</div>
+        <div class="ts-sec-count" id="ts-sec-count-${si}">0/${qs.length}</div>
+      </div>
+      <div class="ts-q-dots" id="ts-dots-${si}">${dots}</div>`;
+    el.appendChild(secEl);
+    qOffset += qs.length;
+  });
+}
+
+function updateSidebar() {
+  let qOffset = 0;
+  sections.forEach((sec, si) => {
+    const qs = sec.questions || [];
+    let answered = 0;
+    qs.forEach((q, qi) => {
+      const i = qOffset + qi;
+      const dot = document.getElementById('ts-dot-' + i);
+      if (dot) {
+        dot.className = 'ts-q-dot' + (answers[q.id] !== undefined ? ' answered' : '') + (i === currentIdx ? ' current' : '');
+      }
+      if (answers[q.id] !== undefined) answered++;
+    });
+    const hdr = document.getElementById('ts-sec-h-' + si);
+    const cnt = document.getElementById('ts-sec-count-' + si);
+    if (hdr) {
+      const isActive = currentIdx >= qOffset && currentIdx < qOffset + qs.length;
+      const isDone = answered === qs.length;
+      hdr.className = 'ts-sec-header' + (isActive ? ' active' : '') + (isDone ? ' done' : '');
+    }
+    if (cnt) cnt.textContent = answered + '/' + qs.length;
+    qOffset += qs.length;
+  });
+}
+
+// ---- RENDER QUESTION ----
+function renderQuestion(idx) {
+  const q = allQuestions[idx];
+  if (!q) return;
+  currentIdx = idx;
+  const totalAns = Object.keys(answers).length;
+  const pct = Math.round(totalAns / allQuestions.length * 100);
+
+  document.getElementById('tn-prog').style.width = pct + '%';
+  document.getElementById('tn-q-count').textContent = totalAns + ' of 75 answered';
+  document.getElementById('tn-section-name').textContent = q.category || '';
+  document.getElementById('q-cat-badge').textContent = q.category || '';
+  const diff = (q.difficulty || '').toLowerCase().replace(' ', '_');
+  const diffEl = document.getElementById('q-diff-badge');
+  diffEl.textContent = (q.difficulty || '').charAt(0).toUpperCase() + (q.difficulty || '').slice(1);
+  diffEl.className = 'q-diff-badge diff-' + diff;
+  document.getElementById('q-counter').textContent = 'Q ' + (idx+1) + ' / 75';
+  document.getElementById('q-nav-center').textContent = (idx+1) + ' of 75';
+  document.getElementById('q-text').textContent = q.question;
+
+  const opts = document.getElementById('q-options');
+  const letters = ['A','B','C','D'];
+  opts.innerHTML = '';
+  (q.options || []).forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'q-option' + (answers[q.id] === i ? ' selected' : '');
+    div.innerHTML = `<div class="q-option-letter">${letters[i]}</div><div class="q-option-text">${opt}</div>`;
+    div.onclick = () => selectAnswer(q.id, i);
+    opts.appendChild(div);
+  });
+
+  document.getElementById('btn-prev').disabled = idx === 0;
+  document.getElementById('btn-next').style.display = idx < allQuestions.length - 1 ? '' : 'none';
+  document.getElementById('btn-submit').style.display = idx === allQuestions.length - 1 ? '' : 'none';
+  updateSidebar();
+}
+
+function selectAnswer(qId, optIdx) {
+  answers[qId] = optIdx;
+  if (testSession) { testSession.answers = answers; saveSessions(); }
+  renderQuestion(currentIdx);
+}
+
+function navigate(dir) { const ni = currentIdx + dir; if (ni >= 0 && ni < allQuestions.length) renderQuestion(ni); }
+function jumpTo(idx) { renderQuestion(idx); }
+
+// ---- SUBMIT ----
+function showSubmitModal() {
+  const ans = Object.keys(answers).length;
+  document.getElementById('sm-answered').textContent = ans;
+  document.getElementById('sm-unanswered').textContent = 75 - ans;
+  document.getElementById('modal-submit').style.display = 'flex';
+}
+function hideSubmitModal() { document.getElementById('modal-submit').style.display = 'none'; }
+
+function submitTest() {
+  clearInterval(timerInterval);
+  document.getElementById('modal-submit').style.display = 'none';
+  const result = calculateScore();
+  if (testSession) {
+    testSession.completed_at = new Date().toISOString();
+    testSession.status = 'completed';
+    testSession.score = result;
+    testSession.answers = answers;
+    saveSessions();
+    localStorage.setItem('cse_aptitude_last_result', JSON.stringify(result));
+  }
+  showCompleteScreen(result);
+}
+
+function calculateScore() {
+  const catScores = {};
+  sections.forEach(sec => { catScores[sec.name] = { correct: 0, total: sec.questions.length }; });
+  let total = 0;
+  allQuestions.forEach(q => {
+    if (answers[q.id] === q.correct_option) {
+      total++;
+      if (catScores[q.category]) catScores[q.category].correct++;
+    }
+  });
+  const pct = Math.round(total / allQuestions.length * 100);
+  const rating = getrating(total);
+  return { total, max: 75, percentage: pct, rating: rating.label, recommendation: rating.rec, categories: catScores };
+}
+
+function getrating(score) {
+  if (score >= 60) return { label: 'Exceptional CSE Aptitude', rec: 'Ready for a rigorous CS curriculum. Strong alignment with the demands of advanced programming and systems thinking.' };
+  if (score >= 48) return { label: 'Strong CSE Aptitude', rec: 'Well-suited for CS. Standard programme with optional enrichment support in weaker sub-domains.' };
+  if (score >= 37) return { label: 'Moderate CSE Aptitude', rec: 'Foundational strengths present. A 4-week targeted bootcamp before enrolment is recommended.' };
+  if (score >= 26) return { label: 'Developing CSE Aptitude', rec: 'A structured 8-week bootcamp on discrete math, logic, and algorithmic thinking is strongly advised.' };
+  return { label: 'Foundational Gaps Identified', rec: 'A full foundation year with reassessment at 6 months is advised. Explore alternative streams via Sahirah.in.' };
+}
+
+function showCompleteScreen(result) {
+  document.getElementById('screen-test').style.display = 'none';
+  document.getElementById('screen-complete').style.display = 'flex';
+  document.getElementById('complete-score').textContent = result.total;
+  document.getElementById('complete-rating').textContent = result.rating;
+  document.getElementById('complete-email').textContent = currentUser.email;
+}
+
+// ---- SESSIONS STORAGE ----
+function saveSessions() {
+  const all = JSON.parse(localStorage.getItem(SESSIONS_KEY) || '[]');
+  const idx = all.findIndex(s => s.id === testSession.id);
+  if (idx >= 0) all[idx] = testSession; else all.push(testSession);
+  localStorage.setItem(SESSIONS_KEY, JSON.stringify(all));
+}
+
+// ---- INIT ----
+(function init() {
+  const sessions = JSON.parse(localStorage.getItem(SESSIONS_KEY) || '[]');
+  const existing = sessions.filter(s => s.user_id === currentUser.id && s.status === 'completed');
+  const inProgress = sessions.filter(s => s.user_id === currentUser.id && s.status === 'in_progress');
+
+  if (existing.length > 0) {
+    const last = existing[existing.length - 1];
+    document.querySelector('#modal-permission h2').textContent = 'Test Already Completed';
+    document.querySelector('#modal-permission p').textContent = 'You have already completed this test. You can view your report or return home.';
+    document.querySelector('#modal-permission .modal-btns').innerHTML = `
+      <a href="../report/" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--cse);color:#fff;padding:.9rem 2rem;border-radius:100px;font-weight:600;font-size:.95rem;text-decoration:none;">View My Report →</a>
+      <a href="../../" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:rgba(26,18,8,.5);border:1.5px solid var(--border);padding:.85rem 2rem;border-radius:100px;font-size:.9rem;text-decoration:none;">Back to Home</a>`;
+    document.querySelector('#modal-permission .modal-warning').style.display = 'none';
+    document.querySelector('#modal-permission .modal-meta').style.display = 'none';
+    return;
+  }
+
+  if (inProgress.length > 0) {
+    testSession = inProgress[0];
+    answers = testSession.answers || {};
+    const elapsed = Math.floor((new Date() - new Date(testSession.started_at)) / 1000);
+    timeLeft = Math.max(0, 3600 - elapsed);
+    document.querySelector('#modal-permission h2').textContent = 'Resume Your Test';
+    document.querySelector('#modal-permission p').textContent = 'You have an in-progress test. Your previously saved answers will be restored. ' + formatTime(timeLeft) + ' remaining.';
+    document.querySelector('.btn-start').textContent = 'Resume Test →';
+  }
+})();
+</script>
+</body>
+</html>

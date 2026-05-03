@@ -1,0 +1,1082 @@
+{
+  "test_name": "CSE Aptitude Psychometric Test",
+  "total_questions": 75,
+  "time_suggested_minutes": 60,
+  "sections": [
+    {
+      "name": "Abstract Logical Reasoning",
+      "questions": [
+        {
+          "id": 1,
+          "category": "Abstract Logical Reasoning",
+          "difficulty": "moderate",
+          "question": "If 'All griffins have wings' and 'No dragons are griffins', what can be concluded?",
+          "options": [
+            "No dragons have wings",
+            "Some dragons have wings",
+            "Cannot conclude about dragons' wings",
+            "All winged creatures are griffins"
+          ],
+          "correct_option": 2,
+          "marks": 1
+        },
+        {
+          "id": 2,
+          "category": "Abstract Logical Reasoning",
+          "difficulty": "moderate",
+          "question": "Which statement is logically equivalent to 'It is not true that both A and B are true'?",
+          "options": [
+            "A is false or B is false",
+            "A is false and B is false",
+            "If A is true, then B is false",
+            "If B is true, then A is false"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 3,
+          "category": "Abstract Logical Reasoning",
+          "difficulty": "moderate",
+          "question": "In a sequence: A, B, D, G, K, ?, V. What is the missing letter?",
+          "options": [
+            "O",
+            "P",
+            "Q",
+            "R"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 4,
+          "category": "Abstract Logical Reasoning",
+          "difficulty": "moderate",
+          "question": "If 'P implies Q' is true, and 'P' is false, what can be said about Q?",
+          "options": [
+            "Q must be true",
+            "Q must be false",
+            "Q can be true or false",
+            "Q is irrelevant"
+          ],
+          "correct_option": 2,
+          "marks": 1
+        },
+        {
+          "id": 5,
+          "category": "Abstract Logical Reasoning",
+          "difficulty": "moderate",
+          "question": "Given the statements: (P OR Q) is true, and (P AND R) is false. If Q is false, what must be true about P and R?",
+          "options": [
+            "P is true, R is true",
+            "P is true, R is false",
+            "P is false, R is true",
+            "Cannot be determined"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 6,
+          "category": "Abstract Logical Reasoning",
+          "difficulty": "hard",
+          "question": "Which of the following is logically equivalent to ¬(P → Q)?",
+          "options": [
+            "¬P → ¬Q",
+            "P AND ¬Q",
+            "¬P OR Q",
+            "¬Q → ¬P"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 7,
+          "category": "Abstract Logical Reasoning",
+          "difficulty": "hard",
+          "question": "If 'A OR B' is true, and 'NOT B' is true, which of the following MUST be true?",
+          "options": [
+            "A AND B",
+            "A is true",
+            "B is true",
+            "NOT (A AND B)"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 8,
+          "category": "Abstract Logical Reasoning",
+          "difficulty": "hard",
+          "question": "A code uses symbols: $, #, @, %. The pattern is $#@%, #@%$, @%$#, %$#@, ?, ... What is the next set of symbols?",
+          "options": [
+            "$#@%",
+            "@$%#",
+            "$@#%",
+            "#%$@"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 9,
+          "category": "Abstract Logical Reasoning",
+          "difficulty": "hard",
+          "question": "Consider the statements: (P → Q), (¬Q → R), (R → ¬P). If P is true, what is the truth value of R?",
+          "options": [
+            "True",
+            "False",
+            "Cannot be determined",
+            "P is true makes the system inconsistent"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 10,
+          "category": "Abstract Logical Reasoning",
+          "difficulty": "hard",
+          "question": "Which of these arguments is VALID?\n1. All birds fly. Penguins are birds. Therefore, penguins fly.\n2. Some fruits are sweet. Apples are fruits. Therefore, apples are sweet.",
+          "options": [
+            "Only 1",
+            "Only 2",
+            "Both 1 and 2",
+            "Neither 1 nor 2"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 11,
+          "category": "Abstract Logical Reasoning",
+          "difficulty": "very hard",
+          "question": "On an island, knights always tell the truth and knaves always lie. You meet three inhabitants: A, B, and C.\nA says: 'Exactly one of B and C is a knight.'\nB says: 'A is a knave.'\nC says: 'B is a knave.'\nWhat are A, B, and C?",
+          "options": [
+            "A: Knight, B: Knight, C: Knave",
+            "A: Knave, B: Knight, C: Knight",
+            "A: Knight, B: Knave, C: Knight",
+            "A: Knave, B: Knave, C: Knave"
+          ],
+          "correct_option": 2,
+          "marks": 1
+        },
+        {
+          "id": 12,
+          "category": "Abstract Logical Reasoning",
+          "difficulty": "very hard",
+          "question": "If 'If I study hard, then I pass the exam' is false, what must be true?",
+          "options": [
+            "I studied hard and passed the exam",
+            "I did not study hard and did not pass the exam",
+            "I studied hard and did not pass the exam",
+            "I did not study hard and passed the exam"
+          ],
+          "correct_option": 2,
+          "marks": 1
+        },
+        {
+          "id": 13,
+          "category": "Abstract Logical Reasoning",
+          "difficulty": "very hard",
+          "question": "Consider the sequence: 1, 1, 2, 3, 5, 8, ?, 21. What is the missing number?",
+          "options": [
+            "11",
+            "13",
+            "14",
+            "16"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 14,
+          "category": "Abstract Logical Reasoning",
+          "difficulty": "very hard",
+          "question": "A, B, C, D are four friends. Only one of them is guilty. Their statements are:\nA: 'I am innocent.'\nB: 'A is innocent.'\nC: 'B is guilty.'\nD: 'C is innocent.'\nIf only one of them is telling the truth, who is guilty?",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 15,
+          "category": "Abstract Logical Reasoning",
+          "difficulty": "very hard",
+          "question": "What is the logical conclusion from: 'No A are B' and 'All C are B'?",
+          "options": [
+            "No A are C",
+            "Some A are C",
+            "All B are C",
+            "Some B are not A"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        }
+      ]
+    },
+    {
+      "name": "Mathematical Reasoning",
+      "questions": [
+        {
+          "id": 16,
+          "category": "Mathematical Reasoning",
+          "difficulty": "moderate",
+          "question": "If x is a real number, for which values of x is the expression (x-1)/(x-2) undefined?",
+          "options": [
+            "x=1",
+            "x=2",
+            "x=1 and x=2",
+            "No values"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 17,
+          "category": "Mathematical Reasoning",
+          "difficulty": "moderate",
+          "question": "How many different 3-digit numbers can be formed using the digits 1, 2, 3, 4, 5 if repetition of digits is allowed?",
+          "options": [
+            "60",
+            "120",
+            "125",
+            "243"
+          ],
+          "correct_option": 2,
+          "marks": 1
+        },
+        {
+          "id": 18,
+          "category": "Mathematical Reasoning",
+          "difficulty": "moderate",
+          "question": "What is the remainder when 3^10 is divided by 4?",
+          "options": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 19,
+          "category": "Mathematical Reasoning",
+          "difficulty": "moderate",
+          "question": "A fair coin is flipped 3 times. What is the probability of getting exactly 2 heads, given that at least one head was flipped?",
+          "options": [
+            "3/7",
+            "3/8",
+            "1/2",
+            "5/8"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 20,
+          "category": "Mathematical Reasoning",
+          "difficulty": "moderate",
+          "question": "Which of these numbers is both a perfect square and a perfect cube?",
+          "options": [
+            "8",
+            "27",
+            "36",
+            "64"
+          ],
+          "correct_option": 3,
+          "marks": 1
+        },
+        {
+          "id": 21,
+          "category": "Mathematical Reasoning",
+          "difficulty": "hard",
+          "question": "Consider the expression n^2 + 3n + 2, where n is any integer. Which of the following statements about its parity is true?",
+          "options": [
+            "The expression is always even for any integer n.",
+            "The expression is even only when n is an even integer.",
+            "The expression is even only when n is an odd integer.",
+            "The expression can be either even or odd, depending on n."
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 22,
+          "category": "Mathematical Reasoning",
+          "difficulty": "hard",
+          "question": "A standard deck of 52 cards. What is the probability of drawing a King or a Spade?",
+          "options": [
+            "4/13",
+            "17/52",
+            "5/13",
+            "3/13"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 23,
+          "category": "Mathematical Reasoning",
+          "difficulty": "hard",
+          "question": "What is the maximum number of edges in a simple graph with 5 vertices?",
+          "options": [
+            "5",
+            "8",
+            "10",
+            "12"
+          ],
+          "correct_option": 2,
+          "marks": 1
+        },
+        {
+          "id": 24,
+          "category": "Mathematical Reasoning",
+          "difficulty": "hard",
+          "question": "Solve for x: 3x ≡ 1 (mod 5).",
+          "options": [
+            "x ≡ 1 (mod 5)",
+            "x ≡ 2 (mod 5)",
+            "x ≡ 3 (mod 5)",
+            "x ≡ 4 (mod 5)"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 25,
+          "category": "Mathematical Reasoning",
+          "difficulty": "hard",
+          "question": "If a sequence is defined by a_n = 2 * a_{n-1} + 1, with a_0 = 0. What is a_3?",
+          "options": [
+            "3",
+            "7",
+            "15",
+            "31"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 26,
+          "category": "Mathematical Reasoning",
+          "difficulty": "very hard",
+          "question": "There are 5 red and 5 blue balls in a bag. If you draw 3 balls randomly without replacement, what is the probability that all 3 are red?",
+          "options": [
+            "1/10",
+            "1/12",
+            "1/8",
+            "1/24"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 27,
+          "category": "Mathematical Reasoning",
+          "difficulty": "very hard",
+          "question": "Prove by induction that 1 + 2 + ... + n = n(n+1)/2. Which is the base case for n=1?",
+          "options": [
+            "1 = 1(2)/2",
+            "1 + 2 = 2(3)/2",
+            "n = n(n+1)/2",
+            "Assume it's true for k"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 28,
+          "category": "Mathematical Reasoning",
+          "difficulty": "very hard",
+          "question": "What is the smallest positive integer x such that 7x ≡ 1 (mod 29)?",
+          "options": [
+            "4",
+            "12",
+            "20",
+            "25"
+          ],
+          "correct_option": 3,
+          "marks": 1
+        },
+        {
+          "id": 29,
+          "category": "Mathematical Reasoning",
+          "difficulty": "very hard",
+          "question": "Given two bags, one with 2 red and 1 blue ball, another with 1 red and 2 blue. You pick a bag at random and draw one ball. If the ball is red, what is the probability it came from the first bag?",
+          "options": [
+            "2/3",
+            "1/2",
+            "3/5",
+            "2/5"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 30,
+          "category": "Mathematical Reasoning",
+          "difficulty": "very hard",
+          "question": "How many ways can 5 distinct books be arranged on a shelf such that two specific books are always together?",
+          "options": [
+            "24",
+            "36",
+            "48",
+            "60"
+          ],
+          "correct_option": 2,
+          "marks": 1
+        }
+      ]
+    },
+    {
+      "name": "Computational Thinking",
+      "questions": [
+        {
+          "id": 31,
+          "category": "Computational Thinking",
+          "difficulty": "moderate",
+          "question": "What is the final value of `count`?\n`count = 0`\n`for i from 1 to 4:`\n  `if i % 2 == 0:`\n    `count = count + 1`\n`print count`",
+          "options": [
+            "0",
+            "1",
+            "2",
+            "4"
+          ],
+          "correct_option": 2,
+          "marks": 1
+        },
+        {
+          "id": 32,
+          "category": "Computational Thinking",
+          "difficulty": "moderate",
+          "question": "Consider a stack data structure. If you PUSH A, PUSH B, POP, PUSH C, POP, what is the top element of the stack after these operations?",
+          "options": [
+            "B",
+            "A",
+            "C",
+            "Empty Stack"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 33,
+          "category": "Computational Thinking",
+          "difficulty": "moderate",
+          "question": "A list `[5, 2, 8, 1]` needs to be sorted in ascending order. If you apply a single pass of selection sort, what will be the state of the list after this pass (placing smallest element in first position)?",
+          "options": [
+            "[1, 2, 8, 5]",
+            "[1, 5, 8, 2]",
+            "[5, 2, 8, 1]",
+            "[2, 5, 8, 1]"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 34,
+          "category": "Computational Thinking",
+          "difficulty": "moderate",
+          "question": "Which data structure is best suited for storing tasks that need to be processed in the order they were received, without priority?",
+          "options": [
+            "Stack",
+            "Queue",
+            "Tree",
+            "Hash Table"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 35,
+          "category": "Computational Thinking",
+          "difficulty": "moderate",
+          "question": "An algorithm has a time complexity of O(log base 2 N). If an input of size 16 takes 4 units of time, how many units of time would an input of size 64 take?",
+          "options": [
+            "6",
+            "8",
+            "16",
+            "64"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 36,
+          "category": "Computational Thinking",
+          "difficulty": "hard",
+          "question": "What is the output of the following pseudocode?\nfunction Mystery(x):\n  if x <= 0: return 0\n  if x == 1: return 1\n  return Mystery(x-1) + Mystery(x-2)\nPrint Mystery(4)",
+          "options": [
+            "2",
+            "3",
+            "5",
+            "8"
+          ],
+          "correct_option": 2,
+          "marks": 1
+        },
+        {
+          "id": 37,
+          "category": "Computational Thinking",
+          "difficulty": "hard",
+          "question": "A linked list has nodes A -> B -> C -> D. If you delete node B, what is the new sequence of nodes (from start)?",
+          "options": [
+            "A -> C -> D",
+            "A -> B -> D",
+            "C -> D",
+            "A -> D"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 38,
+          "category": "Computational Thinking",
+          "difficulty": "hard",
+          "question": "Consider an array: [8, 3, 1, 6, 2]. After one pass of bubble sort (smallest to largest), what is the array?",
+          "options": [
+            "[1, 3, 8, 6, 2]",
+            "[3, 1, 6, 2, 8]",
+            "[8, 3, 1, 2, 6]",
+            "[3, 1, 6, 8, 2]"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 39,
+          "category": "Computational Thinking",
+          "difficulty": "hard",
+          "question": "Which algorithm is generally more efficient for sorting a nearly sorted list?",
+          "options": [
+            "Bubble Sort",
+            "Insertion Sort",
+            "Quick Sort",
+            "Merge Sort"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 40,
+          "category": "Computational Thinking",
+          "difficulty": "hard",
+          "question": "If a binary search tree is built with elements 5, 2, 8, 1, 3, 7, 9 in that order, what element is the right child of the root?",
+          "options": [
+            "2",
+            "8",
+            "7",
+            "9"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 41,
+          "category": "Computational Thinking",
+          "difficulty": "very hard",
+          "question": "Consider the pseudocode:\nfunction WhatIsThis(arr, n):\n  if n <= 0: return 0\n  return arr[n-1] + WhatIsThis(arr, n-1)\n\nWhat does WhatIsThis([1, 2, 3, 4], 4) return?",
+          "options": [
+            "4",
+            "6",
+            "10",
+            "Stack Overflow"
+          ],
+          "correct_option": 2,
+          "marks": 1
+        },
+        {
+          "id": 42,
+          "category": "Computational Thinking",
+          "difficulty": "very hard",
+          "question": "Which of the following is the best worst-case time complexity for searching in an unsorted array of N elements?",
+          "options": [
+            "O(1)",
+            "O(log N)",
+            "O(N)",
+            "O(N^2)"
+          ],
+          "correct_option": 2,
+          "marks": 1
+        },
+        {
+          "id": 43,
+          "category": "Computational Thinking",
+          "difficulty": "very hard",
+          "question": "A program processes a list of N items. It takes N operations to read the items and then N log N operations to sort them. What is the overall dominant time complexity?",
+          "options": [
+            "O(N)",
+            "O(N log N)",
+            "O(log N)",
+            "O(N^2)"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 44,
+          "category": "Computational Thinking",
+          "difficulty": "very hard",
+          "question": "You have a program with two nested loops. The outer loop runs M times, and the inner loop runs N times. What is the time complexity in terms of M and N?",
+          "options": [
+            "O(M+N)",
+            "O(M*N)",
+            "O(M^N)",
+            "O(N^M)"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 45,
+          "category": "Computational Thinking",
+          "difficulty": "very hard",
+          "question": "A hash table of size 7 uses the function h(k) = k mod 7. Keys 14, 21, and 28 are inserted. Where do all three keys hash to, and what problem does this immediately illustrate?",
+          "options": [
+            "Index 0; demonstrates a collision requiring a resolution strategy",
+            "Indices 2, 3, 4; demonstrates uniform distribution",
+            "Index 1; demonstrates an overflow condition",
+            "Index 7; demonstrates an out-of-bounds error"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        }
+      ]
+    },
+    {
+      "name": "Spatial/Temporal Reasoning",
+      "questions": [
+        {
+          "id": 46,
+          "category": "Spatial/Temporal Reasoning",
+          "difficulty": "moderate",
+          "question": "An 'L'-shaped piece occupies cells (0,0), (1,0), and (1,1) on a grid. After a 90-degree clockwise rotation about the origin (0,0), which cells does it occupy?",
+          "options": [
+            "(0,0), (0,−1), (1,−1)",
+            "(0,0), (0,1), (−1,1)",
+            "(0,0), (−1,0), (−1,1)",
+            "(0,0), (0,1), (1,1)"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 47,
+          "category": "Spatial/Temporal Reasoning",
+          "difficulty": "moderate",
+          "question": "A clock shows 3:00. If the minute hand moves 180 degrees clockwise, what time will it be?",
+          "options": [
+            "3:30",
+            "6:00",
+            "9:00",
+            "12:00"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 48,
+          "category": "Spatial/Temporal Reasoning",
+          "difficulty": "moderate",
+          "question": "A right-pointing arrow '→' is placed at position (3, 2) on a grid. It is reflected across the vertical line x = 3, then rotated 90 degrees clockwise. What is the final direction the arrow points?",
+          "options": [
+            "Left (←)",
+            "Right (→)",
+            "Up (↑)",
+            "Down (↓)"
+          ],
+          "correct_option": 3,
+          "marks": 1
+        },
+        {
+          "id": 49,
+          "category": "Spatial/Temporal Reasoning",
+          "difficulty": "moderate",
+          "question": "If you look at a mirror, your right hand appears to be the left hand of your reflection. This is an example of what type of transformation?",
+          "options": [
+            "Rotation",
+            "Translation",
+            "Reflection",
+            "Scaling"
+          ],
+          "correct_option": 2,
+          "marks": 1
+        },
+        {
+          "id": 50,
+          "category": "Spatial/Temporal Reasoning",
+          "difficulty": "moderate",
+          "question": "Car A drives East at 30 km/h and Car B drives North at 40 km/h, both starting from the same point. After 1 hour, what is the straight-line distance between the two cars?",
+          "options": [
+            "50 km",
+            "70 km",
+            "35 km",
+            "60 km"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 51,
+          "category": "Spatial/Temporal Reasoning",
+          "difficulty": "hard",
+          "question": "A cube has its six faces labeled 1–6 such that opposite faces always sum to 7 (i.e., 1 opposite 6, 2 opposite 5, 3 opposite 4). If face 1 is on the bottom and face 2 is facing you, which face is on your right?",
+          "options": [
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 52,
+          "category": "Spatial/Temporal Reasoning",
+          "difficulty": "hard",
+          "question": "Imagine a binary search tree where nodes are added in the order: 10, 5, 15, 3, 7, 12, 18. What is the path from the root to the node with value 7?",
+          "options": [
+            "10 -> 5 -> 7",
+            "10 -> 15 -> 12",
+            "10 -> 5 -> 3 -> 7",
+            "10 -> 5 -> 15 -> 7"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 53,
+          "category": "Spatial/Temporal Reasoning",
+          "difficulty": "hard",
+          "question": "A particle moves 2 units East, then 3 units North, then 2 units West, then 1 unit South. What is its final displacement from the starting point?",
+          "options": [
+            "2 units North",
+            "2 units East",
+            "4 units North",
+            "0 units"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 54,
+          "category": "Spatial/Temporal Reasoning",
+          "difficulty": "hard",
+          "question": "If you are at point (0,0) and take steps (1,1), then (-1,1), then (-1,-1), then (1,-1), what are your final coordinates?",
+          "options": [
+            "(0,0)",
+            "(0,2)",
+            "(2,0)",
+            "(1,1)"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 55,
+          "category": "Spatial/Temporal Reasoning",
+          "difficulty": "hard",
+          "question": "A drone starts at an altitude of 100m. It ascends 50m, then descends 30m, then ascends 20m. What is its final altitude?",
+          "options": [
+            "120m",
+            "140m",
+            "160m",
+            "100m"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 56,
+          "category": "Spatial/Temporal Reasoning",
+          "difficulty": "very hard",
+          "question": "A 4x4 grid of cells, initially all white. A 'flip' operation toggles the color of a cell and all its immediate **orthogonal neighbors (no diagonals)**. If you flip the top-left cell, then the bottom-right cell, how many cells are black?",
+          "options": [
+            "4",
+            "6",
+            "8",
+            "10"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 57,
+          "category": "Spatial/Temporal Reasoning",
+          "difficulty": "very hard",
+          "question": "A game board has 5 positions, 1 through 5. A piece starts at 1. Each turn, it moves to an adjacent position (e.g., from 3 it can go to 2 or 4). If the piece takes exactly 3 turns, how many distinct paths lead it back to position 1?",
+          "options": [
+            "0",
+            "1",
+            "2",
+            "4"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 58,
+          "category": "Spatial/Temporal Reasoning",
+          "difficulty": "very hard",
+          "question": "A binary search tree is built by inserting values: 50, 30, 70, 20, 40, 60, 80. Node 70 is deleted. Using the standard convention of replacing with the in-order successor (smallest value in the right subtree), which node takes its place?",
+          "options": [
+            "60",
+            "80",
+            "30",
+            "None of the above"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 59,
+          "category": "Spatial/Temporal Reasoning",
+          "difficulty": "very hard",
+          "question": "An array of 8 integers (0-indexed) is initialized to all zeros. A process flips the bit at index `i` on every pass where `i` is a multiple of the pass number (starting pass 1). Pass 1 flips bits at indices 0,1,2,3,4,5,6,7. Pass 2 flips bits at indices 0,2,4,6. Pass 3 flips bits at indices 0,3,6. After 3 passes, what is the value of the bit at index 6?",
+          "options": [
+            "0",
+            "1",
+            "Cannot be determined",
+            "Depends on initial state"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 60,
+          "category": "Spatial/Temporal Reasoning",
+          "difficulty": "very hard",
+          "question": "A spaceship can move in four cardinal directions (N, E, S, W). It starts at (0,0) facing North. It receives a sequence of commands: F (forward 1 unit), L (turn left 90 deg), R (turn right 90 deg). What is its final position after: F, F, R, F, F, L, F?",
+          "options": [
+            "(2, 3)",
+            "(3, 2)",
+            "(2, −1)",
+            "(1, 3)"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        }
+      ]
+    },
+    {
+      "name": "Attention to Precision",
+      "questions": [
+        {
+          "id": 61,
+          "category": "Attention to Precision",
+          "difficulty": "moderate",
+          "question": "Consider the pseudo-code snippet: `result = 5 + 2 * (10 - 3) / 7`. What is the final value of `result`?",
+          "options": [
+            "7",
+            "9",
+            "11",
+            "14"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 62,
+          "category": "Attention to Precision",
+          "difficulty": "moderate",
+          "question": "Identify the incorrect statement among these pseudo-code assignments:\n1. x = 5\n2. y is equal to x plus 2\n3. z <- y - x\n4. result := x * y",
+          "options": [
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 63,
+          "category": "Attention to Precision",
+          "difficulty": "moderate",
+          "question": "Which of these binary numbers is not equal to the others: 0101, 101, 00101, 110?",
+          "options": [
+            "0101",
+            "101",
+            "00101",
+            "110"
+          ],
+          "correct_option": 3,
+          "marks": 1
+        },
+        {
+          "id": 64,
+          "category": "Attention to Precision",
+          "difficulty": "moderate",
+          "question": "A list contains: Apple, Banana, Cherry, Date, Elderberry. If you remove the 3rd item, what is the new 3rd item?",
+          "options": [
+            "Date",
+            "Cherry",
+            "Banana",
+            "Elderberry"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 65,
+          "category": "Attention to Precision",
+          "difficulty": "moderate",
+          "question": "Which set of instructions will make a robot move 2 steps forward?\n1. Move Fwd, Move Fwd\n2. Repeat 2 times: Move Fwd\n3. Move 2 steps Fwd",
+          "options": [
+            "Only 1",
+            "Only 2",
+            "Only 3",
+            "All 1, 2, and 3"
+          ],
+          "correct_option": 3,
+          "marks": 1
+        },
+        {
+          "id": 66,
+          "category": "Attention to Precision",
+          "difficulty": "hard",
+          "question": "Consider the condition: (X > 5 AND Y < 10) OR (Z = 0). If X=6, Y=12, Z=1, what is the truth value of the condition?",
+          "options": [
+            "True",
+            "False",
+            "Depends on order of evaluation",
+            "Syntax error"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 67,
+          "category": "Attention to Precision",
+          "difficulty": "hard",
+          "question": "Which of these operations will always change the value of variable 'A' if 'A' is initially 5?\n1. A = 5\n2. A = A + 0\n3. A = A * 1\n4. A = A + 1",
+          "options": [
+            "Only 1",
+            "Only 4",
+            "All of them",
+            "None of them"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 68,
+          "category": "Attention to Precision",
+          "difficulty": "hard",
+          "question": "A loop is defined as: For i from 0 to 5 (exclusive). How many times will the loop body execute?",
+          "options": [
+            "0",
+            "5",
+            "6",
+            "Cannot be determined"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 69,
+          "category": "Attention to Precision",
+          "difficulty": "hard",
+          "question": "If 'a' is a string 'hello' and 'b' is a string 'world'. What is the result of 'a + b + a'?",
+          "options": [
+            "'hello world hello'",
+            "'helloworldhello'",
+            "Error",
+            "Depends on programming language"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 70,
+          "category": "Attention to Precision",
+          "difficulty": "hard",
+          "question": "What is the result of (10 // 3) * 2 in integer division?",
+          "options": [
+            "6",
+            "6.66",
+            "7",
+            "10"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 71,
+          "category": "Attention to Precision",
+          "difficulty": "very hard",
+          "question": "Examine the two conditions:\nCondition 1: (A > B AND C < D) OR (E = F)\nCondition 2: (A > B OR E = F) AND (C < D OR E = F)\nAre these two conditions logically equivalent?",
+          "options": [
+            "Yes",
+            "No",
+            "Only if E=F is true",
+            "Only if C<D is false"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 72,
+          "category": "Attention to Precision",
+          "difficulty": "very hard",
+          "question": "A function takes an integer N and returns the Nth Fibonacci number (F(0)=0, F(1)=1). What is F(6)?",
+          "options": [
+            "5",
+            "8",
+            "13",
+            "21"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 73,
+          "category": "Attention to Precision",
+          "difficulty": "very hard",
+          "question": "A program processes a list of unique numbers. It needs to find the largest number and the second largest number. Which of these approaches guarantees finding both correctly while processing the list only once?",
+          "options": [
+            "Sort the list and take the top two",
+            "Keep track of the maximum and second maximum seen so far",
+            "Iterate, find max, then iterate again to find second max",
+            "Use a min-heap to store the top two elements"
+          ],
+          "correct_option": 1,
+          "marks": 1
+        },
+        {
+          "id": 74,
+          "category": "Attention to Precision",
+          "difficulty": "very hard",
+          "question": "A traffic light system uses binary signals. Red=10, Yellow=01, Green=00. If the light transitions from Yellow to Red to Green, what is the sequence of binary values?",
+          "options": [
+            "01 -> 10 -> 00",
+            "00 -> 01 -> 10",
+            "10 -> 01 -> 00",
+            "01 -> 00 -> 10"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        },
+        {
+          "id": 75,
+          "category": "Attention to Precision",
+          "difficulty": "very hard",
+          "question": "Consider a 'grep' like command: 'find_lines(text, pattern)'. If text is 'apple\\nbanana\\norange' and pattern is 'a', which lines will be returned?",
+          "options": [
+            "'apple', 'banana', 'orange'",
+            "'apple', 'banana'",
+            "'banana'",
+            "'apple'"
+          ],
+          "correct_option": 0,
+          "marks": 1
+        }
+      ]
+    }
+  ]
+}

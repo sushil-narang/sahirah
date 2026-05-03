@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sign In / Register — CSE Aptitude — Sahirah.in</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --cream:#FDF8F0;--ink:#1A1208;--gold:#C8860A;--gold-light:#F5D98A;--gold-pale:#FDF0CC;
+  --cse:#1A5FA8;--cse-light:#E8F2FF;--cse-dark:#0D3D6B;
+  --border:rgba(26,18,8,0.1);--shadow:0 4px 40px rgba(26,18,8,0.08);
+  --red:#C0410A;--red-light:#FFF0EB;
+  --fd:'Playfair Display',Georgia,serif;--fb:'DM Sans',sans-serif;--fm:'DM Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--ink);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.6;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;position:relative;overflow:hidden;}
+.bg-c{position:absolute;border-radius:50%;opacity:.05;}
+.bc1{width:600px;height:600px;background:var(--cse);top:-200px;right:-150px;}
+.bc2{width:400px;height:400px;background:var(--gold);bottom:-150px;left:-100px;}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:50px 50px;}
+
+.auth-card{background:#fff;border-radius:24px;padding:2.5rem;width:100%;max-width:440px;position:relative;z-index:1;box-shadow:0 20px 80px rgba(0,0,0,.3);}
+.ac-logo{display:flex;align-items:center;gap:8px;margin-bottom:2rem;justify-content:center;text-decoration:none;}
+.ac-logo-mark{width:32px;height:32px;border-radius:9px;background:var(--ink);display:flex;align-items:center;justify-content:center;}
+.ac-logo-mark svg{width:16px;height:16px;fill:var(--gold-light);}
+.ac-logo-text{font-family:var(--fd);font-size:1.3rem;font-weight:700;color:var(--ink);}
+.ac-logo-text span{color:var(--gold);}
+
+.ac-badge{display:inline-flex;align-items:center;gap:6px;background:var(--cse-light);border:1px solid rgba(26,95,168,.2);border-radius:100px;padding:4px 12px;font-size:.68rem;font-weight:600;color:var(--cse);letter-spacing:.06em;text-transform:uppercase;margin:0 auto 1.5rem;display:flex;width:fit-content;}
+.ac-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--cse);}
+
+/* TABS */
+.tabs{display:flex;gap:2px;background:#F5F2EC;border-radius:12px;padding:3px;margin-bottom:2rem;}
+.tab{flex:1;padding:.6rem;border-radius:10px;text-align:center;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;color:rgba(26,18,8,.45);}
+.tab.active{background:#fff;color:var(--ink);box-shadow:0 1px 6px rgba(26,18,8,.08);}
+
+/* FORM */
+.form-panel{display:none;}
+.form-panel.active{display:block;}
+.field{margin-bottom:1rem;}
+.field label{display:block;font-size:.75rem;font-weight:600;color:rgba(26,18,8,.6);margin-bottom:.4rem;letter-spacing:.02em;}
+.field input{width:100%;background:#FAFAF7;border:1.5px solid var(--border);border-radius:10px;padding:.75rem 1rem;font-size:.9rem;color:var(--ink);font-family:var(--fb);outline:none;transition:border-color .2s;}
+.field input:focus{border-color:var(--cse);background:#fff;}
+.field input.err{border-color:var(--red);}
+.err-msg{background:var(--red-light);border:1px solid rgba(192,65,10,.2);border-radius:10px;padding:.7rem 1rem;font-size:.82rem;color:var(--red);margin-bottom:1rem;display:none;}
+.err-msg.show{display:block;}
+.success-msg{background:#E8F7F4;border:1px solid rgba(10,107,94,.2);border-radius:10px;padding:.7rem 1rem;font-size:.82rem;color:var(--teal,#0A6B5E);margin-bottom:1rem;display:none;}
+.success-msg.show{display:block;}
+.btn-submit{width:100%;background:var(--cse);color:#fff;border:none;border-radius:100px;padding:.9rem;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .25s;margin-top:.5rem;font-family:var(--fb);}
+.btn-submit:hover{background:var(--cse-dark);}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed;}
+
+.divider{display:flex;align-items:center;gap:.75rem;margin:1.5rem 0;color:rgba(26,18,8,.3);font-size:.75rem;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.admin-link{text-align:center;margin-top:.5rem;}
+.admin-link a{font-size:.78rem;color:rgba(26,18,8,.4);text-decoration:none;transition:color .2s;}
+.admin-link a:hover{color:var(--ink);}
+
+.back-link{text-align:center;margin-top:1.25rem;}
+.back-link a{font-size:.8rem;color:rgba(26,18,8,.45);text-decoration:none;transition:color .2s;}
+.back-link a:hover{color:var(--ink);}
+.field-hint{font-size:.72rem;color:rgba(26,18,8,.4);margin-top:.3rem;}
+</style>
+</head>
+<body>
+
+<div class="bg-c bc1"></div>
+<div class="bg-c bc2"></div>
+<div class="bg-grid"></div>
+
+<div class="auth-card">
+  <a href="../" class="ac-logo">
+    <div class="ac-logo-mark"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg></div>
+    <div class="ac-logo-text">Sahir<span>ah</span>.in</div>
+  </a>
+  <div class="ac-badge"><div class="ac-badge-dot"></div>CSE Aptitude Assessment</div>
+
+  <div class="tabs">
+    <div class="tab active" id="tab-signin" onclick="switchTab('signin')">Sign In</div>
+    <div class="tab" id="tab-register" onclick="switchTab('register')">Register</div>
+  </div>
+
+  <!-- SIGN IN PANEL -->
+  <div class="form-panel active" id="panel-signin">
+    <div class="err-msg" id="signin-err"></div>
+    <div class="success-msg" id="signin-ok"></div>
+    <div class="field">
+      <label>Email Address</label>
+      <input type="email" id="si-email" placeholder="you@email.com" onkeydown="if(event.key==='Enter')doSignIn()"/>
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="si-password" placeholder="Your password" onkeydown="if(event.key==='Enter')doSignIn()"/>
+    </div>
+    <button class="btn-submit" id="btn-signin" onclick="doSignIn()">Sign In & Continue</button>
+    <div class="divider">or</div>
+    <p style="text-align:center;font-size:.83rem;color:rgba(26,18,8,.5);">Don't have an account? <a href="#" onclick="switchTab('register');return false;" style="color:var(--cse);font-weight:600;">Register here</a></p>
+  </div>
+
+  <!-- REGISTER PANEL -->
+  <div class="form-panel" id="panel-register">
+    <div class="err-msg" id="reg-err"></div>
+    <div class="success-msg" id="reg-ok"></div>
+    <div class="field">
+      <label>Full Name</label>
+      <input type="text" id="r-name" placeholder="Your full name"/>
+    </div>
+    <div class="field">
+      <label>Email Address</label>
+      <input type="email" id="r-email" placeholder="you@email.com"/>
+      <div class="field-hint">Your report will be sent to this address</div>
+    </div>
+    <div class="field">
+      <label>Phone Number</label>
+      <input type="tel" id="r-phone" placeholder="10-digit mobile number"/>
+    </div>
+    <div class="field">
+      <label>Create Password</label>
+      <input type="password" id="r-password" placeholder="Min. 6 characters"/>
+    </div>
+    <button class="btn-submit" id="btn-register" onclick="doRegister()">Create Account & Proceed</button>
+    <div class="divider">or</div>
+    <p style="text-align:center;font-size:.83rem;color:rgba(26,18,8,.5);">Already registered? <a href="#" onclick="switchTab('signin');return false;" style="color:var(--cse);font-weight:600;">Sign in here</a></p>
+  </div>
+
+  <div class="admin-link"><a href="../admin/">Admin login →</a></div>
+  <div class="back-link"><a href="../">← Back to CSE Aptitude</a></div>
+</div>
+
+<script>
+// ---- STORAGE HELPERS ----
+const USERS_KEY = 'cse_aptitude_users';
+const SESSION_KEY = 'cse_aptitude_current_user';
+
+function getUsers() { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]'); }
+function saveUsers(u) { localStorage.setItem(USERS_KEY, JSON.stringify(u)); }
+function setCurrentUser(u) { localStorage.setItem(SESSION_KEY, JSON.stringify(u)); }
+function genId() { return 'cse-' + Math.random().toString(36).substr(2,8).toUpperCase(); }
+
+// ---- TAB SWITCHING ----
+function switchTab(t) {
+  document.getElementById('tab-signin').classList.toggle('active', t==='signin');
+  document.getElementById('tab-register').classList.toggle('active', t==='register');
+  document.getElementById('panel-signin').classList.toggle('active', t==='signin');
+  document.getElementById('panel-register').classList.toggle('active', t==='register');
+}
+
+// Check URL param for mode
+const urlMode = new URLSearchParams(location.search).get('mode');
+if (urlMode === 'register') switchTab('register');
+
+// ---- VALIDATION ----
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 4000);
+}
+function showOk(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.classList.add('show');
+}
+function hideOk(id) { document.getElementById(id).classList.remove('show'); }
+
+// ---- SIGN IN ----
+function doSignIn() {
+  hideOk('signin-ok');
+  const email = document.getElementById('si-email').value.trim().toLowerCase();
+  const pass = document.getElementById('si-password').value;
+  if (!email || !pass) { showErr('signin-err', 'Please enter your email and password.'); return; }
+
+  const users = getUsers();
+  const user = users.find(u => u.email === email && u.password === btoa(pass));
+  if (!user) { showErr('signin-err', 'Incorrect email or password. Please try again.'); return; }
+
+  setCurrentUser({ id: user.id, name: user.name, email: user.email });
+  showOk('signin-ok', 'Welcome back, ' + user.name + '! Taking you to the test portal…');
+  setTimeout(() => { location.href = '../test/'; }, 1200);
+}
+
+// ---- REGISTER ----
+function doRegister() {
+  hideOk('reg-ok');
+  const name = document.getElementById('r-name').value.trim();
+  const email = document.getElementById('r-email').value.trim().toLowerCase();
+  const phone = document.getElementById('r-phone').value.trim();
+  const pass = document.getElementById('r-password').value;
+
+  if (!name) { showErr('reg-err', 'Please enter your full name.'); return; }
+  if (!email || !email.includes('@')) { showErr('reg-err', 'Please enter a valid email address.'); return; }
+  if (!phone || phone.length < 10) { showErr('reg-err', 'Please enter a valid 10-digit phone number.'); return; }
+  if (!pass || pass.length < 6) { showErr('reg-err', 'Password must be at least 6 characters long.'); return; }
+
+  const users = getUsers();
+  if (users.find(u => u.email === email)) {
+    showErr('reg-err', 'An account with this email already exists. Please sign in.'); return;
+  }
+
+  const newUser = {
+    id: genId(),
+    name,
+    email,
+    phone,
+    password: btoa(pass),
+    created_at: new Date().toISOString()
+  };
+  users.push(newUser);
+  saveUsers(users);
+  setCurrentUser({ id: newUser.id, name: newUser.name, email: newUser.email });
+
+  document.getElementById('btn-register').disabled = true;
+  showOk('reg-ok', 'Account created! Welcome, ' + name + '. Taking you to the test portal…');
+  setTimeout(() => { location.href = '../test/'; }, 1400);
+}
+</script>
+</body>
+</html>

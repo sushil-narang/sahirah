@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My CSE Aptitude Report — Sahirah.in</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --cream:#FDF8F0;--ink:#1A1208;--gold:#C8860A;--gold-light:#F5D98A;--gold-pale:#FDF0CC;
+  --cse:#1A5FA8;--cse-light:#E8F2FF;--cse-dark:#0D3D6B;--teal:#0A6B5E;--teal-light:#E0F2EE;
+  --red:#C0410A;--red-light:#FFF0EB;
+  --border:rgba(26,18,8,0.1);--shadow:0 4px 32px rgba(26,18,8,0.08);
+  --fd:'Playfair Display',Georgia,serif;--fb:'DM Sans',sans-serif;--fm:'DM Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;min-height:100vh;}
+
+nav{position:sticky;top:0;z-index:100;padding:0 5%;background:rgba(253,248,240,0.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;height:60px;}
+.nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.nav-logo-mark{width:30px;height:30px;border-radius:8px;background:var(--ink);display:flex;align-items:center;justify-content:center;}
+.nav-logo-mark svg{width:15px;height:15px;fill:var(--gold-light);}
+.nav-logo-text{font-family:var(--fd);font-size:1.2rem;font-weight:700;color:var(--ink);}
+.nav-logo-text span{color:var(--gold);}
+.nav-right{display:flex;align-items:center;gap:1rem;}
+.nav-right a{text-decoration:none;font-size:.82rem;color:rgba(26,18,8,.5);transition:color .2s;}
+.nav-right a:hover{color:var(--ink);}
+.nav-right .btn-logout{background:transparent;border:1.5px solid var(--border);border-radius:100px;padding:.4rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;color:rgba(26,18,8,.5);font-family:var(--fb);transition:all .2s;}
+.nav-right .btn-logout:hover{border-color:var(--red);color:var(--red);}
+
+/* NO REPORT STATE */
+#no-report{display:none;min-height:80vh;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:3rem;}
+#no-report h2{font-family:var(--fd);font-size:1.6rem;font-weight:700;margin-bottom:.75rem;}
+#no-report p{color:rgba(26,18,8,.55);max-width:380px;font-size:.9rem;line-height:1.7;margin-bottom:1.5rem;}
+.btn-take{display:inline-flex;align-items:center;gap:7px;background:var(--cse);color:#fff;padding:.8rem 1.75rem;border-radius:100px;text-decoration:none;font-weight:600;font-size:.88rem;transition:background .2s;}
+.btn-take:hover{background:var(--cse-dark);}
+
+/* REPORT */
+#report-content{max-width:900px;margin:0 auto;padding:2.5rem 5%;display:none;}
+.report-header{background:var(--ink);border-radius:20px;padding:2.25rem 2.5rem;margin-bottom:1.5rem;color:var(--cream);position:relative;overflow:hidden;}
+.rh-bg{position:absolute;width:300px;height:300px;border-radius:50%;background:var(--cse);opacity:.08;top:-100px;right:-80px;}
+.rh-inner{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;}
+.rh-left h1{font-family:var(--fd);font-size:1.6rem;font-weight:700;line-height:1.2;margin-bottom:.3rem;}
+.rh-left h1 em{font-style:italic;color:var(--gold-light);}
+.rh-meta{font-size:.78rem;color:rgba(253,248,240,.45);margin-top:.5rem;}
+.rh-meta span{display:inline-block;margin-right:1.25rem;}
+.rh-score{text-align:center;}
+.rhs-num{font-family:var(--fd);font-size:3.5rem;font-weight:900;color:var(--gold-light);line-height:1;}
+.rhs-denom{font-size:.82rem;color:rgba(253,248,240,.4);}
+.rhs-pct{font-size:1.1rem;font-weight:600;color:rgba(253,248,240,.7);margin-top:.2rem;}
+.rh-rating{margin-top:1.25rem;display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:100px;padding:.5rem 1.25rem;font-size:.82rem;font-weight:600;}
+.rh-rating-dot{width:8px;height:8px;border-radius:50%;background:#22C55E;}
+
+.section-card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:1.75rem;margin-bottom:1.25rem;box-shadow:var(--shadow);}
+.sc-title{font-family:var(--fd);font-size:.95rem;font-weight:700;margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem;}
+.sc-label{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--cse);background:var(--cse-light);padding:2px 10px;border-radius:100px;}
+
+/* CATEGORY BARS */
+.cat-bar-list{display:flex;flex-direction:column;gap:.85rem;}
+.cat-bar-item{display:flex;align-items:center;gap.5rem;}
+.cbi-name{font-size:.83rem;font-weight:500;min-width:200px;flex-shrink:0;}
+.cbi-track{flex:1;height:10px;background:#F0EBE3;border-radius:100px;overflow:hidden;margin:0 .75rem;}
+.cbi-fill{height:100%;border-radius:100px;transition:width .8s ease;}
+.cbi-score{font-size:.75rem;font-family:var(--fm);font-weight:600;color:rgba(26,18,8,.5);min-width:50px;text-align:right;}
+@media(max-width:560px){.cbi-name{min-width:140px;font-size:.78rem;}}
+
+.rec-box{background:var(--cse-light);border:1px solid rgba(26,95,168,.15);border-radius:14px;padding:1.25rem 1.5rem;}
+.rec-box h3{font-size:.85rem;font-weight:700;color:var(--cse);margin-bottom:.5rem;}
+.rec-box p{font-size:.88rem;color:rgba(26,18,8,.7);line-height:1.7;}
+
+.action-btns{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:2rem;padding-bottom:2rem;}
+.btn-p{display:inline-flex;align-items:center;gap:7px;background:var(--cse);color:#fff;padding:.8rem 1.75rem;border-radius:100px;font-weight:600;font-size:.88rem;text-decoration:none;transition:background .2s;}
+.btn-p:hover{background:var(--cse-dark);}
+.btn-s{display:inline-flex;align-items:center;gap:7px;background:transparent;color:var(--ink);padding:.8rem 1.75rem;border-radius:100px;font-weight:500;font-size:.88rem;text-decoration:none;border:1.5px solid var(--border);transition:all .2s;}
+.btn-s:hover{border-color:var(--ink);}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../../" class="nav-logo">
+    <div class="nav-logo-mark"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg></div>
+    <div class="nav-logo-text">Sahir<span>ah</span>.in</div>
+  </a>
+  <div class="nav-right">
+    <a href="../">CSE Aptitude</a>
+    <button class="btn-logout" onclick="logout()">Sign Out</button>
+  </div>
+</nav>
+
+<div id="no-report" style="display:flex;">
+  <div style="font-size:2.5rem;margin-bottom:1rem;">📄</div>
+  <h2>No report yet</h2>
+  <p>You haven't completed the CSE Aptitude Test yet. Take the test to see your results here.</p>
+  <a href="../test/" class="btn-take">Start the Test →</a>
+</div>
+
+<div id="report-content">
+  <div class="report-header">
+    <div class="rh-bg"></div>
+    <div class="rh-inner">
+      <div class="rh-left">
+        <h1>CSE Aptitude<br/><em>Assessment Report</em></h1>
+        <div class="rh-meta">
+          <span id="rh-name">—</span>
+          <span id="rh-email">—</span>
+          <span id="rh-date">—</span>
+        </div>
+        <div class="rh-rating"><div class="rh-rating-dot"></div><span id="rh-rating-text">—</span></div>
+      </div>
+      <div class="rh-score">
+        <div class="rhs-num" id="rh-score">—</div>
+        <div class="rhs-denom">/ 75 marks</div>
+        <div class="rhs-pct" id="rh-pct">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="sc-title"><span class="sc-label">Domain Breakdown</span> Score by Cognitive Domain</div>
+    <div class="cat-bar-list" id="cat-bars"></div>
+  </div>
+
+  <div class="section-card">
+    <div class="sc-title"><span class="sc-label">Recommendation</span> Programme Guidance</div>
+    <div class="rec-box">
+      <h3>Based on your CSE Aptitude Rating</h3>
+      <p id="rec-text">—</p>
+    </div>
+  </div>
+
+  <div class="action-btns">
+    <a href="../test/" class="btn-p">Retake Assessment</a>
+    <a href="../../" class="btn-s">Back to Sahirah.in</a>
+  </div>
+</div>
+
+<script>
+const SESSION_KEY = 'cse_aptitude_current_user';
+const SESSIONS_KEY = 'cse_aptitude_sessions';
+
+const currentUser = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+if (!currentUser) { location.href = '../auth/'; }
+
+function logout() {
+  localStorage.removeItem(SESSION_KEY);
+  location.href = '../auth/';
+}
+
+function getBarColor(pct) {
+  if (pct >= 80) return '#0A6B5E';
+  if (pct >= 64) return '#1A5FA8';
+  if (pct >= 49) return '#C8860A';
+  if (pct >= 35) return '#B57800';
+  return '#C0410A';
+}
+
+function loadReport() {
+  const sessions = JSON.parse(localStorage.getItem(SESSIONS_KEY) || '[]');
+  const completed = sessions.filter(s => s.user_id === currentUser.id && s.status === 'completed');
+  if (!completed.length) return;
+
+  const sess = completed[completed.length - 1];
+  const r = sess.score;
+  if (!r) return;
+
+  document.getElementById('no-report').style.display = 'none';
+  document.getElementById('report-content').style.display = 'block';
+
+  document.getElementById('rh-name').textContent = currentUser.name;
+  document.getElementById('rh-email').textContent = currentUser.email;
+  document.getElementById('rh-date').textContent = new Date(sess.completed_at).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+  document.getElementById('rh-rating-text').textContent = r.rating;
+  document.getElementById('rh-score').textContent = r.total;
+  document.getElementById('rh-pct').textContent = r.percentage + '%';
+  document.getElementById('rec-text').textContent = r.recommendation;
+
+  const catEl = document.getElementById('cat-bars');
+  catEl.innerHTML = '';
+  Object.entries(r.categories || {}).forEach(([name, data]) => {
+    const pct = Math.round(data.correct / data.total * 100);
+    const color = getBarColor(pct);
+    const row = document.createElement('div');
+    row.className = 'cat-bar-item';
+    row.innerHTML = `
+      <div class="cbi-name">${name}</div>
+      <div class="cbi-track"><div class="cbi-fill" style="width:0%;background:${color};" data-w="${pct}"></div></div>
+      <div class="cbi-score">${data.correct}/${data.total}</div>`;
+    catEl.appendChild(row);
+  });
+  setTimeout(() => {
+    document.querySelectorAll('.cbi-fill').forEach(el => { el.style.width = el.dataset.w + '%'; });
+  }, 100);
+}
+
+loadReport();
+</script>
+</body>
+</html>
