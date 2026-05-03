@@ -2,16 +2,6 @@
 
 > India's first AI-powered psychometric platform for school children — helping parents and children discover the right stream, the right career, and the right path before Class 10 decides it for them.
 
----
-
-## 🌐 Live Demo
-
-Open `index.html` in any modern browser — no installation, no server, no build step required.
-
-Or deploy to GitHub Pages: `Settings → Pages → Deploy from main → /root`
-
----
-
 
 
 ## 📁 Project Structure
@@ -108,37 +98,6 @@ git push origin main
 
 ---
 
-## 🔑 API Setup
-
-Avanya (AI assistant) and the AI-generated report narrative are powered by the **Anthropic Claude API**.
-
-### For local testing
-
-Open `pages/sahirah.html` and `pages/sahirah-report.html` in a text editor. Find the `fetch` call to `api.anthropic.com` and add your key:
-
-```javascript
-headers: {
-  'Content-Type': 'application/json',
-  'x-api-key': 'sk-ant-YOUR_KEY_HERE',
-  'anthropic-version': '2023-06-01'
-}
-```
-
-### For production (recommended)
-
-**Never expose your API key in client-side code.** Use a serverless proxy:
-
-```
-Browser → Netlify Function / Vercel Edge Function → Anthropic API
-```
-
-Create a function at `netlify/functions/claude.js` that holds the key server-side and forwards requests.
-
-### Without an API key
-
-Both Avanya chat and the report narrative fall back to high-quality pre-written responses automatically. The rest of the platform (charts, PDF, scoring, admin panel) works fully without any API key.
-
----
 
 ## 🧠 The Test — 6 Modules, 2 Hours
 
