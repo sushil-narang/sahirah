@@ -12,17 +12,7 @@ Or deploy to GitHub Pages: `Settings → Pages → Deploy from main → /root`
 
 ---
 
-## 🔐 Login Credentials
 
-| Portal | URL | Username / ID | Password |
-|--------|-----|---------------|----------|
-| Student demo | pages/sahirah-login.html | `demo2025` | `Avanya@9999` |
-| Admin panel | pages/sahirah-admin.html | `admin` | `sahirah@admin2025` |
-| Real student | After registering | Auto-generated | Auto-generated (shown on confirmation screen) |
-
-> **Note:** The Anthropic API key is required for Avanya AI chat and the AI-generated report narrative. Without it, both features fall back to pre-written responses gracefully. See [API Setup](#-api-setup) below.
-
----
 
 ## 📁 Project Structure
 
