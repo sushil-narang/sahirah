@@ -55,48 +55,7 @@ sahirah/
 
 ---
 
-## 🚀 How to Run
 
-### Option A — Simplest (no install)
-
-1. Download or clone this repository
-2. Open `index.html` in Chrome, Edge, or Firefox
-3. That's it — the entire platform runs in the browser
-
-```bash
-git clone https://github.com/YOUR_USERNAME/sahirah.git
-cd sahirah
-open index.html        # macOS
-start index.html       # Windows
-xdg-open index.html    # Linux
-```
-
-### Option B — VS Code Live Server
-
-1. Install VS Code + the **Live Server** extension (Ritwick Dey)
-2. Open the `sahirah/` folder in VS Code
-3. Right-click `index.html` → **Open with Live Server**
-4. Opens at `http://localhost:5500`
-
-### Option C — Python server
-
-```bash
-cd sahirah
-python -m http.server 8080
-# Open http://localhost:8080
-```
-
-### Option D — Deploy to GitHub Pages (free hosting)
-
-```bash
-git add .
-git commit -m "Deploy Sahirah.in"
-git push origin main
-# Then: GitHub repo → Settings → Pages → Source: main / root
-# Live at: https://YOUR_USERNAME.github.io/sahirah
-```
-
----
 
 
 ## 🧠 The Test — 6 Modules, 2 Hours
@@ -125,22 +84,6 @@ git push origin main
 
 ---
 
-## 📊 Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Frontend | Vanilla HTML5 + CSS3 + JavaScript (ES6+) |
-| AI | Claude Sonnet API (Anthropic) |
-| Charts | Chart.js 4.4 (CDN) |
-| PDF Export | jsPDF 2.5 (CDN) |
-| Fonts | Google Fonts (Playfair Display + DM Sans + DM Mono) |
-| Storage | localStorage (demo) |
-| Backend | None for demo — replace with Node.js + MongoDB for production |
-| Hosting | Any static host — GitHub Pages, Netlify, Vercel |
-
-**Total size:** ~130 KB across 5 HTML files. Zero npm. Zero build step. Zero dependencies to install.
-
----
 
 ## 🗺️ Roadmap
 
@@ -158,7 +101,7 @@ git push origin main
 
 ## 📄 License
 
-MIT License — free to use, modify, and distribute with attribution.
+Sahirah India License — free to use, modify, and distribute with attribution.
 
 ---
 
@@ -166,7 +109,7 @@ MIT License — free to use, modify, and distribute with attribution.
 
 - Science: Big Five personality model, Holland RIASEC, psychometric best practices
 - Design: Playfair Display + DM Sans, warm cream and gold palette
-- AI: Anthropic Claude (Avanya assistant + report generation)
+- AI: (Avanya as AI assistant + report generation)
 - Love: For India's children — Sahi Raah, the right path 🇮🇳
 
 ---
