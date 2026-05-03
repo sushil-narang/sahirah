@@ -776,46 +776,67 @@ async function callSahira(userMsg) {
     addMsg("You're sending messages quickly! Please wait a moment before asking again.", 'sahira');
     return;
   }
-  const apiKey = getApiKey();
-  if(!apiKey) {
-    showKeySetup();
-    return;
-  }
+  const payload = {
+    model: 'claude-sonnet-4-6',
+    max_tokens: 1000,
+    system: SYSTEM_PROMPT,
+    messages: conversationHistory
+  };
   conversationHistory.push({role:'user', content: userMsg});
   showTyping();
+
+  // Try server-side proxy first (Netlify function — key never touches browser)
+  // Fall back to direct Anthropic call using locally-stored key (local dev / non-Netlify hosts)
+  let res;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model:'claude-sonnet-4-6',
-        max_tokens:1000,
-        system: SYSTEM_PROMPT,
-        messages: conversationHistory
-      })
+    res = await fetch('/.netlify/functions/avanya', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
     });
-    const data = await res.json();
-    hideTyping();
-    if(!res.ok) {
-      console.error('Avanya API error:', res.status, data);
-      const hint = data?.error?.message || ('HTTP ' + res.status);
-      addMsg("I couldn't connect right now (" + hint + "). Please try again shortly!", 'sahira');
+    if (res.status === 404) res = null; // not on Netlify — fall through
+  } catch { res = null; }
+
+  if (!res) {
+    const apiKey = getApiKey();
+    if (!apiKey) {
+      hideTyping();
       conversationHistory.pop();
+      showKeySetup();
       return;
     }
-    const reply = data.content?.[0]?.text || "I'm sorry, I couldn't process that. Please try again!";
-    conversationHistory.push({role:'assistant', content: reply});
-    addMsg(reply, 'sahira');
-    updateSuggestions(userMsg);
-  } catch(err) {
-    hideTyping();
-    addMsg("I'm having a little trouble connecting right now. Please try again in a moment!", 'sahira');
+    try {
+      res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: JSON.stringify(payload),
+      });
+    } catch(err) {
+      hideTyping();
+      conversationHistory.pop();
+      addMsg("I'm having a little trouble connecting right now. Please try again in a moment!", 'sahira');
+      return;
+    }
   }
+
+  const data = await res.json();
+  hideTyping();
+  if (!res.ok) {
+    console.error('Avanya API error:', res.status, data);
+    const hint = data?.error?.message || ('HTTP ' + res.status);
+    addMsg("I couldn't connect right now (" + hint + "). Please try again shortly!", 'sahira');
+    conversationHistory.pop();
+    return;
+  }
+  const reply = data.content?.[0]?.text || "I'm sorry, I couldn't process that. Please try again!";
+  conversationHistory.push({role:'assistant', content: reply});
+  addMsg(reply, 'sahira');
+  updateSuggestions(userMsg);
 }
 
 function sendMsg() {
