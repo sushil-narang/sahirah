@@ -5,7 +5,10 @@
       "Bash(git commit -m ':*)",
       "Bash(sed -i '' \"s|window\\\\.location\\\\.href='sahirah\\\\.html#sahira'|window.location.href='../#sahira'|g\" register/index.html)",
       "Bash(sed -i '' \"s|window\\\\.location\\\\.href = 'sahirah-report\\\\.html'|window.location.href = '../report/'|g\" login/index.html)",
-      "Bash(perl:*)"
+      "Bash(perl:*)",
+      "Bash(git reset *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
     ]
   }
 }
