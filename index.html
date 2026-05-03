@@ -609,7 +609,7 @@ footer{background:var(--ink);color:var(--cream);padding:3rem 5%;display:flex;ali
   </div>
 </div>
 
-<script src="/config.js"></script>
+<script src="config.js"></script>
 <script>
 // ---- SCROLL REVEAL ----
 const obs = new IntersectionObserver(entries => {
@@ -712,6 +712,10 @@ async function callSahira(userMsg) {
     addMsg("You're sending messages quickly! Please wait a moment before asking again.", 'sahira');
     return;
   }
+  if(!ANTHROPIC_API_KEY) {
+    addMsg("Avanya isn't configured yet — the API key is missing. Please check config.js.", 'sahira');
+    return;
+  }
   conversationHistory.push({role:'user', content: userMsg});
   showTyping();
   try {
@@ -732,6 +736,13 @@ async function callSahira(userMsg) {
     });
     const data = await res.json();
     hideTyping();
+    if(!res.ok) {
+      console.error('Avanya API error:', res.status, data);
+      const hint = data?.error?.message || ('HTTP ' + res.status);
+      addMsg("I couldn't connect right now (" + hint + "). Please try again shortly!", 'sahira');
+      conversationHistory.pop();
+      return;
+    }
     const reply = data.content?.[0]?.text || "I'm sorry, I couldn't process that. Please try again!";
     conversationHistory.push({role:'assistant', content: reply});
     addMsg(reply, 'sahira');
