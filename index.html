@@ -609,6 +609,7 @@ footer{background:var(--ink);color:var(--cream);padding:3rem 5%;display:flex;ali
   </div>
 </div>
 
+<script src="/config.js"></script>
 <script>
 // ---- SCROLL REVEAL ----
 const obs = new IntersectionObserver(entries => {
@@ -631,6 +632,8 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 });
 
 // ---- SAHIRA CHAT ----
+const ANTHROPIC_API_KEY = window.ANTHROPIC_API_KEY || '';
+
 let panelOpen = false;
 let labelHidden = false;
 let conversationHistory = [];
@@ -714,9 +717,14 @@ async function callSahira(userMsg) {
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key': ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
       body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
+        model:'claude-sonnet-4-6',
         max_tokens:1000,
         system: SYSTEM_PROMPT,
         messages: conversationHistory

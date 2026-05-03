@@ -76,10 +76,12 @@ class SahiraChat {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...(this.apiKey ? { 'x-api-key': this.apiKey, 'anthropic-version': '2023-06-01' } : {}),
+          'x-api-key': this.apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
         },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
+          model: 'claude-sonnet-4-6',
           max_tokens: 400,
           system: SAHIRA_SYSTEM_PROMPT,
           messages: this.history,
