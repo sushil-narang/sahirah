@@ -609,7 +609,7 @@ footer{background:var(--ink);color:var(--cream);padding:3rem 5%;display:flex;ali
   </div>
 </div>
 
-<script src="config.js"></script>
+<script src="config.js" onerror="console.error('config.js failed to load — check the file exists in the project root')"></script>
 <script>
 // ---- SCROLL REVEAL ----
 const obs = new IntersectionObserver(entries => {
@@ -632,7 +632,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 });
 
 // ---- SAHIRA CHAT ----
-const ANTHROPIC_API_KEY = window.ANTHROPIC_API_KEY || '';
+function getApiKey() { return window.ANTHROPIC_API_KEY || ''; }
 
 let panelOpen = false;
 let labelHidden = false;
@@ -712,7 +712,8 @@ async function callSahira(userMsg) {
     addMsg("You're sending messages quickly! Please wait a moment before asking again.", 'sahira');
     return;
   }
-  if(!ANTHROPIC_API_KEY) {
+  const apiKey = getApiKey();
+  if(!apiKey) {
     addMsg("Avanya isn't configured yet — the API key is missing. Please check config.js.", 'sahira');
     return;
   }
@@ -723,7 +724,7 @@ async function callSahira(userMsg) {
       method:'POST',
       headers:{
         'Content-Type':'application/json',
-        'x-api-key': ANTHROPIC_API_KEY,
+        'x-api-key': apiKey,
         'anthropic-version': '2023-06-01',
         'anthropic-dangerous-direct-browser-access': 'true'
       },
