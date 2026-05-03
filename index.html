@@ -27,10 +27,21 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:0 5%;background:rgba
 .nav-sahira-btn{display:flex;align-items:center;gap:7px;background:var(--sahira-light);border:1px solid rgba(26,95,168,.2);border-radius:100px;padding:.42rem 1rem;font-size:.8rem;font-weight:600;color:var(--sahira);cursor:pointer;transition:all .2s;}
 .nav-sahira-btn:hover{background:var(--sahira);color:#fff;}
 .nav-sahira-btn .sdot{width:7px;height:7px;border-radius:50%;background:#22C55E;animation:pulse 2s infinite;}
-.nav-mob{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px;}
-.nav-mob span{display:block;width:22px;height:2px;background:var(--ink);border-radius:2px;}
+.nav-mob{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px;z-index:201;}
+.nav-mob span{display:block;width:22px;height:2px;background:var(--ink);border-radius:2px;transition:transform .25s,opacity .25s;}
+.nav-mob.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.nav-mob.open span:nth-child(2){opacity:0;}
+.nav-mob.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.nav-drawer{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(253,248,240,0.98);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:1.2rem 5% 1.6rem;flex-direction:column;gap:.2rem;z-index:199;box-shadow:0 8px 32px rgba(26,18,8,0.10);}
+.nav-drawer.open{display:flex;}
+.nav-drawer a,.nav-drawer button.nav-sahira-btn{text-decoration:none;color:var(--ink);font-size:1rem;font-weight:500;padding:.65rem 0;border-bottom:1px solid var(--border);opacity:.75;transition:opacity .15s;background:none;border-radius:0;width:100%;text-align:left;cursor:pointer;}
+.nav-drawer a:last-child,.nav-drawer button:last-child{border-bottom:none;}
+.nav-drawer a:hover,.nav-drawer button:hover{opacity:1;}
+.nav-drawer .nav-cta{display:inline-block;margin-top:.5rem;background:var(--ink)!important;color:var(--cream)!important;padding:.65rem 1.6rem!important;border-radius:100px;opacity:1!important;font-weight:600!important;text-align:center;border-bottom:none!important;}
+.nav-drawer .nav-cta:hover{background:var(--gold)!important;color:var(--ink)!important;}
+.nav-drawer .cse-pill{color:#1A5FA8!important;background:#E8F2FF!important;padding:.45rem 1rem;border-radius:100px;font-size:.9rem;font-weight:600;display:inline-block;margin-top:.25rem;border-bottom:none!important;opacity:1!important;}
 @media(max-width:820px){.nav-links .hide-mob{display:none;}.nav-mob{display:flex;}}
-@media(max-width:600px){.nav-links{gap:1rem;}}
+@media(max-width:600px){.nav-links{gap:.75rem;}}
 
 /* HERO */
 .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:100px 5% 60px;position:relative;overflow:hidden;}
@@ -327,8 +338,18 @@ footer{background:var(--ink);color:var(--cream);padding:3rem 5%;display:flex;ali
     <button class="nav-sahira-btn" onclick="openSahira()"><div class="sdot"></div>Ask Avanya</button>
     <a href="register/" class="nav-cta">Register →</a>
   </div>
-  <button class="nav-mob" aria-label="Menu"><span></span><span></span><span></span></button>
+  <button class="nav-mob" id="navHamburger" aria-label="Menu" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
 </nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="#streams" onclick="closeMobileNav()">Streams</a>
+  <a href="#how" onclick="closeMobileNav()">How it works</a>
+  <a href="#test" onclick="closeMobileNav()">The Test</a>
+  <a href="#report" onclick="closeMobileNav()">Report</a>
+  <a href="login/" onclick="closeMobileNav()">Login</a>
+  <a href="aptitude/" class="cse-pill" onclick="closeMobileNav()">CSE Aptitude ↗</a>
+  <button class="nav-sahira-btn" onclick="closeMobileNav();openSahira()"><div class="sdot"></div>Ask Avanya</button>
+  <a href="register/" class="nav-cta" onclick="closeMobileNav()">Register →</a>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -624,6 +645,19 @@ document.querySelectorAll('.reveal').forEach((el,i) => {
 window.addEventListener('scroll', () => {
   document.getElementById('mainnav').style.boxShadow = window.scrollY > 20 ? '0 2px 24px rgba(26,18,8,0.07)' : 'none';
 });
+
+function toggleMobileNav() {
+  const btn = document.getElementById('navHamburger');
+  const drawer = document.getElementById('navDrawer');
+  const open = drawer.classList.toggle('open');
+  btn.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+function closeMobileNav() {
+  document.getElementById('navHamburger').classList.remove('open');
+  document.getElementById('navDrawer').classList.remove('open');
+  document.body.style.overflow = '';
+}
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
     const t = document.querySelector(a.getAttribute('href'));
