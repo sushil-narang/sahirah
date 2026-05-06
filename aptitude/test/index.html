@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://cdn.jsdelivr.net; worker-src blob:; img-src 'self' data: blob:; frame-ancestors 'none';"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://cdn.jsdelivr.net https://storage.googleapis.com; worker-src blob:; img-src 'self' data: blob:; frame-ancestors 'none';"/>
 <title>CSE Aptitude Test — Sahirah.in</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
@@ -603,14 +603,20 @@ function loadScript(src) {
 }
 
 async function loadDetectorAndStart(video) {
+  const statusEl = document.querySelector('.proctor-label');
+  if (statusEl) statusEl.textContent = 'Loading AI…';
   try {
     await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js');
     await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js');
     await tf.ready();
-    const model = await cocoSsd.load({ base: 'lite_mobilenet_v2' });
+    // Full mobilenet_v2 — more accurate than lite for phone detection
+    const model = await cocoSsd.load();
+    if (statusEl) statusEl.textContent = 'AI Active';
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     let phoneLast = 0, personLast = 0;
+    // Phones are often misclassified as 'remote' — flag both
+    const PHONE_CLASSES = new Set(['cell phone', 'remote']);
 
     setInterval(async () => {
       if (!testActive || !video.videoWidth) return;
@@ -619,19 +625,20 @@ async function loadDetectorAndStart(video) {
       ctx.drawImage(video, 0, 0);
       const preds = await model.detect(canvas).catch(() => []);
       const now = Date.now();
-      const phones  = preds.filter(p => p.class === 'cell phone' && p.score > 0.40);
-      const persons = preds.filter(p => p.class === 'person'     && p.score > 0.50);
-      if (phones.length > 0 && now - phoneLast > 15000) {
+      const phones  = preds.filter(p => PHONE_CLASSES.has(p.class) && p.score > 0.15);
+      const persons = preds.filter(p => p.class === 'person'        && p.score > 0.40);
+      if (phones.length > 0 && now - phoneLast > 12000) {
         phoneLast = now;
         addFlag('phone', 'Mobile phone detected in camera');
       }
-      if (persons.length > 1 && now - personLast > 15000) {
+      if (persons.length > 1 && now - personLast > 12000) {
         personLast = now;
         addFlag('persons', persons.length + ' persons detected in camera');
       }
-    }, 3000);
+    }, 1500);
   } catch (e) {
-    console.warn('Proctor detection unavailable:', e.message);
+    if (statusEl) statusEl.textContent = 'AI Error';
+    console.error('Proctor AI failed to load:', e);
   }
 }
 
