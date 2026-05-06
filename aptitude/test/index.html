@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none';"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://cdn.jsdelivr.net; worker-src blob:; img-src 'self' data: blob:; frame-ancestors 'none';"/>
 <title>CSE Aptitude Test — Sahirah.in</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
@@ -136,6 +136,24 @@ body{background:#F5F2EC;color:var(--ink);font-family:var(--fb);font-size:15px;}
 .btn-report:hover{background:var(--cse-dark);}
 .btn-home{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--ink);padding:.9rem 2rem;border-radius:100px;font-weight:500;font-size:.9rem;text-decoration:none;border:1.75px solid var(--border);transition:all .2s;}
 .btn-home:hover{border-color:var(--ink);}
+
+/* ===== PROCTORING ===== */
+.q-card{user-select:none;-webkit-user-select:none;}
+#proctor-wrap{position:fixed;bottom:1rem;right:1rem;z-index:50;display:none;flex-direction:column;align-items:flex-end;gap:5px;}
+#proctor-wrap.active{display:flex;}
+#proctor-video{width:148px;height:108px;border-radius:11px;object-fit:cover;border:2px solid rgba(26,95,168,.25);background:#111;transform:scaleX(-1);}
+.proctor-meta{display:flex;align-items:center;justify-content:flex-end;gap:8px;}
+.proctor-label{font-size:.58rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(26,18,8,.4);}
+.plive{display:flex;align-items:center;gap:4px;font-size:.58rem;font-weight:700;color:#dc2626;letter-spacing:.04em;}
+.plive-dot{width:6px;height:6px;border-radius:50%;background:#dc2626;animation:pulse 1.4s infinite;}
+.flag-badge{display:none;align-items:center;gap:5px;background:#fee2e2;border:1.5px solid #fca5a5;border-radius:100px;padding:.28rem .85rem;font-size:.75rem;font-weight:700;color:#991b1b;}
+.flag-badge.active{display:flex;animation:flagPop .35s ease;}
+.flag-badge.many{background:#dc2626;border-color:#dc2626;color:#fff;}
+@keyframes flagPop{0%{transform:scale(.75);}65%{transform:scale(1.12);}100%{transform:scale(1);}}
+#proctor-toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#dc2626;color:#fff;padding:.6rem 1.5rem;border-radius:100px;font-size:.82rem;font-weight:600;z-index:9999;box-shadow:0 4px 24px rgba(220,38,38,.4);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s;}
+#proctor-toast.show{opacity:1;}
+#proctor-error{display:none;color:#C0410A;font-size:.82rem;margin-top:.8rem;padding:.65rem 1rem;background:#FFF0EB;border-radius:10px;line-height:1.55;text-align:left;}
+.btn-start:disabled{opacity:.5;cursor:not-allowed;}
 </style>
 </head>
 <body>
@@ -151,8 +169,13 @@ body{background:#F5F2EC;color:var(--ink);font-family:var(--fb);font-size:15px;}
       <div class="mm"><div class="mm-num">60</div><div class="mm-label">Minutes</div></div>
       <div class="mm"><div class="mm-num">5</div><div class="mm-label">Domains</div></div>
     </div>
+    <div style="background:#E8F2FF;border:1px solid rgba(26,95,168,.2);border-radius:12px;padding:.8rem 1rem;margin-bottom:1.25rem;font-size:.82rem;line-height:1.55;text-align:left;">
+      <strong style="display:block;margin-bottom:3px;color:var(--cse);">📹 This test is proctored</strong>
+      Camera and microphone access are required. Your session is monitored for academic integrity. Keep your face clearly visible throughout.
+    </div>
+    <div id="proctor-error"></div>
     <div class="modal-btns">
-      <button class="btn-start" onclick="startTest()">Yes, Start the Test Now →</button>
+      <button class="btn-start" id="btn-start-test" onclick="requestPermissionsAndStart()">Yes, Start the Test Now →</button>
       <button class="btn-later" onclick="comeLater()">Not Now — Come Back Later</button>
     </div>
     <p class="modal-warning">Ensure you have a quiet environment and 60 uninterrupted minutes before you begin.</p>
@@ -176,7 +199,10 @@ body{background:#F5F2EC;color:var(--ink);font-family:var(--fb);font-size:15px;}
       <div class="tn-progress-wrap"><div class="tn-progress-fill" id="tn-prog" style="width:0%"></div></div>
       <div style="font-size:.62rem;color:rgba(26,18,8,.35);text-align:center;" id="tn-q-count"></div>
     </div>
-    <div class="tn-timer" id="timer">60:00</div>
+    <div style="display:flex;align-items:center;gap:.65rem;">
+      <div class="flag-badge" id="flag-badge">🚩 <span id="flag-count">0</span> flag<span id="flag-s"></span></div>
+      <div class="tn-timer" id="timer">60:00</div>
+    </div>
   </div>
   <div class="test-body">
     <aside class="test-sidebar">
@@ -241,6 +267,16 @@ body{background:#F5F2EC;color:var(--ink);font-family:var(--fb);font-size:15px;}
   </div>
 </div>
 
+<!-- PROCTOR VIDEO WIDGET -->
+<div id="proctor-wrap">
+  <div class="proctor-meta">
+    <div class="proctor-label">Proctored</div>
+    <div class="plive"><div class="plive-dot"></div>LIVE</div>
+  </div>
+  <video id="proctor-video" autoplay muted playsinline></video>
+</div>
+<div id="proctor-toast"></div>
+
 <script>
 // ---- AUTH GUARD ----
 const USERS_KEY = 'cse_aptitude_users';
@@ -277,6 +313,8 @@ function startTimer() {
 // ---- MODAL ACTIONS ----
 function startTest() {
   document.getElementById('modal-permission').style.display = 'none';
+  testActive = true;
+  proctorFlags = [];
   const session = {
     id: 'sess-' + Math.random().toString(36).substr(2,8),
     user_id: currentUser.id,
@@ -286,7 +324,9 @@ function startTest() {
     completed_at: null,
     status: 'in_progress',
     answers: {},
-    score: null
+    score: null,
+    flags: [],
+    flag_count: 0
   };
   testSession = session;
   saveSessions();
@@ -295,6 +335,7 @@ function startTest() {
 }
 
 function comeLater() {
+  stopProctorStream();
   document.getElementById('modal-permission').style.display = 'none';
   document.getElementById('screen-comeback').style.display = 'flex';
 }
@@ -423,6 +464,8 @@ function hideSubmitModal() { document.getElementById('modal-submit').style.displ
 
 function submitTest() {
   clearInterval(timerInterval);
+  testActive = false;
+  stopProctorStream();
   document.getElementById('modal-submit').style.display = 'none';
   const result = calculateScore();
   if (testSession) {
@@ -430,6 +473,8 @@ function submitTest() {
     testSession.status = 'completed';
     testSession.score = result;
     testSession.answers = answers;
+    testSession.flags = proctorFlags;
+    testSession.flag_count = proctorFlags.length;
     saveSessions();
     localStorage.setItem('cse_aptitude_last_result', JSON.stringify(result));
   }
@@ -473,6 +518,121 @@ function saveSessions() {
   const idx = all.findIndex(s => s.id === testSession.id);
   if (idx >= 0) all[idx] = testSession; else all.push(testSession);
   localStorage.setItem(SESSIONS_KEY, JSON.stringify(all));
+}
+
+// ---- PROCTORING ----
+let proctorStream = null;
+let proctorFlags = [];
+let testActive = false;
+let lastFlagMs = 0;
+
+function addFlag(type, reason) {
+  const now = Date.now();
+  if (now - lastFlagMs < 2500) return; // debounce: max one flag per 2.5s
+  lastFlagMs = now;
+  proctorFlags.push({ type, reason, timestamp: new Date().toISOString() });
+  if (testSession) { testSession.flags = proctorFlags; testSession.flag_count = proctorFlags.length; saveSessions(); }
+  const n = proctorFlags.length;
+  const badge = document.getElementById('flag-badge');
+  badge.classList.add('active');
+  if (n >= 3) badge.classList.add('many');
+  document.getElementById('flag-count').textContent = n;
+  document.getElementById('flag-s').textContent = n === 1 ? '' : 's';
+  showToast('🚩 ' + reason);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('proctor-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+function stopProctorStream() {
+  if (proctorStream) { proctorStream.getTracks().forEach(t => t.stop()); proctorStream = null; }
+  document.getElementById('proctor-wrap').classList.remove('active');
+}
+
+async function requestPermissionsAndStart() {
+  const btn = document.getElementById('btn-start-test');
+  const errEl = document.getElementById('proctor-error');
+  btn.textContent = 'Requesting camera & mic…';
+  btn.disabled = true;
+  errEl.style.display = 'none';
+  try {
+    proctorStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    const video = document.getElementById('proctor-video');
+    video.srcObject = proctorStream;
+    document.getElementById('proctor-wrap').classList.add('active');
+    startTest();
+    setupGuards();
+    loadDetectorAndStart(video);
+  } catch (err) {
+    btn.textContent = 'Yes, Start the Test Now →';
+    btn.disabled = false;
+    errEl.style.display = 'block';
+    errEl.textContent = err.name === 'NotAllowedError'
+      ? '⚠ Camera & microphone access was denied. Please click "Allow" when your browser asks, then try again.'
+      : '⚠ Could not access camera or microphone: ' + err.message;
+  }
+}
+
+function setupGuards() {
+  // Tab visibility change
+  document.addEventListener('visibilitychange', () => {
+    if (testActive && document.hidden) addFlag('tab_switch', 'Left the test tab');
+  });
+  // Window focus lost (switched to another app)
+  window.addEventListener('blur', () => {
+    if (testActive) addFlag('focus_loss', 'Switched to another application');
+  });
+  // Block copy / context menu
+  document.addEventListener('copy',        e => { if (testActive) e.preventDefault(); });
+  document.addEventListener('cut',         e => { if (testActive) e.preventDefault(); });
+  document.addEventListener('contextmenu', e => { if (testActive) e.preventDefault(); });
+  document.addEventListener('selectstart', e => { if (testActive) e.preventDefault(); });
+}
+
+function loadScript(src) {
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = src; s.onload = res; s.onerror = rej;
+    document.head.appendChild(s);
+  });
+}
+
+async function loadDetectorAndStart(video) {
+  try {
+    await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js');
+    await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js');
+    await tf.ready();
+    const model = await cocoSsd.load({ base: 'lite_mobilenet_v2' });
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    let phoneLast = 0, personLast = 0;
+
+    setInterval(async () => {
+      if (!testActive || !video.videoWidth) return;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0);
+      const preds = await model.detect(canvas).catch(() => []);
+      const now = Date.now();
+      const phones  = preds.filter(p => p.class === 'cell phone' && p.score > 0.40);
+      const persons = preds.filter(p => p.class === 'person'     && p.score > 0.50);
+      if (phones.length > 0 && now - phoneLast > 15000) {
+        phoneLast = now;
+        addFlag('phone', 'Mobile phone detected in camera');
+      }
+      if (persons.length > 1 && now - personLast > 15000) {
+        personLast = now;
+        addFlag('persons', persons.length + ' persons detected in camera');
+      }
+    }, 3000);
+  } catch (e) {
+    console.warn('Proctor detection unavailable:', e.message);
+  }
 }
 
 // ---- INIT ----

@@ -210,7 +210,7 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
         <div class="table-wrap">
           <div class="table-head"><h3>Completed Tests</h3></div>
           <table class="t-table">
-            <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Score</th><th>Pct</th><th>Rating</th><th>Completed</th><th>Action</th></tr></thead>
+            <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Score</th><th>Pct</th><th>Rating</th><th>Flags</th><th>Completed</th><th>Action</th></tr></thead>
             <tbody id="completed-tbody"></tbody>
           </table>
         </div>
@@ -249,6 +249,10 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
       <div id="rm-cat-bars"></div>
     </div>
     <div class="rm-rec"><h3>Recommendation</h3><p id="rm-rec-text">—</p></div>
+    <div class="rm-rec" style="margin-top:1.25rem;">
+      <h3 style="display:flex;align-items:center;gap:6px;">🚩 Proctoring Flags <span id="rm-flag-count" style="font-family:var(--fm);font-size:.8rem;font-weight:400;color:rgba(26,18,8,.4)"></span></h3>
+      <div id="rm-flags" style="margin-top:.65rem;"></div>
+    </div>
   </div>
 </div>
 
@@ -391,6 +395,10 @@ function renderCompleted() {
   if (!sessions.length) { tbody.innerHTML = '<tr><td colspan="8" class="t-empty">No completed tests yet.</td></tr>'; return; }
   tbody.innerHTML = sessions.map((s, i) => {
     const r = s.score || {};
+    const fc = s.flag_count || 0;
+    const flagCell = fc === 0
+      ? '<span style="color:rgba(26,18,8,.25);font-size:.75rem;">—</span>'
+      : `<span style="background:#fee2e2;color:#991b1b;border-radius:100px;padding:2px 9px;font-size:.73rem;font-weight:700;">🚩 ${fc}</span>`;
     return `<tr>
       <td style="color:rgba(26,18,8,.3);font-family:var(--fm)">${i+1}</td>
       <td><strong>${s.user_name || '—'}</strong></td>
@@ -398,6 +406,7 @@ function renderCompleted() {
       <td><span style="font-family:var(--fm);font-weight:700;color:var(--cse)">${r.total || 0}/75</span></td>
       <td>${r.percentage || 0}%</td>
       <td><span style="font-size:.78rem;font-weight:600;">${r.rating || '—'}</span></td>
+      <td>${flagCell}</td>
       <td>${fmtDate(s.completed_at)}</td>
       <td><button class="btn-view" onclick='viewReport(${JSON.stringify(s)})'>View</button></td>
     </tr>`;
@@ -451,6 +460,21 @@ function viewReport(sess) {
     </div>`;
   });
 
+  // Proctor flags
+  const flagsEl = document.getElementById('rm-flags');
+  const flags = sess.flags || [];
+  document.getElementById('rm-flag-count').textContent = flags.length ? `(${flags.length} flag${flags.length > 1 ? 's' : ''})` : '';
+  if (flags.length === 0) {
+    flagsEl.innerHTML = '<div style="font-size:.82rem;color:rgba(26,18,8,.4);padding:.5rem 0;">No proctoring flags — clean session ✓</div>';
+  } else {
+    flagsEl.innerHTML = flags.map(f =>
+      `<div style="display:flex;gap:.75rem;align-items:flex-start;padding:.45rem 0;border-bottom:1px solid var(--border);font-size:.8rem;">
+        <span style="color:#dc2626;font-weight:700;flex-shrink:0;">🚩</span>
+        <span style="flex:1;">${f.reason}</span>
+        <span style="color:rgba(26,18,8,.35);font-family:var(--fm);font-size:.7rem;flex-shrink:0;">${fmtDate(f.timestamp)}</span>
+      </div>`
+    ).join('');
+  }
   document.getElementById('report-overlay').classList.add('show');
 }
 
