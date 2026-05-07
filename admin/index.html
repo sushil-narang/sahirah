@@ -270,6 +270,8 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
             <h3>Question Bank <span id="qb-count" style="font-family:var(--fm);font-size:.76rem;color:rgba(26,18,8,.35);margin-left:.5rem;font-weight:400;"></span></h3>
             <div class="th-actions">
               <button class="btn-sm" style="background:var(--teal-light);color:var(--teal);border:1.5px solid rgba(10,107,94,.2);" onclick="openAddQuestion()">+ Add Question</button>
+              <button class="btn-sm btn-sm-outline" onclick="exportQBankJSON()">⬇ JSON</button>
+              <label class="btn-sm btn-sm-outline" style="cursor:pointer;">⬆ Import JSON<input type="file" id="qb-import-file" accept=".json" style="display:none" onchange="importQBank(event)"/></label>
               <button class="btn-sm" style="background:var(--red-light);color:var(--red);border:1.5px solid rgba(192,65,10,.2);" onclick="resetQBank()">↺ Reset to Default</button>
             </div>
           </div>
@@ -849,6 +851,35 @@ function deleteQuestion(mi, qi) {
 
 function saveQbOverride() {
   localStorage.setItem('psycho_questions_override', JSON.stringify(qbData));
+}
+
+function exportQBankJSON() {
+  const json = JSON.stringify(qbData, null, 2);
+  const a = document.createElement('a');
+  a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(json);
+  a.download = 'psychometric-question-bank.json';
+  a.click();
+}
+
+function importQBank(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (!Array.isArray(data) || data.length !== 6 || !data.every(Array.isArray)) {
+        showAdminToast('Invalid JSON — expected array of 6 module arrays'); return;
+      }
+      qbData = data;
+      localStorage.setItem('psycho_questions_override', JSON.stringify(qbData));
+      renderQBank();
+      const total = qbData.reduce((s, arr) => s + arr.length, 0);
+      showAdminToast('Imported ✓ — ' + total + ' questions across 6 modules');
+    } catch { showAdminToast('Could not parse JSON file'); }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
 }
 
 function resetQBank() {
