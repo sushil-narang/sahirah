@@ -873,11 +873,12 @@ function importQBank(e) {
         showAdminToast('Invalid JSON — expected array of 6 module objects'); return;
       }
       // Accept both { module, questions } format and raw arrays (legacy)
-      qbData = data.map(entry => Array.isArray(entry) ? entry : (Array.isArray(entry.questions) ? entry.questions : []));
+      const incoming = data.map(entry => Array.isArray(entry) ? entry : (Array.isArray(entry.questions) ? entry.questions : []));
+      let added = 0;
+      incoming.forEach((qs, i) => { if (qbData[i]) { qbData[i].push(...qs); added += qs.length; } });
       localStorage.setItem('psycho_questions_override', JSON.stringify(qbData));
       renderQBank();
-      const total = qbData.reduce((s, arr) => s + arr.length, 0);
-      showAdminToast('Imported ✓ — ' + total + ' questions across 6 modules');
+      showAdminToast('Imported ✓ — ' + added + ' questions added to existing bank');
     } catch { showAdminToast('Could not parse JSON file'); }
     e.target.value = '';
   };

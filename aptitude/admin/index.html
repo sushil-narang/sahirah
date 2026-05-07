@@ -799,11 +799,17 @@ function importQBank(e) {
     try {
       const data = JSON.parse(ev.target.result);
       if (!data.sections || !Array.isArray(data.sections)) { showAdminToast('Invalid JSON — expected { sections: [...] }'); return; }
-      qbData = data;
+      let added = 0;
+      data.sections.forEach(importedSec => {
+        const existing = qbData.sections.find(s => s.name === importedSec.name);
+        const qs = importedSec.questions || [];
+        if (existing) { existing.questions.push(...qs); }
+        else { qbData.sections.push(importedSec); }
+        added += qs.length;
+      });
       localStorage.setItem('cse_questions_override', JSON.stringify(qbData));
       renderQBank();
-      const total = data.sections.reduce((s, x) => s + (x.questions || []).length, 0);
-      showAdminToast('Imported ✓ — ' + total + ' questions across ' + data.sections.length + ' sections');
+      showAdminToast('Imported ✓ — ' + added + ' questions added to existing bank');
     } catch { showAdminToast('Could not parse JSON file'); }
     e.target.value = '';
   };
