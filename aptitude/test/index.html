@@ -614,8 +614,8 @@ async function loadDetectorAndStart(video) {
     if (statusEl) statusEl.textContent = 'AI Active';
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    let phoneLast = 0, personLast = 0;
-    // Phones are often misclassified as 'remote' — flag both
+    let phoneLast = 0, personLast = 0, darkLast = 0, noPersonLast = 0;
+    let consecutiveDark = 0, consecutiveNoPerson = 0;
     const PHONE_CLASSES = new Set(['cell phone', 'remote']);
 
     setInterval(async () => {
@@ -623,10 +623,26 @@ async function loadDetectorAndStart(video) {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       ctx.drawImage(video, 0, 0);
-      const preds = await model.detect(canvas).catch(() => []);
       const now = Date.now();
+
+      // Dark-camera check (sample every 4th pixel for speed)
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      let brightnessSum = 0;
+      for (let i = 0; i < imgData.length; i += 16) brightnessSum += (imgData[i] + imgData[i+1] + imgData[i+2]) / 3;
+      const avgBrightness = brightnessSum / (canvas.width * canvas.height / 4);
+      if (avgBrightness < 20) {
+        consecutiveDark++;
+        if (consecutiveDark >= 3 && now - darkLast > 15000) {
+          darkLast = now; consecutiveDark = 0;
+          addFlag('dark', 'Camera covered or no light detected');
+        }
+      } else { consecutiveDark = 0; }
+
+      // AI object / person detection
+      const preds = await model.detect(canvas).catch(() => []);
       const phones  = preds.filter(p => PHONE_CLASSES.has(p.class) && p.score > 0.15);
       const persons = preds.filter(p => p.class === 'person'        && p.score > 0.40);
+
       if (phones.length > 0 && now - phoneLast > 12000) {
         phoneLast = now;
         addFlag('phone', 'Mobile phone detected in camera');
@@ -635,6 +651,14 @@ async function loadDetectorAndStart(video) {
         personLast = now;
         addFlag('persons', persons.length + ' persons detected in camera');
       }
+      // No person visible (and frame is not dark — darkness handled above)
+      if (persons.length === 0 && avgBrightness >= 20) {
+        consecutiveNoPerson++;
+        if (consecutiveNoPerson >= 4 && now - noPersonLast > 15000) {
+          noPersonLast = now; consecutiveNoPerson = 0;
+          addFlag('no_person', 'No person visible in camera');
+        }
+      } else { consecutiveNoPerson = 0; }
     }, 1500);
   } catch (e) {
     if (statusEl) statusEl.textContent = 'AI Error';

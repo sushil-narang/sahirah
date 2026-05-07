@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co; img-src 'self' data:; frame-ancestors 'none';"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co https://cdn.jsdelivr.net https://storage.googleapis.com; worker-src blob:; img-src 'self' data: blob:; frame-ancestors 'none';"/>
 <title>Login — Sahirah.in</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
@@ -183,6 +183,36 @@ body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16
 .modal-sub{font-size:.875rem;color:rgba(26,18,8,.5);line-height:1.65;margin-bottom:1.5rem;}
 .modal-btn{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--cream);padding:.8rem 1.75rem;border-radius:100px;font-weight:600;font-size:.875rem;border:none;cursor:pointer;transition:all .25s;}
 .modal-btn:hover{background:var(--gold);color:var(--ink);}
+
+/* ===== PROCTORING ===== */
+.q-card{user-select:none;-webkit-user-select:none;}
+#proctor-wrap{position:fixed;bottom:1rem;right:1rem;z-index:999;display:none;flex-direction:column;align-items:flex-end;gap:5px;}
+#proctor-wrap.active{display:flex;}
+#proctor-video{width:148px;height:108px;border-radius:11px;object-fit:cover;border:2px solid rgba(200,134,10,.3);background:#111;transform:scaleX(-1);}
+.proctor-meta{display:flex;align-items:center;justify-content:flex-end;gap:8px;}
+.proctor-label{font-size:.58rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(26,18,8,.45);}
+.plive{display:flex;align-items:center;gap:4px;font-size:.58rem;font-weight:700;color:#dc2626;letter-spacing:.04em;}
+.plive-dot{width:6px;height:6px;border-radius:50%;background:#dc2626;animation:pulse 1.4s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.flag-badge{display:none;align-items:center;gap:5px;background:#fee2e2;border:1.5px solid #fca5a5;border-radius:100px;padding:.28rem .85rem;font-size:.75rem;font-weight:700;color:#991b1b;}
+.flag-badge.active{display:flex;animation:flagPop .35s ease;}
+.flag-badge.many{background:#dc2626;border-color:#dc2626;color:#fff;}
+@keyframes flagPop{0%{transform:scale(.75);}65%{transform:scale(1.12);}100%{transform:scale(1);}}
+#proctor-toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#dc2626;color:#fff;padding:.6rem 1.5rem;border-radius:100px;font-size:.82rem;font-weight:600;z-index:9999;box-shadow:0 4px 24px rgba(220,38,38,.4);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s;}
+#proctor-toast.show{opacity:1;}
+/* Proctor gate modal */
+#proctor-gate{position:fixed;inset:0;background:rgba(26,18,8,.85);z-index:5000;display:none;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(8px);}
+#proctor-gate.show{display:flex;}
+.pg-card{background:#fff;border-radius:24px;padding:2.5rem;max-width:460px;width:100%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.35);}
+.pg-icon{font-size:2.5rem;margin-bottom:1rem;}
+.pg-card h2{font-family:var(--fd);font-size:1.5rem;font-weight:700;margin-bottom:.6rem;}
+.pg-card p{font-size:.875rem;color:rgba(26,18,8,.55);line-height:1.65;margin-bottom:1.5rem;}
+.pg-notice{background:#E8F2FF;border:1px solid rgba(26,95,168,.2);border-radius:12px;padding:.85rem 1rem;margin-bottom:1.5rem;font-size:.82rem;line-height:1.55;text-align:left;}
+.pg-notice strong{display:block;color:#1A5FA8;margin-bottom:3px;}
+.pg-err{display:none;color:#C0410A;font-size:.82rem;margin-top:.75rem;padding:.65rem 1rem;background:#FFF0EB;border-radius:10px;line-height:1.55;text-align:left;}
+.btn-pg{width:100%;background:var(--gold);color:var(--ink);border:none;border-radius:100px;padding:.9rem;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .25s;}
+.btn-pg:hover{background:#a86d08;}
+.btn-pg:disabled{opacity:.5;cursor:not-allowed;}
 </style>
 </head>
 <body>
@@ -263,9 +293,12 @@ body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16
       <div class="tn-progress-wrap"><div class="tn-progress-fill" id="tn-prog" style="width:0%"></div></div>
       <div class="tn-pct" id="tn-pct">0 of 165 answered</div>
     </div>
-    <div class="tn-timer" id="timer-display">
-      <span class="tn-timer-icon">⏱</span>
-      <span id="timer-text">2:00:00</span>
+    <div style="display:flex;align-items:center;gap:.65rem;">
+      <div class="flag-badge" id="flag-badge">🚩 <span id="flag-count">0</span> flag<span id="flag-s"></span></div>
+      <div class="tn-timer" id="timer-display">
+        <span class="tn-timer-icon">⏱</span>
+        <span id="timer-text">2:00:00</span>
+      </div>
     </div>
   </div>
 
@@ -292,6 +325,31 @@ body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16
     <button class="modal-btn" onclick="window.location.href='../report/'">View My Report →</button>
   </div>
 </div>
+
+<!-- PROCTOR GATE MODAL -->
+<div id="proctor-gate">
+  <div class="pg-card">
+    <div class="pg-icon">📹</div>
+    <h2>Camera access required</h2>
+    <p>Your evaluation is proctored for academic integrity. Camera and microphone must remain active throughout the 2-hour session.</p>
+    <div class="pg-notice">
+      <strong>This test is proctored</strong>
+      Keep your face clearly visible. Flags are added automatically for: phone detection, multiple persons, camera covered, or switching tabs.
+    </div>
+    <div id="pg-err" class="pg-err"></div>
+    <button class="btn-pg" id="pg-btn" onclick="grantProctorAndStart()">Allow Camera & Start Evaluation →</button>
+  </div>
+</div>
+
+<!-- PROCTOR VIDEO WIDGET -->
+<div id="proctor-wrap">
+  <div class="proctor-meta">
+    <div class="proctor-label" id="proctor-label">Proctored</div>
+    <div class="plive"><div class="plive-dot"></div>LIVE</div>
+  </div>
+  <video id="proctor-video" autoplay muted playsinline></video>
+</div>
+<div id="proctor-toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="../assets/js/db.js"></script>
@@ -570,16 +628,21 @@ function showWaiting() {
 }
 
 // ================================================================
-// START TEST
+// START TEST  (shows proctor gate first; _doStartTest runs after camera granted)
 // ================================================================
 function startTest() {
+  document.getElementById('proctor-gate').classList.add('show');
+}
+
+function _doStartTest() {
   document.getElementById('screen-waiting').style.display='none';
   document.getElementById('screen-test').style.display='flex';
   state.testStarted = true;
+  proctorTestActive = true;
+  proctorFlags = [];
   buildModuleSidebar();
   renderModule(0);
   startTimer();
-  // Create a session record in Supabase (non-blocking — UI starts immediately)
   if (state.currentUser && state.currentUser.reg_id) {
     SahirahDB.startSession(state.currentUser.reg_id)
       .then(s => { state.sessionId = s.id; })
@@ -606,6 +669,8 @@ function startTimer() {
 }
 
 function showTimeout() {
+  proctorTestActive = false;
+  stopProctorStream();
   document.getElementById('timeout-modal').classList.add('show');
 }
 
@@ -924,6 +989,149 @@ try {
   const saved = localStorage.getItem('sahirah_answers');
   if(saved) state.answers = JSON.parse(saved);
 } catch(e){}
+
+// ================================================================
+// PROCTORING
+// ================================================================
+let proctorStream     = null;
+let proctorFlags      = [];
+let proctorTestActive = false;
+let lastFlagMs        = 0;
+
+function addProctorFlag(type, reason) {
+  const now = Date.now();
+  if (now - lastFlagMs < 2500) return;
+  lastFlagMs = now;
+  proctorFlags.push({ type, reason, timestamp: new Date().toISOString() });
+  const n = proctorFlags.length;
+  const badge = document.getElementById('flag-badge');
+  badge.classList.add('active');
+  if (n >= 3) badge.classList.add('many');
+  document.getElementById('flag-count').textContent = n;
+  document.getElementById('flag-s').textContent = n === 1 ? '' : 's';
+  showProctorToast('🚩 ' + reason);
+}
+
+function showProctorToast(msg) {
+  const t = document.getElementById('proctor-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+function stopProctorStream() {
+  if (proctorStream) { proctorStream.getTracks().forEach(t => t.stop()); proctorStream = null; }
+  document.getElementById('proctor-wrap').classList.remove('active');
+}
+
+async function grantProctorAndStart() {
+  const btn = document.getElementById('pg-btn');
+  const errEl = document.getElementById('pg-err');
+  btn.textContent = 'Requesting camera & mic…';
+  btn.disabled = true;
+  errEl.style.display = 'none';
+  try {
+    proctorStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    const video = document.getElementById('proctor-video');
+    video.srcObject = proctorStream;
+    document.getElementById('proctor-wrap').classList.add('active');
+    document.getElementById('proctor-gate').classList.remove('show');
+    _doStartTest();
+    setupProctorGuards();
+    loadProctorDetector(video);
+  } catch (err) {
+    btn.textContent = 'Allow Camera & Start Evaluation →';
+    btn.disabled = false;
+    errEl.style.display = 'block';
+    errEl.textContent = err.name === 'NotAllowedError'
+      ? '⚠ Camera & microphone access was denied. Please click "Allow" when your browser prompts, then try again.'
+      : '⚠ Could not access camera/microphone: ' + err.message;
+  }
+}
+
+function setupProctorGuards() {
+  document.addEventListener('visibilitychange', () => {
+    if (proctorTestActive && document.hidden) addProctorFlag('tab_switch', 'Left the test tab');
+  });
+  window.addEventListener('blur', () => {
+    if (proctorTestActive) addProctorFlag('focus_loss', 'Switched to another application');
+  });
+  document.addEventListener('copy',        e => { if (proctorTestActive) e.preventDefault(); });
+  document.addEventListener('cut',         e => { if (proctorTestActive) e.preventDefault(); });
+  document.addEventListener('contextmenu', e => { if (proctorTestActive) e.preventDefault(); });
+  document.addEventListener('selectstart', e => { if (proctorTestActive) e.preventDefault(); });
+}
+
+function loadProctorScript(src) {
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = src; s.onload = res; s.onerror = rej;
+    document.head.appendChild(s);
+  });
+}
+
+async function loadProctorDetector(video) {
+  const lbl = document.getElementById('proctor-label');
+  if (lbl) lbl.textContent = 'Loading AI…';
+  try {
+    await loadProctorScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js');
+    await loadProctorScript('https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js');
+    await tf.ready();
+    const model = await cocoSsd.load();
+    if (lbl) lbl.textContent = 'AI Active';
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    let phoneLast = 0, personLast = 0, darkLast = 0, noPersonLast = 0;
+    let consecutiveDark = 0, consecutiveNoPerson = 0;
+    const PHONE_CLASSES = new Set(['cell phone', 'remote']);
+
+    setInterval(async () => {
+      if (!proctorTestActive || !video.videoWidth) return;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0);
+      const now = Date.now();
+
+      // Dark-camera check
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      let brightnessSum = 0;
+      for (let i = 0; i < imgData.length; i += 16) brightnessSum += (imgData[i] + imgData[i+1] + imgData[i+2]) / 3;
+      const avgBrightness = brightnessSum / (canvas.width * canvas.height / 4);
+      if (avgBrightness < 20) {
+        consecutiveDark++;
+        if (consecutiveDark >= 3 && now - darkLast > 15000) {
+          darkLast = now; consecutiveDark = 0;
+          addProctorFlag('dark', 'Camera covered or no light detected');
+        }
+      } else { consecutiveDark = 0; }
+
+      // AI detection
+      const preds = await model.detect(canvas).catch(() => []);
+      const phones  = preds.filter(p => PHONE_CLASSES.has(p.class) && p.score > 0.15);
+      const persons = preds.filter(p => p.class === 'person'        && p.score > 0.40);
+
+      if (phones.length > 0 && now - phoneLast > 12000) {
+        phoneLast = now;
+        addProctorFlag('phone', 'Mobile phone detected in camera');
+      }
+      if (persons.length > 1 && now - personLast > 12000) {
+        personLast = now;
+        addProctorFlag('persons', persons.length + ' persons detected in camera');
+      }
+      if (persons.length === 0 && avgBrightness >= 20) {
+        consecutiveNoPerson++;
+        if (consecutiveNoPerson >= 4 && now - noPersonLast > 15000) {
+          noPersonLast = now; consecutiveNoPerson = 0;
+          addProctorFlag('no_person', 'No person visible in camera');
+        }
+      } else { consecutiveNoPerson = 0; }
+    }, 1500);
+  } catch (e) {
+    if (lbl) lbl.textContent = 'AI Error';
+    console.error('Proctor AI failed to load:', e);
+  }
+}
 </script>
 </body>
 </html>
