@@ -126,6 +126,53 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
 .rm-rec{background:var(--cse-light);border-radius:12px;padding:1rem 1.25rem;margin-top:1.5rem;}
 .rm-rec h3{font-size:.78rem;font-weight:700;color:var(--cse);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.05em;}
 .rm-rec p{font-size:.85rem;color:var(--ink);line-height:1.65;}
+
+/* QUESTION BANK */
+.qb-section-filter{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.25rem;}
+.qb-filter-btn{padding:.35rem .9rem;border-radius:100px;font-size:.72rem;font-weight:600;border:1.5px solid var(--border);background:#fff;cursor:pointer;transition:all .2s;font-family:var(--fb);}
+.qb-filter-btn.active{background:var(--cse);color:#fff;border-color:var(--cse);}
+.q-short{font-size:.8rem;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.btn-edit{background:var(--gold-pale);color:var(--gold);border:none;border-radius:8px;padding:.32rem .75rem;font-size:.72rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;}
+.btn-edit:hover{background:var(--gold);color:#fff;}
+
+/* QUESTION EDIT MODAL */
+.qe-overlay{position:fixed;inset:0;background:rgba(26,18,8,.65);z-index:2000;display:none;align-items:center;justify-content:center;padding:1.5rem;overflow-y:auto;backdrop-filter:blur(4px);}
+.qe-overlay.show{display:flex;}
+.qe-modal{background:#fff;border-radius:20px;padding:2rem;max-width:620px;width:100%;box-shadow:0 20px 80px rgba(0,0,0,.3);margin:auto;}
+.qe-modal h3{font-family:var(--fd);font-size:1.1rem;font-weight:700;margin-bottom:1.25rem;}
+.qe-field{margin-bottom:1rem;}
+.qe-field label{display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:rgba(26,18,8,.45);margin-bottom:.35rem;}
+.qe-field textarea,.qe-field input[type=text],.qe-field select{width:100%;background:#FAFAF7;border:1.5px solid var(--border);border-radius:10px;padding:.65rem .9rem;font-size:.875rem;font-family:var(--fb);outline:none;resize:vertical;transition:border-color .2s;}
+.qe-field textarea:focus,.qe-field input[type=text]:focus,.qe-field select:focus{border-color:var(--cse);}
+.qe-opt-row{display:flex;align-items:center;gap:.65rem;margin-bottom:.5rem;}
+.qe-opt-letter{width:26px;height:26px;border-radius:7px;background:rgba(26,18,8,.08);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;font-family:var(--fm);flex-shrink:0;}
+.qe-opt-row.correct .qe-opt-letter{background:var(--teal);color:#fff;}
+.qe-modal-footer{display:flex;justify-content:flex-end;gap:.65rem;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border);}
+.btn-save-qe{background:var(--cse);color:#fff;border:none;border-radius:100px;padding:.7rem 1.75rem;font-size:.875rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:background .2s;}
+.btn-save-qe:hover{background:var(--cse-dark);}
+.btn-cancel-qe{background:transparent;border:1.5px solid var(--border);border-radius:100px;padding:.7rem 1.25rem;font-size:.875rem;font-weight:500;cursor:pointer;font-family:var(--fb);color:rgba(26,18,8,.5);}
+.btn-cancel-qe:hover{border-color:var(--ink);color:var(--ink);}
+
+/* SETTINGS */
+.settings-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1rem;max-width:520px;}
+.settings-card h3{font-size:.9rem;font-weight:700;margin-bottom:1.1rem;}
+.settings-field{margin-bottom:1.1rem;}
+.settings-field label{display:block;font-size:.72rem;font-weight:600;color:rgba(26,18,8,.5);margin-bottom:.4rem;}
+.settings-field input[type=number]{background:#FAFAF7;border:1.5px solid var(--border);border-radius:10px;padding:.65rem .9rem;font-size:.875rem;font-family:var(--fm);outline:none;width:160px;transition:border-color .2s;}
+.settings-field input[type=number]:focus{border-color:var(--cse);}
+.settings-hint{font-size:.75rem;color:rgba(26,18,8,.35);margin-top:.3rem;}
+.btn-save-settings{background:var(--cse);color:#fff;border:none;border-radius:100px;padding:.7rem 1.75rem;font-size:.875rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:background .2s;}
+.btn-save-settings:hover{background:var(--cse-dark);}
+
+/* ADMIN TOAST */
+#admin-toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--teal);color:#fff;padding:.6rem 1.5rem;border-radius:100px;font-size:.82rem;font-weight:600;z-index:9999;box-shadow:0 4px 24px rgba(0,0,0,.2);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .25s;}
+#admin-toast.show{opacity:1;}
+
+/* TIMING TABLE */
+.timing-table{width:100%;border-collapse:collapse;font-size:.78rem;margin-top:.65rem;}
+.timing-table th{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(26,18,8,.35);padding:.5rem .75rem;text-align:left;background:#FAFAF7;border-bottom:1px solid var(--border);}
+.timing-table td{padding:.55rem .75rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+.timing-table tr:last-child td{border-bottom:none;}
 </style>
 </head>
 <body>
@@ -159,6 +206,8 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
       <div class="sb-item" onclick="showView('users')"><span class="sb-item-icon">👥</span>Registered Users <span class="sb-badge" id="badge-users">0</span></div>
       <div class="sb-item" onclick="showView('completed')"><span class="sb-item-icon">✅</span>Completed Tests <span class="sb-badge" id="badge-completed" style="background:var(--teal);">0</span></div>
       <div class="sb-item" onclick="showView('inprogress')"><span class="sb-item-icon">⏳</span>In Progress</div>
+      <div class="sb-item" onclick="showView('qbank')"><span class="sb-item-icon">🗂️</span>Question Bank</div>
+      <div class="sb-item" onclick="showView('settings')"><span class="sb-item-icon">⚙️</span>Settings</div>
     </div>
     <div class="sb-footer">
       <div class="sb-avatar">A</div>
@@ -227,9 +276,79 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
         </div>
       </div>
 
+      <!-- QUESTION BANK -->
+      <div class="page-view" id="view-qbank">
+        <div class="table-wrap">
+          <div class="table-head">
+            <h3>Question Bank <span id="qb-count" style="font-family:var(--fm);font-size:.76rem;color:rgba(26,18,8,.35);margin-left:.5rem;font-weight:400;"></span></h3>
+            <div class="th-actions">
+              <button class="btn-sm" style="background:var(--red-light);color:var(--red);border:1.5px solid rgba(192,65,10,.2);" onclick="resetQBank()">↺ Reset to Default</button>
+            </div>
+          </div>
+          <div style="padding:.75rem 1.4rem;border-bottom:1px solid var(--border);">
+            <div class="qb-section-filter" id="qb-filters"></div>
+          </div>
+          <table class="t-table">
+            <thead><tr><th>#</th><th>Section</th><th>Difficulty</th><th>Question</th><th>Correct</th><th>Edit</th></tr></thead>
+            <tbody id="qb-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="page-view" id="view-settings">
+        <div class="settings-card">
+          <h3>Test Duration</h3>
+          <div class="settings-field">
+            <label>Duration (minutes)</label>
+            <input type="number" id="settings-duration" min="10" max="180" value="60"/>
+            <div class="settings-hint">Default: 60 minutes. Applies to all new test sessions. Existing in-progress sessions are not affected.</div>
+          </div>
+          <button class="btn-save-settings" onclick="saveSettings()">Save Settings</button>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
+
+<!-- QUESTION EDIT MODAL -->
+<div class="qe-overlay" id="qe-overlay" onclick="if(event.target===this)closeQEdit()">
+  <div class="qe-modal">
+    <h3 id="qe-title">Edit Question</h3>
+    <div class="qe-field">
+      <label>Question Text</label>
+      <textarea id="qe-question" rows="3"></textarea>
+    </div>
+    <div class="qe-field">
+      <label>Options</label>
+      <div id="qe-opts"></div>
+    </div>
+    <div style="display:flex;gap:1rem;">
+      <div class="qe-field" style="flex:1;">
+        <label>Correct Answer</label>
+        <select id="qe-correct" onchange="highlightCorrect()">
+          <option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option>
+        </select>
+      </div>
+      <div class="qe-field" style="flex:1;">
+        <label>Difficulty</label>
+        <select id="qe-difficulty">
+          <option value="moderate">Moderate</option>
+          <option value="hard">Hard</option>
+          <option value="very hard">Very Hard</option>
+        </select>
+      </div>
+    </div>
+    <div class="qe-modal-footer">
+      <button class="btn-cancel-qe" onclick="closeQEdit()">Cancel</button>
+      <button class="btn-save-qe" onclick="saveQEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN TOAST -->
+<div id="admin-toast"></div>
 
 <!-- REPORT MODAL -->
 <div class="overlay" id="report-overlay" onclick="closeReportModal(event)">
@@ -252,6 +371,17 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
     <div class="rm-rec" style="margin-top:1.25rem;">
       <h3 style="display:flex;align-items:center;gap:6px;">🚩 Proctoring Flags <span id="rm-flag-count" style="font-family:var(--fm);font-size:.8rem;font-weight:400;color:rgba(26,18,8,.4)"></span></h3>
       <div id="rm-flags" style="margin-top:.65rem;"></div>
+    </div>
+    <div id="rm-timing" style="margin-top:1.25rem;display:none;">
+      <div class="rm-rec">
+        <h3>⏱ Per-Question Timing</h3>
+        <div style="overflow-x:auto;margin-top:.65rem;">
+          <table class="timing-table" id="rm-timing-table">
+            <thead><tr><th>#</th><th>Question</th><th>Answer Given</th><th>Result</th><th>Time</th></tr></thead>
+            <tbody id="rm-timing-tbody"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -429,12 +559,14 @@ function renderInProgress() {
 function showView(name) {
   currentView = name;
   document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
-  document.getElementById('view-' + name).classList.add('active');
+  document.getElementById('view-' + name)?.classList.add('active');
   document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
-  const idx = ['overview','users','completed','inprogress'].indexOf(name);
+  const idx = ['overview','users','completed','inprogress','qbank','settings'].indexOf(name);
   document.querySelectorAll('.sb-item')[idx]?.classList.add('active');
-  const titles = { overview:'Overview', users:'Registered Users', completed:'Completed Tests', inprogress:'Tests In Progress' };
-  document.getElementById('tb-title').textContent = titles[name] || '';
+  const titles = { overview:'Overview', users:'Registered Users', completed:'Completed Tests', inprogress:'Tests In Progress', qbank:'Question Bank', settings:'Settings' };
+  document.getElementById('tb-title').textContent = titles[name] || name;
+  if (name === 'qbank') { if (!qbData) initQBank(); else renderQBank(); }
+  else if (name === 'settings') initSettings();
 }
 
 function viewReport(sess) {
@@ -475,6 +607,24 @@ function viewReport(sess) {
       </div>`
     ).join('');
   }
+  // Per-question timing table
+  const timingEl = document.getElementById('rm-timing');
+  const timingTbody = document.getElementById('rm-timing-tbody');
+  if (sess.answer_details && sess.answer_details.length) {
+    timingEl.style.display = '';
+    timingTbody.innerHTML = sess.answer_details.map((d, i) =>
+      `<tr>
+        <td style="font-family:var(--fm);color:rgba(26,18,8,.35)">${i+1}</td>
+        <td class="q-short" title="${(d.question_short||'').replace(/"/g,'&quot;')}">${d.question_short||'—'}</td>
+        <td style="font-size:.78rem">${d.user_answer_text || '<span style="color:rgba(26,18,8,.3)">—</span>'}</td>
+        <td>${d.is_correct === true ? '<span style="color:var(--teal);font-weight:700;">✓</span>' : d.is_correct === false ? '<span style="color:var(--red);font-weight:700;">✗</span>' : '—'}</td>
+        <td style="font-family:var(--fm);font-weight:600">${d.time_spent_seconds||0}s</td>
+      </tr>`
+    ).join('');
+  } else {
+    timingEl.style.display = 'none';
+  }
+
   document.getElementById('report-overlay').classList.add('show');
 }
 
@@ -482,6 +632,127 @@ function closeReportModal(e) {
   if (e.target === document.getElementById('report-overlay')) {
     document.getElementById('report-overlay').classList.remove('show');
   }
+}
+
+// ---- QUESTION BANK ----
+let qbData = null;
+let qbFilter = 'all';
+let qbEditRef = null;
+
+function initQBank() {
+  const override = localStorage.getItem('cse_questions_override');
+  if (override) {
+    try { qbData = JSON.parse(override); renderQBank(); return; } catch(e) {}
+  }
+  fetch('/data/test_questions_v6.json')
+    .then(r => r.json())
+    .then(data => { qbData = data; renderQBank(); })
+    .catch(() => { document.getElementById('qb-tbody').innerHTML = '<tr><td colspan="6" class="t-empty">Failed to load questions.</td></tr>'; });
+}
+
+function renderQBank() {
+  const isOverride = !!localStorage.getItem('cse_questions_override');
+  const secs = qbData.sections || [];
+  const filterEl = document.getElementById('qb-filters');
+  filterEl.innerHTML = `<button class="qb-filter-btn ${qbFilter==='all'?'active':''}" onclick="setQbFilter('all')">All Sections</button>` +
+    secs.map((s, i) => `<button class="qb-filter-btn ${qbFilter===String(i)?'active':''}" onclick="setQbFilter('${i}')">${s.name}</button>`).join('');
+
+  let flat = [];
+  secs.forEach((s, si) => (s.questions||[]).forEach((q, qi) => flat.push({q, si, qi, secName: s.name})));
+  if (qbFilter !== 'all') flat = flat.filter(x => String(x.si) === qbFilter);
+
+  document.getElementById('qb-count').textContent = `${flat.length} question${flat.length!==1?'s':''}${isOverride?' · custom':''}`;
+
+  const letters = ['A','B','C','D'];
+  document.getElementById('qb-tbody').innerHTML = flat.map(({q, si, qi, secName}, i) => {
+    const diff = (q.difficulty||'').toLowerCase().replace(' ','_');
+    const dc = diff==='moderate' ? 'var(--teal)' : diff==='hard' ? 'var(--gold)' : 'var(--red)';
+    return `<tr>
+      <td style="color:rgba(26,18,8,.3);font-family:var(--fm)">${i+1}</td>
+      <td style="font-size:.75rem;font-weight:600;">${secName}</td>
+      <td><span style="font-size:.72rem;font-weight:700;color:${dc};">${q.difficulty||'—'}</span></td>
+      <td class="q-short" title="${(q.question||'').replace(/"/g,'&quot;')}">${q.question||''}</td>
+      <td><span style="font-family:var(--fm);font-weight:700;color:var(--teal);">${letters[q.correct_option]||'?'}</span></td>
+      <td><button class="btn-edit" onclick="openQEdit(${si},${qi})">Edit</button></td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="6" class="t-empty">No questions found.</td></tr>';
+}
+
+function setQbFilter(val) { qbFilter = val; renderQBank(); }
+
+function openQEdit(si, qi) {
+  const sec = qbData.sections[si];
+  const q = sec.questions[qi];
+  qbEditRef = {si, qi};
+  document.getElementById('qe-title').textContent = 'Edit Question · ' + sec.name;
+  document.getElementById('qe-question').value = q.question || '';
+  const letters = ['A','B','C','D'];
+  document.getElementById('qe-opts').innerHTML = (q.options||[]).map((opt, i) =>
+    `<div class="qe-opt-row" id="qe-row-${i}">
+      <div class="qe-opt-letter">${letters[i]}</div>
+      <input type="text" id="qe-opt-${i}" value="${opt.replace(/"/g,'&quot;')}" oninput="highlightCorrect()"/>
+    </div>`
+  ).join('');
+  document.getElementById('qe-correct').value = q.correct_option ?? 0;
+  document.getElementById('qe-difficulty').value = (q.difficulty||'moderate').toLowerCase();
+  highlightCorrect();
+  document.getElementById('qe-overlay').classList.add('show');
+}
+
+function highlightCorrect() {
+  const correct = parseInt(document.getElementById('qe-correct').value);
+  for (let i = 0; i < 4; i++) {
+    const row = document.getElementById('qe-row-' + i);
+    if (row) row.className = 'qe-opt-row' + (i === correct ? ' correct' : '');
+  }
+}
+
+function closeQEdit() { document.getElementById('qe-overlay').classList.remove('show'); qbEditRef = null; }
+
+function saveQEdit() {
+  if (!qbEditRef) return;
+  const {si, qi} = qbEditRef;
+  const q = qbData.sections[si].questions[qi];
+  q.question = document.getElementById('qe-question').value.trim();
+  for (let i = 0; i < 4; i++) {
+    const inp = document.getElementById('qe-opt-' + i);
+    if (inp) q.options[i] = inp.value.trim();
+  }
+  q.correct_option = parseInt(document.getElementById('qe-correct').value);
+  q.difficulty = document.getElementById('qe-difficulty').value;
+  localStorage.setItem('cse_questions_override', JSON.stringify(qbData));
+  closeQEdit();
+  renderQBank();
+  showAdminToast('Question saved ✓');
+}
+
+function resetQBank() {
+  if (!confirm('Reset all questions to original defaults? All custom edits will be lost.')) return;
+  localStorage.removeItem('cse_questions_override');
+  qbData = null;
+  initQBank();
+  showAdminToast('Questions reset to default ✓');
+}
+
+// ---- SETTINGS ----
+function initSettings() {
+  const s = JSON.parse(localStorage.getItem('cse_test_settings') || '{}');
+  document.getElementById('settings-duration').value = s.duration || 60;
+}
+
+function saveSettings() {
+  const dur = Math.max(10, Math.min(180, parseInt(document.getElementById('settings-duration').value) || 60));
+  localStorage.setItem('cse_test_settings', JSON.stringify({ duration: dur }));
+  showAdminToast('Settings saved — duration set to ' + dur + ' minutes ✓');
+}
+
+// ---- TOAST ----
+function showAdminToast(msg) {
+  const t = document.getElementById('admin-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.remove('show'), 2500);
 }
 
 function exportCSV() {

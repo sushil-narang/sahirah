@@ -78,4 +78,12 @@ const SahirahDB = {
     if (error) throw error;
     return data || [];
   },
+
+  // ---- CSE APTITUDE ----
+  // Inserts per-question attempt rows into cse_question_attempts.
+  async saveCseAttempts(attempts) {
+    if (!attempts || !attempts.length) return;
+    const { error } = await _db.from('cse_question_attempts').insert(attempts);
+    if (error) console.error('saveCseAttempts error:', error);
+  },
 };

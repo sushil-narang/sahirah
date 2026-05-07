@@ -718,6 +718,14 @@ function jumpModule(idx) {
 // RENDER QUESTION
 // ================================================================
 function renderQuestion() {
+  // Record time spent on the question we're leaving
+  if (questionEnterTime !== null && currentQKey !== null) {
+    const elapsed = Math.floor((Date.now() - questionEnterTime) / 1000);
+    questionTimes[currentQKey] = (questionTimes[currentQKey] || 0) + elapsed;
+  }
+  questionEnterTime = Date.now();
+  currentQKey = state.moduleIdx + '_' + state.questionIdx;
+
   const mod = MODULES[state.moduleIdx];
   const q = mod.questions[state.questionIdx];
   const qIdx = state.questionIdx;
@@ -970,6 +978,13 @@ function saveProgress() {
 
 async function submitTest() {
   clearInterval(state.timerInterval);
+  // Record time for the last displayed question
+  if (questionEnterTime !== null && currentQKey !== null) {
+    const elapsed = Math.floor((Date.now() - questionEnterTime) / 1000);
+    questionTimes[currentQKey] = (questionTimes[currentQKey] || 0) + elapsed;
+    questionEnterTime = null;
+  }
+  try { localStorage.setItem('sahirah_question_times', JSON.stringify(questionTimes)); } catch(e){}
   saveProgress(); // keep localStorage as backup
   try {
     if (state.sessionId) {
@@ -989,6 +1004,13 @@ try {
   const saved = localStorage.getItem('sahirah_answers');
   if(saved) state.answers = JSON.parse(saved);
 } catch(e){}
+
+// ================================================================
+// QUESTION TIMING
+// ================================================================
+let questionEnterTime = null;
+let questionTimes     = {}; // key -> cumulative seconds
+let currentQKey       = null;
 
 // ================================================================
 // PROCTORING

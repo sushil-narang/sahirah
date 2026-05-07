@@ -97,3 +97,30 @@ CREATE POLICY "anon_select_sess" ON test_sessions     FOR SELECT USING     (true
 -- Test responses
 CREATE POLICY "anon_insert_resp" ON test_responses    FOR INSERT WITH CHECK (true);
 CREATE POLICY "anon_select_resp" ON test_responses    FOR SELECT USING     (true);
+
+-- ================================================================
+-- 5. CSE QUESTION ATTEMPTS
+--    Per-question detail for every CSE aptitude submission.
+--    One row per question per attempt — includes answer and time.
+-- ================================================================
+CREATE TABLE IF NOT EXISTS cse_question_attempts (
+  id                   uuid        DEFAULT gen_random_uuid() PRIMARY KEY,
+  session_id           text        NOT NULL,
+  user_id              text,
+  user_name            text,
+  user_email           text,
+  question_id          text        NOT NULL,
+  section_name         text,
+  difficulty           text,
+  question_short       text,        -- first 80 chars of question text
+  user_answer_index    int,         -- 0-3, NULL if skipped
+  user_answer_text     text,        -- text of the selected option
+  correct_answer_index int,
+  is_correct           boolean,
+  time_spent_seconds   int          DEFAULT 0,
+  submitted_at         timestamptz  DEFAULT now()
+);
+
+ALTER TABLE cse_question_attempts ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "anon_insert_cse_att" ON cse_question_attempts FOR INSERT WITH CHECK (true);
+CREATE POLICY "anon_select_cse_att" ON cse_question_attempts FOR SELECT USING     (true);

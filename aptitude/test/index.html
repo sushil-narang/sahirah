@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://cdn.jsdelivr.net https://storage.googleapis.com; worker-src blob:; img-src 'self' data: blob:; frame-ancestors 'none';"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://cdn.jsdelivr.net https://storage.googleapis.com https://chiobdkdhgnbtjxsscpf.supabase.co; worker-src blob:; img-src 'self' data: blob:; frame-ancestors 'none';"/>
 <title>CSE Aptitude Test — Sahirah.in</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
@@ -294,6 +294,8 @@ let timerInterval = null;
 let timeLeft = 60 * 60; // seconds
 let testSession = null;
 let sections = [];
+let questionEnterTime = null;
+let questionTotalTimes = {}; // qId → cumulative seconds
 
 // ---- TIMER ----
 function formatTime(s) {
@@ -315,6 +317,9 @@ function startTest() {
   document.getElementById('modal-permission').style.display = 'none';
   testActive = true;
   proctorFlags = [];
+  // Apply admin-configured duration for new sessions
+  const settings = JSON.parse(localStorage.getItem('cse_test_settings') || '{}');
+  if (settings.duration) timeLeft = settings.duration * 60;
   const session = {
     id: 'sess-' + Math.random().toString(36).substr(2,8),
     user_id: currentUser.id,
@@ -342,15 +347,22 @@ function comeLater() {
 
 // ---- LOAD QUESTIONS ----
 function loadQuestions() {
+  const processData = data => {
+    sections = data.sections || [];
+    allQuestions = sections.flatMap(s => s.questions || []);
+    questionTotalTimes = {};
+    questionEnterTime = null;
+    buildSidebar();
+    renderQuestion(0);
+    startTimer();
+  };
+  const override = localStorage.getItem('cse_questions_override');
+  if (override) {
+    try { processData(JSON.parse(override)); return; } catch(e) {}
+  }
   fetch('/data/test_questions_v6.json')
     .then(r => r.json())
-    .then(data => {
-      sections = data.sections || [];
-      allQuestions = sections.flatMap(s => s.questions || []);
-      buildSidebar();
-      renderQuestion(0);
-      startTimer();
-    })
+    .then(processData)
     .catch(() => {
       document.querySelector('.q-text').textContent = 'Error loading questions. Please refresh.';
     });
@@ -409,6 +421,13 @@ function updateSidebar() {
 
 // ---- RENDER QUESTION ----
 function renderQuestion(idx) {
+  // Record time spent on the question we're leaving
+  if (questionEnterTime !== null && allQuestions[currentIdx]) {
+    const elapsed = Math.floor((Date.now() - questionEnterTime) / 1000);
+    const prevId = allQuestions[currentIdx].id;
+    questionTotalTimes[prevId] = (questionTotalTimes[prevId] || 0) + elapsed;
+  }
+  questionEnterTime = Date.now();
   const q = allQuestions[idx];
   if (!q) return;
   currentIdx = idx;
@@ -467,6 +486,13 @@ function submitTest() {
   testActive = false;
   stopProctorStream();
   document.getElementById('modal-submit').style.display = 'none';
+  // Record time for the currently displayed question
+  if (questionEnterTime !== null && allQuestions[currentIdx]) {
+    const elapsed = Math.floor((Date.now() - questionEnterTime) / 1000);
+    const qId = allQuestions[currentIdx].id;
+    questionTotalTimes[qId] = (questionTotalTimes[qId] || 0) + elapsed;
+    questionEnterTime = null;
+  }
   const result = calculateScore();
   if (testSession) {
     testSession.completed_at = new Date().toISOString();
@@ -475,8 +501,33 @@ function submitTest() {
     testSession.answers = answers;
     testSession.flags = proctorFlags;
     testSession.flag_count = proctorFlags.length;
+    // Per-question attempt details
+    const answer_details = allQuestions.map(q => ({
+      question_id:         q.id,
+      section_name:        q.category,
+      difficulty:          q.difficulty,
+      question_short:      (q.question || '').substring(0, 80),
+      user_answer_index:   answers[q.id] !== undefined ? answers[q.id] : null,
+      user_answer_text:    answers[q.id] !== undefined ? (q.options[answers[q.id]] || null) : null,
+      correct_answer_index: q.correct_option,
+      is_correct:          answers[q.id] !== undefined ? answers[q.id] === q.correct_option : null,
+      time_spent_seconds:  questionTotalTimes[q.id] || 0,
+    }));
+    testSession.answer_details = answer_details;
     saveSessions();
     localStorage.setItem('cse_aptitude_last_result', JSON.stringify(result));
+    // Non-blocking Supabase save
+    if (typeof SahirahDB !== 'undefined') {
+      const rows = answer_details.map(d => ({
+        ...d,
+        session_id:  testSession.id,
+        user_id:     currentUser.id,
+        user_name:   currentUser.name,
+        user_email:  currentUser.email,
+        submitted_at: testSession.completed_at,
+      }));
+      SahirahDB.saveCseAttempts(rows).catch(e => console.warn('Supabase attempt save failed:', e));
+    }
   }
   showCompleteScreen(result);
 }
@@ -695,5 +746,7 @@ async function loadDetectorAndStart(video) {
   }
 })();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../../assets/js/db.js"></script>
 </body>
 </html>
