@@ -282,6 +282,7 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
           <div class="table-head">
             <h3>Question Bank <span id="qb-count" style="font-family:var(--fm);font-size:.76rem;color:rgba(26,18,8,.35);margin-left:.5rem;font-weight:400;"></span></h3>
             <div class="th-actions">
+              <button class="btn-sm" style="background:var(--cse-light);color:var(--cse);border:1.5px solid rgba(26,95,168,.2);" onclick="openAddQuestion()">+ Add Question</button>
               <button class="btn-sm" style="background:var(--red-light);color:var(--red);border:1.5px solid rgba(192,65,10,.2);" onclick="resetQBank()">↺ Reset to Default</button>
             </div>
           </div>
@@ -289,7 +290,7 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
             <div class="qb-section-filter" id="qb-filters"></div>
           </div>
           <table class="t-table">
-            <thead><tr><th>#</th><th>Section</th><th>Difficulty</th><th>Question</th><th>Correct</th><th>Edit</th></tr></thead>
+            <thead><tr><th>#</th><th>Section</th><th>Difficulty</th><th>Question</th><th>Correct</th><th>Edit</th><th>Del</th></tr></thead>
             <tbody id="qb-tbody"></tbody>
           </table>
         </div>
@@ -316,12 +317,16 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
 <div class="qe-overlay" id="qe-overlay" onclick="if(event.target===this)closeQEdit()">
   <div class="qe-modal">
     <h3 id="qe-title">Edit Question</h3>
+    <div class="qe-field" id="qe-section-wrap" style="display:none;">
+      <label>Section</label>
+      <select id="qe-section"></select>
+    </div>
     <div class="qe-field">
       <label>Question Text</label>
       <textarea id="qe-question" rows="3"></textarea>
     </div>
     <div class="qe-field">
-      <label>Options</label>
+      <label>Options (A–D)</label>
       <div id="qe-opts"></div>
     </div>
     <div style="display:flex;gap:1rem;">
@@ -342,7 +347,7 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
     </div>
     <div class="qe-modal-footer">
       <button class="btn-cancel-qe" onclick="closeQEdit()">Cancel</button>
-      <button class="btn-save-qe" onclick="saveQEdit()">Save Changes</button>
+      <button class="btn-save-qe" id="qe-save-btn" onclick="saveQEdit()">Save Changes</button>
     </div>
   </div>
 </div>
@@ -674,8 +679,9 @@ function renderQBank() {
       <td class="q-short" title="${(q.question||'').replace(/"/g,'&quot;')}">${q.question||''}</td>
       <td><span style="font-family:var(--fm);font-weight:700;color:var(--teal);">${letters[q.correct_option]||'?'}</span></td>
       <td><button class="btn-edit" onclick="openQEdit(${si},${qi})">Edit</button></td>
+      <td><button onclick="deleteQuestion(${si},${qi})" style="background:var(--red-light);color:var(--red);border:none;border-radius:8px;padding:.32rem .6rem;font-size:.72rem;font-weight:700;cursor:pointer;" title="Delete">✕</button></td>
     </tr>`;
-  }).join('') || '<tr><td colspan="6" class="t-empty">No questions found.</td></tr>';
+  }).join('') || '<tr><td colspan="7" class="t-empty">No questions found.</td></tr>';
 }
 
 function setQbFilter(val) { qbFilter = val; renderQBank(); }
@@ -683,18 +689,42 @@ function setQbFilter(val) { qbFilter = val; renderQBank(); }
 function openQEdit(si, qi) {
   const sec = qbData.sections[si];
   const q = sec.questions[qi];
-  qbEditRef = {si, qi};
+  qbEditRef = {si, qi, isNew: false};
   document.getElementById('qe-title').textContent = 'Edit Question · ' + sec.name;
+  document.getElementById('qe-section-wrap').style.display = 'none';
+  document.getElementById('qe-save-btn').textContent = 'Save Changes';
   document.getElementById('qe-question').value = q.question || '';
   const letters = ['A','B','C','D'];
-  document.getElementById('qe-opts').innerHTML = (q.options||[]).map((opt, i) =>
+  document.getElementById('qe-opts').innerHTML = (q.options||['','','',' ']).map((opt, i) =>
     `<div class="qe-opt-row" id="qe-row-${i}">
       <div class="qe-opt-letter">${letters[i]}</div>
-      <input type="text" id="qe-opt-${i}" value="${opt.replace(/"/g,'&quot;')}" oninput="highlightCorrect()"/>
+      <input type="text" id="qe-opt-${i}" value="${String(opt).replace(/"/g,'&quot;')}" oninput="highlightCorrect()"/>
     </div>`
   ).join('');
   document.getElementById('qe-correct').value = q.correct_option ?? 0;
   document.getElementById('qe-difficulty').value = (q.difficulty||'moderate').toLowerCase();
+  highlightCorrect();
+  document.getElementById('qe-overlay').classList.add('show');
+}
+
+function openAddQuestion() {
+  qbEditRef = {si: 0, qi: -1, isNew: true};
+  document.getElementById('qe-title').textContent = 'Add New Question';
+  document.getElementById('qe-save-btn').textContent = 'Add Question';
+  document.getElementById('qe-section-wrap').style.display = '';
+  const secs = qbData.sections || [];
+  document.getElementById('qe-section').innerHTML = secs.map((s,i) => `<option value="${i}">${s.name}</option>`).join('');
+  if (qbFilter !== 'all') document.getElementById('qe-section').value = qbFilter;
+  document.getElementById('qe-question').value = '';
+  const letters = ['A','B','C','D'];
+  document.getElementById('qe-opts').innerHTML = ['','','',''].map((opt, i) =>
+    `<div class="qe-opt-row" id="qe-row-${i}">
+      <div class="qe-opt-letter">${letters[i]}</div>
+      <input type="text" id="qe-opt-${i}" value="" oninput="highlightCorrect()"/>
+    </div>`
+  ).join('');
+  document.getElementById('qe-correct').value = 0;
+  document.getElementById('qe-difficulty').value = 'moderate';
   highlightCorrect();
   document.getElementById('qe-overlay').classList.add('show');
 }
@@ -711,23 +741,48 @@ function closeQEdit() { document.getElementById('qe-overlay').classList.remove('
 
 function saveQEdit() {
   if (!qbEditRef) return;
-  const {si, qi} = qbEditRef;
-  const q = qbData.sections[si].questions[qi];
-  q.question = document.getElementById('qe-question').value.trim();
+  const {si, qi, isNew} = qbEditRef;
+  const actualSi = isNew ? parseInt(document.getElementById('qe-section').value) : si;
+  const text = document.getElementById('qe-question').value.trim();
+  if (!text) { showAdminToast('Question text cannot be empty'); return; }
+  const opts = [];
   for (let i = 0; i < 4; i++) {
     const inp = document.getElementById('qe-opt-' + i);
-    if (inp) q.options[i] = inp.value.trim();
+    if (inp) opts.push(inp.value.trim());
   }
-  q.correct_option = parseInt(document.getElementById('qe-correct').value);
-  q.difficulty = document.getElementById('qe-difficulty').value;
+  const correct = parseInt(document.getElementById('qe-correct').value);
+  const diff = document.getElementById('qe-difficulty').value;
+  if (isNew) {
+    const newQ = {
+      id: qbData.sections[actualSi].name.toLowerCase().replace(/\s/g,'-') + '-' + (qbData.sections[actualSi].questions.length + 1),
+      category: qbData.sections[actualSi].name,
+      difficulty: diff, question: text, options: opts, correct_option: correct, marks: 1
+    };
+    qbData.sections[actualSi].questions.push(newQ);
+  } else {
+    const q = qbData.sections[si].questions[qi];
+    q.question = text;
+    q.options = opts;
+    q.correct_option = correct;
+    q.difficulty = diff;
+  }
   localStorage.setItem('cse_questions_override', JSON.stringify(qbData));
   closeQEdit();
   renderQBank();
-  showAdminToast('Question saved ✓');
+  showAdminToast(isNew ? 'Question added ✓' : 'Question saved ✓');
+}
+
+function deleteQuestion(si, qi) {
+  const q = qbData.sections[si].questions[qi];
+  if (!confirm(`Delete question?\n\n"${(q.question||'').substring(0,80)}"`)) return;
+  qbData.sections[si].questions.splice(qi, 1);
+  localStorage.setItem('cse_questions_override', JSON.stringify(qbData));
+  renderQBank();
+  showAdminToast('Question deleted ✓');
 }
 
 function resetQBank() {
-  if (!confirm('Reset all questions to original defaults? All custom edits will be lost.')) return;
+  if (!confirm('Reset all questions to original defaults? All custom edits, additions and deletions will be lost.')) return;
   localStorage.removeItem('cse_questions_override');
   qbData = null;
   initQBank();

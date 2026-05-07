@@ -124,6 +124,42 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
 .rm-status-strip.registered{background:var(--ink);color:var(--cream);}
 .rss-label{font-size:.72rem;opacity:.65;}
 .rss-val{font-family:var(--fd);font-size:1.2rem;font-weight:700;}
+
+/* QUESTION BANK */
+.qb-filter-wrap{padding:.75rem 1.4rem;border-bottom:1px solid var(--border);display:flex;gap:.45rem;flex-wrap:wrap;}
+.qb-filter-btn{padding:.32rem .85rem;border-radius:100px;font-size:.72rem;font-weight:600;border:1.5px solid var(--border);background:#fff;cursor:pointer;transition:all .2s;font-family:var(--fb);}
+.qb-filter-btn.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+.q-short{max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.8rem;}
+.btn-edit{background:var(--gold-pale);color:var(--gold);border:none;border-radius:8px;padding:.32rem .75rem;font-size:.72rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;}
+.btn-edit:hover{background:var(--gold);color:#fff;}
+.type-badge{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 7px;border-radius:100px;}
+.tb-mcq{background:#E8F2FF;color:#1A5FA8;}
+.tb-likert{background:var(--teal-light);color:var(--teal);}
+.tb-scenario{background:var(--gold-pale);color:var(--gold);}
+.tb-matrix{background:var(--red-light);color:var(--red);}
+.tb-pattern{background:rgba(123,47,190,.1);color:#7B2FBE;}
+
+/* QUESTION EDIT MODAL */
+.qe-overlay{position:fixed;inset:0;background:rgba(26,18,8,.65);z-index:2000;display:none;align-items:center;justify-content:center;padding:1.5rem;overflow-y:auto;backdrop-filter:blur(4px);}
+.qe-overlay.show{display:flex;}
+.qe-modal{background:#fff;border-radius:20px;padding:2rem;max-width:620px;width:100%;box-shadow:0 20px 80px rgba(0,0,0,.3);margin:auto;}
+.qe-modal h3{font-family:var(--fd);font-size:1.1rem;font-weight:700;margin-bottom:1.25rem;}
+.qe-field{margin-bottom:1rem;}
+.qe-field label{display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:rgba(26,18,8,.45);margin-bottom:.35rem;}
+.qe-field textarea,.qe-field input[type=text],.qe-field select{width:100%;background:#FAFAF7;border:1.5px solid var(--border);border-radius:10px;padding:.65rem .9rem;font-size:.875rem;font-family:var(--fb);outline:none;resize:vertical;transition:border-color .2s;}
+.qe-field textarea:focus,.qe-field input[type=text]:focus,.qe-field select:focus{border-color:var(--teal);}
+.qe-opt-row{display:flex;align-items:center;gap:.65rem;margin-bottom:.5rem;}
+.qe-opt-letter{width:26px;height:26px;border-radius:7px;background:rgba(26,18,8,.08);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;font-family:var(--fm);flex-shrink:0;}
+.qe-opt-row.correct .qe-opt-letter{background:var(--teal);color:#fff;}
+.qe-modal-footer{display:flex;justify-content:flex-end;gap:.65rem;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border);}
+.btn-save-qe{background:var(--teal);color:#fff;border:none;border-radius:100px;padding:.7rem 1.75rem;font-size:.875rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:background .2s;}
+.btn-save-qe:hover{background:#085a4f;}
+.btn-cancel-qe{background:transparent;border:1.5px solid var(--border);border-radius:100px;padding:.7rem 1.25rem;font-size:.875rem;font-weight:500;cursor:pointer;font-family:var(--fb);color:rgba(26,18,8,.5);}
+.btn-cancel-qe:hover{border-color:var(--ink);color:var(--ink);}
+
+/* ADMIN TOAST */
+#admin-toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--teal);color:#fff;padding:.6rem 1.5rem;border-radius:100px;font-size:.82rem;font-weight:600;z-index:9999;box-shadow:0 4px 24px rgba(0,0,0,.2);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .25s;}
+#admin-toast.show{opacity:1;}
 </style>
 </head>
 <body>
@@ -157,6 +193,7 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
       <div class="sb-item" onclick="showView('users')"><span class="sb-item-icon">👥</span>Registered Users <span class="sb-badge" id="badge-users">0</span></div>
       <div class="sb-item" onclick="showView('completed')"><span class="sb-item-icon">✅</span>Completed Tests <span class="sb-badge teal" id="badge-completed">0</span></div>
       <div class="sb-item" onclick="showView('inprogress')"><span class="sb-item-icon">⏳</span>In Progress</div>
+      <div class="sb-item" onclick="showView('qbank')"><span class="sb-item-icon">🗂️</span>Question Bank</div>
     </div>
     <div class="sb-footer">
       <div class="sb-avatar">A</div>
@@ -226,9 +263,75 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
         </div>
       </div>
 
+      <!-- QUESTION BANK -->
+      <div class="page-view" id="view-qbank">
+        <div class="table-wrap">
+          <div class="table-head">
+            <h3>Question Bank <span id="qb-count" style="font-family:var(--fm);font-size:.76rem;color:rgba(26,18,8,.35);margin-left:.5rem;font-weight:400;"></span></h3>
+            <div class="th-actions">
+              <button class="btn-sm" style="background:var(--teal-light);color:var(--teal);border:1.5px solid rgba(10,107,94,.2);" onclick="openAddQuestion()">+ Add Question</button>
+              <button class="btn-sm" style="background:var(--red-light);color:var(--red);border:1.5px solid rgba(192,65,10,.2);" onclick="resetQBank()">↺ Reset to Default</button>
+            </div>
+          </div>
+          <div class="qb-filter-wrap" id="qb-filters"></div>
+          <table class="t-table">
+            <thead><tr><th>#</th><th>Module</th><th>Type</th><th>Question</th><th>Correct</th><th>Edit</th><th>Del</th></tr></thead>
+            <tbody id="qb-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
+
+<!-- QUESTION EDIT / ADD MODAL -->
+<div class="qe-overlay" id="qe-overlay" onclick="if(event.target===this)closeQEdit()">
+  <div class="qe-modal">
+    <h3 id="qe-title">Edit Question</h3>
+    <div class="qe-field" id="qe-module-wrap" style="display:none;">
+      <label>Module</label>
+      <select id="qe-module"></select>
+    </div>
+    <div class="qe-field" id="qe-type-wrap" style="display:none;">
+      <label>Question Type</label>
+      <select id="qe-type" onchange="renderQeTypeFields()">
+        <option value="mcq">MCQ (Multiple Choice)</option>
+        <option value="scenario">Scenario (MCQ with context)</option>
+        <option value="likert">Likert (Rating scale)</option>
+      </select>
+    </div>
+    <div class="qe-field" id="qe-context-wrap" style="display:none;">
+      <label>Context / Scenario</label>
+      <textarea id="qe-context" rows="2"></textarea>
+    </div>
+    <div class="qe-field">
+      <label>Question Text</label>
+      <textarea id="qe-question" rows="3"></textarea>
+    </div>
+    <div id="qe-opts-wrap">
+      <div class="qe-field">
+        <label>Options</label>
+        <div id="qe-opts"></div>
+      </div>
+      <div class="qe-field">
+        <label>Correct Answer</label>
+        <select id="qe-correct" onchange="highlightCorrect()">
+          <option value="-1">No correct answer (subjective)</option>
+          <option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option>
+          <option value="4">E</option><option value="5">F</option>
+        </select>
+      </div>
+    </div>
+    <div class="qe-modal-footer">
+      <button class="btn-cancel-qe" onclick="closeQEdit()">Cancel</button>
+      <button class="btn-save-qe" id="qe-save-btn" onclick="saveQEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN TOAST -->
+<div id="admin-toast"></div>
 
 <!-- REPORT MODAL -->
 <div class="overlay" id="report-overlay" onclick="closeReportModal(event)">
@@ -457,10 +560,311 @@ function showView(name) {
   document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + name)?.classList.add('active');
   document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
-  const idx = ['overview','users','completed','inprogress'].indexOf(name);
+  const idx = ['overview','users','completed','inprogress','qbank'].indexOf(name);
   document.querySelectorAll('.sb-item')[idx]?.classList.add('active');
-  const titles = { overview:'Overview', users:'Registered Users', completed:'Completed Tests', inprogress:'Tests In Progress' };
+  const titles = { overview:'Overview', users:'Registered Users', completed:'Completed Tests', inprogress:'Tests In Progress', qbank:'Question Bank' };
   document.getElementById('tb-title').textContent = titles[name] || name;
+  if (name === 'qbank') { if (!qbData) initQBank(); else renderQBank(); }
+}
+
+// ================================================================
+// QUESTION BANK
+// ================================================================
+const QB_MODULES = [
+  { name:'Aptitude Assessment', id:'aptitude' },
+  { name:'Personality Profile', id:'personality' },
+  { name:'Interest Inventory', id:'interest' },
+  { name:'Emotional Intelligence', id:'eq' },
+  { name:'Values & Motivation', id:'values' },
+  { name:'Situational Judgement', id:'situational' },
+];
+
+const DEFAULT_QUESTIONS = [
+  // 0 — Aptitude
+  [
+    {type:'mcq',tier:1,text:'Which number comes next in the series: 2, 6, 12, 20, 30, __?',opts:['40','42','36','44'],ans:1},
+    {type:'mcq',tier:1,text:'If all Roses are Flowers and some Flowers are Red, which conclusion is definitely true?',opts:['All roses are red','Some roses may be red','No roses are red','All flowers are roses'],ans:1},
+    {type:'mcq',tier:1,text:'A train travels 240 km in 3 hours. At the same speed, how far will it travel in 5 hours?',opts:['350 km','400 km','380 km','420 km'],ans:1},
+    {type:'mcq',tier:1,text:'Find the odd one out: Triangle, Square, Circle, Sphere, Rectangle',opts:['Triangle','Circle','Sphere','Rectangle'],ans:2},
+    {type:'mcq',tier:1,text:'If PENCIL is coded as PENCIL, how is ERASER coded in the same logic?',opts:['REASRE','ERASER','RASEER','ARERES'],ans:1},
+    {type:'mcq',tier:1,text:'A clock shows 3:15. What is the angle between the hour and minute hands?',opts:['0°','7.5°','15°','52.5°'],ans:1},
+    {type:'mcq',tier:1,text:'Which of these does NOT belong: 8, 27, 64, 100, 125?',opts:['27','64','100','125'],ans:2},
+    {type:'mcq',tier:1,text:'Rearrange TNEELENCXLE to form a meaningful word:',opts:['EXCELLENCE','EXELLENCTE','EXCELTENLE','NELLECTEXE'],ans:0},
+    {type:'mcq',tier:2,text:'A shopkeeper marks a product 40% above cost and gives a 20% discount. What is the profit %?',opts:['10%','12%','14%','16%'],ans:1},
+    {type:'scenario',tier:2,context:'A data table shows: City A population 2.4M grows at 3%/yr; City B population 3.1M grows at 1%/yr.',text:"In approximately how many years will City A's population exceed City B's?",opts:['12 years','15 years','18 years','21 years'],ans:1},
+    {type:'mcq',tier:2,text:'If the sum of 5 consecutive integers is 265, what is the middle integer?',opts:['51','53','55','57'],ans:1},
+    {type:'mcq',tier:2,text:'A cube is painted red on all faces and cut into 125 smaller equal cubes. How many cubes have exactly 2 red faces?',opts:['12','24','36','48'],ans:2},
+    {type:'mcq',tier:2,text:'Water flows into a tank at 15 L/min and drains at 8 L/min. Starting empty, how long to fill a 490 L tank?',opts:['60 min','65 min','70 min','75 min'],ans:2},
+    {type:'mcq',tier:2,text:'If 6 workers complete a task in 8 days, how many workers are needed to finish it in 3 days?',opts:['14','16','18','20'],ans:1},
+    {type:'mcq',tier:2,text:'Three pipes A, B, C can fill a cistern in 6, 9, 12 hours respectively. All three are opened together. What fraction is filled in 1 hour?',opts:['11/36','13/36','7/18','5/12'],ans:0},
+    {type:'mcq',tier:3,text:'A function f(x) = x³ − 6x² + 9x − 4. At which value of x does f(x) have a local minimum?',opts:['x=1','x=2','x=3','x=4'],ans:2},
+    {type:'scenario',tier:3,context:'A startup allocates ₹18L budget. Marketing:Development:Operations = 2:5:3. Development costs increase 20% mid-year.',text:'By how much must other departments reduce to keep the total budget unchanged?',opts:['₹1.8L total','₹2.0L total','₹2.16L total','₹1.5L total'],ans:0},
+    {type:'mcq',tier:3,text:'In a network of 7 cities, each pair connected by exactly one road, how many roads exist in total?',opts:['14','18','21','28'],ans:2},
+    {type:'mcq',tier:3,text:'A sequence is defined by a₁=2, aₙ=3aₙ₋₁−1. What is a₅?',opts:['40','41','44','48'],ans:1},
+    {type:'mcq',tier:3,text:'A wire of resistance 12Ω is bent into a circle. What is the resistance between two diametrically opposite points?',opts:['3Ω','4Ω','6Ω','12Ω'],ans:0},
+    {type:'scenario',tier:3,context:'An algorithm processes N items. Each iteration doubles remaining items and removes 1. Starting at N=100.',text:'After 3 complete iterations, how many items remain?',opts:['194','196','198','200'],ans:2},
+    {type:'mcq',tier:3,text:"P, Q, R invest ₹5000, ₹6000, ₹4000. P withdraws half after 4 months. Total profit after 12 months is ₹6900. P's share?",opts:['₹1200','₹1500','₹1700','₹2000'],ans:0},
+    {type:'mcq',tier:3,text:'A convex polygon has 20 diagonals. How many sides does it have?',opts:['7','8','9','10'],ans:1},
+  ],
+  // 1 — Personality
+  [
+    {type:'likert',text:'I enjoy meeting new people and feel energised after social interactions.',scale:['Strongly disagree','Disagree','Neutral','Agree','Strongly agree']},
+    {type:'likert',text:'I prefer to have a detailed plan before starting any task rather than figuring it out as I go.',scale:['Strongly disagree','Disagree','Neutral','Agree','Strongly agree']},
+    {type:'likert',text:'I often think about abstract ideas, theories, and hypothetical scenarios for fun.',scale:['Strongly disagree','Disagree','Neutral','Agree','Strongly agree']},
+    {type:'likert',text:'I find it easy to understand and share the feelings of others.',scale:['Strongly disagree','Disagree','Neutral','Agree','Strongly agree']},
+    {type:'likert',text:'I stay calm and focused even when facing unexpected problems or setbacks.',scale:['Strongly disagree','Disagree','Neutral','Agree','Strongly agree']},
+    {type:'likert',text:'I like to be in charge and naturally take the lead in group situations.',scale:['Strongly disagree','Disagree','Neutral','Agree','Strongly agree']},
+    {type:'likert',text:'I find routine and predictability comforting rather than boring.',scale:['Strongly disagree','Disagree','Neutral','Agree','Strongly agree']},
+    {type:'likert',text:'When I start something, I almost always follow through to completion.',scale:['Strongly disagree','Disagree','Neutral','Agree','Strongly agree']},
+    {type:'matrix',text:'Rate how accurately each statement describes you across these traits:',rows:['I am detail-oriented','I enjoy creative work','I am assertive','I adapt easily to change'],cols:['Not at all','A little','Somewhat','Quite a lot','Very much']},
+    {type:'likert',text:'I enjoy helping others even when there is nothing in it for me.',scale:['Strongly disagree','Disagree','Neutral','Agree','Strongly agree']},
+    {type:'likert',text:'I get anxious or overwhelmed when there is too much to do at once.',scale:['Strongly disagree','Disagree','Neutral','Agree','Strongly agree']},
+    {type:'likert',text:'I prefer facts and evidence over intuition when making important decisions.',scale:['Strongly disagree','Disagree','Neutral','Agree','Strongly agree']},
+  ],
+  // 2 — Interest
+  [
+    {type:'mcq',text:'Which activity would you most enjoy doing for a full week?',opts:['Coding an app or website','Designing a logo or illustration','Running a small business or startup','Conducting a science experiment','Writing a speech or news article','Organising a community event'],ans:-1},
+    {type:'mcq',text:'Which of these problems excites you most to solve?',opts:['Why is traffic so bad in cities?','How do vaccines work at the molecular level?','Why do some businesses succeed while others fail?','How can AI understand human language?','How do bridges stay standing under load?','How do we reduce poverty in rural India?'],ans:-1},
+    {type:'likert',text:'I would enjoy a career that involves working outdoors or with my hands.',scale:['Not at all','Unlikely','Neutral','Possibly','Definitely']},
+    {type:'mcq',text:'If you had to pick a college course right now, which would you choose?',opts:['Computer Science or Data Science','Medicine or Biotechnology','Architecture or Product Design','Law or Political Science','Commerce or Finance','Art, Music or Film'],ans:-1},
+    {type:'mcq',text:'Which type of book or content do you enjoy most in your free time?',opts:['Tech, coding or science blogs','Biographies of leaders or history books','Business, economics or finance content','Mystery, crime or detective stories','Creative writing, poetry or art','Sports, fitness or nature documentaries'],ans:-1},
+    {type:'likert',text:'I enjoy work that involves analysing data and finding patterns.',scale:['Not at all','Unlikely','Neutral','Possibly','Definitely']},
+    {type:'mcq',text:'Which of these best describes your dream workplace?',opts:['A research lab or tech company','A hospital or healthcare facility','A courtroom, government office or NGO','A design studio or creative agency','A bank, consultancy or startup','An outdoor field site or construction project'],ans:-1},
+    {type:'likert',text:'I find artistic and creative activities more satisfying than technical ones.',scale:['Not at all','Unlikely','Neutral','Possibly','Definitely']},
+  ],
+  // 3 — EQ
+  [
+    {type:'scenario',context:'Your close friend just failed an important exam they had studied very hard for. They are not saying much but look upset.',text:'What is your most natural response?',opts:["Give them space — they'll talk when ready","Immediately try to cheer them up with jokes","Sit with them quietly and let them know you're there",'Suggest practical steps to improve next time'],ans:-1},
+    {type:'likert',text:"I notice when someone is feeling upset or uncomfortable, even when they don't say anything.",scale:['Never','Rarely','Sometimes','Usually','Always']},
+    {type:'scenario',context:'You are working on a group project and one member is not contributing. The deadline is tomorrow.',text:'How do you handle it?',opts:['Do their work quietly to avoid conflict','Confront them directly and firmly','Talk to them privately to understand why','Tell the group leader and let them deal with it'],ans:-1},
+    {type:'likert',text:'When I make a mistake, I take responsibility for it rather than making excuses.',scale:['Never','Rarely','Sometimes','Usually','Always']},
+    {type:'likert',text:'I can stay focused and perform well even when I am nervous or under pressure.',scale:['Never','Rarely','Sometimes','Usually','Always']},
+    {type:'scenario',context:"You believe strongly that a decision being made by your group is wrong. The rest of the group disagrees.",text:'What do you do?',opts:['Go along with the group to avoid friction',"Express your view clearly but respect the group's final call",'Try to change everyone\'s mind persistently','Leave the group if they won\'t change their decision'],ans:-1},
+    {type:'likert',text:'I can identify what emotion I am feeling and understand why I feel that way.',scale:['Never','Rarely','Sometimes','Usually','Always']},
+    {type:'likert',text:'I find it difficult to stay motivated when working on long tasks that take weeks or months.',scale:['Never','Rarely','Sometimes','Usually','Always']},
+  ],
+  // 4 — Values
+  [
+    {type:'mcq',text:'Which of these would make you feel most proud of your career?',opts:['Inventing or building something used by millions','Earning enough to give your family a great life','Being recognised as the best in your field','Making a positive difference in people\'s daily lives','Having the freedom to create whatever you want','Holding a position of authority and responsibility'],ans:-1},
+    {type:'likert',text:'Having financial security is more important to me than doing work I am passionate about.',scale:['Strongly disagree','Disagree','Neutral','Agree','Strongly agree']},
+    {type:'likert',text:'I want my work to have a clear positive impact on society — even if it pays less.',scale:['Strongly disagree','Disagree','Neutral','Agree','Strongly agree']},
+    {type:'mcq',text:'You receive two job offers. One pays ₹1.5L/month doing work you find dull. The other pays ₹60K doing work you love. Which do you choose?',opts:['₹1.5L — financial security comes first','₹60K — passion matters more than money','It depends on other factors','I would negotiate both offers'],ans:-1},
+    {type:'likert',text:'I enjoy recognition and being known as someone who excels in their field.',scale:['Strongly disagree','Disagree','Neutral','Agree','Strongly agree']},
+    {type:'likert',text:'I would rather work in a stable government job than a risky but exciting startup.',scale:['Strongly disagree','Disagree','Neutral','Agree','Strongly agree']},
+    {type:'mcq',text:'Which value most guides your decisions in life?',opts:['Integrity — always doing what is right','Achievement — always performing at my best','Compassion — always helping others first','Freedom — always having the choice to choose my own path'],ans:-1},
+    {type:'likert',text:'I believe the meaning and purpose of my work matters more than anything else.',scale:['Strongly disagree','Disagree','Neutral','Agree','Strongly agree']},
+  ],
+  // 5 — Situational
+  [
+    {type:'scenario',context:'You are selected as team leader for a school science fair project. Two team members have a strong disagreement about the project direction and neither will back down.',text:'As leader, what do you do first?',opts:['Decide yourself and ask everyone to follow','Let them argue it out — the better idea will win','Facilitate a structured discussion where both sides present their case','Ask a teacher to resolve it'],ans:-1},
+    {type:'scenario',context:'You discover that a classmate copied answers from you in an exam without your knowledge. The teacher suspects you were both cheating.',text:'How do you respond?',opts:["Deny everything — you didn't do anything wrong",'Tell the teacher exactly what happened honestly',"Protect your classmate — it's not a big deal","Stay quiet and hope it blows over"],ans:-1},
+    {type:'scenario',context:"You are midway through a 3-month project when you realise the approach you've been using has a fundamental flaw. Starting over will cost weeks.",text:'What is your most likely action?',opts:['Keep going — too much work already done','Immediately restart with the correct approach','Find a workaround to patch the flaw without restarting','Discuss with your mentor or team before deciding'],ans:-1},
+    {type:'scenario',context:'Your manager assigns you a task with unclear instructions. When you ask for clarification, they say "just figure it out."',text:'How do you proceed?',opts:['Do nothing until you get clear instructions','Make your best interpretation, document it, and proceed','Ask a colleague who might know what\'s expected','Escalate to someone more senior'],ans:-1},
+    {type:'scenario',context:"You work at a company and notice a senior colleague regularly taking credit for a junior team member's ideas in meetings.",text:'What do you do?',opts:["It's not your business — stay out of it","Speak privately to the junior colleague and encourage them to speak up","Raise it directly with the senior colleague",'Mention it to a manager or HR'],ans:-1},
+    {type:'scenario',context:'You have been given two weeks to complete a major assignment. After one week you realise you have significantly underestimated the work needed.',text:'What is your first step?',opts:['Work day and night to somehow finish on time','Immediately communicate the situation to whoever assigned the task','Submit whatever you have on the deadline','Ask for an extension without explaining why'],ans:-1},
+    {type:'scenario',context:'You strongly believe a decision your school or organisation is making is ethically wrong, but you are the most junior person in the room.',text:'What would you do?',opts:["Stay silent — it's not your place",'Wait and see if anyone else raises it first','Speak up respectfully and clearly explain your concern','Write a private letter to the decision-maker'],ans:-1},
+    {type:'scenario',context:'You are presenting a project to an audience when someone asks a technical question you genuinely do not know the answer to.',text:'How do you respond?',opts:['Bluff — give a confident-sounding answer',"Say honestly you don't know and will follow up","Change the subject smoothly",'Ask the audience if anyone knows'],ans:-1},
+  ],
+];
+
+let qbData = null;  // array of 6 question arrays (current working copy)
+let qbFilter = 'all';
+let qbEditRef = null; // {mi, qi} or null for add mode
+
+function initQBank() {
+  const override = localStorage.getItem('psycho_questions_override');
+  if (override) {
+    try {
+      const ovr = JSON.parse(override);
+      qbData = DEFAULT_QUESTIONS.map((def, i) => ovr[i] && ovr[i].length ? ovr[i] : def);
+      renderQBank(); return;
+    } catch(e) {}
+  }
+  qbData = DEFAULT_QUESTIONS.map(arr => [...arr]);
+  renderQBank();
+}
+
+function renderQBank() {
+  const isOverride = !!localStorage.getItem('psycho_questions_override');
+  const filterEl = document.getElementById('qb-filters');
+  filterEl.innerHTML = `<button class="qb-filter-btn ${qbFilter==='all'?'active':''}" onclick="setQbFilter('all')">All Modules</button>` +
+    QB_MODULES.map((m,i) => `<button class="qb-filter-btn ${qbFilter===String(i)?'active':''}" onclick="setQbFilter('${i}')">${m.name}</button>`).join('');
+
+  let flat = [];
+  qbData.forEach((qs, mi) => qs.forEach((q, qi) => flat.push({q,mi,qi,modName:QB_MODULES[mi].name})));
+  if (qbFilter !== 'all') flat = flat.filter(x => String(x.mi) === qbFilter);
+
+  const total = qbData.reduce((s,qs) => s+qs.length, 0);
+  document.getElementById('qb-count').textContent = `${flat.length} shown · ${total} total${isOverride?' · custom':''}`;
+
+  const letters = ['A','B','C','D','E','F'];
+  document.getElementById('qb-tbody').innerHTML = flat.map(({q,mi,qi,modName}, i) => {
+    const typeCls = q.type === 'mcq' ? 'tb-mcq' : q.type === 'scenario' ? 'tb-scenario' : q.type === 'likert' ? 'tb-likert' : q.type === 'matrix' ? 'tb-matrix' : 'tb-pattern';
+    const correctCell = (q.opts && q.ans >= 0) ? `<span style="font-family:var(--fm);font-weight:700;color:var(--teal);">${letters[q.ans]||'?'}</span>` : '<span style="color:rgba(26,18,8,.25)">—</span>';
+    return `<tr>
+      <td style="color:rgba(26,18,8,.3);font-family:var(--fm)">${i+1}</td>
+      <td style="font-size:.75rem;font-weight:600;">${modName}</td>
+      <td><span class="type-badge ${typeCls}">${q.type}</span></td>
+      <td class="q-short" title="${(q.text||'').replace(/"/g,'&quot;')}">${q.text||''}</td>
+      <td>${correctCell}</td>
+      <td><button class="btn-edit" onclick="openQEdit(${mi},${qi})">Edit</button></td>
+      <td><button onclick="deleteQuestion(${mi},${qi})" style="background:var(--red-light);color:var(--red);border:none;border-radius:8px;padding:.32rem .6rem;font-size:.72rem;font-weight:700;cursor:pointer;" title="Delete">✕</button></td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="7" class="t-empty">No questions found.</td></tr>';
+}
+
+function setQbFilter(val) { qbFilter = val; renderQBank(); }
+
+function typeBadgeClass(type) {
+  return type==='mcq'?'tb-mcq':type==='scenario'?'tb-scenario':type==='likert'?'tb-likert':'tb-matrix';
+}
+
+function openQEdit(mi, qi) {
+  qbEditRef = {mi, qi, isNew: false};
+  const q = qbData[mi][qi];
+  document.getElementById('qe-title').textContent = 'Edit Question · ' + QB_MODULES[mi].name;
+  document.getElementById('qe-module-wrap').style.display = 'none';
+  document.getElementById('qe-type-wrap').style.display = 'none';
+  document.getElementById('qe-save-btn').textContent = 'Save Changes';
+  document.getElementById('qe-question').value = q.text || '';
+  // context
+  const ctxWrap = document.getElementById('qe-context-wrap');
+  if (q.type === 'scenario') { ctxWrap.style.display = ''; document.getElementById('qe-context').value = q.context || ''; }
+  else ctxWrap.style.display = 'none';
+  // options
+  renderQeOpts(q);
+  document.getElementById('qe-overlay').classList.add('show');
+}
+
+function openAddQuestion() {
+  qbEditRef = {mi: 0, qi: -1, isNew: true};
+  document.getElementById('qe-title').textContent = 'Add New Question';
+  document.getElementById('qe-save-btn').textContent = 'Add Question';
+  document.getElementById('qe-module-wrap').style.display = '';
+  document.getElementById('qe-type-wrap').style.display = '';
+  // populate module select
+  document.getElementById('qe-module').innerHTML = QB_MODULES.map((m,i) => `<option value="${i}">${m.name}</option>`).join('');
+  // if a filter is active, pre-select that module
+  if (qbFilter !== 'all') document.getElementById('qe-module').value = qbFilter;
+  document.getElementById('qe-question').value = '';
+  document.getElementById('qe-context').value = '';
+  document.getElementById('qe-context-wrap').style.display = 'none';
+  document.getElementById('qe-type').value = 'mcq';
+  renderQeTypeFields();
+  document.getElementById('qe-overlay').classList.add('show');
+}
+
+function renderQeTypeFields() {
+  if (!qbEditRef?.isNew) return;
+  const type = document.getElementById('qe-type').value;
+  document.getElementById('qe-context-wrap').style.display = type === 'scenario' ? '' : 'none';
+  const q = {type, opts: type==='likert' ? [] : ['','','',''], ans: -1};
+  renderQeOpts(q);
+}
+
+function renderQeOpts(q) {
+  const letters = ['A','B','C','D','E','F'];
+  const optsWrap = document.getElementById('qe-opts-wrap');
+  if (q.type === 'likert' || q.type === 'matrix') {
+    optsWrap.style.display = 'none';
+    return;
+  }
+  optsWrap.style.display = '';
+  const opts = q.opts || ['','','',''];
+  document.getElementById('qe-opts').innerHTML = opts.map((opt,i) =>
+    `<div class="qe-opt-row" id="qe-row-${i}">
+      <div class="qe-opt-letter">${letters[i]}</div>
+      <input type="text" id="qe-opt-${i}" value="${String(opt).replace(/"/g,'&quot;')}" oninput="highlightCorrect()"/>
+    </div>`
+  ).join('');
+  document.getElementById('qe-correct').value = q.ans ?? -1;
+  // rebuild correct select to match option count
+  const sel = document.getElementById('qe-correct');
+  sel.innerHTML = '<option value="-1">No correct answer (subjective)</option>' +
+    opts.map((_,i) => `<option value="${i}">${letters[i]}</option>`).join('');
+  sel.value = q.ans ?? -1;
+  highlightCorrect();
+}
+
+function highlightCorrect() {
+  const correct = parseInt(document.getElementById('qe-correct').value);
+  for (let i = 0; i < 6; i++) {
+    const row = document.getElementById('qe-row-' + i);
+    if (row) row.className = 'qe-opt-row' + (i === correct ? ' correct' : '');
+  }
+}
+
+function closeQEdit() { document.getElementById('qe-overlay').classList.remove('show'); qbEditRef = null; }
+
+function saveQEdit() {
+  if (!qbEditRef) return;
+  const {mi, qi, isNew} = qbEditRef;
+  const actualMi = isNew ? parseInt(document.getElementById('qe-module').value) : mi;
+  const type = isNew ? document.getElementById('qe-type').value : qbData[isNew ? actualMi : mi][qi].type;
+  const text = document.getElementById('qe-question').value.trim();
+  if (!text) { showAdminToast('Question text cannot be empty'); return; }
+
+  const q = {type, text};
+  if (type === 'scenario') q.context = document.getElementById('qe-context').value.trim();
+
+  if (type !== 'likert' && type !== 'matrix') {
+    const opts = [];
+    for (let i = 0; i < 6; i++) {
+      const inp = document.getElementById('qe-opt-' + i);
+      if (inp && inp.value.trim()) opts.push(inp.value.trim());
+    }
+    q.opts = opts;
+    q.ans = parseInt(document.getElementById('qe-correct').value);
+    if (q.ans >= opts.length) q.ans = -1;
+  } else if (!isNew) {
+    // preserve scale/rows/cols from original
+    const orig = qbData[mi][qi];
+    if (orig.scale) q.scale = orig.scale;
+    if (orig.rows) { q.rows = orig.rows; q.cols = orig.cols; }
+  } else {
+    q.scale = ['Strongly disagree','Disagree','Neutral','Agree','Strongly agree'];
+  }
+
+  if (isNew) {
+    qbData[actualMi].push(q);
+    qbEditRef.mi = actualMi; // for filter
+  } else {
+    qbData[mi][qi] = q;
+  }
+
+  saveQbOverride();
+  closeQEdit();
+  renderQBank();
+  showAdminToast(isNew ? 'Question added ✓' : 'Question saved ✓');
+}
+
+function deleteQuestion(mi, qi) {
+  const q = qbData[mi][qi];
+  if (!confirm(`Delete question?\n\n"${(q.text||'').substring(0,80)}"`)) return;
+  qbData[mi].splice(qi, 1);
+  saveQbOverride();
+  renderQBank();
+  showAdminToast('Question deleted ✓');
+}
+
+function saveQbOverride() {
+  localStorage.setItem('psycho_questions_override', JSON.stringify(qbData));
+}
+
+function resetQBank() {
+  if (!confirm('Reset all questions to original defaults? Custom edits, additions and deletions will be lost.')) return;
+  localStorage.removeItem('psycho_questions_override');
+  qbData = DEFAULT_QUESTIONS.map(arr => [...arr]);
+  renderQBank();
+  showAdminToast('Questions reset to default ✓');
+}
+
+function showAdminToast(msg) {
+  const t = document.getElementById('admin-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.remove('show'), 2500);
 }
 
 function infoRow(label, val) {

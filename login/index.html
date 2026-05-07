@@ -46,11 +46,6 @@ body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16
 .lc-timelock-icon{font-size:1rem;flex-shrink:0;}
 .lc-timelock-text{font-size:.75rem;color:rgba(26,18,8,.6);line-height:1.5;}
 .lc-timelock-text strong{color:var(--ink);}
-.lc-demo{margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border);text-align:center;}
-.lc-demo-title{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:rgba(26,18,8,.3);margin-bottom:.6rem;}
-.demo-creds{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;}
-.demo-pill{background:var(--ink);color:var(--gold-light);border-radius:8px;padding:.35rem .75rem;font-size:.72rem;font-family:var(--fm);cursor:pointer;transition:background .2s;}
-.demo-pill:hover{background:#333;}
 
 /* ===== WAITING SCREEN ===== */
 #screen-waiting{align-items:center;justify-content:center;padding:2rem;flex-direction:column;text-align:center;}
@@ -247,16 +242,12 @@ body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16
       <div class="lc-timelock-text"><strong>Time-locked access:</strong> The test portal opens only at your scheduled appointment time. If you log in early, you will see a countdown to your test start.</div>
     </div>
 
-    <div class="lc-demo">
-      <div class="lc-demo-title">Demo access</div>
-      <div class="demo-creds">
-        <div class="demo-pill" onclick="demoLogin()">Use Demo Account</div>
-      </div>
-    </div>
-
     <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid rgba(26,18,8,.08);text-align:center;display:flex;justify-content:space-between;font-size:.78rem;">
       <a href="../" style="color:rgba(26,18,8,.4);text-decoration:none;font-weight:500;">← Back to home</a>
       <a href="../register/" style="color:var(--gold);text-decoration:none;font-weight:600;">Register now →</a>
+    </div>
+    <div style="text-align:center;margin-top:.65rem;">
+      <a href="../admin/" style="font-size:.7rem;color:rgba(26,18,8,.2);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='rgba(26,18,8,.45)'" onmouseout="this.style.color='rgba(26,18,8,.2)'">Admin portal →</a>
     </div>
   </div>
 </div>
@@ -377,6 +368,14 @@ const MODULES = [
     desc:'Real-life scenarios that reveal your decision-making instincts.',
     questions: buildSituational() },
 ];
+
+// Apply admin question overrides (saved from psychometric admin Question Bank)
+(function() {
+  try {
+    const ovr = JSON.parse(localStorage.getItem('psycho_questions_override') || 'null');
+    if (ovr) ovr.forEach((qs, i) => { if (MODULES[i] && qs && qs.length) MODULES[i].questions = qs; });
+  } catch(e) {}
+})();
 
 let state = {
   moduleIdx: 0,
@@ -500,9 +499,6 @@ function buildSituational() {
 // LOGIN LOGIC
 // ================================================================
 
-// Pre-computed SHA-256 hash of the demo account password (salted)
-const DEMO_HASH = '398c942da98a2556ea65ce5b561b345e568b983165e2d43ff17e39e91706d149';
-const DEMO_USER = { loginId:'demo2025', name:'Arjun Sharma', slot: null };
 
 // Parse a slot string like "15 Apr · 10:00 AM" into a Date object
 function parseSlotDate(slotStr) {
@@ -534,11 +530,6 @@ async function hashPassword(password) {
 let loginAttempts = 0;
 let loginLockUntil = 0;
 
-function demoLogin() {
-  document.getElementById('login-id').value = 'demo2025';
-  document.getElementById('login-pass').value = 'Avanya@9999';
-}
-
 async function doLogin() {
   const now = Date.now();
   if(now < loginLockUntil){
@@ -555,16 +546,6 @@ async function doLogin() {
   err.classList.remove('show');
 
   const inputHash = await hashPassword(pass);
-
-  // Check demo user
-  if(id === DEMO_USER.loginId && inputHash === DEMO_HASH) {
-    loginAttempts = 0;
-    state.currentUser = DEMO_USER;
-    state.slotTime = new Date(Date.now() + 5000);
-    document.getElementById('screen-login').classList.remove('active');
-    startTest();
-    return;
-  }
 
   // Check Supabase registrations
   let found = null;
