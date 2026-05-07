@@ -854,7 +854,8 @@ function saveQbOverride() {
 }
 
 function exportQBankJSON() {
-  const json = JSON.stringify(qbData, null, 2);
+  const out = qbData.map((qs, i) => ({ module: QB_MODULES[i].name, questions: qs }));
+  const json = JSON.stringify(out, null, 2);
   const a = document.createElement('a');
   a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(json);
   a.download = 'psychometric-question-bank.json';
@@ -868,10 +869,11 @@ function importQBank(e) {
   reader.onload = function(ev) {
     try {
       const data = JSON.parse(ev.target.result);
-      if (!Array.isArray(data) || data.length !== 6 || !data.every(Array.isArray)) {
-        showAdminToast('Invalid JSON — expected array of 6 module arrays'); return;
+      if (!Array.isArray(data) || data.length !== 6) {
+        showAdminToast('Invalid JSON — expected array of 6 module objects'); return;
       }
-      qbData = data;
+      // Accept both { module, questions } format and raw arrays (legacy)
+      qbData = data.map(entry => Array.isArray(entry) ? entry : (Array.isArray(entry.questions) ? entry.questions : []));
       localStorage.setItem('psycho_questions_override', JSON.stringify(qbData));
       renderQBank();
       const total = qbData.reduce((s, arr) => s + arr.length, 0);
