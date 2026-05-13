@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Admin — Psychometric — Sahirah.in</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 :root{
   --cream:#FDF8F0;--ink:#1A1208;--gold:#C8860A;--gold-light:#F5D98A;--gold-pale:#FDF0CC;
@@ -259,6 +260,10 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
 .pr-final-box{background:linear-gradient(135deg,#1A1208,#2A2015);border-radius:16px;padding:1.45rem 1.7rem;}
 .pr-final-box p{font-size:.84rem;line-height:1.9;color:rgba(253,248,240,.82);margin-bottom:.8rem;}
 .pr-final-box p:last-child{margin-bottom:0;}
+.fr-pdf-btn{background:var(--teal);color:#fff;border:none;border-radius:100px;padding:.42rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;font-family:var(--fb);display:flex;align-items:center;gap:.35rem;transition:background .2s;white-space:nowrap;}
+.fr-pdf-btn:hover{background:#085a4f;}
+.fr-pdf-btn:disabled{background:rgba(255,255,255,.2);cursor:default;}
+.fr-topbar-actions{display:flex;align-items:center;gap:.5rem;flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -412,7 +417,10 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
         <div class="fr-candidate-name" id="fr-candidate-name"></div>
         <div class="fr-meta-bar" id="fr-meta-bar"></div>
       </div>
-      <button class="fr-close-btn" onclick="closeFR()">✕</button>
+      <div class="fr-topbar-actions">
+        <button class="fr-pdf-btn" id="fr-pdf-btn" onclick="downloadReportPDF()">⬇ Download PDF</button>
+        <button class="fr-close-btn" onclick="closeFR()">✕</button>
+      </div>
     </div>
     <div class="fr-body-wrap">
       <div id="fr-body"></div>
@@ -1155,6 +1163,69 @@ function hEsc(s) {
 
 function closeFR() {
   document.getElementById('full-report-overlay').classList.remove('show');
+}
+
+async function downloadReportPDF() {
+  const btn = document.getElementById('fr-pdf-btn');
+  const origText = btn.textContent;
+  btn.textContent = '⏳ Generating…';
+  btn.disabled = true;
+
+  const candidateName = document.getElementById('fr-candidate-name').textContent
+    .replace(' — Psychometric Evaluation Report', '').trim() || 'Report';
+  const filename = candidateName.replace(/[^a-zA-Z0-9 _-]/g, '').replace(/\s+/g, '_') + '_Psychometric_Report.pdf';
+
+  // Clone the body content so we can style it for PDF without affecting the overlay
+  const source = document.getElementById('fr-body-wrap-pdf');
+  const element = document.createElement('div');
+  element.style.cssText = 'padding:20px 24px;background:#fff;font-family:DM Sans,sans-serif;font-size:13px;';
+
+  // Header block
+  const hdr = document.createElement('div');
+  hdr.style.cssText = 'margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #1A1208;';
+  hdr.innerHTML = '<div style="font-family:Playfair Display,Georgia,serif;font-size:18px;font-weight:700;color:#1A1208;">'+
+    hEsc(candidateName)+' — Psychometric Evaluation Report</div>'+
+    '<div style="font-size:10px;color:rgba(26,18,8,.45);margin-top:4px;">'+hEsc(document.getElementById('fr-meta-bar').textContent)+'</div>';
+  element.appendChild(hdr);
+
+  // Clone the report body (the score band + 12 sections)
+  const bodyClone = document.getElementById('fr-body').cloneNode(true);
+  // Make dark boxes print-safe
+  bodyClone.querySelectorAll('.pr-int-box,.pr-final-box').forEach(function(el) {
+    el.style.background = '#f4f1eb';
+    el.style.borderRadius = '8px';
+    el.style.padding = '12px 16px';
+  });
+  bodyClone.querySelectorAll('.pr-int-box p,.pr-final-box p').forEach(function(el) {
+    el.style.color = 'rgba(26,18,8,.8)';
+  });
+  bodyClone.querySelectorAll('.pr-sub-head').forEach(function(el) {
+    el.style.color = '#8B5E00';
+  });
+  bodyClone.querySelectorAll('.fr-score-band').forEach(function(el) {
+    el.style.background = '#f9f5ec';
+    el.style.border = '1px solid rgba(26,18,8,.1)';
+  });
+  element.appendChild(bodyClone);
+
+  const opt = {
+    margin:     [10, 10, 10, 10],
+    filename:   filename,
+    image:      { type: 'jpeg', quality: 0.95 },
+    html2canvas: { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff' },
+    jsPDF:      { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak:  { mode: ['avoid-all', 'css'] },
+  };
+
+  try {
+    await html2pdf().set(opt).from(element).save();
+  } catch(e) {
+    console.error('PDF error:', e);
+    showAdminToast('PDF generation failed — try again');
+  }
+
+  btn.textContent = origText;
+  btn.disabled = false;
 }
 
 async function viewFullReport(reg) {
