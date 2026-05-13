@@ -217,6 +217,48 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
 .fr-sum-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--gold-light);margin-bottom:.85rem;}
 .fr-summary-box p{font-size:.85rem;line-height:1.85;color:rgba(253,248,240,.78);}
 .fr-tier-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:rgba(26,18,8,.35);margin:.75rem 0 .35rem;}
+/* PROFESSIONAL REPORT */
+.pr-section{margin-bottom:2.75rem;}
+.pr-sec-head{display:flex;align-items:center;gap:.6rem;margin-bottom:1.25rem;padding-bottom:.85rem;border-bottom:2.5px solid var(--ink);}
+.pr-sec-num{width:26px;height:26px;background:var(--ink);color:var(--cream);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:.7rem;font-weight:700;flex-shrink:0;}
+.pr-sec-icon{font-size:1.05rem;flex-shrink:0;}
+.pr-sec-title{font-family:var(--fd);font-size:1.08rem;font-weight:700;color:var(--ink);}
+.pr-para{font-size:.83rem;line-height:1.85;color:rgba(26,18,8,.72);margin-bottom:.85rem;}
+.pr-para:last-child{margin-bottom:0;}
+.pr-sf{background:#FAFAF7;border:1px solid var(--border);border-radius:12px;padding:.95rem 1.2rem;margin-bottom:.75rem;}
+.pr-sf-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;}
+.pr-sf-name{font-weight:700;font-size:.83rem;color:var(--ink);}
+.pr-chip{font-family:var(--fm);font-size:.67rem;font-weight:700;padding:.18rem .6rem;border-radius:100px;}
+.pr-sf-body p{font-size:.81rem;line-height:1.8;color:rgba(26,18,8,.68);margin-bottom:.45rem;}
+.pr-sf-body p:last-child{margin-bottom:0;}
+.pr-int-box{background:linear-gradient(135deg,#1A1208,#2A2015);border-radius:14px;padding:1.2rem 1.45rem;margin-top:1.1rem;}
+.pr-sub-head{font-family:var(--fd);font-size:.9rem;font-weight:700;color:var(--gold-light);margin-bottom:.65rem;}
+.pr-int-box p{font-size:.81rem;line-height:1.82;color:rgba(253,248,240,.78);margin-bottom:.55rem;}
+.pr-int-box p:last-child{margin-bottom:0;}
+.pr-stream-primary,.pr-stream-secondary{padding:1.05rem 1.35rem;border-radius:13px;margin-bottom:.9rem;}
+.pr-stream-primary{background:var(--teal-light);border:1.5px solid rgba(10,107,94,.25);}
+.pr-stream-secondary{background:var(--gold-pale);border:1.5px solid rgba(200,134,10,.25);}
+.pr-stream-badge{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:.18rem .65rem;border-radius:100px;display:inline-block;margin-bottom:.35rem;}
+.pr-stream-badge.primary{background:var(--teal);color:#fff;}
+.pr-stream-badge.secondary{background:var(--gold);color:#fff;}
+.pr-stream-name{font-family:var(--fd);font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:.45rem;}
+.pr-stream-why{font-size:.79rem;line-height:1.8;color:rgba(26,18,8,.68);}
+.pr-career-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-top:.85rem;}
+@media(max-width:600px){.pr-career-grid{grid-template-columns:1fr;}}
+.pr-career-card{background:#fff;border:1px solid var(--border);border-radius:11px;padding:.85rem 1rem;border-top:3px solid var(--teal);}
+.pr-career-role{font-weight:700;font-size:.82rem;color:var(--ink);margin-bottom:.18rem;}
+.pr-career-domain{font-size:.66rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem;}
+.pr-career-why{font-size:.74rem;line-height:1.7;color:rgba(26,18,8,.55);}
+.pr-domain-sec{margin-top:1.15rem;}
+.pr-domain-pills{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.45rem;}
+.pr-domain-pill{background:var(--ink);color:var(--cream);padding:.28rem .8rem;border-radius:100px;font-size:.73rem;font-weight:500;}
+.pr-dev-list{display:flex;flex-direction:column;gap:.7rem;}
+.pr-dev-item{background:#FAFAF7;border:1px solid var(--border);border-radius:11px;padding:.85rem 1.05rem;border-left:3px solid var(--teal);}
+.pr-dev-area{font-weight:700;font-size:.75rem;color:var(--teal);margin-bottom:.28rem;text-transform:uppercase;letter-spacing:.04em;}
+.pr-dev-rec{font-size:.79rem;line-height:1.75;color:rgba(26,18,8,.68);}
+.pr-final-box{background:linear-gradient(135deg,#1A1208,#2A2015);border-radius:16px;padding:1.45rem 1.7rem;}
+.pr-final-box p{font-size:.84rem;line-height:1.9;color:rgba(253,248,240,.82);margin-bottom:.8rem;}
+.pr-final-box p:last-child{margin-bottom:0;}
 </style>
 </head>
 <body>
@@ -1156,84 +1198,21 @@ function buildFullReport(reg, sess, responses) {
   const body = document.getElementById('fr-body');
   body.innerHTML = '';
 
-  // Score band
   const band = document.createElement('div');
   band.className = 'fr-score-band';
   band.innerHTML = analyses.map(function(a, mi) {
     return '<div class="fr-score-tile">' +
       '<div class="fr-score-num" style="color:' + hEsc(MODS[mi].color) + '">' + a.score + '<span style="font-size:.78rem;font-weight:400">' + hEsc(a.scoreUnit||'%') + '</span></div>' +
       '<div class="fr-score-label">' + hEsc(MODS[mi].name) + '</div>' +
-      '</div>';
+    '</div>';
   }).join('');
   body.appendChild(band);
 
-  analyses.forEach(function(a, mi) { body.appendChild(renderSecBlock(a, MODS[mi])); });
-
-  const sumEl = document.createElement('div');
-  sumEl.className = 'fr-summary-box';
-  sumEl.innerHTML = '<div class="fr-sum-title">Holistic Summary</div><p>' + hEsc(buildSummary(name, analyses, MODS)) + '</p>';
-  body.appendChild(sumEl);
+  const reportWrap = document.createElement('div');
+  reportWrap.innerHTML = buildPsychReport(name, reg, sess, analyses);
+  body.appendChild(reportWrap);
 
   document.getElementById('full-report-overlay').classList.add('show');
-}
-
-function renderSecBlock(a, mod) {
-  const wrap = document.createElement('div');
-  wrap.className = 'fr-section';
-  const scoreColor = a.score >= 75 ? mod.color : a.score >= 50 ? '#C8860A' : '#C0410A';
-  wrap.innerHTML =
-    '<div class="fr-sec-header">' +
-      '<div class="fr-sec-icon" style="background:' + hEsc(mod.bg) + '">' + hEsc(mod.icon) + '</div>' +
-      '<div class="fr-sec-title">' + hEsc(mod.name) + '</div>' +
-      '<div class="fr-sec-score-badge" style="background:' + hEsc(mod.bg) + ';color:' + hEsc(scoreColor) + '">' +
-        a.score + hEsc(a.scoreUnit||'%') + (a.scoreLabel ? ' · ' + hEsc(a.scoreLabel) : '') +
-      '</div>' +
-    '</div>';
-
-  if (a.bars && a.bars.length) {
-    const bw = document.createElement('div');
-    bw.style.marginBottom = '.5rem';
-    a.bars.forEach(function(b) {
-      if (b.score === null || b.score === undefined) return;
-      const pct = Math.min(100, Math.max(0, b.score));
-      bw.innerHTML +=
-        '<div class="fr-bar-row">' +
-          '<div class="fr-bar-label">' + hEsc(b.label) + '</div>' +
-          '<div class="fr-bar-track"><div class="fr-bar-fill" style="width:' + pct + '%;background:' + hEsc(mod.color) + ';"></div></div>' +
-          '<div class="fr-bar-val" style="color:' + hEsc(mod.color) + '">' + hEsc(b.display || (b.score+'%')) + '</div>' +
-        '</div>';
-    });
-    wrap.appendChild(bw);
-  }
-
-  if (a.evidence && a.evidence.length) {
-    const evTitle = document.createElement('div');
-    evTitle.className = 'fr-ev-title';
-    evTitle.textContent = 'Question-by-Question Evidence';
-    wrap.appendChild(evTitle);
-
-    if (a.tierGroups) {
-      [1,2,3].forEach(function(t) {
-        const items = a.evidence.filter(function(e){ return e.tier===t; });
-        if (!items.length) return;
-        const ok = items.filter(function(e){ return e.state==='correct'; }).length;
-        const attempted = items.filter(function(e){ return e.state!=='skipped'; }).length;
-        const tl = document.createElement('div');
-        tl.className = 'fr-tier-label';
-        tl.textContent = 'Tier ' + t + ' — ' + (t===1?'Foundation':t===2?'Intermediate':'Advanced') + '  (' + ok + '/' + attempted + ' correct)';
-        wrap.appendChild(tl);
-        items.forEach(function(e){ wrap.appendChild(makeEvItem(e)); });
-      });
-    } else {
-      a.evidence.forEach(function(e){ wrap.appendChild(makeEvItem(e)); });
-    }
-  }
-
-  const an = document.createElement('div');
-  an.className = 'fr-analysis';
-  an.textContent = a.analysis;
-  wrap.appendChild(an);
-  return wrap;
 }
 
 function makeEvItem(e) {
@@ -1616,23 +1595,505 @@ function analyseSection(qs, mi, ansMap, mod, name) {
   }
 }
 
-function buildSummary(name, analyses, MODS) {
-  const apt=analyses[0], per=analyses[1], int_=analyses[2], eq=analyses[3], val=analyses[4], sit=analyses[5];
-  const topInt = int_.bars.length ? int_.bars[0].label : 'varied';
-  const topVal = val.bars.length ? val.bars[0].label : 'purpose';
-  const topPer = per.bars.length ? per.bars[0].label : 'balanced';
+function buildPsychReport(name, reg, sess, analyses) {
+  // ---- score lookup helpers ----
+  function bs(a, lbl) {
+    const b = a.bars.find(function(x){ return x.label===lbl; });
+    return (b && b.score!==null && b.score!==undefined) ? b.score : 50;
+  }
+  function lv3(s, high, mod, low) { return s>=75?high:s>=55?mod:low; }
+  function lAdj(s) { return s>=75?'strong':s>=55?'moderate':'developing'; }
+  function chip(s, unit) {
+    const bg=s>=75?'#E0F2EE':s>=55?'#FDF0CC':'#FFF0EB';
+    const fg=s>=75?'#0A6B5E':s>=55?'#8B5E00':'#C0410A';
+    return '<span class="pr-chip" style="background:'+bg+';color:'+fg+'">'+s+(unit||'%')+'</span>';
+  }
+  function sf(title, score, unit, bodyHtml) {
+    return '<div class="pr-sf"><div class="pr-sf-head"><span class="pr-sf-name">'+title+'</span>'+chip(score,unit)+'</div><div class="pr-sf-body">'+bodyHtml+'</div></div>';
+  }
+  function sec(num, icon, title, content) {
+    return '<div class="pr-section"><div class="pr-sec-head"><span class="pr-sec-num">'+num+'</span><span class="pr-sec-icon">'+icon+'</span><span class="pr-sec-title">'+title+'</span></div>'+content+'</div>';
+  }
+  function para(t) { return '<p class="pr-para">'+t+'</p>'; }
+  function intBox(content) { return '<div class="pr-int-box">'+content+'</div>'; }
+  function subHead(t) { return '<div class="pr-sub-head">'+t+'</div>'; }
+  function p(t) { return '<p>'+t+'</p>'; }
 
-  var s = name+"'s full psychometric evaluation paints a coherent, multi-dimensional portrait of their cognitive profile, personality, interests, and decision-making character. ";
-  s += 'On the cognitive dimension, an aptitude score of '+apt.score+'% ';
-  s += apt.score>=75?'signals strong analytical and reasoning depth — this candidate can handle complex, multi-step problems with confidence and is well-positioned for technically demanding career paths.':apt.score>=50?'reflects a developing analytical mind with solid foundations and clear headroom for growth through structured practice.':'indicates that cognitive reasoning skills are still forming — early, consistent investment in logical and numerical thinking will have transformational results. ';
-  s += ' ';
-  s += 'The personality profile, led by '+topPer+', ';
-  s += topPer==='Conscientiousness'?'is a powerful academic asset — conscientious students consistently outperform peers in structured environments, and this quality will compound over time. ':topPer==='Openness'?'fuels intellectual curiosity and a natural drive to explore — an engine for innovation and original thinking in any chosen field. ':topPer==='Extraversion'?'equips '+name+' for collaborative and communicative roles where energy and engagement are rewarded. ':topPer==='Agreeableness'?'means '+name+' is naturally cooperative and empathetic — qualities that build strong teams and trusted relationships. ':topPer==='Emotional Stability'?'provides resilience under pressure — a significant advantage during high-stakes academic and professional moments. ':'contributes a distinctive quality to how '+name+' approaches challenges and relationships. ';
-  s += 'The convergence of '+topInt+' interest patterns with a core '+topVal+'-driven values orientation suggests a candidate who will find deepest engagement in work that is both intellectually stimulating and aligned with their sense of purpose. ';
-  s += 'An EQ score of '+eq.score+'/100 and situational judgement effectiveness of '+sit.score+'/100 ';
-  s += (eq.score>=65&&sit.score>=65)?'together confirm that '+name+' brings both emotional maturity and sound decision-making instincts to complement their cognitive strengths — a complete profile that stands out.':( eq.score>=65||sit.score>=65)?'present a mixed interpersonal picture — strong in one dimension, developing in the other. Targeted engagement with the weaker area will create a more complete and competitive profile.':'suggest that interpersonal and decision-making skills are areas for focused cultivation — qualities that respond quickly to deliberate practice and reflective experience. ';
-  s += ' In summary, '+name+' is a '+( apt.score>=70&&per.score>=65?'cognitively capable, well-rounded candidate':apt.score>=70?'intellectually strong candidate whose interpersonal dimensions deserve development':apt.score>=50?'candidate with solid foundations across multiple dimensions':'candidate with clear upside potential')+' whose profile, taken holistically, provides a reliable foundation for evidence-based career guidance. The path ahead is best shaped by amplifying identified strengths while investing deliberately in the specific development areas this report has surfaced.';
-  return s;
+  const apt=analyses[0], per=analyses[1], int_=analyses[2], eq=analyses[3], val=analyses[4], sit=analyses[5];
+
+  // Personality
+  const pO=bs(per,'Openness'), pC=bs(per,'Conscientiousness'), pE=bs(per,'Extraversion'),
+        pA=bs(per,'Agreeableness'), pES=bs(per,'Emotional Stability');
+  // Interest
+  const iR=bs(int_,'Realistic'), iI=bs(int_,'Investigative'), iA=bs(int_,'Artistic'),
+        iS=bs(int_,'Social'), iE=bs(int_,'Enterprising'), iC=bs(int_,'Conventional');
+  // EQ
+  const eSA=bs(eq,'Self-Awareness'), eEM=bs(eq,'Empathy'),
+        eSH=bs(eq,'Stress Handling'), eLE=bs(eq,'Leadership EQ');
+  // Values
+  const vIm=bs(val,'Impact'), vW=bs(val,'Wealth'), vCr=bs(val,'Creativity'),
+        vSt=bs(val,'Stability'), vAc=bs(val,'Achievement'), vFr=bs(val,'Freedom');
+  // SJT
+  const sCL=bs(sit,'Collaborative Leadership'), sIH=bs(sit,'Integrity & Honesty'),
+        sRP=bs(sit,'Reflective Problem-Solving'), sPI=bs(sit,'Proactive Initiative'),
+        sEA=bs(sit,'Ethical Advocacy'), sTC=bs(sit,'Transparent Communication'),
+        sEC=bs(sit,'Ethical Courage'), sIN=bs(sit,'Intellectual Honesty');
+  // Aptitude tiers
+  const aT1b=apt.bars.find(function(x){return x.label.includes('Foundation');}),
+        aT2b=apt.bars.find(function(x){return x.label.includes('Intermediate');}),
+        aT3b=apt.bars.find(function(x){return x.label.includes('Advanced');});
+  const aT1=aT1b&&aT1b.score!==null?aT1b.score:null,
+        aT2=aT2b&&aT2b.score!==null?aT2b.score:null,
+        aT3=aT3b&&aT3b.score!==null?aT3b.score:null;
+
+  const topPer=per.bars.length?per.bars[0].label:'Openness';
+  const botPer=per.bars.length?per.bars[per.bars.length-1].label:'Extraversion';
+  const topInt=int_.bars.length?int_.bars[0].label:'Investigative';
+  const topInt2=int_.bars.length>1?int_.bars[1].label:'Social';
+  const topVal=val.bars.length?val.bars[0].label:'Achievement';
+  const topVal2=val.bars.length>1?val.bars[1].label:'Impact';
+
+  // Stream recommendation scores
+  const stScores={
+    'Non-Medical':Math.round((apt.score*1.5+iI*0.8+iR*0.5+pC*0.5+pO*0.4)/3.7),
+    'Medical':    Math.round((apt.score*1.2+iI*0.8+iS*0.7+pA*0.5+pC*0.5)/3.7),
+    'Commerce':   Math.round((iE*1.0+iC*0.8+pC*0.8+pE*0.5+vAc*0.4+vW*0.4)/3.9),
+    'Humanities': Math.round((iA*0.8+iS*0.8+pO*0.7+pA*0.5+vIm*0.4+vCr*0.4)/3.6),
+  };
+  const stList=Object.entries(stScores).sort(function(a,b){return b[1]-a[1];});
+  const stream1=stList[0][0], stream2=stList[1][0];
+
+  // Career pool
+  const careerPool=[
+    {role:'Data Scientist / AI Engineer',    domain:'Technology & Data',           factors:'Investigative interest, analytical aptitude, and Conscientiousness',    t:iI+pC+apt.score, ok:apt.score>=45&&iI>=40},
+    {role:'Research Scientist',              domain:'Science & Research',          factors:'Investigative curiosity, Openness to new ideas, and aptitude for complex reasoning', t:iI+pO+apt.score, ok:iI>=45||pO>=55},
+    {role:'Medical Doctor / Surgeon',        domain:'Healthcare & Medicine',       factors:'Investigative orientation, Social empathy, and Impact value',           t:iI+iS+vIm+eEM,   ok:iS>=40||iI>=40},
+    {role:'Architect / Urban Designer',      domain:'Design & Built Environment',  factors:'Artistic interest, Realistic spatial orientation, and Creativity value', t:iA+iR+vCr+pO,    ok:iA>=40||iR>=40},
+    {role:'Psychologist / Counsellor',       domain:'Mental Health & Social Sciences', factors:'Empathy, Social interest, Self-Awareness, and Impact motivation', t:iS+eEM+eSA+vIm,  ok:iS>=40||eEM>=55},
+    {role:'Software Engineer',               domain:'Technology & Engineering',    factors:'Investigative and Realistic interest, Conscientiousness, and analytical aptitude', t:iI+iR+pC+apt.score, ok:apt.score>=40&&(iI>=40||iR>=40)},
+    {role:'Entrepreneur / Business Founder', domain:'Entrepreneurship & Business', factors:'Enterprising orientation, Freedom value, Leadership EQ, and Achievement drive', t:iE+vFr+vAc+eLE, ok:iE>=45||vFr>=50},
+    {role:'Teacher / Educator',              domain:'Education & Academia',        factors:'Social interest, Agreeableness, Empathy, and Impact motivation',        t:iS+pA+eEM+vIm,   ok:iS>=45||pA>=55},
+    {role:'Management Consultant',           domain:'Business & Strategy',         factors:'Enterprising interest, Conscientiousness, Reflective Problem-Solving, and analytical aptitude', t:iE+pC+sRP+apt.score, ok:iE>=40||pC>=55},
+    {role:'Journalist / Writer',             domain:'Media & Communications',      factors:'Artistic interest, Openness, verbal aptitude, and Creativity value',   t:iA+pO+vCr,       ok:iA>=40||pO>=55},
+    {role:'Civil Services Officer / IAS',    domain:'Public Administration',       factors:'Social and Enterprising interests, Integrity, Impact motivation, and Ethical Courage', t:iS+iE+sIH+vIm+sEC, ok:vIm>=45||sIH>=55},
+    {role:'Financial Analyst / Actuary',     domain:'Finance & Economics',         factors:'Conventional and Investigative interests, Conscientiousness, and Wealth orientation', t:iC+iI+pC+vW,    ok:iC>=40||vW>=45},
+    {role:'Lawyer / Legal Advocate',         domain:'Law & Justice',               factors:'Enterprising orientation, Integrity, Ethical Courage, and Transparent Communication', t:iE+sIH+sEC+sTC, ok:sIH>=55||iE>=45},
+    {role:'Product / UX Designer',           domain:'Design & Technology',         factors:'Artistic and Investigative interests, Openness, and Creativity value', t:iA+iI+pO+vCr,    ok:iA>=45||iI>=40},
+    {role:'Social Worker / NGO Leader',      domain:'Social Impact',               factors:'Social interest, Agreeableness, Empathy, Impact value, and Ethical Advocacy', t:iS+pA+vIm+eEM+sEA, ok:vIm>=50||iS>=50},
+    {role:'Environmental Scientist',         domain:'Environment & Sustainability', factors:'Investigative and Realistic interests, Openness, and Impact value',   t:iI+iR+pO+vIm,    ok:(iI+iR)/2>=40},
+    {role:'Film Director / Content Creator', domain:'Creative Arts & Media',       factors:'Artistic interest, Openness, Freedom value, and Creativity',           t:iA+pO+vCr+vFr,   ok:iA>=50||vCr>=55},
+    {role:'Defence Services Officer',        domain:'Defence & Security',          factors:'Conscientiousness, Emotional Stability, Integrity, and Achievement motivation', t:pC+pES+sIH+vAc, ok:pC>=55||sIH>=60},
+    {role:'Marketing Professional',          domain:'Business & Media',            factors:'Enterprising interest, Extraversion, Artistic sensibility, and Achievement drive', t:iE+iA+pE+vAc,   ok:iE>=40||iA>=40},
+    {role:'Sports Professional / Coach',     domain:'Sports & Physical Education', factors:'Realistic interest, Extraversion, Achievement and Freedom values',     t:iR+pE+vAc+vFr,   ok:iR>=45||vFr>=50},
+  ];
+  const eligible=careerPool.filter(function(c){return c.ok;}).sort(function(a,b){return b.t-a.t;});
+  const topCareers=eligible.length>=10?eligible.slice(0,10):careerPool.sort(function(a,b){return b.t-a.t;}).slice(0,10);
+  const allDomains=[]; topCareers.forEach(function(c){ if(allDomains.indexOf(c.domain)<0) allDomains.push(c.domain); });
+  const topDomains=allDomains.slice(0,5);
+
+  // ===== BUILD REPORT =====
+  var html='';
+
+  // --- 1. STUDENT OVERVIEW ---
+  html+=sec(1,'','Student Overview',
+    para(name+' presents as a '+lv3(apt.score,'cognitively capable and analytically oriented','intellectually developing','cognitively emergent')+' individual whose dominant personality characteristic is '+topPer.toLowerCase()+'. '+
+      lv3(apt.score,'The aptitude results reflect a student who can engage comfortably with complex reasoning tasks across multiple domains.','Aptitude results reveal a student in active cognitive development with solid foundational skills and genuine potential for growth.','Aptitude results indicate a student whose cognitive profile is still taking shape — a profile with significant developmental upside.')+' '+
+      'The interest landscape is primarily shaped by a '+lAdj(int_.score)+' orientation toward '+topInt.toLowerCase()+' activities, pointing to natural curiosity and motivation around '+
+      (topInt==='Investigative'?'analytical inquiry, scientific exploration, and understanding how complex systems work':
+       topInt==='Artistic'?'creative expression, aesthetic engagement, and original ideation':
+       topInt==='Social'?'human connection, helping others, and working in people-oriented environments':
+       topInt==='Enterprising'?'leadership, persuasion, and driving results through people and organisations':
+       topInt==='Realistic'?'hands-on, practical, and technically grounded engagement with real-world systems':
+       'structured, systematic, and detail-oriented management of processes and information')+'. '+
+      'Emotionally, '+name+' demonstrates '+lv3(eq.score,'a high level of emotional intelligence — a meaningful asset that will serve well across personal, academic, and eventual professional contexts','a developing emotional intelligence profile with genuine strengths and clear areas for growth','an emotional intelligence profile in early formation — an area where focused development will create cascading positive effects')+'. '+
+      'Values are anchored primarily by a drive for '+topVal.toLowerCase()+', with '+topVal2.toLowerCase()+' as a closely held secondary orientation.')+
+    para('This report synthesises findings across six comprehensive assessment modules — Aptitude, Personality, Interest, Emotional Intelligence, Values, and Situational Judgement — into an integrated psychological portrait. Each section that follows provides an in-depth interpretation of the relevant dimensions, culminating in evidence-based stream and career recommendations. The goal is not to predict a fixed destiny, but to illuminate a well-grounded starting point for deliberate, informed planning.')
+  );
+
+  // --- 2. APTITUDE ---
+  var aptContent='';
+  if (aT1!==null) aptContent+=sf('Foundation Reasoning',aT1,'%',
+    p(lv3(aT1,
+      name+' demonstrates a consistently reliable command of foundational reasoning concepts. The ability to process logical sequences, basic numerical relationships, and simple pattern recognition at this level is well-established, providing a dependable cognitive scaffold on which intermediate and advanced learning can be built. Students with strong foundation scores tend to adapt quickly to new academic concepts and encounter fewer comprehension barriers when approaching unfamiliar material.',
+      name+' shows adequate foundational reasoning capability, with most basic cognitive operations performing within expected range. Occasional gaps at this level suggest that some foundational concepts would benefit from deliberate reinforcement through structured practice exercises. With targeted effort, this tier can be solidified, creating a stronger platform for intermediate and advanced reasoning.',
+      name+"'s foundational reasoning is still in active development. Some core logical and numerical concepts need further consolidation before more complex problem-solving can be reliably accessed. This is entirely normal for this age group, and early, consistent investment — through structured exercises in logical thinking, number sense, and pattern recognition — will produce compounding academic returns."
+    ))+
+    p(lv3(aT1,
+      'Strong foundational reasoning directly translates to academic confidence: fewer comprehension barriers, faster concept acquisition, and a more stable base for all streams. In career terms, solid foundations predict long-term adaptability across analytically demanding professional environments.',
+      'Moderate foundations create a functional platform for learning, with specific gaps that can be addressed efficiently. Identifying and targeting those specific areas — rather than broad repetition — will yield the fastest improvement.',
+      'Foundational development is best addressed through engaging, contextualised practice rather than rote drilling. Conceptual understanding built at this level will transfer broadly across subjects.'
+    ))
+  );
+  if (aT2!==null) aptContent+=sf('Intermediate Problem-Solving',aT2,'%',
+    p(lv3(aT2,
+      'At the intermediate reasoning tier, '+name+' demonstrates commendable proficiency. Multi-step problem-solving, analytical chaining, and the ability to hold several variables in mind simultaneously are all performing at a strong level. This tier is the most directly predictive of performance in competitive academic environments, and a strong showing here suggests '+name+' is well-equipped for curricula demanding structured reasoning under time pressure.',
+      'Intermediate-tier reasoning reflects a student developing analytical depth. '+name+' can work through moderately complex problems with reasonable success, though inconsistency in multi-step processes suggests this is an area where focused practice will yield significant returns. Concept-mapping, timed problem sets, and analytical reading will specifically strengthen this tier.',
+      'Intermediate reasoning represents a meaningful development opportunity. The ability to chain logical steps and solve multi-part problems is growing but not yet consistently reliable. With structured guidance and regular practice at this cognitive level, meaningful improvement is achievable within a single academic year.'
+    ))+
+    p(lv3(aT2,
+      'This tier\'s strength is the most direct predictor of examination performance in competitive assessments such as NTSE, NTSE, and state board exams. '+name+' is well-positioned to leverage this advantage.',
+      'Intermediate reasoning responds well to deliberate, progressive practice — problems that are challenging but not overwhelming. A graded problem set practice programme of 20 minutes daily is the single highest-return investment here.',
+      'Growing intermediate reasoning is best approached by first consolidating foundations, then progressively increasing problem complexity. Patience and systematic effort produce measurable results at this tier.'
+    ))
+  );
+  if (aT3!==null) aptContent+=sf('Advanced Analytical Thinking',aT3,'%',
+    p(lv3(aT3,
+      name+' shows impressive performance on advanced reasoning tasks — the highest cognitive tier in this assessment. The ability to engage with abstract, multi-layered problems is a rare and valuable quality at this stage of schooling, directly predicting aptitude for highly competitive programmes (NTSE, Science Olympiads, IIT-JEE, NEET). This is a clear differentiating strength that should be actively cultivated.',
+      name+' is beginning to develop higher-order analytical capacity. While not yet consistently performing at the ceiling of this tier, there is exposure and partial fluency with complex reasoning — a foundation that systematic challenge and stretch practice can develop substantially over the coming academic years.',
+      'Advanced-tier questions present genuine challenge at this stage, which is entirely expected. Very few students in Class 8–10 consistently perform here without deliberate preparation. The important insight is that foundation and intermediate tiers are the primary levers for academic improvement right now, and success there will naturally develop advanced capacity over time.'
+    ))
+  );
+  aptContent+=intBox(subHead('Overall Aptitude Interpretation')+
+    p(lv3(apt.score,
+      name+"'s overall aptitude positions them in a strong band for their age group. The cognitive toolkit encompassing logical reasoning, numerical aptitude, and pattern recognition is well-developed relative to peers. This is a student capable of handling analytically demanding curricula — in science, technology, commerce, or humanities — at a high level. The aptitude profile supports ambitious academic goals, and intellectual challenge should be actively sought rather than avoided.",
+      'An overall aptitude in the developing range reflects a student building genuine cognitive momentum. The foundations for strong analytical performance are in place; the primary lever for further growth is consistent, structured practice that progressively increases cognitive challenge. A well-designed study programme that includes timed practice, problem-solving exposure, and conceptual reinforcement will meaningfully strengthen this profile over the coming academic years.',
+      "The aptitude profile reflects a cognitive map still taking shape. This carries no deterministic ceiling — many exceptional professionals tested similarly at this age. Aptitude is highly malleable with the right intervention: personalised academic support, engaging learning formats, and reduced exam anxiety are all evidence-based approaches that will develop this profile substantially."
+    ))
+  );
+  html+=sec(2,'🧮','Aptitude Assessment Analysis',aptContent);
+
+  // --- 3. PERSONALITY ---
+  var perContent='';
+  perContent+=sf('Openness to Experience',pO,'%',
+    p(lv3(pO,
+      name+' scores strongly on Openness — one of the most career-relevant personality dimensions in psychological research. This reflects a mind naturally drawn to novelty, complexity, and cross-disciplinary thinking. '+name+' likely enjoys exploring ideas beyond the prescribed curriculum, thinking in unconventional ways, and seeking out learning experiences that stretch understanding. This trait is most strongly associated with innovation, intellectual depth, and creative problem-solving.',
+      name+' displays a moderate level of Openness, indicating genuine intellectual curiosity that is channelled selectively rather than indiscriminately. Engagement will be deepest with subjects that connect to personal interest, while unfamiliar domains may require more activation. Structured exposure to new ideas — through electives, clubs, and diverse reading — can broaden this dimension meaningfully.',
+      name+' shows a developing Openness score, suggesting a preference for familiar structures, proven methods, and clear instructions over open-ended exploration. This is a perfectly valid cognitive style that translates well into precision-oriented careers. The growth opportunity lies in gradually expanding comfort with ambiguity — through structured creative exercises, debate participation, and exposure to diverse perspectives.'
+    ))+
+    p(lv3(pO,
+      'High Openness directly supports academic excellence in subjects requiring conceptual understanding rather than rote memorisation. Career-wise, it strongly aligns with research, design, writing, teaching, entrepreneurship, and any domain where thinking differently is rewarded.',
+      'Moderate Openness creates a learner who appreciates both structured and creative tasks. This adaptability is broadly positive and fits most academic streams and professional environments.',
+      'Developing Openness aligns most naturally with careers emphasising accuracy, systems, and established processes — accounting, engineering, data analysis, and technical fields where precision is rewarded over creativity.'
+    ))
+  );
+  perContent+=sf('Conscientiousness',pC,'%',
+    p(lv3(pC,
+      'Conscientiousness is the single strongest personality predictor of academic achievement identified in psychological research, and '+name+' scores strongly on this dimension. This is reflected in goal-directedness, attention to detail, task completion, and a reliability that peers and teachers are likely to notice. '+name+' probably plans ahead, meets deadlines, and takes academic responsibilities seriously — qualities that compound powerfully over time.',
+      name+' demonstrates a moderate Conscientiousness profile — organised enough to maintain academic function, but with room to build more consistent planning and follow-through habits. Building personal systems — study schedules, task lists, daily review routines — will strengthen this dimension and directly improve academic outcomes.',
+      name+' is developing the self-regulation and goal-directedness that define high Conscientiousness. This responds particularly well to structured coaching and habit-building. Specific strategies include time-blocking study sessions, breaking long-term goals into manageable daily tasks, and building accountability systems with a parent, mentor, or study partner.'
+    ))+
+    p(lv3(pC,
+      'High Conscientiousness means '+name+' is likely to consistently translate knowledge into performance — a crucial advantage in examination-driven systems. Professionally, it translates to trustworthiness, delivery quality, and career trajectory consistency.',
+      'Moderate Conscientiousness suggests strong performance when engaged, with potential for underperformance when motivation is low. Pairing with intrinsically interesting work and clear milestones will unlock this dimension more fully.',
+      'Developing Conscientiousness is very common at this age and should be addressed proactively. Structured external support — organised routines, supervised practice, regular mentor check-ins — can accelerate this development significantly.'
+    ))
+  );
+  perContent+=sf('Extraversion',pE,'%',
+    p(lv3(pE,
+      name+' demonstrates a strongly extraverted profile, suggesting they are energised by social interaction, collaborative activity, and external engagement. This student likely thrives in classroom discussion, group projects, and activities involving communication with others. High Extraversion is typically accompanied by enthusiasm, assertiveness, and natural comfort with public expression — qualities supporting leadership development and visibility in group settings.',
+      name+' shows a balanced orientation between social engagement and independent work — often described as ambiversion. This highly adaptable profile means '+name+' can function comfortably in both collaborative and solitary academic contexts, which is a practical strength across most career environments.',
+      name+' presents as more introverted — someone who processes internally, may prefer independent work, and finds sustained social interaction more draining than energising. Introversion is not a limitation: it is associated with depth of thought, careful listening, and strong written communication. Many of the most successful professionals in research, technology, writing, and analysis are strongly introverted.'
+    ))
+  );
+  perContent+=sf('Agreeableness',pA,'%',
+    p(lv3(pA,
+      'A strong Agreeableness score reflects a genuinely empathetic, cooperative, and socially considerate character. '+name+' is likely someone who values harmony, listens well, and naturally considers others\' perspectives before acting. This is a powerful foundation for roles requiring trust, collaboration, and service to others. In academic group work, '+name+' is often the person who ensures inclusion and resolves conflict constructively.',
+      name+' shows a balanced Agreeableness profile — warm enough to build solid relationships, but with sufficient assertiveness to advocate for personal interests. This well-calibrated social profile avoids both excessive conflict and excessive compliance, translating effectively into team environments that require both cooperation and independent contribution.',
+      name+' scores in the developing range on Agreeableness, which may reflect a more assertive, direct, or independent interpersonal style. Many highly effective leaders score similarly. The developmental opportunity lies in practising perspective-taking, active listening, and collaborative negotiation — skills that complement natural directness without suppressing it.'
+    ))
+  );
+  perContent+=sf('Emotional Stability',pES,'%',
+    p(lv3(pES,
+      name+' scores strongly on Emotional Stability, suggesting a consistently composed and resilient disposition. This student is likely to remain calm under pressure, recover quickly from setbacks, and maintain focus in high-stakes situations. In competitive examinations and challenging periods, this emotional regulation capacity is a concrete, measurable advantage.',
+      name+' shows a moderate Emotional Stability profile. Emotional regulation is adequate for routine academic stress, but high-stakes situations may temporarily affect performance. Building specific coping strategies and exam readiness techniques will strengthen this dimension meaningfully.',
+      name+' scores in the developing range on Emotional Stability, suggesting that emotional responses to pressure, uncertainty, and criticism may be more intense than average. This is very common in adolescence and highly responsive to supportive intervention: mindfulness, cognitive reframing, and graduated academic challenge are evidence-based approaches that build emotional resilience progressively.'
+    ))
+  );
+  perContent+=intBox(subHead('Integrated Personality Interpretation')+
+    p(name+"'s five personality dimensions work together as a coherent system. The profile is led by "+per.bars.slice(0,2).map(function(b){return b.label+' ('+b.score+'%)'}).join(' and ')+', creating a '+
+      lv3((pC+pO)/2,'highly capable and intellectually engaged personality architecture — one that combines the drive to achieve with the curiosity to explore.','developing personality framework with meaningful strengths and clear growth directions.','personality profile still finding its full expression, with distinct individual qualities that can be deliberately strengthened.')+
+    '.')+
+    p('Leadership potential: '+lv3(pE+pC+eLE,
+      name+' demonstrates genuine leadership readiness. The combination of social energy, conscientiousness, and interpersonal sensitivity creates the foundation for effective, trusted leadership in academic and professional settings.',
+      name+' has the foundational qualities for leadership development, particularly in contexts that allow preparation and structured engagement.',
+      name+' may lead most naturally through quiet competence and expertise rather than visible authority — a style highly effective in specialist and technical fields.')+
+    ' The developing edge is '+botPer+' ('+lAdj(per.bars[per.bars.length-1].score)+'): investing deliberately in this dimension will create a more complete and adaptable personality profile.')
+  );
+  html+=sec(3,'🧠','Personality Profile Analysis',perContent);
+
+  // --- 4. INTEREST INVENTORY ---
+  var intContent='';
+  var riDesc={
+    Realistic:     {full:'hands-on, practical, and technical engagement with physical systems and tangible tools',    careers:'engineering, construction, mechanics, agriculture, sports science, and technical trades'},
+    Investigative: {full:'analytical, scientific, and intellectual exploration of how the natural and technological world works', careers:'science, technology, research, medicine, data science, and academic disciplines'},
+    Artistic:      {full:'creative, expressive, and aesthetic engagement with ideas, media, language, and form',      careers:'design, architecture, film, music, writing, advertising, and the performing arts'},
+    Social:        {full:'connecting with, helping, teaching, and working in support of other people',                careers:'education, healthcare, counselling, social work, and community leadership'},
+    Enterprising:  {full:'leading, persuading, selling, and driving results through people and organisations',        careers:'business, law, management, entrepreneurship, marketing, and politics'},
+    Conventional:  {full:'structured, systematic, and orderly management of data, information, and processes',        careers:'accounting, finance, data management, administration, and quality assurance'},
+  };
+  [[iR,'Realistic'],[iI,'Investigative'],[iA,'Artistic'],[iS,'Social'],[iE,'Enterprising'],[iC,'Conventional']].forEach(function(pair){
+    var s=pair[0], l=pair[1], d=riDesc[l]||{full:l.toLowerCase(),careers:l.toLowerCase()+' fields'};
+    intContent+=sf(l+' Interest',s,'%',
+      p(lv3(s,
+        name+"'s high "+l+" score signals a genuinely strong and natural inclination toward "+d.full+'. When engaged in activities of this type, '+name+' is likely to experience sustained intrinsic motivation and a sense of flow. Careers in '+d.careers+' directly activate this interest cluster and are most likely to produce long-term professional engagement and satisfaction.',
+        name+' shows a moderate '+l.toLowerCase()+' interest — genuine but selective engagement with this domain. This interest can be developed further, but may need specific contexts or topics to fully activate. Broader exposure to activities within the '+l.toLowerCase()+' domain will help clarify which specific aspects resonate most strongly.',
+        'The '+l+' interest dimension scores in the developing range. This does not indicate a complete absence of interest, but rather that this domain is not currently a primary motivational driver for '+name+'. Careers requiring deep specialisation in '+d.careers.split(',')[0]+' would benefit from strong compensating factors — such as values alignment or personality fit — to be sustainable over the long term.'
+      ))
+    );
+  });
+  var riCode=int_.bars.slice(0,2).map(function(b){return b.label[0];}).join('');
+  intContent+=intBox(subHead('Dominant Interest Themes & Career Clusters')+
+    p(name+"'s RIASEC profile is led by "+int_.bars.slice(0,2).map(function(b){return b.label;}).join(' and ')+' — a two-letter dominance code of '+riCode+'. Vocational psychology research consistently shows that career satisfaction is highest when the work environment closely matches this two-letter RIASEC profile. The convergence of these two interest types creates a specific career cluster that is more diagnostic than any single score alone.')+
+    p('Correlating this interest pattern with '+name+"'s personality and values reveals a coherent motivational system: "+
+      lv3(int_.score,
+        'a clearly differentiated interest profile that makes career guidance more precise. There are specific, high-fit domains where '+name+' is most likely to thrive, and these should form the primary focus of stream and career planning.',
+        'a developing but emerging interest profile that is actively crystallising. This is an appropriate stage for broad exploration — no premature commitment to a single track is necessary.',
+        'an interest profile still in early formation. Multiple broad exploratory experiences — clubs, workshops, professional shadowing — will be more valuable than early specialisation at this stage.'
+      )
+    )
+  );
+  html+=sec(4,'🌱','Interest Inventory Analysis',intContent);
+
+  // --- 5. EQ ---
+  var eqContent='';
+  eqContent+=sf('Self-Awareness',eSA,'/100',
+    p(lv3(eSA,
+      name+' demonstrates a strong capacity for self-awareness — the foundational layer of emotional intelligence. This means '+name+' likely has a clear understanding of personal emotional states, reactions, and patterns. Self-aware individuals make better decisions because they can distinguish between emotional responses and objective analysis. In academic settings, this translates to knowing when stress is affecting performance, understanding personal learning preferences, and adjusting behaviour proactively.',
+      name+' shows a moderately developed self-awareness capacity. There is meaningful insight into personal emotional patterns, though this self-knowledge may not always be consistent or reliably accessible under pressure. Journalling, structured reflection, and regular feedback-seeking are practices that will develop this dimension further.',
+      'Self-awareness is in early development for '+name+'. This is very common at this age — adolescence is itself a process of developing self-knowledge. Structured reflection exercises, mentored conversations, and exposure to psychological frameworks will meaningfully accelerate this development.'
+    ))
+  );
+  eqContent+=sf('Empathy',eEM,'/100',
+    p(lv3(eEM,
+      name+' scores strongly on empathy — the ability to understand and respond to others\' emotional states with genuine sensitivity. This is a profoundly valuable quality that builds deep trust in relationships, makes '+name+' a naturally effective collaborator, and supports leadership that people want to follow. High empathy is directly associated with conflict resolution skill and the ability to navigate complex interpersonal situations constructively.',
+      name+' demonstrates developing empathy, with genuine sensitivity to others\' emotional experiences in familiar contexts. Under pressure or with unfamiliar people, this empathy may not always activate reliably. Perspective-taking exercises, volunteer experiences, and active listening practice will strengthen this dimension.',
+      'Empathy at this level — not an absence of care, but a natural orientation toward logic and personal goals rather than others\' inner emotional experiences — is a learnable skill. Deliberate practice in perspective-taking, asking questions before reacting, and exposure to diverse human experiences will build this capacity progressively.'
+    ))
+  );
+  eqContent+=sf('Stress Handling',eSH,'/100',
+    p(lv3(eSH,
+      name+' demonstrates an impressive capacity for stress regulation — maintaining cognitive clarity and behavioural effectiveness under pressure. This is a concrete competitive advantage in examination-heavy academic environments. Students who handle stress well consistently outperform equally capable peers during high-stakes periods because anxiety does not degrade their performance.',
+      name+' shows a developing stress management profile. Moderate stress is generally manageable, but peak-pressure situations may produce performance-disrupting anxiety. Building a personal toolkit of evidence-based coping strategies — structured revision schedules, physical activity, sleep hygiene, and pre-examination routines — will significantly improve resilience.',
+      'Stress management is an identified growth area. High sensitivity to pressure is common at this age and highly responsive to intervention. Specific recommendations include progressive exposure to moderately challenging assessment conditions, relaxation techniques, and a structured study routine that reduces uncertainty — one of the primary anxiety triggers.'
+    ))
+  );
+  eqContent+=sf('Leadership EQ',eLE,'/100',
+    p(lv3(eLE,
+      name+' demonstrates strong Leadership EQ — the emotional capacity to guide, motivate, and coordinate others effectively. This involves not just social confidence but the emotional insight to read group dynamics, inspire trust, and create environments where others feel supported. These qualities suggest '+name+' may naturally emerge as a respected figure in peer groups, academic teams, and collaborative settings.',
+      name+' shows a moderate Leadership EQ profile with functional capacity for collaborative guidance in familiar group settings. Leadership in novel or high-pressure contexts may be less consistent. Participating in structured leadership experiences — student government, project leadership, club captaincy — will develop this dimension specifically.',
+      name+"'s Leadership EQ is developing, suggesting a preference for contributing as a valued team member rather than stepping into directive leadership roles — a perfectly valid starting point. Leadership EQ is among the most trainable EQ dimensions, and structured group experiences with mentored reflection will build this capacity progressively."
+    ))
+  );
+  eqContent+=intBox(subHead('Combined Emotional Intelligence Profile')+
+    p(name+"'s overall EQ of "+eq.score+"/100 reflects a "+lv3(eq.score,'high-functioning','developing','early-stage')+" emotional intelligence profile. "+
+      lv3(eq.score,
+        'At this level, EQ is not merely a soft skill — it is a genuine differentiator that will set '+name+' apart in competitive academic and professional environments. Managing one\'s own emotions while accurately reading and responding to others\' is a consistent predictor of career success, relationship quality, and psychological wellbeing.',
+        'The profile shows meaningful EQ foundations with clear developmental pathways. The strongest dimension — '+eq.bars[0].label+' ('+eq.bars[0].score+'/100) — is a genuine asset to build from. The most significant growth opportunity lies in '+eq.bars[eq.bars.length-1].label+' ('+eq.bars[eq.bars.length-1].score+'/100), where targeted practice will produce the most immediate returns.',
+        'Building emotional intelligence is a high-return investment at this stage. '+name+' is at an age where EQ is highly malleable, and deliberate focus on these four dimensions — particularly Self-Awareness as the foundation for all others — will have cascading positive effects on relationships, academic resilience, and eventual professional effectiveness.'
+      )
+    )
+  );
+  html+=sec(5,'❤️','Emotional Intelligence Analysis',eqContent);
+
+  // --- 6. VALUES ---
+  var valContent='';
+  var valDesc={
+    Impact:'contributing positively to the world, helping others, and creating meaningful social change',
+    Achievement:'reaching excellence, earning recognition for performance, and continuously raising the bar',
+    Creativity:'original expression, innovation, and bringing new ideas into tangible reality',
+    Wealth:'financial security, material comfort, and the freedom that economic independence provides',
+    Stability:'predictability, safety, and a structured environment with clear and reliable expectations',
+    Freedom:'personal autonomy, independent decision-making, and freedom from external constraint',
+  };
+  var valCareer={
+    Impact:'Purpose-driven careers in medicine, education, social work, public administration, NGO leadership, and environmental science strongly align with this orientation.',
+    Achievement:'High-performance career paths in law, technology, medicine, finance, sports, and corporate leadership are energised by Achievement motivation.',
+    Creativity:'Creative careers in design, film, architecture, writing, and product innovation will satisfy this value. Rigid, rule-bound environments risk producing frustration for a high-Creativity person.',
+    Wealth:'High-earning career trajectories in finance, technology, law, and business leadership align with this value. Clear financial progression should be a deliberate factor in career selection.',
+    Stability:'Stable career paths — government services, established institutions, and clearly structured progressions — align naturally with this value. High-risk entrepreneurship or highly volatile career paths may feel misaligned.',
+    Freedom:'Entrepreneurship, freelance work, academia, and high-autonomy professional roles resonate with Freedom values. Heavily hierarchical or micromanaged structures will likely feel constraining over time.',
+  };
+  [[vIm,'Impact'],[vAc,'Achievement'],[vCr,'Creativity'],[vW,'Wealth'],[vSt,'Stability'],[vFr,'Freedom']].forEach(function(pair){
+    var s=pair[0], l=pair[1];
+    valContent+=sf(l,s,'%',
+      p(lv3(s,
+        name+' places high priority on '+l.toLowerCase()+' — defined here as '+valDesc[l]+'. When this value is strongly activated in a career context, '+name+' will experience high intrinsic motivation, personal fulfilment, and sustained engagement. Careers that significantly compromise this value — regardless of their other merits — risk producing long-term dissatisfaction.',
+        name+' shows a moderate orientation toward '+l.toLowerCase()+'. This value meaningfully influences career and life choices, though it shares motivational space with other values. Career paths that partially align with '+l.toLowerCase()+' will be acceptable, but those that strongly activate it will produce noticeably higher motivation.',
+        l+' is not a primary driver for '+name+' at this developmental stage. This does not make it unimportant, and values hierarchies can shift — but it suggests that career counselling should not weight this value highly in the initial planning framework. Knowing what does not primarily motivate a student is as valuable as knowing what does.'
+      ))
+    );
+  });
+  valContent+=intBox(subHead('Integrated Motivational Profile')+
+    p(name+"'s values hierarchy is anchored by "+val.bars.slice(0,2).map(function(b){return b.label;}).join(' and ')+'. This combination creates a distinctive motivational fingerprint — the specific blend of what will make work feel meaningful, rewarding, and worth sustained effort. '+
+      lv3((val.bars[0].score+val.bars[1].score)/2,
+        'The high scores on both dominant values indicate that '+name+' has clear and strong motivational anchors. Career paths that activate these values will produce deep, sustained engagement that outlasts initial novelty.',
+        'The moderate scores suggest a values profile still forming its full hierarchy. Multiple career directions remain genuinely open, and this is an appropriate stage for values exploration rather than early commitment.',
+        'The developing values profile is typical for this age group. Broad exploration — conversations, shadowing professionals, reading biographies — is more valuable right now than premature specialisation.'
+      )
+    )+
+    p((valCareer[val.bars[0].label]||'')+' Critically, career recommendations that ignore '+name+"'s core "+topVal+' orientation — regardless of how well they match ability or interest — are unlikely to produce lasting satisfaction or the intrinsic motivation that drives excellence over a full career.')
+  );
+  html+=sec(6,'⭐','Values & Motivation Analysis',valContent);
+
+  // --- 7. SITUATIONAL JUDGEMENT ---
+  var sitContent='';
+  var sitDesc={
+    'Collaborative Leadership':'bringing groups toward shared goals while distributing ownership fairly and sustaining morale',
+    'Integrity & Honesty':'maintaining truthfulness, ethical consistency, and transparency even when personally costly',
+    'Reflective Problem-Solving':'stepping back from immediate pressures, analysing options carefully, and selecting thoughtful solutions over impulsive reactions',
+    'Proactive Initiative':'taking decisive ownership and moving forward purposefully without waiting for external direction',
+    'Ethical Advocacy':'raising ethical concerns and advocating for the right course of action within group settings',
+    'Transparent Communication':'communicating openly and honestly even when delivering difficult or unwelcome messages',
+    'Ethical Courage':'acting according to one\'s values in the face of group pressure, authority, or personal risk',
+    'Intellectual Honesty':'acknowledging error, revising beliefs based on evidence, and prioritising truth over ego or convenience',
+  };
+  [[sCL,'Collaborative Leadership'],[sIH,'Integrity & Honesty'],[sRP,'Reflective Problem-Solving'],[sPI,'Proactive Initiative'],
+   [sEA,'Ethical Advocacy'],[sTC,'Transparent Communication'],[sEC,'Ethical Courage'],[sIN,'Intellectual Honesty']
+  ].forEach(function(pair){
+    var s=pair[0], l=pair[1];
+    sitContent+=sf(l,s,'/100',
+      p(lv3(s,
+        name+' demonstrates a strong capacity for '+l.toLowerCase()+' — '+sitDesc[l]+'. In the behavioural scenarios assessed, '+name+' consistently chose responses reflecting this competency at a high level. This is likely to translate into how '+name+' actually behaves in real team, academic, and eventually professional contexts.',
+        name+' shows a developing capacity for '+l.toLowerCase()+'. The direction is generally correct, but execution does not yet consistently reach the highest effectiveness level. Real-world practice through structured group experiences, team projects, and mentored reflection will build this competency over time.',
+        l+' represents a specific development opportunity for '+name+'. Targeted exposure to situations requiring '+l.toLowerCase()+', combined with guided reflection on outcomes and alternative approaches, is the recommended path to building this competency.'
+      ))
+    );
+  });
+  sitContent+=intBox(subHead('Combined Situational Judgement Profile')+
+    p(name+"'s overall situational judgement score of "+sit.score+"/100 reflects a "+lv3(sit.score,'mature and commendably developed','developing and progressively forming','nascent and meaningfully improvable')+" behavioural judgement profile. "+
+      lv3(sit.score,
+        'This level of situational wisdom — particularly at this age — is a genuine differentiator. The combination of ethical consistency, collaborative instinct, and reflective problem-solving creates a profile that is demonstrably ready for meaningful responsibility.',
+        'The strongest competency — '+sit.bars[0].label+' ('+sit.bars[0].score+'/100) — provides a foundation of character from which other competencies can develop progressively. Real-world leadership experiences and mentored reflection are the highest-return development investments for this profile.',
+        'Situational judgement is a highly teachable capability, and the current scores reflect primarily a lack of practice and structured exposure rather than a fundamental character limitation. Ethical discussions, case study analysis, and real-world collaborative experiences will produce measurable improvement.'
+      )+
+    ' The three competencies most directly relevant to long-term professional credibility — Integrity & Honesty ('+sIH+'/100), Ethical Courage ('+sEC+'/100), and Transparent Communication ('+sTC+'/100) — together form the ethical backbone of trusted, effective professional character, and '+name+"'s development on these dimensions should be monitored and encouraged across all developmental contexts."
+    )
+  );
+  html+=sec(7,'🎭','Situational Judgement Analysis',sitContent);
+
+  // --- 8. INTEGRATED INTERPRETATION ---
+  var intScore=Math.round((apt.score+per.score+eq.score+sit.score)/4);
+  html+=sec(8,'🔮','Integrated Psychological Interpretation',
+    intBox(
+      p('Synthesising across all six assessment dimensions, '+name+"'s psychological architecture can be described with meaningful precision. Cognitively, the aptitude profile indicates "+lv3(apt.score,'strong analytical capability with clear capacity for complex academic work','a developing analytical mind with solid foundations and genuine growth potential','a cognitive profile in active formation with high upside potential for growth')+'. This cognitive foundation is shaped by a personality primarily characterised by '+topPer+', which determines how cognitive capacity is deployed in practice — specifically '+lv3(pC+pO,'with discipline, curiosity, and a drive for thorough understanding.','with reasonable consistency and selective intellectual engagement.','in a style still discovering its most effective form.'))+
+      p(name+"'s interest profile — dominated by "+topInt+' and '+topInt2+" — channels motivation toward specific types of work environments and activity types. The alignment between this interest profile and the "+topVal+" value orientation creates a powerful internal coherence: "+name+' will be most fulfilled in career contexts that are both intrinsically interesting (interest match) and personally meaningful (values match). Research consistently shows these two factors together predict long-term career satisfaction more reliably than intelligence or technical skill alone.')+
+      p('The emotional and behavioural dimensions — EQ at '+eq.score+'/100 and situational judgement at '+sit.score+'/100 — '+
+        lv3((eq.score+sit.score)/2,
+          'confirm that '+name+' brings emotional maturity and sound decision-making instincts that complement cognitive strengths. This is a well-rounded profile where analytical, emotional, and behavioural capabilities are all contributing constructively.',
+          'present a developing picture. These dimensions are growing, and the current assessment provides a precise roadmap for where to focus development energy most productively.',
+          'are identified as primary development priorities. Strengthening these dimensions will unlock the full potential of the cognitive and personality assets already present in this profile.'
+        )+
+      ' Taken holistically, '+name+' presents as a student with '+lv3(intScore,'well-rounded and substantial cross-dimensional potential','multiple genuine strengths and specific, actionable areas for growth','clear latent potential requiring deliberate, targeted development investment')+'.')
+    )
+  );
+
+  // --- 9. STREAM RECOMMENDATION ---
+  var stJust={
+    'Non-Medical':'The Non-Medical stream (Physics, Chemistry, Mathematics) fits '+name+"'s profile through the convergence of "+lv3(apt.score,'strong','developing','emerging')+' aptitude in analytical reasoning, an Investigative interest score reflecting natural curiosity for how physical and mathematical systems work, and '+lAdj(pC)+' Conscientiousness that supports the disciplined, systematic study this stream demands. The analytical aptitude and intellectual curiosity required by Non-Medical are both present in this profile.',
+    'Medical':'The Medical stream (Physics, Chemistry, Biology) aligns through the combination of an Investigative interest that drives scientific inquiry, a Social interest score reflecting genuine orientation toward people, and an Agreeableness dimension that supports the empathetic patient care central to medical careers. Medical pathways satisfy both the intellectual dimension and the Impact value, making this a motivationally coherent choice for '+name+'.',
+    'Commerce':'The Commerce stream (Accountancy, Business Studies, Economics) suits this profile through the Enterprising interest indicating comfort with business and leadership contexts, a Conventional interest suggesting ease with structured, systematic work, and Conscientiousness that maps well to the accuracy required in financial and business roles. The Achievement and Wealth values further support natural motivation toward performance-oriented career paths.',
+    'Humanities':'The Humanities stream (History, Political Science, Economics, Psychology, Sociology, Literature) resonates with '+name+"'s Openness to Experience, which drives intellectual exploration across disciplines. Artistic and Social interests align with the people- and ideas-oriented nature of humanities disciplines. The Impact value provides motivational support for public service, social science, and communication careers — all naturally emerging from humanities education.",
+  };
+  html+=sec(9,'🎓','Recommended Academic Stream',
+    '<div class="pr-stream-primary">'+
+      '<div class="pr-stream-badge primary">Strongly Recommended</div>'+
+      '<div class="pr-stream-name">'+stream1+'</div>'+
+      '<p class="pr-stream-why">'+stJust[stream1]+'</p>'+
+    '</div>'+
+    '<div class="pr-stream-secondary">'+
+      '<div class="pr-stream-badge secondary">Secondary Alignment</div>'+
+      '<div class="pr-stream-name">'+stream2+'</div>'+
+      '<p class="pr-stream-why">'+stJust[stream2]+'</p>'+
+    '</div>'+
+    para('Stream selection is most reliable when made at the intersection of aptitude, interest, and personality — not on any single factor alone. The recommendations above reflect all six assessment dimensions, weighted appropriately. If '+name+' or the family has strong external motivations (specific career goals, family considerations, financial context), these should be discussed explicitly in a follow-up counselling session to ensure full alignment.')
+  );
+
+  // --- 10. CAREER ROLES ---
+  var careerGrid='<div class="pr-career-grid">';
+  topCareers.forEach(function(c){
+    var dc=c.domain.includes('Tech')||c.domain.includes('Data')?'#0A6B5E':c.domain.includes('Health')||c.domain.includes('Medical')?'#C0410A':c.domain.includes('Design')||c.domain.includes('Art')||c.domain.includes('Media')||c.domain.includes('Creative')?'#7B2FBE':c.domain.includes('Business')||c.domain.includes('Finance')||c.domain.includes('Entrepreneur')?'#1A5FA8':c.domain.includes('Education')||c.domain.includes('Social')||c.domain.includes('Public')?'#C8860A':'#4A3F6B';
+    careerGrid+='<div class="pr-career-card" style="border-top-color:'+dc+'">'+
+      '<div class="pr-career-role">'+c.role+'</div>'+
+      '<div class="pr-career-domain" style="color:'+dc+'">'+c.domain+'</div>'+
+      '<div class="pr-career-why">Supported by '+name+"'s "+c.factors+'.</div>'+
+    '</div>';
+  });
+  careerGrid+='</div>';
+  html+=sec(10,'🚀','Recommended Career Roles & Domains',
+    para("Based on "+name+"'s complete multi-dimensional profile, the following career roles represent the highest-fit options. These recommendations emerge from the intersection of aptitude, personality, interest, emotional intelligence, values, and situational judgement — not from any single factor in isolation.")+
+    careerGrid+
+    '<div class="pr-domain-sec">'+
+      subHead('Top Career Domains')+
+      '<div class="pr-domain-pills">'+
+        topDomains.map(function(d){return '<span class="pr-domain-pill">'+d+'</span>';}).join('')+
+      '</div>'+
+    '</div>'
+  );
+
+  // --- 11. DEVELOPMENT RECOMMENDATIONS ---
+  var devItems=[
+    {area:'Academic Growth',
+     rec:lv3(apt.score,
+       'Maintain intellectual challenge by seeking problems beyond the curriculum — olympiad preparation, NTSE-level practice, and self-directed reading will extend current cognitive capability and prevent complacency.',
+       'Prioritise structured timed practice across foundation and intermediate reasoning. A 20-minute daily problem-solving practice targeting one specific reasoning type will produce measurable improvement within one semester.',
+       'Begin with foundational concept consolidation before attempting advanced problems. A structured academic support programme — tutoring, learning centre, or mentored study group — is strongly recommended as the primary intervention.')},
+    {area:'Emotional Development',
+     rec:lv3(eq.score,
+       'At this EQ level, the next growth edge is applying emotional insight in high-pressure situations — where even strong EQ can temporarily break down under stress. Weekly reflection practice and mindfulness will sustain this strength.',
+       'Introduce a weekly reflection habit: 10 minutes at the end of each day noting one emotional experience, its trigger, and how it was handled. This simple practice is among the most evidence-based EQ development tools available.',
+       'Begin with the foundational layer of EQ — self-awareness. For one month, simply note emotional state three times per day (morning, after school, evening) without judgement. Naming emotions consistently builds the neural pathways that underlie emotional intelligence.')},
+    {area:'Leadership Development',
+     rec:lv3(eLE+sCL,
+       name+' is ready for formal leadership responsibilities: student government roles, project lead positions, team captaincy, or academic club leadership. Real-world leadership with genuine stakes is the most effective leadership development tool.',
+       'Leadership at this stage is best pursued through graduated responsibility: begin with small group leadership roles, then progressively take on larger scope. Mentored leadership with structured feedback is more valuable than training programmes alone.',
+       'Build leadership foundations by first developing comfort in smaller collaborative settings. Volunteering for team roles in school activities, leading a study group, or taking responsibility for a class project are low-stakes, high-learning leadership starting points.')},
+    {area:'Confidence Building',
+     rec:lv3(pES+eLE,
+       name+' demonstrates healthy self-confidence. The developmental edge is ensuring confidence remains open to feedback and does not drift into overconfidence — the one pattern that limits learning even in high-confidence individuals.',
+       'Confidence grows from widening the range of contexts in which '+name+' operates competently. Each new environment where performance is adequate adds to the cumulative confidence base. Seek deliberate variety in activities.',
+       'Confidence develops from competence in safe environments. Creating low-stakes opportunities to speak, lead, present, and demonstrate knowledge — with supportive rather than evaluative feedback — is the most evidence-based approach.')},
+    {area:'Communication Enhancement',
+     rec:lv3(pE+eSH,
+       name+' communicates comfortably and effectively. The next level is strategic communication: adapting style to audience, practising structured argumentation, and developing written communication to match verbal fluency.',
+       'Focus on expanding from competent to compelling communication. Debate participation, essay writing practice, and structured presentation preparation are the three highest-yield activities for this purpose.',
+       'Begin with one foundational habit: read aloud from quality non-fiction for 10 minutes daily. This builds vocabulary, sentence construction, and verbal confidence simultaneously. Add structured writing practice at the earliest opportunity.')},
+    {area:'Stress Management',
+     rec:lv3(eSH,
+       name+' handles stress well. Maintain this asset by treating stress management as part of academic preparation: regular physical activity, sleep discipline, and a post-examination reflection practice to process and learn from high-pressure experiences.',
+       'Introduce a pre-examination preparation routine: progressive revision (not last-minute cramming), physical activity in the days before, and a specific calming technique (paced breathing, progressive muscle relaxation) to deploy before assessments.',
+       'Stress management is a teachable skill. Recommended starting technique: the STOP method (Stop, Take a breath, Observe your thoughts, Proceed with awareness). Regular practice outside of stressful situations makes this technique accessible when stress is actually high.')},
+    {area:'Decision-Making Development',
+     rec:lv3(sRP+sIN,
+       name+' demonstrates strong reflective decision-making. Build on this by practising structured decision frameworks — second-order thinking, pre-mortem analysis, and deliberate consideration of alternatives before committing to the obvious option.',
+       'Strengthen decision-making by introducing a two-step pause before important choices: first, clarify exactly what decision is being made (often unclear); second, identify three alternatives before committing. This small habit produces compounding improvement over time.',
+       'Decision-making quality grows from reflection. Keep a simple decision journal: note important decisions, the reasoning, and (later) the outcomes. This personal feedback loop consistently improves decision quality in research on developmental interventions.')},
+    {area:'Skill-Building Priorities',
+     rec:'Based on the complete profile, the three highest-return skill investments for '+name+' are: '+
+       (pC<55?'(1) Study systems and planning skills — a consistent self-directed study routine will create compound academic returns; ':
+        '(1) Advanced problem-solving practice — stretching cognitive capability through above-grade-level challenges; ')+
+       (eq.score<60?'(2) Emotional intelligence skills — particularly self-awareness and stress regulation as the foundation for academic resilience; ':
+        '(2) Communication skills — both oral and written — to give cognitive capability an effective channel for expression; ')+
+       (topInt==='Investigative'||topInt==='Realistic'?'(3) Technical domain skills in the primary interest area — early engagement with science, mathematics, or technology fundamentals creates compounding advantage as stream selection approaches.':
+        topInt==='Artistic'?'(3) Creative domain skills — design software, writing workshops, or visual arts training will give the Artistic interest a practical outlet and build a tangible portfolio.':
+        topInt==='Social'||topInt==='Enterprising'?'(3) Interpersonal and organisational skills through debate, event leadership, and student governance — these build the human skills that make this interest profile professionally effective.':
+        '(3) Domain-specific skills in the primary interest area, ensuring that emerging interest is backed by growing technical competence.')},
+  ];
+  var devHtml='<div class="pr-dev-list">';
+  devItems.forEach(function(item){
+    devHtml+='<div class="pr-dev-item"><div class="pr-dev-area">'+item.area+'</div><div class="pr-dev-rec">'+item.rec+'</div></div>';
+  });
+  devHtml+='</div>';
+  html+=sec(11,'💡','Learning & Development Recommendations',devHtml);
+
+  // --- 12. FINAL COUNSELOR SUMMARY ---
+  html+=sec(12,'✨','Final Counselor Summary',
+    '<div class="pr-final-box">'+
+      p(name+' stands at a defining chapter in their educational journey. This psychometric assessment offers something genuinely rare: a precise, multi-dimensional map of who '+name+' is as a developing person — not just as a student, but as an individual with a distinctive combination of cognitive capacity, personality, interests, emotional intelligence, values, and situational judgement.')+
+      p(lv3(apt.score,
+        'Cognitively, '+name+' is well-equipped. An aptitude profile placing them in the strong band for their age group is the foundation on which ambitious academic and career goals can be reliably built.',
+        'Cognitively, '+name+' is in a productive growth phase. The analytical foundations are genuinely in place, and with consistent structured effort, the trajectory is firmly upward.',
+        "Cognitively, "+name+"'s profile reveals a mind in active development — full of potential that systematic support and deliberate practice will unlock. The current aptitude snapshot is a starting point, not a ceiling.")+
+      ' The personality, led by '+topPer+', provides '+lv3(topPer==='Conscientiousness'?pC:topPer==='Openness'?pO:topPer==='Extraversion'?pE:topPer==='Agreeableness'?pA:pES,
+        'a strong character foundation that will serve '+name+' across every context — academic, professional, and personal.',
+        'a genuine set of individual strengths that, developed deliberately, will become increasingly powerful competitive advantages.',
+        'valuable raw material that, with the right developmental investment, will express itself as genuine and distinctive character strength.'))+
+      p('The interests and values — anchored by '+topInt.toLowerCase()+' curiosity and '+topVal.toLowerCase()+' motivation — create a motivational system that, when aligned with career path, produces the deep intrinsic engagement that separates good professionals from exceptional ones. The emotional intelligence score and situational judgement profile together speak to '+name+"'s capacity not just for individual achievement, but for meaningful contribution to every team and community they participate in.")+
+      p('Our recommendation is that '+name+' use this report not as a verdict, but as a rich conversation starter — with parents, teachers, and counsellors — about how to deliberately and wisely shape the years ahead. The stream recommendation ('+stream1+') and the career domains identified represent evidence-based starting points for that conversation, not fixed destinations. Values, interests, and aptitude will all continue to evolve; what this report has established are the most reliable signals available at this moment in '+name+"'s development.")+
+      p('The most important truth this report communicates is this: '+name+' has genuine, multifaceted potential. The path forward is not about discovering one hidden talent — it is about investing in the right capabilities, amplifying the authentic strengths this assessment has surfaced, and moving forward with both confidence and curiosity. The profile ahead of '+name+' is genuinely promising, and the effort invested in informed development right now will compound significantly over the years to come.')+
+    '</div>'
+  );
+
+  return html;
 }
 </script>
 </body>
