@@ -160,6 +160,63 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
 /* ADMIN TOAST */
 #admin-toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--teal);color:#fff;padding:.6rem 1.5rem;border-radius:100px;font-size:.82rem;font-weight:600;z-index:9999;box-shadow:0 4px 24px rgba(0,0,0,.2);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .25s;}
 #admin-toast.show{opacity:1;}
+
+/* PROFILE VIEW */
+.profile-card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:2rem;max-width:480px;}
+.profile-avatar-lg{width:64px;height:64px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:700;color:#fff;margin-bottom:1.25rem;}
+.profile-divider{border:none;border-top:1px solid var(--border);margin:1.5rem 0;}
+.pw-field{margin-bottom:.9rem;}
+.pw-field label{display:block;font-size:.72rem;font-weight:600;color:rgba(26,18,8,.5);margin-bottom:.35rem;}
+.pw-field input{width:100%;background:#FAFAF7;border:1.5px solid var(--border);border-radius:10px;padding:.65rem .9rem;font-size:.875rem;font-family:var(--fb);outline:none;transition:border-color .2s;}
+.pw-field input:focus{border-color:var(--teal);}
+.pw-err{background:var(--red-light);border:1px solid rgba(192,65,10,.2);border-radius:8px;padding:.5rem .85rem;font-size:.78rem;color:var(--red);margin-bottom:.75rem;display:none;}
+.pw-btn{background:var(--teal);color:#fff;border:none;border-radius:100px;padding:.75rem 2rem;font-size:.875rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:background .2s;}
+.pw-btn:hover{background:#085a4f;}
+
+/* FULL REPORT OVERLAY */
+.fr-overlay{position:fixed;inset:0;background:rgba(26,18,8,.8);z-index:1500;display:none;overflow-y:auto;backdrop-filter:blur(6px);}
+.fr-overlay.show{display:block;}
+.fr-container{max-width:920px;margin:1.5rem auto;padding:0 1.25rem 4rem;}
+.fr-topbar{background:var(--ink);border-radius:18px 18px 0 0;padding:1.1rem 1.5rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;position:sticky;top:0;z-index:20;box-shadow:0 4px 24px rgba(0,0,0,.3);}
+.fr-topbar-left{flex:1;}
+.fr-candidate-name{font-family:var(--fd);font-size:1.1rem;font-weight:700;color:var(--cream);}
+.fr-meta-bar{font-size:.7rem;color:rgba(253,248,240,.4);margin-top:3px;}
+.fr-close-btn{background:rgba(255,255,255,.1);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:.95rem;color:var(--cream);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s;}
+.fr-close-btn:hover{background:rgba(255,255,255,.2);}
+.fr-body-wrap{background:#fff;border-radius:0 0 18px 18px;padding:1.75rem 2rem;}
+.fr-score-band{display:grid;grid-template-columns:repeat(6,1fr);gap:.6rem;margin-bottom:2rem;padding:1.1rem;background:var(--cream);border-radius:14px;border:1px solid var(--border);}
+@media(max-width:700px){.fr-score-band{grid-template-columns:repeat(3,1fr);}}
+.fr-score-tile{text-align:center;}
+.fr-score-num{font-family:var(--fd);font-size:1.5rem;font-weight:700;line-height:1;}
+.fr-score-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.05em;color:rgba(26,18,8,.4);margin-top:3px;line-height:1.3;}
+.fr-section{margin-bottom:2.25rem;}
+.fr-sec-header{display:flex;align-items:center;gap:.65rem;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:2px solid var(--border);}
+.fr-sec-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;}
+.fr-sec-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;}
+.fr-sec-score-badge{margin-left:auto;font-family:var(--fm);font-size:.75rem;font-weight:600;padding:.25rem .7rem;border-radius:100px;}
+.fr-bar-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.45rem;}
+.fr-bar-label{font-size:.76rem;font-weight:500;width:145px;flex-shrink:0;}
+.fr-bar-track{flex:1;height:7px;background:rgba(26,18,8,.07);border-radius:100px;overflow:hidden;}
+.fr-bar-fill{height:100%;border-radius:100px;transition:width 1s ease;}
+.fr-bar-val{font-size:.7rem;font-family:var(--fm);font-weight:600;width:42px;text-align:right;}
+.fr-ev-title{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(26,18,8,.35);margin:1rem 0 .5rem;}
+.fr-ev-item{padding:.6rem .9rem;border-radius:9px;background:#FAFAF7;border:1px solid var(--border);margin-bottom:.35rem;font-size:.79rem;line-height:1.6;border-left-width:3px;}
+.fr-ev-item.ev-correct{border-left-color:var(--teal);}
+.fr-ev-item.ev-wrong{border-left-color:var(--red);}
+.fr-ev-item.ev-neutral{border-left-color:var(--gold);}
+.fr-ev-item.ev-skipped{border-left-color:rgba(26,18,8,.15);opacity:.55;}
+.fr-ev-q{font-weight:600;color:var(--ink);margin-bottom:2px;}
+.fr-ev-d{color:rgba(26,18,8,.55);}
+.fr-badge{display:inline-block;font-size:.58rem;font-weight:700;text-transform:uppercase;padding:1px 7px;border-radius:100px;margin-right:4px;vertical-align:middle;}
+.fr-b-ok{background:var(--teal-light);color:var(--teal);}
+.fr-b-err{background:var(--red-light);color:var(--red);}
+.fr-b-neu{background:var(--gold-pale);color:var(--gold);}
+.fr-b-skip{background:rgba(26,18,8,.07);color:rgba(26,18,8,.4);}
+.fr-analysis{margin-top:1rem;padding:1rem 1.2rem;background:linear-gradient(135deg,#FAFAF7,#F5EDD8);border-radius:12px;border-left:3px solid var(--gold);font-size:.82rem;line-height:1.8;color:rgba(26,18,8,.75);}
+.fr-summary-box{margin-top:2rem;padding:1.5rem 1.75rem;background:var(--ink);border-radius:16px;}
+.fr-sum-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--gold-light);margin-bottom:.85rem;}
+.fr-summary-box p{font-size:.85rem;line-height:1.85;color:rgba(253,248,240,.78);}
+.fr-tier-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:rgba(26,18,8,.35);margin:.75rem 0 .35rem;}
 </style>
 </head>
 <body>
@@ -194,6 +251,7 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
       <div class="sb-item" onclick="showView('completed')"><span class="sb-item-icon">✅</span>Completed Tests <span class="sb-badge teal" id="badge-completed">0</span></div>
       <div class="sb-item" onclick="showView('inprogress')"><span class="sb-item-icon">⏳</span>In Progress</div>
       <div class="sb-item" onclick="showView('qbank')"><span class="sb-item-icon">🗂️</span>Question Bank</div>
+      <div class="sb-item" onclick="showView('profile')"><span class="sb-item-icon">👤</span>Profile</div>
     </div>
     <div class="sb-footer">
       <div class="sb-avatar">A</div>
@@ -283,6 +341,39 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
         </div>
       </div>
 
+      <!-- PROFILE -->
+      <div class="page-view" id="view-profile">
+        <div class="profile-card">
+          <div class="profile-avatar-lg">A</div>
+          <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(26,18,8,.35);margin-bottom:.3rem;">Admin Account</div>
+          <div style="font-size:.95rem;font-weight:600;margin-bottom:.2rem;">admin</div>
+          <div style="font-size:.78rem;color:rgba(26,18,8,.4);">Psychometric System Administrator</div>
+          <hr class="profile-divider"/>
+          <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(26,18,8,.35);margin-bottom:1rem;">Change Password</div>
+          <div class="pw-err" id="pw-err"></div>
+          <div class="pw-field"><label>Current Password</label><input type="password" id="pw-current" placeholder="Enter current password" onkeydown="if(event.key==='Enter')changeAdminPassword()"/></div>
+          <div class="pw-field"><label>New Password <span style="font-weight:400;color:rgba(26,18,8,.35)">(min 8 characters)</span></label><input type="password" id="pw-new" placeholder="Enter new password" onkeydown="if(event.key==='Enter')changeAdminPassword()"/></div>
+          <div class="pw-field"><label>Confirm New Password</label><input type="password" id="pw-confirm" placeholder="Confirm new password" onkeydown="if(event.key==='Enter')changeAdminPassword()"/></div>
+          <button class="pw-btn" onclick="changeAdminPassword()">Update Password</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FULL CANDIDATE REPORT OVERLAY -->
+<div class="fr-overlay" id="full-report-overlay" onclick="if(event.target===this)closeFR()">
+  <div class="fr-container">
+    <div class="fr-topbar">
+      <div class="fr-topbar-left">
+        <div class="fr-candidate-name" id="fr-candidate-name"></div>
+        <div class="fr-meta-bar" id="fr-meta-bar"></div>
+      </div>
+      <button class="fr-close-btn" onclick="closeFR()">✕</button>
+    </div>
+    <div class="fr-body-wrap">
+      <div id="fr-body"></div>
     </div>
   </div>
 </div>
@@ -356,7 +447,7 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 const ADMIN_USER = 'admin';
-const ADMIN_PASS = 'psycho@admin2025';
+let ADMIN_PASS = localStorage.getItem('psycho_admin_pass') || 'psycho@admin2025';
 
 const SUPABASE_URL  = 'https://chiobdkdhgnbtjxsscpf.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_ZWCHORwPOxp3gkWaqt722g_3W_vd6i4';
@@ -395,6 +486,24 @@ function adminLogout() {
   location.reload();
 }
 
+function changeAdminPassword() {
+  const cur = document.getElementById('pw-current').value;
+  const nw  = document.getElementById('pw-new').value;
+  const cf  = document.getElementById('pw-confirm').value;
+  const err = document.getElementById('pw-err');
+  const show = msg => { err.textContent = msg; err.style.display = 'block'; };
+  err.style.display = 'none';
+  if (cur !== ADMIN_PASS) { show('Current password is incorrect.'); return; }
+  if (nw.length < 8)      { show('New password must be at least 8 characters.'); return; }
+  if (nw !== cf)          { show('New password and confirmation do not match.'); return; }
+  ADMIN_PASS = nw;
+  localStorage.setItem('psycho_admin_pass', nw);
+  document.getElementById('pw-current').value = '';
+  document.getElementById('pw-new').value = '';
+  document.getElementById('pw-confirm').value = '';
+  showAdminToast('Password updated successfully ✓');
+}
+
 async function refreshData() {
   try {
     const [regsRes, sessRes] = await Promise.all([
@@ -410,21 +519,27 @@ async function refreshData() {
 }
 
 function getSessionForReg(regId) {
-  return allData.sessions
-    .filter(s => s.reg_id === regId)
-    .sort((a, b) => new Date(b.started_at) - new Date(a.started_at))[0] || null;
+  const sessions = allData.sessions.filter(s => s.reg_id === regId);
+  if (!sessions.length) return null;
+  // Prefer the most recent completed session; fall back to most recent overall
+  const completed = sessions.filter(s => s.status === 'completed').sort((a, b) => new Date(b.completed_at) - new Date(a.completed_at));
+  if (completed.length) return completed[0];
+  return sessions.sort((a, b) => new Date(b.started_at) - new Date(a.started_at))[0];
 }
 
 function getStatus(regId) {
-  const s = getSessionForReg(regId);
-  if (!s) return 'registered';
-  return s.status === 'completed' ? 'completed' : 'in_progress';
+  const sessions = allData.sessions.filter(s => s.reg_id === regId);
+  if (!sessions.length) return 'registered';
+  if (sessions.some(s => s.status === 'completed')) return 'completed';
+  return 'in_progress';
 }
 
 function renderAllViews() {
-  const completed  = allData.sessions.filter(s => s.status === 'completed');
-  const inProgress = allData.sessions.filter(s => s.status === 'in_progress');
-  const notStarted = allData.regs.filter(r => !getSessionForReg(r.reg_id));
+  // Use registration-level status so a candidate with both a completed and a stale
+  // in_progress session is counted as completed, not in_progress.
+  const completed  = allData.regs.filter(r => getStatus(r.reg_id) === 'completed');
+  const inProgress = allData.regs.filter(r => getStatus(r.reg_id) === 'in_progress');
+  const notStarted = allData.regs.filter(r => getStatus(r.reg_id) === 'registered');
 
   document.getElementById('m-total').textContent      = allData.regs.length;
   document.getElementById('m-completed').textContent  = completed.length;
@@ -474,6 +589,10 @@ function renderOverview() {
   if (!regs.length) { tbody.innerHTML = '<tr><td colspan="7" class="t-empty">No registrations yet.</td></tr>'; return; }
   tbody.innerHTML = regs.map(r => {
     const status = getStatus(r.reg_id);
+    const rj = JSON.stringify(r).replace(/'/g,"&#39;");
+    const btn = status === 'completed'
+      ? `<button class="btn-view" onclick='viewFullReport(${rj})'>Full Report</button>`
+      : `<button class="btn-view" onclick='viewReport(${rj})'>View</button>`;
     return `<tr>
       <td><strong>${childName(r)}</strong></td>
       <td>${r.parent_email || '—'}</td>
@@ -481,7 +600,7 @@ function renderOverview() {
       <td>${r.slot || '<span style="color:rgba(26,18,8,.3)">Not booked</span>'}</td>
       <td>${fmtDate(r.created_at)}</td>
       <td>${statusBadge(status)}</td>
-      <td><button class="btn-view" onclick='viewReport(${JSON.stringify(r).replace(/'/g,"&#39;")})'>View</button></td>
+      <td>${btn}</td>
     </tr>`;
   }).join('');
 }
@@ -492,6 +611,10 @@ function renderUsers() {
   if (!regs.length) { tbody.innerHTML = '<tr><td colspan="10" class="t-empty">No registrations yet.</td></tr>'; return; }
   tbody.innerHTML = regs.map((r, i) => {
     const status = getStatus(r.reg_id);
+    const rj = JSON.stringify(r).replace(/'/g,"&#39;");
+    const btn = status === 'completed'
+      ? `<button class="btn-view" onclick='viewFullReport(${rj})'>Full Report</button>`
+      : `<button class="btn-view" onclick='viewReport(${rj})'>View</button>`;
     return `<tr>
       <td style="color:rgba(26,18,8,.3);font-family:var(--fm)">${i+1}</td>
       <td><strong>${childName(r)}</strong></td>
@@ -502,7 +625,7 @@ function renderUsers() {
       <td style="font-size:.78rem">${r.slot || '—'}</td>
       <td>${fmtDate(r.created_at)}</td>
       <td>${statusBadge(status)}</td>
-      <td><button class="btn-view" onclick='viewReport(${JSON.stringify(r).replace(/'/g,"&#39;")})'>View</button></td>
+      <td>${btn}</td>
     </tr>`;
   }).join('');
 }
@@ -527,7 +650,7 @@ function renderCompleted() {
       <td>${r.parent_email || '—'}</td>
       <td><span style="font-family:var(--fm);font-weight:600;color:var(--teal);" id="resp-${s.id}">…</span></td>
       <td>${fmtDate(s.completed_at)}</td>
-      <td><button class="btn-view" onclick='viewReport(${JSON.stringify(r).replace(/'/g,"&#39;")})'>View</button></td>
+      <td><button class="btn-view" style="background:var(--teal);color:#fff;" onclick='viewFullReport(${JSON.stringify(r).replace(/'/g,"&#39;")})'>Full Report</button></td>
     </tr>`;
   }).join('');
   // Load response counts asynchronously
@@ -543,7 +666,8 @@ async function loadResponseCount(sessionId) {
 
 function renderInProgress() {
   const tbody = document.getElementById('inprogress-tbody');
-  const inSess = allData.sessions.filter(s => s.status === 'in_progress');
+  // Exclude orphaned in_progress sessions where the candidate has already completed
+  const inSess = allData.sessions.filter(s => s.status === 'in_progress' && getStatus(s.reg_id) !== 'completed');
   if (!inSess.length) { tbody.innerHTML = '<tr><td colspan="5" class="t-empty">No tests currently in progress.</td></tr>'; return; }
   tbody.innerHTML = inSess.map((s, i) => {
     const r = allData.regs.find(x => x.reg_id === s.reg_id) || {};
@@ -562,9 +686,9 @@ function showView(name) {
   document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + name)?.classList.add('active');
   document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
-  const idx = ['overview','users','completed','inprogress','qbank'].indexOf(name);
+  const idx = ['overview','users','completed','inprogress','qbank','profile'].indexOf(name);
   document.querySelectorAll('.sb-item')[idx]?.classList.add('active');
-  const titles = { overview:'Overview', users:'Registered Users', completed:'Completed Tests', inprogress:'Tests In Progress', qbank:'Question Bank' };
+  const titles = { overview:'Overview', users:'Registered Users', completed:'Completed Tests', inprogress:'Tests In Progress', qbank:'Question Bank', profile:'Profile' };
   document.getElementById('tb-title').textContent = titles[name] || name;
   if (name === 'qbank') { if (!qbData) initQBank(); else renderQBank(); }
 }
@@ -977,6 +1101,534 @@ function exportCSV() {
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = 'psychometric-registrations.csv';
   a.click();
+}
+
+// ================================================================
+// FULL REPORT ENGINE
+// ================================================================
+
+function hEsc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function closeFR() {
+  document.getElementById('full-report-overlay').classList.remove('show');
+}
+
+async function viewFullReport(reg) {
+  const sess = getSessionForReg(reg.reg_id);
+  if (!sess || sess.status !== 'completed') { viewReport(reg); return; }
+  showAdminToast('Loading full report…');
+  try {
+    const { data: responses } = await _db
+      .from('test_responses').select('*').eq('session_id', sess.id);
+    buildFullReport(reg, sess, responses || []);
+  } catch(e) {
+    console.error(e);
+    showAdminToast('Could not load responses — check console');
+  }
+}
+
+function buildFullReport(reg, sess, responses) {
+  if (!qbData) initQBank();
+  const ansMap = {};
+  responses.forEach(r => { ansMap[r.question_id] = r.answer_value; });
+
+  const name = childName(reg);
+  document.getElementById('fr-candidate-name').textContent = name + ' — Psychometric Evaluation Report';
+  document.getElementById('fr-meta-bar').textContent =
+    'Reg ID: ' + reg.reg_id + '  ·  Class: ' + (reg.child_class||'—') + '  ·  ' +
+    (reg.child_city||'—') + (reg.child_state ? ', '+reg.child_state : '') +
+    '  ·  Completed: ' + fmtDateTime(sess.completed_at) +
+    '  ·  ' + responses.length + ' responses recorded';
+
+  const MODS = [
+    { name:'Aptitude Assessment',    icon:'🧮', color:'#C8860A', bg:'#FDF0CC' },
+    { name:'Personality Profile',    icon:'🧠', color:'#7B2FBE', bg:'#F5EEFF' },
+    { name:'Interest Inventory',     icon:'🌱', color:'#0A6B5E', bg:'#E0F2EE' },
+    { name:'Emotional Intelligence', icon:'❤️', color:'#C0410A', bg:'#FFF0EB' },
+    { name:'Values & Motivation',    icon:'⭐', color:'#1A5FA8', bg:'#E8F2FF' },
+    { name:'Situational Judgement',  icon:'🎭', color:'#4A3F6B', bg:'#F0EEFF' },
+  ];
+
+  const analyses = qbData.map(function(qs, mi) { return analyseSection(qs, mi, ansMap, MODS[mi], name); });
+
+  const body = document.getElementById('fr-body');
+  body.innerHTML = '';
+
+  // Score band
+  const band = document.createElement('div');
+  band.className = 'fr-score-band';
+  band.innerHTML = analyses.map(function(a, mi) {
+    return '<div class="fr-score-tile">' +
+      '<div class="fr-score-num" style="color:' + hEsc(MODS[mi].color) + '">' + a.score + '<span style="font-size:.78rem;font-weight:400">' + hEsc(a.scoreUnit||'%') + '</span></div>' +
+      '<div class="fr-score-label">' + hEsc(MODS[mi].name) + '</div>' +
+      '</div>';
+  }).join('');
+  body.appendChild(band);
+
+  analyses.forEach(function(a, mi) { body.appendChild(renderSecBlock(a, MODS[mi])); });
+
+  const sumEl = document.createElement('div');
+  sumEl.className = 'fr-summary-box';
+  sumEl.innerHTML = '<div class="fr-sum-title">Holistic Summary</div><p>' + hEsc(buildSummary(name, analyses, MODS)) + '</p>';
+  body.appendChild(sumEl);
+
+  document.getElementById('full-report-overlay').classList.add('show');
+}
+
+function renderSecBlock(a, mod) {
+  const wrap = document.createElement('div');
+  wrap.className = 'fr-section';
+  const scoreColor = a.score >= 75 ? mod.color : a.score >= 50 ? '#C8860A' : '#C0410A';
+  wrap.innerHTML =
+    '<div class="fr-sec-header">' +
+      '<div class="fr-sec-icon" style="background:' + hEsc(mod.bg) + '">' + hEsc(mod.icon) + '</div>' +
+      '<div class="fr-sec-title">' + hEsc(mod.name) + '</div>' +
+      '<div class="fr-sec-score-badge" style="background:' + hEsc(mod.bg) + ';color:' + hEsc(scoreColor) + '">' +
+        a.score + hEsc(a.scoreUnit||'%') + (a.scoreLabel ? ' · ' + hEsc(a.scoreLabel) : '') +
+      '</div>' +
+    '</div>';
+
+  if (a.bars && a.bars.length) {
+    const bw = document.createElement('div');
+    bw.style.marginBottom = '.5rem';
+    a.bars.forEach(function(b) {
+      if (b.score === null || b.score === undefined) return;
+      const pct = Math.min(100, Math.max(0, b.score));
+      bw.innerHTML +=
+        '<div class="fr-bar-row">' +
+          '<div class="fr-bar-label">' + hEsc(b.label) + '</div>' +
+          '<div class="fr-bar-track"><div class="fr-bar-fill" style="width:' + pct + '%;background:' + hEsc(mod.color) + ';"></div></div>' +
+          '<div class="fr-bar-val" style="color:' + hEsc(mod.color) + '">' + hEsc(b.display || (b.score+'%')) + '</div>' +
+        '</div>';
+    });
+    wrap.appendChild(bw);
+  }
+
+  if (a.evidence && a.evidence.length) {
+    const evTitle = document.createElement('div');
+    evTitle.className = 'fr-ev-title';
+    evTitle.textContent = 'Question-by-Question Evidence';
+    wrap.appendChild(evTitle);
+
+    if (a.tierGroups) {
+      [1,2,3].forEach(function(t) {
+        const items = a.evidence.filter(function(e){ return e.tier===t; });
+        if (!items.length) return;
+        const ok = items.filter(function(e){ return e.state==='correct'; }).length;
+        const attempted = items.filter(function(e){ return e.state!=='skipped'; }).length;
+        const tl = document.createElement('div');
+        tl.className = 'fr-tier-label';
+        tl.textContent = 'Tier ' + t + ' — ' + (t===1?'Foundation':t===2?'Intermediate':'Advanced') + '  (' + ok + '/' + attempted + ' correct)';
+        wrap.appendChild(tl);
+        items.forEach(function(e){ wrap.appendChild(makeEvItem(e)); });
+      });
+    } else {
+      a.evidence.forEach(function(e){ wrap.appendChild(makeEvItem(e)); });
+    }
+  }
+
+  const an = document.createElement('div');
+  an.className = 'fr-analysis';
+  an.textContent = a.analysis;
+  wrap.appendChild(an);
+  return wrap;
+}
+
+function makeEvItem(e) {
+  const div = document.createElement('div');
+  div.className = 'fr-ev-item ev-' + (e.state||'neutral');
+  const badge = e.state==='correct'  ? '<span class="fr-badge fr-b-ok">Correct</span>'
+              : e.state==='wrong'    ? '<span class="fr-badge fr-b-err">Incorrect</span>'
+              : e.state==='skipped'  ? '<span class="fr-badge fr-b-skip">Not attempted</span>'
+              : '<span class="fr-badge fr-b-neu">Response</span>';
+  div.innerHTML = '<div class="fr-ev-q">' + badge + hEsc(e.q) + '</div><div class="fr-ev-d">' + hEsc(e.detail) + '</div>';
+  return div;
+}
+
+const LETTERS = ['A','B','C','D','E','F'];
+
+function shortQ(q) {
+  const t = q.text||'';
+  return t.length>100 ? t.substring(0,100)+'…' : t;
+}
+
+function avgArr(arr) {
+  return arr.length ? Math.round(arr.reduce(function(a,b){return a+b;},0)/arr.length) : 0;
+}
+
+// ---- SECTION 0: APTITUDE ----
+function analyseAptitude(qs, mi, ansMap, name) {
+  const tiers = {1:{c:0,t:0},2:{c:0,t:0},3:{c:0,t:0}};
+  var correct=0, total=0;
+  const evidence = qs.map(function(q, qi) {
+    const key = mi+'_'+qi;
+    const raw = ansMap[key];
+    const tier = q.tier||1;
+    if (raw===undefined||raw===null||raw==='') {
+      return { state:'skipped', tier:tier, q:shortQ(q), detail:'This question was not attempted.' };
+    }
+    const ansIdx = parseInt(raw);
+    const ansText = q.opts ? (q.opts[ansIdx]||'?') : String(raw);
+    if (q.ans < 0) {
+      return { state:'neutral', tier:tier, q:shortQ(q), detail:'Selected: '+(LETTERS[ansIdx]||ansIdx)+'. "'+ansText+'" — Subjective question, no correct answer.' };
+    }
+    const isOk = ansIdx === q.ans;
+    total++; tiers[tier].t++;
+    if (isOk) { correct++; tiers[tier].c++; }
+    const corrText = q.opts ? q.opts[q.ans] : '';
+    return {
+      state: isOk?'correct':'wrong', tier:tier, q:shortQ(q),
+      detail: isOk
+        ? 'Selected: '+LETTERS[ansIdx]+'. "'+ansText+'" ✓ Correct. Demonstrates '+(tier===1?'solid foundational reasoning.':tier===2?'strong intermediate problem-solving.':'exceptional advanced analytical thinking.')
+        : 'Selected: '+LETTERS[ansIdx]+'. "'+ansText+'" ✗ Incorrect. Correct answer: '+LETTERS[q.ans]+'. "'+corrText+'". '+(tier===1?'Foundational reasoning gap identified.':tier===2?'Intermediate multi-step logic needs development.':'Advanced tier — common errors here are expected and correctable with practice.')
+    };
+  });
+  const score = total>0 ? Math.round(correct/total*100) : 0;
+  const bars = [1,2,3].map(function(t) {
+    return { label:'Tier '+t+' ('+( t===1?'Foundation':t===2?'Intermediate':'Advanced')+')', score: tiers[t].t>0?Math.round(tiers[t].c/tiers[t].t*100):null, display: tiers[t].t>0?(tiers[t].c+'/'+tiers[t].t):null };
+  });
+  const att = evidence.filter(function(e){return e.state!=='skipped';}).length;
+  var analysis = name+' attempted '+att+' of '+qs.length+' aptitude questions, scoring '+correct+' of '+total+' correctly ('+score+'%). ';
+  if (tiers[1].t>0) analysis += 'Foundation tier: '+tiers[1].c+'/'+tiers[1].t+(tiers[1].c===tiers[1].t?' — perfect, all basic reasoning correct':tiers[1].c>=Math.ceil(tiers[1].t*.6)?' — mostly correct, solid foundational logic':' — gaps in basic reasoning require urgent attention')+'. ';
+  if (tiers[2].t>0) analysis += 'Intermediate tier: '+tiers[2].c+'/'+tiers[2].t+(tiers[2].c>=Math.ceil(tiers[2].t*.7)?' — commendable multi-step problem-solving':tiers[2].c>=Math.ceil(tiers[2].t*.4)?' — partial success; complex problems need more practice':' — difficulty with analytical chaining is evident')+'. ';
+  if (tiers[3].t>0) analysis += 'Advanced tier: '+tiers[3].c+'/'+tiers[3].t+(tiers[3].c>=Math.ceil(tiers[3].t*.6)?' — exceptional; top-tier analytical ability demonstrated':tiers[3].c>=Math.ceil(tiers[3].t*.3)?' — reasonable for this age; consistent NTSE/JEE-level practice will build this':' — expected difficulty; systematic coaching will develop this competency')+'. ';
+  analysis += score>=75?'Overall aptitude is a clear strength — this candidate has the cognitive depth for highly analytical career paths.':score>=50?'Aptitude is developing well. Structured timed practice will sharpen performance significantly.':'Aptitude needs deliberate attention — a coached, systematic approach to logical and numerical reasoning is strongly recommended.';
+  return { score:score, scoreUnit:'%', scoreLabel:correct+'/'+total+' correct', bars:bars, evidence:evidence, analysis:analysis, tierGroups:true };
+}
+
+// ---- SECTION 1: PERSONALITY ----
+function analysePersonality(qs, mi, ansMap, name) {
+  const traitData = {Extraversion:[],Conscientiousness:[],Openness:[],Agreeableness:[],'Emotional Stability':[]};
+  const bigFiveMap = [
+    {t:'Extraversion',d:1},{t:'Conscientiousness',d:1},{t:'Openness',d:1},{t:'Agreeableness',d:1},
+    {t:'Emotional Stability',d:1},{t:'Extraversion',d:1},{t:'Conscientiousness',d:1},{t:'Conscientiousness',d:1},
+    {t:'Matrix',d:0},{t:'Agreeableness',d:1},{t:'Emotional Stability',d:-1},{t:'Conscientiousness',d:1}
+  ];
+  const matrixTraitMap = ['Conscientiousness','Openness','Extraversion','Openness'];
+  const evidence = [];
+
+  qs.forEach(function(q, qi) {
+    const key = mi+'_'+qi;
+    const raw = ansMap[key];
+    const mapping = bigFiveMap[qi]||{t:'Openness',d:1};
+    if (q.type==='matrix') {
+      var mp = {};
+      try { mp = JSON.parse(raw||'{}'); } catch(e){}
+      const rows = q.rows||[];
+      const cols = q.cols||['Not at all','A little','Somewhat','Quite a lot','Very much'];
+      rows.forEach(function(rowLabel, ri) {
+        const ci = mp[ri]!==undefined ? parseInt(mp[ri]) : null;
+        const tr = matrixTraitMap[ri]||'Openness';
+        if (ci!==null && traitData[tr]) traitData[tr].push(ci/( cols.length-1)*100);
+        evidence.push({
+          state: ci!==null?'neutral':'skipped',
+          q: 'Matrix: "'+rowLabel+'"',
+          detail: ci!==null
+            ? 'Rated: "'+cols[ci]+'" ('+(ci+1)+'/'+cols.length+'). Maps to '+tr+': '+(ci>=3?'strongly present — a dominant characteristic.':ci===2?'moderately present — average expression.':'low expression of this trait.')
+            : 'Row not completed.'
+        });
+      });
+    } else {
+      if (raw===undefined||raw===null||raw==='') {
+        evidence.push({state:'skipped',q:shortQ(q),detail:'This statement was not rated.'});
+        return;
+      }
+      const scale = q.scale||['Strongly disagree','Disagree','Neutral','Agree','Strongly agree'];
+      const ri = parseInt(raw);
+      const rl = scale[ri]||raw;
+      const s100 = ri/(scale.length-1)*100;
+      const eff = mapping.d===-1 ? 100-s100 : s100;
+      if (mapping.t!=='Matrix' && traitData[mapping.t]) traitData[mapping.t].push(eff);
+      const interpret = ri>=3?'agrees — a clear marker':ri===2?'is neutral — moderate expression':'disagrees — low expression';
+      evidence.push({
+        state:'neutral', q:shortQ(q),
+        detail: name+' '+interpret+' with this statement (rated "'+rl+'", '+(ri+1)+'/'+scale.length+'). This contributes to the '+mapping.t+' dimension at '+Math.round(eff)+'% intensity. '+(eff>=70?'A high rating here reinforces a strong '+mapping.t+' tendency.':eff>=45?'A moderate rating suggests this trait is present but not dominant.':'A low score here indicates limited expression of '+mapping.t+'.')
+      });
+    }
+  });
+
+  const scores = {};
+  Object.keys(traitData).forEach(function(t){ scores[t] = traitData[t].length ? avgArr(traitData[t]) : 50; });
+  const bars = Object.entries(scores).sort(function(a,b){return b[1]-a[1];}).map(function(e){ return {label:e[0],score:e[1],display:e[1]+'%'}; });
+  const overall = avgArr(Object.values(scores));
+  const top = bars[0]; const bottom = bars[bars.length-1];
+
+  var analysis = name+"'s personality profile is led by "+top.label+" ("+top.score+"%), followed by "+bars[1].label+" ("+bars[1].score+"%). ";
+  var topDesc = {
+    'Conscientiousness':'High Conscientiousness is one of the strongest predictors of academic success — this candidate is likely disciplined, goal-oriented, and reliable in following through on commitments.',
+    'Openness':'Dominant Openness signals deep intellectual curiosity, creativity, and a natural drive to explore complex ideas — highly aligned with research, design, and innovation careers.',
+    'Extraversion':'Dominant Extraversion suggests energy and engagement in social contexts — this candidate likely thrives in collaborative, communicative, and leadership roles.',
+    'Agreeableness':'High Agreeableness reflects genuine cooperativeness, empathy, and a service orientation — significant assets in healthcare, teaching, and team environments.',
+    'Emotional Stability':'Strong Emotional Stability indicates composure under pressure — a substantial advantage during high-stakes examinations and demanding environments.'
+  };
+  analysis += (topDesc[top.label]||('Strong '+top.label+' is a notable characteristic.'))+' ';
+  analysis += bottom.label+' scored lowest at '+bottom.score+'% — ';
+  var bottomAdvice = {
+    'Conscientiousness':'building consistent study routines, task lists, and follow-through habits will be an important investment.',
+    'Openness':'deliberately seeking out new experiences, reading widely, and engaging with complex ideas will broaden this dimension.',
+    'Extraversion':'while introversion is entirely valid, developing communication and collaborative skills will open important career doors.',
+    'Agreeableness':'practising empathy, active listening, and perspective-taking will strengthen this interpersonal dimension.',
+    'Emotional Stability':'stress management strategies, mindfulness practice, and exam preparation techniques will directly address this gap.'
+  };
+  analysis += (bottomAdvice[bottom.label]||('developing '+bottom.label+' will complement existing strengths.'))+' ';
+  analysis += 'Across all five dimensions, the overall profile registers at '+overall+'% — a '+(overall>=70?'well-integrated personality with clear, exploitable strengths':overall>=50?'developing profile with identifiable strengths and growth areas':'personality still in early formation; further self-exploration is recommended')+'.';
+  return { score:overall, scoreUnit:'%', scoreLabel:'avg across Big 5', bars:bars, evidence:evidence, analysis:analysis };
+}
+
+// ---- SECTION 2: INTEREST ----
+function analyseInterest(qs, mi, ansMap, name) {
+  const riasec = {R:[],I:[],A:[],S:[],E:[],C:[]};
+  const mcqMaps = [
+    ['I','A','E','I','A','S'],
+    ['I','I','E','I','R','S'],
+    null,
+    ['I','I','A','S','E','A'],
+    ['I','E','E','I','A','R'],
+    null,
+    ['I','S','S','A','E','R'],
+    null
+  ];
+  const likertDim = [null,'R',null,null,null,'I',null,'A'];
+  const dimNames = {R:'Realistic',I:'Investigative',A:'Artistic',S:'Social',E:'Enterprising',C:'Conventional'};
+  const dimDesc = {R:'hands-on, practical work',I:'analytical, scientific investigation',A:'creative, expressive work',S:'people-oriented helping roles',E:'leadership and business',C:'structured, organised environments'};
+  const evidence = [];
+
+  qs.forEach(function(q, qi) {
+    const key = mi+'_'+qi; const raw = ansMap[key];
+    if (raw===undefined||raw===null||raw==='') { evidence.push({state:'skipped',q:shortQ(q),detail:'Not attempted.'}); return; }
+    const idx = parseInt(raw);
+    if (q.type==='likert') {
+      const scale = q.scale||['Not at all','Unlikely','Neutral','Possibly','Definitely'];
+      const label = scale[idx]||raw;
+      const s100 = idx/(scale.length-1)*100;
+      const dim = likertDim[qi];
+      if (dim && riasec[dim]) riasec[dim].push(s100);
+      evidence.push({state:'neutral',q:shortQ(q), detail:'Rated "'+label+'" ('+(idx+1)+'/'+scale.length+'). '+(dim?'Contributes '+Math.round(s100)+'% intensity to the '+dimNames[dim]+' ('+dimDesc[dim]+') interest dimension.':'General interest indicator.')+(s100>=70?' A high rating signals genuine enthusiasm for this type of work.':s100>=45?' A moderate rating indicates some interest.':' A low rating suggests limited draw toward this type of work.')});
+    } else {
+      const ansText = q.opts?(q.opts[idx]||'?'):String(raw);
+      const dim = mcqMaps[qi]?mcqMaps[qi][idx]:null;
+      if (dim && riasec[dim]) riasec[dim].push(80);
+      evidence.push({state:'neutral',q:shortQ(q), detail:'Chose: '+(LETTERS[idx]||idx)+'. "'+ansText+'". '+(dim?'This choice maps to the '+dimNames[dim]+' interest type ('+dimDesc[dim]+').':'Interest indicator noted.')+' '+(dim==='I'?'Suggests intellectual curiosity and love of investigation.':dim==='A'?'Indicates creative and expressive inclination.':dim==='S'?'Reflects a people-focused, service orientation.':dim==='E'?'Signals leadership and entrepreneurial appetite.':dim==='R'?'Shows preference for tangible, hands-on work.':'Reflects structured and conventional preferences.')});
+    }
+  });
+
+  const scores = {}; Object.entries(riasec).forEach(function(e){ scores[e[0]] = e[1].length ? avgArr(e[1]) : 15; });
+  const bars = Object.entries(scores).sort(function(a,b){return b[1]-a[1];}).map(function(e){ return {label:dimNames[e[0]],score:e[1],display:e[1]+'%'}; });
+  const top = bars[0]; const second = bars[1]; const peak = top.score;
+
+  var analysis = name+"'s interest profile peaks at "+top.label+" ("+top.score+"%) with a secondary affinity for "+second.label+" ("+second.score+"%). ";
+  const topDesc2 = {
+    Investigative:'A dominant Investigative interest points to a natural scientist or analyst — someone who is energised by understanding how systems work and solving complex problems. Technology, medicine, research, and data science are natural career territories.',
+    Artistic:'Dominant Artistic interest marks a candidate driven by creativity and self-expression. Design, architecture, content creation, media, and the performing arts align well. These candidates need career paths that offer creative latitude.',
+    Social:'Dominant Social interest reveals a genuine orientation toward helping and working with people. Teaching, healthcare, counselling, social work, and community leadership are natural fits. These candidates find meaning in human connection.',
+    Enterprising:'Dominant Enterprising interest signals a natural leader and persuader. Business, law, management, politics, and entrepreneurship are highly compatible. These candidates are energised by influence and result-driven environments.',
+    Realistic:'Dominant Realistic interest reflects hands-on, practical engagement. Engineering trades, construction, sports science, and technical fields where tangible results are visible resonate with this profile.',
+    Conventional:'Dominant Conventional interest reflects a preference for structure, accuracy, and order. Finance, accounting, data management, and administrative fields suit this profile well.'
+  };
+  analysis += (topDesc2[top.label]||('The '+top.label+' interest type is a significant motivational driver.'))+' ';
+  analysis += 'The '+top.label+' + '+second.label+' combination creates a specific RIASEC code that a career counsellor can use to identify precisely matched career clusters and college programmes.';
+  return { score:peak, scoreUnit:'%', scoreLabel:'peak RIASEC', bars:bars, evidence:evidence, analysis:analysis };
+}
+
+// ---- SECTION 3: EQ ----
+function analyseEQ(qs, mi, ansMap, name) {
+  const scenarioScores = [
+    [70,30,95,60],null,[20,50,90,40],null,null,[25,90,40,10],null,null
+  ];
+  const dimMap = ['empathy','empathy','leadership','selfAwareness','stressHandling','leadership','selfAwareness','stressHandling'];
+  const dims = {selfAwareness:[],empathy:[],stressHandling:[],leadership:[]};
+  const evidence = [];
+
+  qs.forEach(function(q, qi) {
+    const key = mi+'_'+qi; const raw = ansMap[key];
+    const dim = dimMap[qi]||'selfAwareness';
+    if (raw===undefined||raw===null||raw==='') { evidence.push({state:'skipped',q:shortQ(q),detail:'Not attempted.'}); return; }
+    const idx = parseInt(raw);
+    if (q.type==='scenario') {
+      const smap = scenarioScores[qi];
+      const eqs = smap ? (smap[idx]||50) : 50;
+      if (dims[dim]) dims[dim].push(eqs);
+      const optText = q.opts?(q.opts[idx]||'?'):String(raw);
+      const context = q.context ? q.context.substring(0,80)+(q.context.length>80?'…':'') : '';
+      evidence.push({
+        state: eqs>=80?'correct':eqs>=50?'neutral':'wrong',
+        q: (context?'[Scenario] '+context+' → ':'')+shortQ(q),
+        detail: 'Chose: '+(LETTERS[idx]||idx)+'. "'+optText+'". EQ effectiveness: '+eqs+'/100 on '+dim.replace(/([A-Z])/,' $1').trim()+'. '+(eqs>=80?'This is the optimal high-EQ response — it reflects genuine empathy, self-awareness, and constructive interpersonal strategy. '+name+' identified the most emotionally intelligent course of action.':eqs>=50?'A reasonable choice; not optimal. The highest-EQ response would demonstrate more active and constructive engagement with the situation.':'This response suggests avoidance, aggression, or passivity — patterns that limit interpersonal effectiveness. This scenario reveals a specific development area for '+name+'.')
+      });
+    } else {
+      const scale = q.scale||['Never','Rarely','Sometimes','Usually','Always'];
+      const label = scale[idx]||raw;
+      const s100 = qi===7 ? (1-(idx/(scale.length-1)))*100 : (idx/(scale.length-1))*100;
+      if (dims[dim]) dims[dim].push(s100);
+      const dimLabel = dim.replace(/([A-Z])/,' $1').trim();
+      evidence.push({
+        state:'neutral', q:shortQ(q),
+        detail: name+' rated "'+label+'" ('+(idx+1)+'/'+scale.length+') on this '+dimLabel+' indicator, scoring '+Math.round(s100)+'/100. '+(s100>=70?'A strong response confirming well-developed capacity in this EQ dimension.':s100>=45?'A moderate response indicating this EQ capacity is present but not fully realised.':'A low response revealing this EQ dimension needs active development through practice and reflection.')+(qi===7?' (Note: This item is reverse-scored — lower frequency of motivational difficulty = higher stress resilience.)':'')
+      });
+    }
+  });
+
+  const ds = {}; Object.entries(dims).forEach(function(e){ ds[e[0]] = e[1].length ? avgArr(e[1]) : 50; });
+  const overall = avgArr(Object.values(ds));
+  const bars = [
+    {label:'Self-Awareness',score:ds.selfAwareness,display:ds.selfAwareness+'%'},
+    {label:'Empathy',score:ds.empathy,display:ds.empathy+'%'},
+    {label:'Stress Handling',score:ds.stressHandling,display:ds.stressHandling+'%'},
+    {label:'Leadership EQ',score:ds.leadership,display:ds.leadership+'%'}
+  ].sort(function(a,b){return b.score-a.score;});
+  const top = bars[0]; const bottom = bars[bars.length-1];
+
+  var analysis = name+"'s Emotional Intelligence total score of "+overall+"/100 places them in the "+(overall>=80?'high EQ bracket — a genuinely exceptional interpersonal profile at this age':overall>=65?'above-average EQ bracket — strong emotional and social foundations':overall>=50?'developing EQ bracket — key capacities are present and buildable':'below-average EQ bracket — significant and actionable development opportunity')+'. ';
+  analysis += 'The strongest EQ dimension is '+top.label+' ('+top.score+'%): '+(top.label==='Self-Awareness'?'they demonstrate good insight into their own emotional states and how they influence behaviour.':top.label==='Empathy'?'they are attuned to others\' feelings and respond with genuine consideration — a trait that builds deep trust.':top.label==='Stress Handling'?'they maintain focus and composure under pressure, a significant advantage in competitive examinations.':'they show natural EQ-based leadership, guiding groups constructively without resorting to dominance.')+' ';
+  analysis += 'The development area is '+bottom.label+' ('+bottom.score+'%): '+(bottom.label==='Self-Awareness'?'deepening understanding of their own emotional triggers and responses will improve decision-making.':bottom.label==='Empathy'?'practising perspective-taking, active listening, and emotional curiosity will build this dimension.':bottom.label==='Stress Handling'?'exam-readiness programmes, mindfulness, and stress inoculation exercises are specifically recommended.':'engaging in structured team leadership experiences and receiving feedback from peers will accelerate growth here.')+' ';
+  analysis += 'EQ is highly trainable — targeted reflection and real-world practice consistently improve scores across all four dimensions.';
+  return { score:overall, scoreUnit:'/100', bars:bars, evidence:evidence, analysis:analysis };
+}
+
+// ---- SECTION 4: VALUES ----
+function analyseValues(qs, mi, ansMap, name) {
+  const valDims = {Impact:[],Wealth:[],Creativity:[],Stability:[],Achievement:[],Freedom:[]};
+  const mcqMaps = [
+    ['Achievement','Wealth','Achievement','Impact','Creativity','Achievement'],
+    null,null,
+    ['Wealth','Creativity','Wealth','Freedom'],
+    null,null,
+    ['Impact','Achievement','Impact','Freedom'],
+    null
+  ];
+  const likertDimMap = [null,'Wealth','Impact',null,'Achievement','Stability',null,'Impact'];
+  const valDesc = {Impact:'social impact and making a positive difference',Wealth:'financial security and material success',Creativity:'creative expression and originality',Stability:'safety, predictability, and security',Achievement:'excellence, recognition, and being the best',Freedom:'autonomy and personal choice'};
+  const evidence = [];
+
+  qs.forEach(function(q, qi) {
+    const key = mi+'_'+qi; const raw = ansMap[key];
+    if (raw===undefined||raw===null||raw==='') { evidence.push({state:'skipped',q:shortQ(q),detail:'Not attempted.'}); return; }
+    const idx = parseInt(raw);
+    if (q.type==='likert') {
+      const scale = q.scale||['Strongly disagree','Disagree','Neutral','Agree','Strongly agree'];
+      const label = scale[idx]||raw;
+      const s100 = (idx/(scale.length-1))*100;
+      const dim = likertDimMap[qi];
+      if (dim && valDims[dim]) valDims[dim].push(s100);
+      evidence.push({
+        state:'neutral',q:shortQ(q),
+        detail: name+' rated "'+label+'" ('+(idx+1)+'/'+scale.length+'). '+(dim?'This contributes to the '+dim+' value dimension ('+valDesc[dim]+') at '+Math.round(s100)+'% intensity. ':' General values indicator. ')+(idx>=3?name+' endorses this value strongly — it is a primary motivational driver.':idx===2?name+' is ambivalent here — this value is present but not dominant.':name+' de-prioritises this value — it is not a primary motivational driver.')
+      });
+    } else {
+      const ansText = q.opts?(q.opts[idx]||'?'):String(raw);
+      const dim = mcqMaps[qi] ? mcqMaps[qi][idx] : null;
+      if (dim && valDims[dim]) valDims[dim].push(80);
+      evidence.push({
+        state:'neutral',q:shortQ(q),
+        detail: 'Chose: '+(LETTERS[idx]||idx)+'. "'+ansText+'". '+(dim?'This explicit choice signals '+valDesc[dim]+' as a priority value. ':' A nuanced values preference is noted. ')+'This is a direct behavioural indicator: when faced with a concrete choice, '+name+' selected '+(dim?'the option that maximises '+dim.toLowerCase()+'.':('"'+ansText+'".'+ ' This specific preference informs career counselling recommendations.'))
+      });
+    }
+  });
+
+  const scores = {}; Object.entries(valDims).forEach(function(e){ scores[e[0]] = e[1].length ? avgArr(e[1]) : 15; });
+  const bars = Object.entries(scores).sort(function(a,b){return b[1]-a[1];}).map(function(e){ return {label:e[0],score:e[1],display:e[1]+'%'}; });
+  const top = bars[0]; const peak = top.score;
+
+  const valCareerMap = {
+    Impact:'Purpose-driven careers in medicine, social work, education, NGO leadership, and public health directly align with this value.',
+    Wealth:'High-income career paths in finance, technology, law, and business leadership align with this value. Clear financial progression matters in role selection.',
+    Creativity:'Creative careers in design, film, architecture, writing, and product innovation will satisfy this value. Rigid, rule-bound environments will frustrate.',
+    Stability:'Stable career paths — government services, established institutions, and predictable progressions — align with this value. Risk-heavy entrepreneurship may not be the natural fit.',
+    Achievement:'Competitive, performance-driven careers in law, technology, medicine, sports, and corporate leadership are energised by Achievement motivation.',
+    Freedom:'Entrepreneurship, freelance careers, academia, and high-autonomy professional roles resonate with Freedom values. Heavily hierarchical structures may feel constraining.'
+  };
+
+  var analysis = name+"'s primary value orientation is "+top.label+" ("+top.score+"%), followed by "+bars[1].label+" ("+bars[1].score+"%). ";
+  analysis += (valCareerMap[top.label]||('The '+top.label+' value is a strong motivational anchor.'))+' ';
+  analysis += 'Understanding this value hierarchy is critical for career guidance: recommendations that ignore '+name+"'s core value of "+top.label.toLowerCase()+' will fail to sustain long-term motivation, even if they are intellectually appropriate choices. ';
+  analysis += 'The bottom-ranked value — '+bars[bars.length-1].label+' ('+bars[bars.length-1].score+'%) — is equally informative: it tells us what '+name+' is not primarily driven by, which is useful context when framing career options that might be weaker motivational fits.';
+  return { score:peak, scoreUnit:'%', scoreLabel:'primary value', bars:bars, evidence:evidence, analysis:analysis };
+}
+
+// ---- SECTION 5: SITUATIONAL JUDGEMENT ----
+function analyseSituational(qs, mi, ansMap, name) {
+  const sjData = [
+    {best:2,scores:[50,30,90,20],comp:'Collaborative Leadership'},
+    {best:1,scores:[10,95,30,20],comp:'Integrity & Honesty'},
+    {best:3,scores:[15,60,45,90],comp:'Reflective Problem-Solving'},
+    {best:1,scores:[5,90,60,40], comp:'Proactive Initiative'},
+    {best:1,scores:[10,85,60,50],comp:'Ethical Advocacy'},
+    {best:1,scores:[40,95,20,30],comp:'Transparent Communication'},
+    {best:2,scores:[10,40,90,60],comp:'Ethical Courage'},
+    {best:1,scores:[5,95,40,60], comp:'Intellectual Honesty'}
+  ];
+  const compScores = {};
+  const evidence = [];
+
+  qs.forEach(function(q, qi) {
+    const key = mi+'_'+qi; const raw = ansMap[key];
+    const sj = sjData[qi]||{best:0,scores:[50,50,50,50],comp:'Judgement'};
+    if (raw===undefined||raw===null||raw==='') { evidence.push({state:'skipped',q:shortQ(q),detail:'Scenario not attempted.'}); return; }
+    const idx = parseInt(raw);
+    const optText = q.opts?(q.opts[idx]||'?'):String(raw);
+    const score = sj.scores[idx]!==undefined ? sj.scores[idx] : 50;
+    if (!compScores[sj.comp]) compScores[sj.comp] = [];
+    compScores[sj.comp].push(score);
+    const context = q.context ? q.context.substring(0,80)+(q.context.length>80?'…':'') : '';
+    const isOpt = idx===sj.best;
+    const bestText = q.opts?(q.opts[sj.best]||'Option '+LETTERS[sj.best]):'Option '+LETTERS[sj.best];
+    evidence.push({
+      state: isOpt?'correct':score>=55?'neutral':'wrong',
+      q: (context?'[Scenario] '+context+' → ':'')+shortQ(q),
+      detail: 'Chose: '+(LETTERS[idx]||idx)+'. "'+optText+'". Judgement score: '+score+'/100 on '+sj.comp+'. '+(isOpt?'Optimal choice. '+name+' correctly identified the most effective response — demonstrating '+sj.comp.toLowerCase()+' in practice. This choice reflects mature, constructive decision-making.':score>=55?'A reasonable choice ('+score+'/100), though not optimal. The best-practice response was '+LETTERS[sj.best]+': "'+bestText+'" — which would more directly address the situation with '+sj.comp.toLowerCase()+'.':'A suboptimal response ('+score+'/100). The highest-effectiveness choice was '+LETTERS[sj.best]+': "'+bestText+'". This scenario reveals a gap in '+sj.comp.toLowerCase()+' that would benefit from structured reflection and mentoring.')
+    });
+  });
+
+  const compAvgs = {}; Object.entries(compScores).forEach(function(e){ compAvgs[e[0]] = avgArr(e[1]); });
+  const allVals = Object.values(compAvgs);
+  const overall = allVals.length ? avgArr(allVals) : 50;
+  const bars = Object.entries(compAvgs).sort(function(a,b){return b[1]-a[1];}).map(function(e){ return {label:e[0],score:e[1],display:e[1]+'%'}; });
+  const top = bars[0]||{label:'Judgement',score:overall};
+  const weak = bars[bars.length-1]||top;
+  const optCount = evidence.filter(function(e){return e.state==='correct';}).length;
+  const att2 = evidence.filter(function(e){return e.state!=='skipped';}).length;
+
+  var analysis = name+"'s situational judgement profile scores "+overall+"/100 overall, with "+optCount+" of "+att2+" attempted scenarios resolved with the optimal response. ";
+  analysis += 'The strongest competency is '+top.label+' ('+top.score+'%): '+(top.score>=80?'this candidate makes consistently excellent choices in situations requiring '+top.label.toLowerCase()+' — a rare and valuable quality.':'good instincts are evident in scenarios requiring '+top.label.toLowerCase()+'.')+' ';
+  analysis += 'The most significant development area is '+weak.label+' ('+weak.score+'%): '+(weak.score<=40?'choices in scenarios requiring '+weak.label.toLowerCase()+' were frequently suboptimal — avoidant, passive, or reactive responses were chosen over constructive action.':'there is room to improve response quality in situations requiring '+weak.label.toLowerCase()+'.')+' ';
+  analysis += overall>=75?'This is an impressive SJT profile — '+name+' demonstrates the situational wisdom to complement their cognitive abilities effectively.':overall>=55?'The profile shows emerging good judgement. Real-world leadership experiences, group discussions, and case studies will accelerate development.':'Structured exposure to ethical dilemmas, leadership programmes, and mentored reflection will directly address the gaps identified in this section. Situational judgement is highly teachable.';
+  return { score:overall, scoreUnit:'/100', bars:bars, evidence:evidence, analysis:analysis };
+}
+
+function analyseSection(qs, mi, ansMap, mod, name) {
+  try {
+    if (mi===0) return analyseAptitude(qs, mi, ansMap, name);
+    if (mi===1) return analysePersonality(qs, mi, ansMap, name);
+    if (mi===2) return analyseInterest(qs, mi, ansMap, name);
+    if (mi===3) return analyseEQ(qs, mi, ansMap, name);
+    if (mi===4) return analyseValues(qs, mi, ansMap, name);
+    if (mi===5) return analyseSituational(qs, mi, ansMap, name);
+    return { score:0, scoreUnit:'%', bars:[], evidence:[], analysis:'No analysis available.' };
+  } catch(e) {
+    console.error('analyseSection error mi='+mi, e);
+    return { score:0, scoreUnit:'%', bars:[], evidence:[{state:'skipped',q:'Analysis error',detail:String(e)}], analysis:'Analysis could not be generated — see console.' };
+  }
+}
+
+function buildSummary(name, analyses, MODS) {
+  const apt=analyses[0], per=analyses[1], int_=analyses[2], eq=analyses[3], val=analyses[4], sit=analyses[5];
+  const topInt = int_.bars.length ? int_.bars[0].label : 'varied';
+  const topVal = val.bars.length ? val.bars[0].label : 'purpose';
+  const topPer = per.bars.length ? per.bars[0].label : 'balanced';
+
+  var s = name+"'s full psychometric evaluation paints a coherent, multi-dimensional portrait of their cognitive profile, personality, interests, and decision-making character. ";
+  s += 'On the cognitive dimension, an aptitude score of '+apt.score+'% ';
+  s += apt.score>=75?'signals strong analytical and reasoning depth — this candidate can handle complex, multi-step problems with confidence and is well-positioned for technically demanding career paths.':apt.score>=50?'reflects a developing analytical mind with solid foundations and clear headroom for growth through structured practice.':'indicates that cognitive reasoning skills are still forming — early, consistent investment in logical and numerical thinking will have transformational results. ';
+  s += ' ';
+  s += 'The personality profile, led by '+topPer+', ';
+  s += topPer==='Conscientiousness'?'is a powerful academic asset — conscientious students consistently outperform peers in structured environments, and this quality will compound over time. ':topPer==='Openness'?'fuels intellectual curiosity and a natural drive to explore — an engine for innovation and original thinking in any chosen field. ':topPer==='Extraversion'?'equips '+name+' for collaborative and communicative roles where energy and engagement are rewarded. ':topPer==='Agreeableness'?'means '+name+' is naturally cooperative and empathetic — qualities that build strong teams and trusted relationships. ':topPer==='Emotional Stability'?'provides resilience under pressure — a significant advantage during high-stakes academic and professional moments. ':'contributes a distinctive quality to how '+name+' approaches challenges and relationships. ';
+  s += 'The convergence of '+topInt+' interest patterns with a core '+topVal+'-driven values orientation suggests a candidate who will find deepest engagement in work that is both intellectually stimulating and aligned with their sense of purpose. ';
+  s += 'An EQ score of '+eq.score+'/100 and situational judgement effectiveness of '+sit.score+'/100 ';
+  s += (eq.score>=65&&sit.score>=65)?'together confirm that '+name+' brings both emotional maturity and sound decision-making instincts to complement their cognitive strengths — a complete profile that stands out.':( eq.score>=65||sit.score>=65)?'present a mixed interpersonal picture — strong in one dimension, developing in the other. Targeted engagement with the weaker area will create a more complete and competitive profile.':'suggest that interpersonal and decision-making skills are areas for focused cultivation — qualities that respond quickly to deliberate practice and reflective experience. ';
+  s += ' In summary, '+name+' is a '+( apt.score>=70&&per.score>=65?'cognitively capable, well-rounded candidate':apt.score>=70?'intellectually strong candidate whose interpersonal dimensions deserve development':apt.score>=50?'candidate with solid foundations across multiple dimensions':'candidate with clear upside potential')+' whose profile, taken holistically, provides a reliable foundation for evidence-based career guidance. The path ahead is best shaped by amplifying identified strengths while investing deliberately in the specific development areas this report has surfaced.';
+  return s;
 }
 </script>
 </body>

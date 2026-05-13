@@ -13,7 +13,11 @@
       "Bash(git stash *)",
       "Bash(xargs -I {} git update-ref -d {})",
       "Bash(git reflog *)",
-      "Bash(git gc *)"
+      "Bash(git gc *)",
+      "Bash(python3 -c \"import json; d=json.load\\(open\\('/Users/sushil/Documents/Data/Python312/claude-projects/sahirah/data/test_questions_v6.json'\\)\\); print\\('Sections:', len\\(d['sections']\\)\\); [print\\(f\\\\\"  {s['name']}: {len\\(s['questions']\\)} questions\\\\\"\\) for s in d['sections']]; print\\('Sample q keys:', list\\(d['sections'][0]['questions'][0].keys\\(\\)\\)\\)\")",
+      "Bash(node --input-type=module)",
+      "Bash(node -e ' *)",
+      "Bash(node *)"
     ]
   }
 }
