@@ -1239,11 +1239,15 @@ function renderSecBlock(a, mod) {
 function makeEvItem(e) {
   const div = document.createElement('div');
   div.className = 'fr-ev-item ev-' + (e.state||'neutral');
-  const badge = e.state==='correct'  ? '<span class="fr-badge fr-b-ok">Correct</span>'
-              : e.state==='wrong'    ? '<span class="fr-badge fr-b-err">Incorrect</span>'
-              : e.state==='skipped'  ? '<span class="fr-badge fr-b-skip">Not attempted</span>'
-              : '<span class="fr-badge fr-b-neu">Response</span>';
-  div.innerHTML = '<div class="fr-ev-q">' + badge + hEsc(e.q) + '</div><div class="fr-ev-d">' + hEsc(e.detail) + '</div>';
+  if (e.aptitude) {
+    const badge = e.state==='correct' ? '<span class="fr-badge fr-b-ok">Correct</span>'
+                : e.state==='wrong'   ? '<span class="fr-badge fr-b-err">Incorrect</span>'
+                : e.state==='skipped' ? '<span class="fr-badge fr-b-skip">Not attempted</span>'
+                : '<span class="fr-badge fr-b-neu">Response</span>';
+    div.innerHTML = '<div class="fr-ev-q">' + badge + '</div><div class="fr-ev-d">' + hEsc(e.detail) + '</div>';
+  } else {
+    div.innerHTML = '<div class="fr-ev-d">' + hEsc(e.detail) + '</div>';
+  }
   return div;
 }
 
@@ -1267,19 +1271,19 @@ function analyseAptitude(qs, mi, ansMap, name) {
     const raw = ansMap[key];
     const tier = q.tier||1;
     if (raw===undefined||raw===null||raw==='') {
-      return { state:'skipped', tier:tier, q:shortQ(q), detail:'This question was not attempted.' };
+      return { aptitude:true, state:'skipped', tier:tier, q:shortQ(q), detail:'This question was not attempted.' };
     }
     const ansIdx = parseInt(raw);
     const ansText = q.opts ? (q.opts[ansIdx]||'?') : String(raw);
     if (q.ans < 0) {
-      return { state:'neutral', tier:tier, q:shortQ(q), detail:'Selected: '+(LETTERS[ansIdx]||ansIdx)+'. "'+ansText+'" — Subjective question, no correct answer.' };
+      return { aptitude:true, state:'neutral', tier:tier, q:shortQ(q), detail:'Selected: '+(LETTERS[ansIdx]||ansIdx)+'. "'+ansText+'" — Subjective question, no correct answer.' };
     }
     const isOk = ansIdx === q.ans;
     total++; tiers[tier].t++;
     if (isOk) { correct++; tiers[tier].c++; }
     const corrText = q.opts ? q.opts[q.ans] : '';
     return {
-      state: isOk?'correct':'wrong', tier:tier, q:shortQ(q),
+      aptitude:true, state: isOk?'correct':'wrong', tier:tier, q:shortQ(q),
       detail: isOk
         ? 'Selected: '+LETTERS[ansIdx]+'. "'+ansText+'" ✓ Correct. Demonstrates '+(tier===1?'solid foundational reasoning.':tier===2?'strong intermediate problem-solving.':'exceptional advanced analytical thinking.')
         : 'Selected: '+LETTERS[ansIdx]+'. "'+ansText+'" ✗ Incorrect. Correct answer: '+LETTERS[q.ans]+'. "'+corrText+'". '+(tier===1?'Foundational reasoning gap identified.':tier===2?'Intermediate multi-step logic needs development.':'Advanced tier — common errors here are expected and correctable with practice.')
