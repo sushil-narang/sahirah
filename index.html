@@ -14,11 +14,15 @@ body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:0 5%;background:rgba(253,248,240,0.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;height:64px;transition:box-shadow .3s;}
-.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
-.nav-logo-mark{width:34px;height:34px;border-radius:10px;background:var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.nav-logo-mark svg{width:18px;height:18px;fill:var(--gold-light);}
-.nav-logo-text{font-family:var(--fd);font-size:1.35rem;font-weight:700;color:var(--ink);letter-spacing:-.02em;}
+.nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.nav-logo-img{height:42px;width:auto;flex-shrink:0;display:block;}
+.nav-logo-text{font-family:var(--fd);font-size:1.25rem;font-weight:700;color:var(--ink);letter-spacing:-.02em;}
 .nav-logo-text span{color:var(--gold);}
+.hero-brand-seal{position:absolute;top:72px;right:5%;z-index:2;animation:fu .7s .5s ease both;}
+.hero-brand-seal img{height:140px;width:auto;display:block;filter:drop-shadow(0 12px 40px rgba(26,18,8,.1));}
+@media(max-width:960px){.hero-brand-seal{display:none;}}
+.fl-logo-box{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:6px 10px;display:inline-flex;align-items:center;}
+.fl-logo-box img{height:44px;width:auto;display:block;}
 .nav-links{display:flex;gap:2rem;align-items:center;}
 .nav-links a{text-decoration:none;color:var(--ink);font-size:.875rem;font-weight:500;opacity:.65;transition:opacity .2s;}
 .nav-links a:hover{opacity:1;}
@@ -323,9 +327,7 @@ footer{background:var(--ink);color:var(--cream);padding:3rem 5%;display:flex;ali
 <!-- NAV -->
 <nav id="mainnav">
   <a href="./" class="nav-logo">
-    <div class="nav-logo-mark">
-      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
-    </div>
+    <img src="assets/images/sahirah-logo.png" alt="Sahi Raah" class="nav-logo-img"/>
     <div class="nav-logo-text">Sahir<span>ah</span>.in</div>
   </a>
   <div class="nav-links">
@@ -354,6 +356,9 @@ footer{background:var(--ink);color:var(--cream);padding:3rem 5%;display:flex;ali
 <!-- HERO -->
 <section class="hero">
   <div class="hbg"><div class="hc hc1"></div><div class="hc hc2"></div><div class="hgl"></div></div>
+  <div class="hero-brand-seal">
+    <img src="assets/images/sahirah-logo.png" alt="Sahi Raah — Let's Find It"/>
+  </div>
   <div class="hero-content">
     <div class="eyebrow"><div class="pdot"></div>India's first AI-powered psychometric platform for school children</div>
     <h1>Every child is<br/><em>born for something.</em><br/>Let's find it.</h1>
@@ -588,8 +593,9 @@ footer{background:var(--ink);color:var(--cream);padding:3rem 5%;display:flex;ali
 <!-- FOOTER -->
 <footer>
   <div class="fl">
-    <div class="fl-mark"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg></div>
-    <div class="fl-text">Sahir<span>ah</span>.in</div>
+    <a href="./" class="fl-logo-box">
+      <img src="assets/images/sahirah-logo.png" alt="Sahi Raah"/>
+    </a>
   </div>
   <div class="flinks"><a href="#">About</a><a href="#how">How it works</a><a href="#">Privacy Policy</a><a href="#">Terms of Use</a><a href="#">Contact</a></div>
   <div class="fcp">© 2025 Sahirah.in · Sahi Raah — The Right Path · Built with science, designed with love, for India's children.</div>

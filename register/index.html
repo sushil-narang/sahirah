@@ -20,8 +20,9 @@ body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16
 
 /* NAV */
 nav{position:sticky;top:0;z-index:100;padding:0 5%;background:rgba(253,248,240,0.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;height:64px;}
-.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
-.nav-logo-text{font-family:var(--fd);font-size:1.3rem;font-weight:700;color:var(--ink);}
+.nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.nav-logo img{height:40px;width:auto;display:block;}
+.nav-logo-text{font-family:var(--fd);font-size:1.15rem;font-weight:700;color:var(--ink);}
 .nav-logo-text span{color:var(--gold);}
 .nav-back{display:flex;align-items:center;gap:6px;text-decoration:none;color:rgba(26,18,8,0.5);font-size:.85rem;font-weight:500;transition:color .2s;}
 .nav-back:hover{color:var(--ink);}
@@ -218,6 +219,7 @@ nav{position:sticky;top:0;z-index:100;padding:0 5%;background:rgba(253,248,240,0
 
 <nav>
   <a href="../" class="nav-logo">
+    <img src="../assets/images/sahirah-logo.png" alt="Sahi Raah"/>
     <div class="nav-logo-text">Sahir<span>ah</span>.in</div>
   </a>
   <div class="nav-secure">Secure Registration</div>

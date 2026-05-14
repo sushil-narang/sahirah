@@ -46,10 +46,12 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
 
 /* SIDEBAR */
 .sidebar{width:var(--sw);background:var(--ink);display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;left:0;bottom:0;z-index:50;}
-.sb-brand{padding:1.4rem 1.1rem 1rem;border-bottom:1px solid rgba(255,255,255,.07);}
-.sb-brand-logo{font-family:var(--fd);font-size:1.1rem;font-weight:700;color:var(--cream);}
+.sb-brand{padding:1.2rem 1.1rem .9rem;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:.7rem;}
+.sb-brand-logo-img{height:38px;width:auto;display:block;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:3px 6px;}
+.sb-brand-info{flex:1;min-width:0;}
+.sb-brand-logo{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--cream);}
 .sb-brand-logo span{color:var(--gold);}
-.sb-brand-tag{font-size:.6rem;color:rgba(253,248,240,.3);font-weight:500;letter-spacing:.05em;text-transform:uppercase;margin-top:2px;}
+.sb-brand-tag{font-size:.58rem;color:rgba(253,248,240,.3);font-weight:500;letter-spacing:.05em;text-transform:uppercase;margin-top:2px;}
 .sb-nav{flex:1;padding:.85rem .65rem;}
 .sb-item{display:flex;align-items:center;gap:8px;padding:.58rem .7rem;border-radius:9px;cursor:pointer;transition:background .2s;color:rgba(253,248,240,.5);font-size:.8rem;font-weight:500;margin-bottom:2px;}
 .sb-item:hover{background:rgba(255,255,255,.06);color:rgba(253,248,240,.8);}
@@ -289,8 +291,11 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
 <div id="admin-app">
   <aside class="sidebar">
     <div class="sb-brand">
-      <div class="sb-brand-logo">Sahir<span>ah</span>.in</div>
-      <div class="sb-brand-tag">Psychometric Admin</div>
+      <img src="../assets/images/sahirah-logo.png" alt="Sahi Raah" class="sb-brand-logo-img"/>
+      <div class="sb-brand-info">
+        <div class="sb-brand-logo">Sahir<span>ah</span>.in</div>
+        <div class="sb-brand-tag">Psychometric Admin</div>
+      </div>
     </div>
     <div class="sb-nav">
       <div class="sb-item active" onclick="showView('overview')"><span class="sb-item-icon">📊</span>Overview</div>
