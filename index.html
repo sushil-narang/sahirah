@@ -19,7 +19,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:0 5%;background:rgba
 .nav-logo-text{font-family:var(--fd);font-size:1.25rem;font-weight:700;color:var(--ink);letter-spacing:-.02em;}
 .nav-logo-text span{color:var(--gold);}
 .hero-brand-seal{position:absolute;top:72px;right:5.5%;z-index:2;animation:fu .7s .5s ease both;}
-.hero-brand-seal img{height:200px;width:auto;display:block;filter:drop-shadow(0 12px 40px rgba(26,18,8,.1));}
+.hero-brand-seal img{height:250px;width:auto;display:block;filter:drop-shadow(0 12px 40px rgba(26,18,8,.1));}
 @media(max-width:960px){.hero-brand-seal{display:none;}}
 .fl-logo-box{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:6px 10px;display:inline-flex;align-items:center;}
 .fl-logo-box img{height:44px;width:auto;display:block;}
@@ -335,8 +335,8 @@ footer{background:var(--ink);color:var(--cream);padding:3rem 5%;display:flex;ali
     <a href="#how" class="hide-mob">How it works</a>
     <a href="#test" class="hide-mob">The Test</a>
     <a href="#report" class="hide-mob">Report</a>
-    <a href="login/" class="hide-mob" style="opacity:.65;font-size:.875rem;font-weight:500;">Login</a>
-    <a href="aptitude/" class="hide-mob" style="opacity:1;font-size:.8rem;font-weight:600;color:#1A5FA8;background:#E8F2FF;border:1px solid rgba(26,95,168,.2);padding:.38rem .95rem;border-radius:100px;transition:all .2s;" onmouseover="this.style.background='#1A5FA8';this.style.color='#fff'" onmouseout="this.style.background='#E8F2FF';this.style.color='#1A5FA8'">CSE Aptitude ↗</a>
+    <a href="login/" class="hide-mob" style="opacity:1;font-size:.8rem;font-weight:600;color:#1A5FA8;background:#E8F2FF;border:1px solid rgba(26,95,168,.2);padding:.38rem .95rem;border-radius:100px;transition:all .2s;" onmouseover="this.style.background='#1A5FA8';this.style.color='#fff'" onmouseout="this.style.background='#E8F2FF';this.style.color='#1A5FA8'">Psychometric Test Login ↗</a>
+    <a href="aptitude/" class="hide-mob" style="opacity:1;font-size:.8rem;font-weight:600;color:#1A5FA8;background:#E8F2FF;border:1px solid rgba(26,95,168,.2);padding:.38rem .95rem;border-radius:100px;transition:all .2s;" onmouseover="this.style.background='#1A5FA8';this.style.color='#fff'" onmouseout="this.style.background='#E8F2FF';this.style.color='#1A5FA8'">Aptitude Test Login ↗</a>
     <button class="nav-sahira-btn" onclick="openSahira()"><div class="sdot"></div>Ask Avanya</button>
     <a href="register/" class="nav-cta">Register →</a>
   </div>
@@ -347,7 +347,7 @@ footer{background:var(--ink);color:var(--cream);padding:3rem 5%;display:flex;ali
   <a href="#how" onclick="closeMobileNav()">How it works</a>
   <a href="#test" onclick="closeMobileNav()">The Test</a>
   <a href="#report" onclick="closeMobileNav()">Report</a>
-  <a href="login/" onclick="closeMobileNav()">Login</a>
+  <a href="login/" onclick="closeMobileNav()">Login ↗</a>
   <a href="aptitude/" class="cse-pill" onclick="closeMobileNav()">CSE Aptitude ↗</a>
   <button class="nav-sahira-btn" onclick="closeMobileNav();openSahira()"><div class="sdot"></div>Ask Avanya</button>
   <a href="register/" class="nav-cta" onclick="closeMobileNav()">Register →</a>
@@ -360,9 +360,33 @@ footer{background:var(--ink);color:var(--cream);padding:3rem 5%;display:flex;ali
     <img src="assets/images/sahirah.png" alt="Sahi Raah — Let's Find It"/>
   </div>
   <div class="hero-content">
-    <div class="eyebrow"><div class="pdot"></div>India's first AI-powered psychometric platform for school children</div>
+    <div class="eyebrow"><div class="pdot"></div><b>India's first AI-powered psychometric platform for school children aligned with NEP 2020</b></div>
     <h1>Every child is<br/><em>born for something.</em><br/>Let's find it.</h1>
-    <p class="hero-sub">Sahirah.in uses a scientifically designed, AI-powered psychometric evaluation to help parents and children discover the right stream, the right career, and the right path — before Class 10 decides it for them.</p>
+    <!--<p class="hero-sub">Sahirah.in uses a scientifically designed,<br/><b><h2>AI-powered Psychometric Evaluation based on Holland Codes</h2> </b><br/>to help parents and children discover the right stream, the right career, and the right path — before Class 10 decides it for them.</p>
+  -->
+  <p class="hero-sub">
+  Sahirah.in uses a scientifically designed,<br>
+  <span class="highlight-text">
+    AI-powered Psychometric Evaluation based on Holland Codes
+  </span><br>
+  to help parents and children discover the right stream,<br>
+  the right career, and the right path — before Class 10 decides it for them.
+</p>
+
+<style>
+.hero-sub2 {
+    line-height: 1.1; /* removes extra space between lines */
+    font-size: 20px;
+    margin: 0;
+}
+
+.highlight-text {
+    color: #b5651d; /* bright brown */
+    font-weight: bold;
+}
+</style>  
+
+
     <div class="hero-actions">
       <a href="register/" class="btn-p">Register Your Child <span class="arr">→</span></a>
       <a href="#how" class="btn-s">See How It Works</a>
