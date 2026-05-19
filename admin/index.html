@@ -2335,7 +2335,7 @@ function openAddSchool() {
 
 async function saveSchool(code) {
   const name = document.getElementById('fm-school-name').value.trim();
-  if (!name) { adminToast('School name is required.'); return; }
+  if (!name) { showAdminToast('School name is required.'); return; }
   const row = {
     school_code: code,
     school_name: name,
@@ -2351,21 +2351,21 @@ async function saveSchool(code) {
     const { error } = await _db.from('schools').insert([row]);
     if (error) throw error;
     document.getElementById('add-school-modal').remove();
-    adminToast(`School "${name}" created! Code: ${code}`);
+    showAdminToast(`School "${name}" created! Code: ${code}`);
     loadSchools();
   } catch(e) {
-    adminToast('Error: ' + (e.message || 'Could not save school.'));
+    showAdminToast('Error: ' + (e.message || 'Could not save school.'));
   }
 }
 
 async function toggleSchool(id, active) {
   await _db.from('schools').update({ is_active: active }).eq('id', id);
-  adminToast(active ? 'School activated.' : 'School deactivated.');
+  showAdminToast(active ? 'School activated.' : 'School deactivated.');
   loadSchools();
 }
 
 function viewSchoolStudents(schoolCode) {
-  adminToast(`Loading students for ${schoolCode}…`);
+  showAdminToast(`Loading students for ${schoolCode}…`);
   // Navigate to users view filtered by school
   showView('users');
   setTimeout(() => {
@@ -2471,16 +2471,16 @@ async function saveCoupon(code) {
     const { error } = await _db.from('coupon_codes').insert([row]);
     if (error) throw error;
     document.getElementById('add-coupon-modal').remove();
-    adminToast(`Coupon "${code}" created!`);
+    showAdminToast(`Coupon "${code}" created!`);
     loadCoupons();
   } catch(e) {
-    adminToast('Error: ' + (e.message || 'Could not save coupon.'));
+    showAdminToast('Error: ' + (e.message || 'Could not save coupon.'));
   }
 }
 
 async function toggleCoupon(id, active) {
   await _db.from('coupon_codes').update({ is_active: active }).eq('id', id);
-  adminToast(active ? 'Coupon activated.' : 'Coupon deactivated.');
+  showAdminToast(active ? 'Coupon activated.' : 'Coupon deactivated.');
   loadCoupons();
 }
 
@@ -2543,7 +2543,7 @@ function openAddCounselor() {
 
 async function saveCounselor(code) {
   const name = document.getElementById('fm-cnsl-name').value.trim();
-  if (!name) { adminToast('Name is required.'); return; }
+  if (!name) { showAdminToast('Name is required.'); return; }
   const row = {
     counselor_code: code,
     name,
@@ -2556,16 +2556,16 @@ async function saveCounselor(code) {
     const { error } = await _db.from('counselors').insert([row]);
     if (error) throw error;
     document.getElementById('add-counselor-modal').remove();
-    adminToast(`Counselor "${name}" added! Code: ${code}`);
+    showAdminToast(`Counselor "${name}" added! Code: ${code}`);
     loadCounselors();
   } catch(e) {
-    adminToast('Error: ' + (e.message || 'Could not save counselor.'));
+    showAdminToast('Error: ' + (e.message || 'Could not save counselor.'));
   }
 }
 
 async function toggleCounselorActive(id, active) {
   await _db.from('counselors').update({ is_active: active }).eq('id', id);
-  adminToast(active ? 'Counselor activated.' : 'Counselor deactivated.');
+  showAdminToast(active ? 'Counselor activated.' : 'Counselor deactivated.');
   loadCounselors();
 }
 
