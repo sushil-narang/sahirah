@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co https://api.emailjs.com; img-src 'self' data:; frame-ancestors 'none';"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co; img-src 'self' data:; frame-ancestors 'none';"/>
 <title>Register — Sahirah.in</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
@@ -741,7 +741,6 @@ nav{position:sticky;top:0;z-index:100;padding:0 5%;background:rgba(253,248,240,0
 </div><!-- end page -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="../assets/js/db.js"></script>
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ---- STEP NAVIGATION ----
@@ -835,45 +834,77 @@ function buildSlots() {
   const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const today = new Date();
-  for(let i=2; i<=16; i++) {
+  let firstClickDone = false;
+  for(let i=0; i<=14; i++) {
     const d = new Date(today); d.setDate(today.getDate()+i);
     if(d.getDay()===0) continue; // skip Sundays
+    // For today: only show if at least one time slot is still available
+    if(i===0 && !hasAvailableSlotsToday()) continue;
+    const isToday = i===0;
     const btn = document.createElement('div');
     btn.className = 'slot-date-btn';
-    btn.innerHTML = `<span class="sd-day">${days[d.getDay()]}</span><span class="sd-date">${d.getDate()}</span><span class="sd-month">${months[d.getMonth()]}</span>`;
-    btn.onclick = () => selectDate(btn, d, months);
+    btn.innerHTML = `<span class="sd-day">${isToday?'Today':days[d.getDay()]}</span><span class="sd-date">${d.getDate()}</span><span class="sd-month">${months[d.getMonth()]}</span>`;
+    btn.onclick = () => selectDate(btn, d, months, isToday);
     container.appendChild(btn);
-    if(!selectedDate) { btn.click(); }
+    if(!firstClickDone) { btn.click(); firstClickDone=true; }
   }
 }
 
-function selectDate(btn, d, months) {
+// Returns true if today has at least one time slot available (30-min buffer from now)
+function hasAvailableSlotsToday() {
+  const nowMin = new Date().getHours()*60 + new Date().getMinutes();
+  return timeSlots.some(ts => !ts.full && parseSlotMinutes(ts.time) >= nowMin + 30);
+}
+
+// Parse "08:00 AM" / "02:00 PM" → total minutes since midnight
+function parseSlotMinutes(timeStr) {
+  const [timePart, ampm] = timeStr.split(' ');
+  let [h, m] = timePart.split(':').map(Number);
+  if(ampm === 'PM' && h !== 12) h += 12;
+  if(ampm === 'AM' && h === 12) h = 0;
+  return h*60 + m;
+}
+
+function selectDate(btn, d, months, isToday) {
   document.querySelectorAll('.slot-date-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   selectedDate = d;
   selectedSlot = null;
-  buildTimeSlots(d, months);
+  buildTimeSlots(d, months, isToday);
 }
 
-function buildTimeSlots(d, months) {
+function buildTimeSlots(d, months, isToday) {
   const months_arr = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const container = document.getElementById('slot-times');
   container.innerHTML = '';
+  const nowMin = new Date().getHours()*60 + new Date().getMinutes();
+  let anyAvailable = false;
+
   timeSlots.forEach((ts, idx) => {
+    const slotMin = parseSlotMinutes(ts.time);
+    // On today: disable slots that are less than 30 minutes from now
+    const isPast = isToday && slotMin < nowMin + 30;
+    const isFull = ts.full || isPast;
     const wrap = document.createElement('div');
-    wrap.className = 'slot-time-btn' + (ts.full ? ' full' : '');
+    wrap.className = 'slot-time-btn' + (isFull ? ' full' : '');
+    const sublabel = isPast ? 'Not available' : ts.full ? 'Fully booked' : ts.slots+' slots left';
     const id = 'slot_' + idx;
-    wrap.innerHTML = `<input type="radio" name="slot" id="${id}" value="${ts.time}" ${ts.full?'disabled':''}/><label for="${id}"><span class="st-time">${ts.time}</span><span class="st-slots">${ts.full?'Fully booked':ts.slots+' slots left'}</span></label>`;
-    if(!ts.full) {
+    wrap.innerHTML = `<input type="radio" name="slot" id="${id}" value="${ts.time}" ${isFull?'disabled':''}/><label for="${id}"><span class="st-time">${ts.time}</span><span class="st-slots">${sublabel}</span></label>`;
+    if(!isFull) {
+      anyAvailable = true;
       wrap.querySelector('input').addEventListener('change', () => {
         selectedSlot = ts.time;
-        const ms = months_arr || ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const ms = months_arr;
         document.getElementById('sum-slot').textContent = `${d.getDate()} ${ms[d.getMonth()]} · ${ts.time}`;
         document.getElementById('conf-slot').textContent = `${d.getDate()} ${ms[d.getMonth()]} · ${ts.time}`;
       });
     }
     container.appendChild(wrap);
   });
+
+  if(isToday && !anyAvailable) {
+    container.innerHTML = '<div style="font-size:.82rem;color:rgba(26,18,8,.45);padding:.75rem 0;grid-column:1/-1;">No more slots available today — please select a different date.</div>';
+  }
 }
 
 // ---- SUMMARY POPULATION ----
@@ -902,14 +933,9 @@ function populateSummary() {
   document.getElementById('sum-device').textContent = device;
 }
 
-// ---- EMAIL CONFIG (EmailJS) ----
-// Setup: sign up at https://emailjs.com (free), then replace these three values.
-// Dashboard → Email Services → Add Service (connect Gmail)  → copy Service ID
-// Dashboard → Email Templates → Create Template             → copy Template ID
-// Dashboard → Account → Public Key                          → copy Public Key
-const EMAILJS_SERVICE  = 'YOUR_SERVICE_ID';   // ← replace
-const EMAILJS_TEMPLATE = 'YOUR_TEMPLATE_ID';  // ← replace
-const EMAILJS_KEY      = 'YOUR_PUBLIC_KEY';   // ← replace
+// ---- EMAIL via Netlify Function ----
+// No config needed here. Set RESEND_API_KEY in Netlify → Site Settings → Environment Variables.
+// See netlify/functions/send-email.js for full setup instructions.
 
 // ---- PASSWORD HASHING ----
 async function hashPassword(password) {
@@ -993,22 +1019,21 @@ async function submitForm() {
     return;
   }
 
-  // Send login credentials email (non-fatal — user already sees them on screen)
-  try {
-    emailjs.init(EMAILJS_KEY);
-    emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
-      to_email:    email,
-      to_name:     document.getElementById('parent-name').value.trim(),
-      child_name:  fn + ' ' + ln,
-      reg_id:      regId,
-      login_id:    loginId,
-      password:    password,
-      slot:        document.getElementById('sum-slot').textContent,
-      portal_url:  window.location.origin + '/login',
-    });
-  } catch(e) {
-    console.warn('Email send failed:', e);
-  }
+  // Send login credentials email via Netlify function (non-fatal — credentials shown on screen too)
+  fetch('/.netlify/functions/send-email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      to_email:   email,
+      to_name:    document.getElementById('parent-name').value.trim(),
+      child_name: fn + ' ' + ln,
+      reg_id:     regId,
+      login_id:   loginId,
+      password:   password,
+      slot:       document.getElementById('sum-slot').textContent,
+      portal_url: window.location.origin + '/login',
+    }),
+  }).catch(e => console.warn('Email send failed:', e));
 
   document.getElementById('step4').classList.remove('active');
   document.getElementById('step5').classList.add('active');
