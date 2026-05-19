@@ -10,8 +10,8 @@
 //      Until then, emails send from onboarding@resend.dev (works fine for testing).
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM_ADDRESS   = process.env.EMAIL_FROM || 'Sahirah.in <onboarding@resend.dev>';
-const REPLY_TO       = process.env.EMAIL_REPLY_TO || 'support@sahirah.in';
+const FROM_ADDRESS   = 'Sahirah.in <contact@sahirah.in>';
+const REPLY_TO       = 'contact@sahirah.in';
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -144,7 +144,7 @@ function buildEmailHtml({ to_name, child_name, reg_id, login_id, password, slot,
           The 2-hour evaluation window begins at your scheduled slot time.
         </p>
         <p style="margin:0;font-size:13px;color:rgba(26,18,8,.5);line-height:1.7;">
-          Need help? Reply to this email or contact us at <a href="mailto:support@sahirah.in" style="color:#0A6B5E;">support@sahirah.in</a>
+          Need help? Reply to this email or contact us at <a href="mailto:contact@sahirah.in" style="color:#0A6B5E;">contact@sahirah.in</a>
         </p>
       </td></tr>
 
