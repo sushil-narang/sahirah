@@ -266,6 +266,37 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
 .fr-pdf-btn:hover{background:#085a4f;}
 .fr-pdf-btn:disabled{background:rgba(255,255,255,.2);cursor:default;}
 .fr-topbar-actions{display:flex;align-items:center;gap:.5rem;flex-shrink:0;}
+
+/* COUPON / SCHOOL / COUNSELOR BADGES */
+.type-school{background:#E8F2FF;color:#1A5FA8;}
+.type-scholarship{background:var(--gold-pale);color:var(--gold);}
+.type-discount{background:#F5EEFF;color:#7B2FBE;}
+.type-counselor-badge{background:var(--teal-light);color:var(--teal);}
+.type-premium{background:var(--gold-pale);color:var(--gold);}
+.type-basic{background:rgba(26,18,8,.07);color:rgba(26,18,8,.55);}
+.toggle-on{background:var(--teal-light);color:var(--teal);border:1px solid rgba(10,107,94,.2);border-radius:100px;padding:2px 9px;font-size:.62rem;font-weight:700;cursor:pointer;font-family:var(--fb);}
+.toggle-off{background:var(--red-light);color:var(--red);border:1px solid rgba(192,65,10,.2);border-radius:100px;padding:2px 9px;font-size:.62rem;font-weight:700;cursor:pointer;font-family:var(--fb);}
+
+/* FORM MODAL */
+.form-overlay{position:fixed;inset:0;background:rgba(26,18,8,.6);z-index:2000;display:none;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(4px);}
+.form-overlay.show{display:flex;}
+.form-modal{background:#fff;border-radius:20px;padding:2rem;max-width:480px;width:100%;box-shadow:0 20px 80px rgba(0,0,0,.3);}
+.fm-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
+.fm-title{font-family:var(--fd);font-size:1.1rem;font-weight:700;}
+.fm-close{background:rgba(26,18,8,.06);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.9rem;}
+.fm-close:hover{background:rgba(26,18,8,.1);}
+.fm-field{margin-bottom:.85rem;}
+.fm-field label{display:block;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:rgba(26,18,8,.4);margin-bottom:.3rem;}
+.fm-field input,.fm-field select,.fm-field textarea{width:100%;background:#FAFAF7;border:1.5px solid var(--border);border-radius:10px;padding:.6rem .85rem;font-size:.875rem;font-family:var(--fb);outline:none;transition:border-color .2s;}
+.fm-field input:focus,.fm-field select:focus{border-color:var(--teal);}
+.fm-row{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;}
+.fm-footer{display:flex;justify-content:flex-end;gap:.65rem;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border);}
+.btn-fm-save{background:var(--teal);color:#fff;border:none;border-radius:100px;padding:.65rem 1.6rem;font-size:.875rem;font-weight:600;cursor:pointer;font-family:var(--fb);}
+.btn-fm-save:hover{background:#085a4f;}
+.btn-fm-cancel{background:transparent;border:1.5px solid var(--border);border-radius:100px;padding:.65rem 1.25rem;font-size:.875rem;font-weight:500;cursor:pointer;font-family:var(--fb);color:rgba(26,18,8,.5);}
+.btn-fm-cancel:hover{border-color:var(--ink);color:var(--ink);}
+.fm-generated-code{background:var(--ink);border-radius:10px;padding:.75rem 1rem;font-family:var(--fm);font-size:.95rem;font-weight:700;color:var(--gold-light);letter-spacing:.07em;text-align:center;margin-bottom:.75rem;}
+.blue-light{background:#E8F2FF;}
 </style>
 </head>
 <body>
@@ -302,8 +333,11 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
       <div class="sb-item" onclick="showView('users')"><span class="sb-item-icon">👥</span>Registered Users <span class="sb-badge" id="badge-users">0</span></div>
       <div class="sb-item" onclick="showView('completed')"><span class="sb-item-icon">✅</span>Completed Tests <span class="sb-badge teal" id="badge-completed">0</span></div>
       <div class="sb-item" onclick="showView('inprogress')"><span class="sb-item-icon">⏳</span>In Progress</div>
+      <div class="sb-item" onclick="showView('schools')"><span class="sb-item-icon">🏫</span>Schools</div>
+      <div class="sb-item" onclick="showView('coupons')"><span class="sb-item-icon">🎟️</span>Coupon Codes</div>
+      <div class="sb-item" onclick="showView('counselors')"><span class="sb-item-icon">👤</span>Counselors</div>
       <div class="sb-item" onclick="showView('qbank')"><span class="sb-item-icon">🗂️</span>Question Bank</div>
-      <div class="sb-item" onclick="showView('profile')"><span class="sb-item-icon">👤</span>Profile</div>
+      <div class="sb-item" onclick="showView('profile')"><span class="sb-item-icon">⚙️</span>Profile</div>
     </div>
     <div class="sb-footer">
       <div class="sb-avatar">A</div>
@@ -389,6 +423,54 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
           <table class="t-table">
             <thead><tr><th>#</th><th>Module</th><th>Type</th><th>Question</th><th>Correct</th><th>Edit</th><th>Del</th></tr></thead>
             <tbody id="qb-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SCHOOLS -->
+      <div class="page-view" id="view-schools">
+        <div class="table-wrap">
+          <div class="table-head">
+            <h3>Schools <span id="schools-count" style="font-family:var(--fm);font-size:.72rem;color:rgba(26,18,8,.35);margin-left:.4rem;font-weight:400;"></span></h3>
+            <div class="th-actions">
+              <button class="btn-sm" style="background:var(--teal-light);color:var(--teal);border:1.5px solid rgba(10,107,94,.2);" onclick="openAddSchool()">+ Add School</button>
+            </div>
+          </div>
+          <table class="t-table">
+            <thead><tr><th>#</th><th>School Name</th><th>Code</th><th>City</th><th>Plan</th><th>Used/Quota</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="schools-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- COUPONS -->
+      <div class="page-view" id="view-coupons">
+        <div class="table-wrap">
+          <div class="table-head">
+            <h3>Coupon Codes <span id="coupons-count" style="font-family:var(--fm);font-size:.72rem;color:rgba(26,18,8,.35);margin-left:.4rem;font-weight:400;"></span></h3>
+            <div class="th-actions">
+              <button class="btn-sm" style="background:var(--gold-pale);color:var(--gold);border:1.5px solid rgba(200,134,10,.2);" onclick="openAddCoupon()">+ Create Coupon</button>
+            </div>
+          </div>
+          <table class="t-table">
+            <thead><tr><th>#</th><th>Code</th><th>Type</th><th>Discount</th><th>Unlocks</th><th>Used/Limit</th><th>Expires</th><th>Status</th><th>Toggle</th></tr></thead>
+            <tbody id="coupons-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- COUNSELORS -->
+      <div class="page-view" id="view-counselors">
+        <div class="table-wrap">
+          <div class="table-head">
+            <h3>Counselors / Franchise <span id="counselors-count" style="font-family:var(--fm);font-size:.72rem;color:rgba(26,18,8,.35);margin-left:.4rem;font-weight:400;"></span></h3>
+            <div class="th-actions">
+              <button class="btn-sm" style="background:var(--blue-light,#E8F2FF);color:#1A5FA8;border:1.5px solid rgba(26,95,168,.2);" onclick="openAddCounselor()">+ Add Counselor</button>
+            </div>
+          </div>
+          <table class="t-table">
+            <thead><tr><th>#</th><th>Name</th><th>Code</th><th>Email</th><th>City</th><th>Commission</th><th>Status</th><th>Toggle</th></tr></thead>
+            <tbody id="counselors-tbody"></tbody>
           </table>
         </div>
       </div>
@@ -741,11 +823,19 @@ function showView(name) {
   document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + name)?.classList.add('active');
   document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
-  const idx = ['overview','users','completed','inprogress','qbank','profile'].indexOf(name);
+  const allViews = ['overview','users','completed','inprogress','schools','coupons','counselors','qbank','profile'];
+  const idx = allViews.indexOf(name);
   document.querySelectorAll('.sb-item')[idx]?.classList.add('active');
-  const titles = { overview:'Overview', users:'Registered Users', completed:'Completed Tests', inprogress:'Tests In Progress', qbank:'Question Bank', profile:'Profile' };
+  const titles = {
+    overview:'Overview', users:'Registered Users', completed:'Completed Tests', inprogress:'Tests In Progress',
+    schools:'Schools', coupons:'Coupon Codes', counselors:'Counselors / Franchise',
+    qbank:'Question Bank', profile:'Profile'
+  };
   document.getElementById('tb-title').textContent = titles[name] || name;
   if (name === 'qbank') { if (!qbData) initQBank(); else renderQBank(); }
+  if (name === 'schools') loadSchools();
+  if (name === 'coupons') loadCoupons();
+  if (name === 'counselors') loadCounselors();
 }
 
 // ================================================================
@@ -2170,6 +2260,317 @@ function buildPsychReport(name, reg, sess, analyses) {
   );
 
   return html;
+}
+
+// ================================================================
+// SCHOOLS MANAGEMENT
+// ================================================================
+let allSchools = [];
+let allCoupons = [];
+let allCounselors = [];
+
+async function loadSchools() {
+  try {
+    const { data } = await _db.from('schools').select('*').order('created_at', { ascending: false });
+    allSchools = data || [];
+  } catch(e) { allSchools = []; }
+  renderSchools();
+}
+
+function renderSchools() {
+  const tbody = document.getElementById('schools-tbody');
+  document.getElementById('schools-count').textContent = `(${allSchools.length})`;
+  if (!allSchools.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="t-empty">No schools yet. Click "+ Add School" to onboard your first school.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = allSchools.map((s, i) => `
+    <tr>
+      <td style="color:rgba(26,18,8,.3);font-family:var(--fm);font-size:.68rem;">${i+1}</td>
+      <td><strong>${escAdmin(s.school_name)}</strong><br/><span style="font-size:.7rem;color:rgba(26,18,8,.35);">${escAdmin(s.contact_email||'')}</span></td>
+      <td><span style="font-family:var(--fm);font-size:.78rem;font-weight:700;background:#F2EEE6;padding:2px 8px;border-radius:6px;">${escAdmin(s.school_code)}</span></td>
+      <td>${escAdmin(s.city||'—')}</td>
+      <td><span class="type-badge ${s.plan==='premium'?'type-premium':'type-basic'}">${s.plan||'basic'}</span></td>
+      <td style="font-family:var(--fm);font-size:.75rem;">${s.students_used||0}/${s.student_quota||100}</td>
+      <td><span class="status-badge ${s.is_active?'s-scheduled':'s-reg'}">${s.is_active?'Active':'Inactive'}</span></td>
+      <td>
+        <button class="btn-sm btn-sm-outline" onclick='viewSchoolStudents("${escAdmin(s.school_code)}")'>Students</button>
+        <button class="${s.is_active?'toggle-on':'toggle-off'}" onclick='toggleSchool("${s.id}",${!s.is_active})'>${s.is_active?'Deactivate':'Activate'}</button>
+      </td>
+    </tr>`).join('');
+}
+
+function openAddSchool() {
+  const code = 'SCH-' + Math.random().toString(36).substring(2,5).toUpperCase() + Math.floor(Math.random()*900+100);
+  const modal = document.createElement('div');
+  modal.className = 'form-overlay show';
+  modal.id = 'add-school-modal';
+  modal.onclick = e => { if(e.target===modal) modal.remove(); };
+  modal.innerHTML = `<div class="form-modal">
+    <div class="fm-header"><div class="fm-title">Add School</div><button class="fm-close" onclick="this.closest('.form-overlay').remove()">✕</button></div>
+    <div class="fm-generated-code" id="gen-school-code">${code}</div>
+    <div class="fm-row">
+      <div class="fm-field"><label>School Name</label><input id="fm-school-name" type="text" placeholder="e.g. Delhi Public School"/></div>
+      <div class="fm-field"><label>City</label><input id="fm-school-city" type="text" placeholder="New Delhi"/></div>
+    </div>
+    <div class="fm-row">
+      <div class="fm-field"><label>Contact Name</label><input id="fm-school-contact" type="text" placeholder="Principal name"/></div>
+      <div class="fm-field"><label>Contact Mobile</label><input id="fm-school-mobile" type="text" placeholder="+91 98765 43210"/></div>
+    </div>
+    <div class="fm-row">
+      <div class="fm-field"><label>Contact Email</label><input id="fm-school-email" type="email" placeholder="principal@school.edu"/></div>
+      <div class="fm-field"><label>State</label><input id="fm-school-state" type="text" placeholder="Delhi"/></div>
+    </div>
+    <div class="fm-row">
+      <div class="fm-field"><label>Plan</label><select id="fm-school-plan"><option value="premium">Premium</option><option value="basic">Basic</option></select></div>
+      <div class="fm-field"><label>Student Quota</label><input id="fm-school-quota" type="number" value="100" min="1"/></div>
+    </div>
+    <div class="fm-footer">
+      <button class="btn-fm-cancel" onclick="this.closest('.form-overlay').remove()">Cancel</button>
+      <button class="btn-fm-save" onclick="saveSchool('${code}')">Create School →</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+}
+
+async function saveSchool(code) {
+  const name = document.getElementById('fm-school-name').value.trim();
+  if (!name) { adminToast('School name is required.'); return; }
+  const row = {
+    school_code: code,
+    school_name: name,
+    contact_name: document.getElementById('fm-school-contact').value.trim() || null,
+    contact_email: document.getElementById('fm-school-email').value.trim() || null,
+    contact_mobile: document.getElementById('fm-school-mobile').value.trim() || null,
+    city: document.getElementById('fm-school-city').value.trim() || null,
+    state: document.getElementById('fm-school-state').value.trim() || null,
+    plan: document.getElementById('fm-school-plan').value,
+    student_quota: parseInt(document.getElementById('fm-school-quota').value) || 100,
+  };
+  try {
+    const { error } = await _db.from('schools').insert([row]);
+    if (error) throw error;
+    document.getElementById('add-school-modal').remove();
+    adminToast(`School "${name}" created! Code: ${code}`);
+    loadSchools();
+  } catch(e) {
+    adminToast('Error: ' + (e.message || 'Could not save school.'));
+  }
+}
+
+async function toggleSchool(id, active) {
+  await _db.from('schools').update({ is_active: active }).eq('id', id);
+  adminToast(active ? 'School activated.' : 'School deactivated.');
+  loadSchools();
+}
+
+function viewSchoolStudents(schoolCode) {
+  adminToast(`Loading students for ${schoolCode}…`);
+  // Navigate to users view filtered by school
+  showView('users');
+  setTimeout(() => {
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) { searchInput.value = schoolCode; filterTable(); }
+  }, 200);
+}
+
+// ================================================================
+// COUPONS MANAGEMENT
+// ================================================================
+async function loadCoupons() {
+  try {
+    const { data } = await _db.from('coupon_codes').select('*, schools(school_name), counselors(name)').order('created_at', { ascending: false });
+    allCoupons = data || [];
+  } catch(e) { allCoupons = []; }
+  renderCoupons();
+}
+
+function renderCoupons() {
+  const tbody = document.getElementById('coupons-tbody');
+  document.getElementById('coupons-count').textContent = `(${allCoupons.length})`;
+  if (!allCoupons.length) {
+    tbody.innerHTML = '<tr><td colspan="9" class="t-empty">No coupon codes yet. Click "+ Create Coupon" to add one.</td></tr>';
+    return;
+  }
+  const typeClass = { scholarship:'type-scholarship', discount:'type-badge tb-mcq', school:'type-school', counselor:'type-counselor-badge' };
+  tbody.innerHTML = allCoupons.map((c, i) => {
+    const exp = c.expires_at ? new Date(c.expires_at).toLocaleDateString('en-IN') : '—';
+    const limit = c.usage_limit ? `${c.used_count}/${c.usage_limit}` : `${c.used_count}/∞`;
+    return `<tr>
+      <td style="color:rgba(26,18,8,.3);font-family:var(--fm);font-size:.68rem;">${i+1}</td>
+      <td><span style="font-family:var(--fm);font-size:.8rem;font-weight:700;background:#F2EEE6;padding:2px 8px;border-radius:6px;">${escAdmin(c.code)}</span></td>
+      <td><span class="type-badge ${typeClass[c.type]||''}">${escAdmin(c.type)}</span></td>
+      <td style="font-family:var(--fm);font-size:.8rem;">${c.discount_pct===100?'FREE':'−'+c.discount_pct+'%'}</td>
+      <td><span class="type-badge ${c.unlocks_tier==='premium'?'type-premium':'type-basic'}">${escAdmin(c.unlocks_tier||'premium')}</span></td>
+      <td style="font-family:var(--fm);font-size:.75rem;">${limit}</td>
+      <td style="font-size:.75rem;color:rgba(26,18,8,.4);">${exp}</td>
+      <td><span class="status-badge ${c.is_active?'s-scheduled':'s-reg'}">${c.is_active?'Active':'Inactive'}</span></td>
+      <td><button class="${c.is_active?'toggle-on':'toggle-off'}" onclick='toggleCoupon("${c.id}",${!c.is_active})'>${c.is_active?'Deactivate':'Activate'}</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function openAddCoupon() {
+  const code = 'SAHR-' + Math.random().toString(36).substring(2,8).toUpperCase();
+  const modal = document.createElement('div');
+  modal.className = 'form-overlay show';
+  modal.id = 'add-coupon-modal';
+  modal.onclick = e => { if(e.target===modal) modal.remove(); };
+  modal.innerHTML = `<div class="form-modal">
+    <div class="fm-header"><div class="fm-title">Create Coupon Code</div><button class="fm-close" onclick="this.closest('.form-overlay').remove()">✕</button></div>
+    <div class="fm-generated-code">${code}</div>
+    <div class="fm-row">
+      <div class="fm-field"><label>Type</label>
+        <select id="fm-coupon-type" onchange="updateCouponTypeFields()">
+          <option value="scholarship">Scholarship (100% free)</option>
+          <option value="discount">Discount (%)</option>
+        </select>
+      </div>
+      <div class="fm-field"><label>Unlocks Tier</label>
+        <select id="fm-coupon-tier"><option value="premium">Premium</option><option value="basic">Basic</option></select>
+      </div>
+    </div>
+    <div class="fm-field" id="discount-pct-field" style="display:none;">
+      <label>Discount Percentage</label>
+      <input id="fm-discount-pct" type="number" value="20" min="1" max="99" placeholder="e.g. 20"/>
+    </div>
+    <div class="fm-row">
+      <div class="fm-field"><label>Usage Limit</label><input id="fm-usage-limit" type="number" placeholder="Leave blank for unlimited" min="1"/></div>
+      <div class="fm-field"><label>Expires On</label><input id="fm-expires-at" type="date"/></div>
+    </div>
+    <div class="fm-field"><label>Note (internal)</label><input id="fm-coupon-note" type="text" placeholder="e.g. For 2025 scholarship batch"/></div>
+    <div class="fm-footer">
+      <button class="btn-fm-cancel" onclick="this.closest('.form-overlay').remove()">Cancel</button>
+      <button class="btn-fm-save" onclick="saveCoupon('${code}')">Create Coupon →</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+}
+
+function updateCouponTypeFields() {
+  const type = document.getElementById('fm-coupon-type')?.value;
+  const discField = document.getElementById('discount-pct-field');
+  if (discField) discField.style.display = type === 'discount' ? 'block' : 'none';
+}
+
+async function saveCoupon(code) {
+  const type = document.getElementById('fm-coupon-type').value;
+  const discount = type === 'scholarship' ? 100 : (parseInt(document.getElementById('fm-discount-pct')?.value) || 0);
+  const limit = document.getElementById('fm-usage-limit').value.trim();
+  const exp = document.getElementById('fm-expires-at').value;
+  const row = {
+    code,
+    type,
+    discount_pct: discount,
+    unlocks_tier: document.getElementById('fm-coupon-tier').value,
+    usage_limit: limit ? parseInt(limit) : null,
+    expires_at: exp ? new Date(exp).toISOString() : null,
+    note: document.getElementById('fm-coupon-note').value.trim() || null,
+  };
+  try {
+    const { error } = await _db.from('coupon_codes').insert([row]);
+    if (error) throw error;
+    document.getElementById('add-coupon-modal').remove();
+    adminToast(`Coupon "${code}" created!`);
+    loadCoupons();
+  } catch(e) {
+    adminToast('Error: ' + (e.message || 'Could not save coupon.'));
+  }
+}
+
+async function toggleCoupon(id, active) {
+  await _db.from('coupon_codes').update({ is_active: active }).eq('id', id);
+  adminToast(active ? 'Coupon activated.' : 'Coupon deactivated.');
+  loadCoupons();
+}
+
+// ================================================================
+// COUNSELORS MANAGEMENT
+// ================================================================
+async function loadCounselors() {
+  try {
+    const { data } = await _db.from('counselors').select('*').order('created_at', { ascending: false });
+    allCounselors = data || [];
+  } catch(e) { allCounselors = []; }
+  renderCounselors();
+}
+
+function renderCounselors() {
+  const tbody = document.getElementById('counselors-tbody');
+  document.getElementById('counselors-count').textContent = `(${allCounselors.length})`;
+  if (!allCounselors.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="t-empty">No counselors yet. Click "+ Add Counselor" to add one.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = allCounselors.map((c, i) => `
+    <tr>
+      <td style="color:rgba(26,18,8,.3);font-family:var(--fm);font-size:.68rem;">${i+1}</td>
+      <td><strong>${escAdmin(c.name)}</strong></td>
+      <td><span style="font-family:var(--fm);font-size:.78rem;font-weight:700;background:#F2EEE6;padding:2px 8px;border-radius:6px;">${escAdmin(c.counselor_code)}</span></td>
+      <td style="font-size:.78rem;">${escAdmin(c.email||'—')}</td>
+      <td>${escAdmin(c.city||'—')}</td>
+      <td style="font-family:var(--fm);font-size:.78rem;">${c.commission_pct||20}%</td>
+      <td><span class="status-badge ${c.is_active?'s-scheduled':'s-reg'}">${c.is_active?'Active':'Inactive'}</span></td>
+      <td><button class="${c.is_active?'toggle-on':'toggle-off'}" onclick='toggleCounselorActive("${c.id}",${!c.is_active})'>${c.is_active?'Deactivate':'Activate'}</button></td>
+    </tr>`).join('');
+}
+
+function openAddCounselor() {
+  const code = 'CNS-' + Math.random().toString(36).substring(2,6).toUpperCase() + Math.floor(Math.random()*90+10);
+  const modal = document.createElement('div');
+  modal.className = 'form-overlay show';
+  modal.id = 'add-counselor-modal';
+  modal.onclick = e => { if(e.target===modal) modal.remove(); };
+  modal.innerHTML = `<div class="form-modal">
+    <div class="fm-header"><div class="fm-title">Add Counselor</div><button class="fm-close" onclick="this.closest('.form-overlay').remove()">✕</button></div>
+    <div class="fm-generated-code">${code}</div>
+    <div class="fm-row">
+      <div class="fm-field"><label>Name</label><input id="fm-cnsl-name" type="text" placeholder="Counselor full name"/></div>
+      <div class="fm-field"><label>City</label><input id="fm-cnsl-city" type="text" placeholder="Mumbai"/></div>
+    </div>
+    <div class="fm-row">
+      <div class="fm-field"><label>Email</label><input id="fm-cnsl-email" type="email" placeholder="counselor@email.com"/></div>
+      <div class="fm-field"><label>Mobile</label><input id="fm-cnsl-mobile" type="text" placeholder="+91 98765 43210"/></div>
+    </div>
+    <div class="fm-field"><label>Commission % (on each paid sale via their code)</label><input id="fm-cnsl-commission" type="number" value="20" min="1" max="50"/></div>
+    <div class="fm-footer">
+      <button class="btn-fm-cancel" onclick="this.closest('.form-overlay').remove()">Cancel</button>
+      <button class="btn-fm-save" onclick="saveCounselor('${code}')">Add Counselor →</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+}
+
+async function saveCounselor(code) {
+  const name = document.getElementById('fm-cnsl-name').value.trim();
+  if (!name) { adminToast('Name is required.'); return; }
+  const row = {
+    counselor_code: code,
+    name,
+    email: document.getElementById('fm-cnsl-email').value.trim() || null,
+    mobile: document.getElementById('fm-cnsl-mobile').value.trim() || null,
+    city: document.getElementById('fm-cnsl-city').value.trim() || null,
+    commission_pct: parseInt(document.getElementById('fm-cnsl-commission').value) || 20,
+  };
+  try {
+    const { error } = await _db.from('counselors').insert([row]);
+    if (error) throw error;
+    document.getElementById('add-counselor-modal').remove();
+    adminToast(`Counselor "${name}" added! Code: ${code}`);
+    loadCounselors();
+  } catch(e) {
+    adminToast('Error: ' + (e.message || 'Could not save counselor.'));
+  }
+}
+
+async function toggleCounselorActive(id, active) {
+  await _db.from('counselors').update({ is_active: active }).eq('id', id);
+  adminToast(active ? 'Counselor activated.' : 'Counselor deactivated.');
+  loadCounselors();
+}
+
+function escAdmin(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 </script>
 </body>

@@ -173,7 +173,34 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
 .rf-btn-outline:hover{border-color:rgba(255,255,255,.4);color:var(--cream);}
 
 /* PRINT */
-@media print{nav,#loading-screen,.report-footer{display:none!important;}.report-wrap{padding:0;max-width:100%;}}
+@media print{nav,#loading-screen,.report-footer,.free-banner,.lock-overlay{display:none!important;}.report-wrap{padding:0;max-width:100%;}}
+
+/* FREE TIER BANNER */
+.free-banner{background:linear-gradient(135deg,var(--gold-pale),#FEF7E0);border:1.5px solid var(--gold-light);border-radius:16px;padding:1.1rem 1.5rem;margin-bottom:1.5rem;display:none;align-items:center;gap:1rem;flex-wrap:wrap;}
+.free-banner.show{display:flex;}
+.fb-left{display:flex;align-items:center;gap:.75rem;}
+.fb-icon{font-size:1.4rem;}
+.fb-text{font-size:.85rem;line-height:1.5;}
+.fb-text strong{display:block;margin-bottom:1px;}
+.fb-right{margin-left:auto;}
+.fb-btn{background:var(--ink);color:var(--cream);border:none;border-radius:100px;padding:.55rem 1.4rem;font-size:.8rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.fb-btn:hover{background:var(--gold);color:var(--ink);}
+
+/* PREMIUM SECTION LOCK */
+.premium-section{position:relative;}
+.lock-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(253,248,240,0) 0%,rgba(253,248,240,.85) 35%,rgba(253,248,240,1) 60%);border-radius:inherit;display:none;flex-direction:column;align-items:center;justify-content:flex-end;padding:2rem 1.5rem;z-index:10;text-align:center;}
+.lock-overlay.show{display:flex;}
+.lock-overlay-inner{background:#fff;border:1px solid var(--border);border-radius:18px;padding:1.5rem 1.75rem;max-width:420px;width:100%;box-shadow:var(--shadow);}
+.lo-icon{font-size:2rem;margin-bottom:.5rem;}
+.lo-title{font-family:var(--fd);font-size:1.1rem;font-weight:700;margin-bottom:.35rem;}
+.lo-sub{font-size:.8rem;color:rgba(26,18,8,.5);margin-bottom:1rem;line-height:1.5;}
+.lo-btns{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;}
+.lo-btn{border:none;border-radius:100px;padding:.6rem 1.4rem;font-size:.8rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:5px;}
+.lo-btn-gold{background:var(--gold);color:var(--ink);}
+.lo-btn-gold:hover{background:var(--gold-light);}
+.lo-btn-outline{background:transparent;border:1.5px solid var(--border);color:rgba(26,18,8,.6);}
+.lo-btn-outline:hover{border-color:var(--ink);color:var(--ink);}
+.premium-section.locked{overflow:hidden;max-height:320px;}
 </style>
 </head>
 <body>
@@ -182,8 +209,9 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
   <a href="../" class="nav-logo">Sahir<span>ah</span>.in</a>
   <div class="nav-right">
     <div class="nav-name" id="nav-name"></div>
-    <button class="btn-dl btn-dl-outline" onclick="window.print()">🖨 Print</button>
-    <button class="btn-dl" id="btn-pdf" onclick="downloadPDF()">⬇ Download PDF</button>
+    <button class="btn-dl btn-dl-outline" onclick="window.print()" id="btn-print" style="display:none;">🖨 Print</button>
+    <button class="btn-dl" id="btn-pdf" onclick="downloadPDF()" style="display:none;">⬇ Download PDF</button>
+    <a href="../payment/" class="btn-dl" id="btn-upgrade" style="display:none;background:var(--gold);color:var(--ink);">🔓 Unlock Full Report</a>
   </div>
 </nav>
 
@@ -205,6 +233,17 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
 <!-- REPORT -->
 <div id="report-content">
 <div class="report-wrap" id="printable">
+
+  <!-- FREE TIER BANNER -->
+  <div class="free-banner" id="free-banner">
+    <div class="fb-left">
+      <div class="fb-icon">👁️</div>
+      <div class="fb-text"><strong>Free Preview — Limited Report</strong>You're viewing a summary. Unlock the full 10–15 page report with career roadmap, EQ analysis, and PDF download.</div>
+    </div>
+    <div class="fb-right">
+      <a href="../payment/" class="fb-btn">🔓 Unlock Full Report →</a>
+    </div>
+  </div>
 
   <!-- HERO -->
   <div class="report-hero">
@@ -281,18 +320,28 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
     </div>
   </div>
 
-  <!-- PERSONALITY -->
-  <div class="report-section">
+  <!-- PERSONALITY — PREMIUM -->
+  <div class="report-section premium-section" id="section-personality">
     <div class="rs-header">
       <div class="rs-icon" style="background:#F5EEFF;">🧠</div>
       <div class="rs-title">Personality Profile</div>
       <div class="rs-sub">Big Five model</div>
     </div>
     <div class="card" id="personality-bars"></div>
+    <div class="lock-overlay" id="lock-personality">
+      <div class="lock-overlay-inner">
+        <div class="lo-icon">🔒</div>
+        <div class="lo-title">Deep Personality Analysis</div>
+        <div class="lo-sub">Unlock to see your Big Five trait scores, strengths analysis, and how your personality maps to career success.</div>
+        <div class="lo-btns">
+          <a href="../payment/" class="lo-btn lo-btn-gold">🔓 Unlock — from ₹499</a>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- EQ -->
-  <div class="report-section">
+  <!-- EQ — PREMIUM -->
+  <div class="report-section premium-section" id="section-eq">
     <div class="rs-header">
       <div class="rs-icon" style="background:var(--red-light);">❤️</div>
       <div class="rs-title">Emotional Intelligence</div>
@@ -316,10 +365,20 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
       </div>
       <div class="card" id="eq-breakdown"></div>
     </div>
+    <div class="lock-overlay" id="lock-eq">
+      <div class="lock-overlay-inner">
+        <div class="lo-icon">❤️</div>
+        <div class="lo-title">Emotional Intelligence Breakdown</div>
+        <div class="lo-sub">Self-awareness, empathy, stress handling, and leadership EQ scores — critical for career counseling.</div>
+        <div class="lo-btns">
+          <a href="../payment/" class="lo-btn lo-btn-gold">🔓 Unlock — from ₹499</a>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- INTEREST CHART -->
-  <div class="report-section">
+  <!-- INTEREST CHART — PREMIUM -->
+  <div class="report-section premium-section" id="section-interest">
     <div class="rs-header">
       <div class="rs-icon" style="background:var(--teal-light);">🌱</div>
       <div class="rs-title">Interest Profile</div>
@@ -328,33 +387,63 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
     <div class="card">
       <div class="chart-wrap" style="height:240px;"><canvas id="interest-chart"></canvas></div>
     </div>
+    <div class="lock-overlay" id="lock-interest">
+      <div class="lock-overlay-inner">
+        <div class="lo-icon">🌱</div>
+        <div class="lo-title">Interest Profile (RIASEC)</div>
+        <div class="lo-sub">See how your interests map across Realistic, Investigative, Artistic, Social, Enterprising, and Conventional dimensions.</div>
+        <div class="lo-btns">
+          <a href="../payment/" class="lo-btn lo-btn-gold">🔓 Unlock — from ₹499</a>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- ROADMAP -->
-  <div class="report-section">
+  <!-- ROADMAP — PREMIUM -->
+  <div class="report-section premium-section" id="section-roadmap">
     <div class="rs-header">
       <div class="rs-icon" style="background:#E8F2FF;">🗺️</div>
       <div class="rs-title">Your Entrance Exam Roadmap</div>
       <div class="rs-sub">Personalised path</div>
     </div>
     <div class="card" id="roadmap-content"></div>
+    <div class="lock-overlay" id="lock-roadmap">
+      <div class="lock-overlay-inner">
+        <div class="lo-icon">🗺️</div>
+        <div class="lo-title">Entrance Exam Roadmap</div>
+        <div class="lo-sub">Step-by-step guidance from Class 9 to college — JEE, NEET, CLAT, CA, UPSC — customised for your stream.</div>
+        <div class="lo-btns">
+          <a href="../payment/" class="lo-btn lo-btn-gold">🔓 Unlock — from ₹499</a>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- SKILL GAPS -->
-  <div class="report-section">
+  <!-- SKILL GAPS — PREMIUM -->
+  <div class="report-section premium-section" id="section-gaps">
     <div class="rs-header">
       <div class="rs-icon" style="background:#ECEAE4;">🔧</div>
       <div class="rs-title">Skill Gap Analysis</div>
       <div class="rs-sub">Start building now</div>
     </div>
     <div class="card" id="skill-gaps"></div>
+    <div class="lock-overlay" id="lock-gaps">
+      <div class="lock-overlay-inner">
+        <div class="lo-icon">🔧</div>
+        <div class="lo-title">Skill Gap Analysis</div>
+        <div class="lo-sub">Know exactly what to work on — prioritised by urgency — to build the skills your target career requires.</div>
+        <div class="lo-btns">
+          <a href="../payment/" class="lo-btn lo-btn-gold">🔓 Unlock — from ₹499</a>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- FOOTER CTA -->
-  <div class="report-footer">
-    <div class="rf-title">Your Sahi Raah starts here.</div>
-    <div class="rf-sub">Save this report, share it with your school counsellor, and take the first step on the right path today.</div>
-    <div class="rf-btns">
+  <div class="report-footer" id="report-footer">
+    <div class="rf-title" id="rf-title">Your Sahi Raah starts here.</div>
+    <div class="rf-sub" id="rf-sub">Save this report, share it with your school counsellor, and take the first step on the right path today.</div>
+    <div class="rf-btns" id="rf-btns">
       <button class="rf-btn rf-btn-gold" onclick="downloadPDF()">⬇ Download Full PDF Report</button>
       <button class="rf-btn rf-btn-outline" onclick="window.print()">🖨 Print Report</button>
       <a href="../" class="rf-btn rf-btn-outline">← Back to Sahirah.in</a>
@@ -365,6 +454,49 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
 </div>
 
 <script>
+// ================================================================
+// ACCESS CONTROL
+// ================================================================
+const ACCESS_TYPE = localStorage.getItem('sahirah_access_type') || 'free';
+const IS_FREE = (ACCESS_TYPE === 'free' || !ACCESS_TYPE);
+const IS_PREMIUM = ['premium','school','counselor','scholarship'].includes(ACCESS_TYPE);
+const IS_BASIC = !IS_FREE; // basic or better
+
+function applyAccessControl() {
+  const premiumSections = ['personality','eq','interest','roadmap','gaps'];
+
+  if (IS_FREE) {
+    // Show free banner
+    document.getElementById('free-banner').classList.add('show');
+    // Show upgrade button in nav
+    document.getElementById('btn-upgrade').style.display = 'inline-flex';
+    // Lock premium sections
+    premiumSections.forEach(id => {
+      const section = document.getElementById('section-' + id);
+      const lock = document.getElementById('lock-' + id);
+      if (section) section.classList.add('locked');
+      if (lock) lock.classList.add('show');
+    });
+    // Replace footer CTA with upgrade CTA
+    document.getElementById('rf-title').textContent = 'Want the full picture?';
+    document.getElementById('rf-sub').textContent = 'Unlock your complete 10–15 page report with deep trait analysis, EQ breakdown, career roadmap, and PDF download.';
+    document.getElementById('rf-btns').innerHTML = `
+      <a href="../payment/" class="rf-btn rf-btn-gold">🔓 Unlock Full Report — from ₹499</a>
+      <a href="../" class="rf-btn rf-btn-outline">← Back to Sahirah.in</a>`;
+  } else {
+    // Show print and PDF buttons for paid users
+    document.getElementById('btn-print').style.display = 'inline-flex';
+    document.getElementById('btn-pdf').style.display = 'inline-flex';
+    // Add tier badge to nav if premium
+    if (IS_PREMIUM) {
+      const badge = document.createElement('span');
+      badge.style.cssText = 'font-size:.68rem;font-weight:700;background:var(--gold-pale);color:var(--gold);padding:3px 10px;border-radius:100px;border:1px solid var(--gold-light);';
+      badge.textContent = ACCESS_TYPE === 'school' ? '🏫 School' : ACCESS_TYPE === 'counselor' ? '👤 Counselor' : ACCESS_TYPE === 'scholarship' ? '🎓 Scholarship' : '⭐ Premium';
+      document.querySelector('.nav-right').prepend(badge);
+    }
+  }
+}
+
 // ================================================================
 // SCORE ENGINE — derives scores from saved answers
 // ================================================================
@@ -486,6 +618,9 @@ function buildReport() {
     circ.style.strokeDashoffset = offset;
     document.getElementById('eq-num').textContent = S.eq.overall;
   }, 500);
+
+  // Apply access control after building
+  applyAccessControl();
 }
 
 // ---- STREAM BARS ----

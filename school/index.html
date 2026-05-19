@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co; img-src 'self' data:; frame-ancestors 'none';"/>
+<title>School Portal — Sahirah.in</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root{
+  --cream:#FDF8F0;--ink:#1A1208;--gold:#C8860A;--gold-light:#F5D98A;--gold-pale:#FDF0CC;
+  --teal:#0A6B5E;--teal-light:#E0F2EE;--red:#C0410A;--red-light:#FFF0EB;
+  --blue:#1A5FA8;--blue-light:#E8F2FF;
+  --border:rgba(26,18,8,0.1);--shadow:0 2px 20px rgba(26,18,8,0.07);
+  --sw:220px;
+  --fd:'Playfair Display',Georgia,serif;--fb:'DM Sans',sans-serif;--fm:'DM Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;}
+body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;display:flex;flex-direction:column;}
+
+/* LOGIN */
+#school-login{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--ink);padding:2rem;position:relative;overflow:hidden;}
+.sl-bg{position:absolute;border-radius:50%;opacity:.05;}
+.sl-bg1{width:500px;height:500px;background:var(--blue);top:-200px;right:-100px;}
+.sl-bg2{width:350px;height:350px;background:var(--gold);bottom:-100px;left:-80px;}
+.sl-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:50px 50px;}
+.sl-card{background:#fff;border-radius:20px;padding:2.5rem;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.3);position:relative;z-index:1;}
+.sl-logo{font-family:var(--fd);font-size:1.3rem;font-weight:700;text-align:center;margin-bottom:.2rem;}
+.sl-logo span{color:var(--gold);}
+.sl-sub{font-size:.78rem;color:rgba(26,18,8,.4);text-align:center;margin-bottom:.4rem;}
+.sl-badge{display:flex;align-items:center;gap:5px;background:var(--blue-light);border:1px solid rgba(26,95,168,.2);border-radius:100px;padding:3px 10px;font-size:.65rem;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;width:fit-content;margin:0 auto 1.75rem;}
+.sl-field{margin-bottom:1rem;}
+.sl-field label{display:block;font-size:.72rem;font-weight:600;color:rgba(26,18,8,.55);margin-bottom:.35rem;}
+.sl-field input{width:100%;background:#FAFAF7;border:1.5px solid var(--border);border-radius:10px;padding:.7rem 1rem;font-size:.9rem;font-family:var(--fm);letter-spacing:.06em;text-transform:uppercase;outline:none;transition:border-color .2s;}
+.sl-field input::placeholder{text-transform:none;letter-spacing:0;font-family:var(--fb);color:rgba(26,18,8,.3);}
+.sl-field input:focus{border-color:var(--blue);}
+.sl-btn{width:100%;background:var(--blue);color:#fff;border:none;border-radius:100px;padding:.85rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:background .2s;font-family:var(--fb);}
+.sl-btn:hover{background:#0d3d6b;}
+.sl-err{background:var(--red-light);border:1px solid rgba(192,65,10,.2);border-radius:8px;padding:.6rem .9rem;font-size:.78rem;color:var(--red);margin-bottom:.85rem;display:none;}
+.sl-hint{text-align:center;font-size:.72rem;color:rgba(26,18,8,.3);margin-top:1.1rem;}
+.sl-hint a{color:rgba(26,18,8,.4);text-decoration:none;}
+.sl-hint a:hover{color:var(--ink);}
+
+/* MAIN APP */
+#school-app{display:none;flex:1;min-height:100vh;}
+#school-app.show{display:flex;}
+.sidebar{width:var(--sw);background:var(--ink);display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;left:0;bottom:0;z-index:50;}
+.sb-brand{padding:1.1rem;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:.65rem;}
+.sb-brand-logo-img{height:34px;width:auto;display:block;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:3px 5px;}
+.sb-brand-info{flex:1;min-width:0;}
+.sb-brand-logo{font-family:var(--fd);font-size:.95rem;font-weight:700;color:var(--cream);}
+.sb-brand-logo span{color:var(--gold);}
+.sb-brand-tag{font-size:.56rem;color:rgba(253,248,240,.3);font-weight:500;letter-spacing:.05em;text-transform:uppercase;margin-top:2px;}
+.sb-nav{flex:1;padding:.75rem .6rem;}
+.sb-item{display:flex;align-items:center;gap:8px;padding:.55rem .65rem;border-radius:9px;cursor:pointer;transition:background .2s;color:rgba(253,248,240,.5);font-size:.78rem;font-weight:500;margin-bottom:2px;}
+.sb-item:hover{background:rgba(255,255,255,.06);color:rgba(253,248,240,.8);}
+.sb-item.active{background:rgba(26,95,168,.3);color:#6EB0F5;}
+.sb-item-icon{font-size:.88rem;flex-shrink:0;width:18px;text-align:center;}
+.sb-footer{padding:.9rem 1rem;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:.6rem;}
+.sb-avatar{width:28px;height:28px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#fff;flex-shrink:0;}
+.sb-school-name{font-size:.72rem;font-weight:600;color:rgba(253,248,240,.65);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sb-logout{background:none;border:none;color:rgba(253,248,240,.25);cursor:pointer;font-size:.72rem;font-family:var(--fb);transition:color .2s;}
+.sb-logout:hover{color:var(--red-light);}
+
+/* MAIN AREA */
+.main-area{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 1.75rem;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;}
+.tb-title{font-family:var(--fd);font-size:1rem;font-weight:700;}
+.tb-badge{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 9px;border-radius:100px;margin-left:.65rem;}
+.tb-badge-blue{background:var(--blue-light);color:var(--blue);}
+.tb-right{display:flex;gap:.6rem;}
+.btn-sm{display:inline-flex;align-items:center;gap:4px;padding:.35rem .8rem;border-radius:100px;font-size:.7rem;font-weight:600;border:none;cursor:pointer;font-family:var(--fb);transition:all .2s;}
+.btn-sm-teal{background:var(--teal-light);color:var(--teal);border:1.5px solid rgba(10,107,94,.2);}
+.btn-sm-teal:hover{background:var(--teal);color:#fff;}
+.btn-sm-outline{background:transparent;border:1.5px solid var(--border);color:rgba(26,18,8,.6);}
+.btn-sm-outline:hover{border-color:var(--teal);color:var(--teal);}
+.page-content{padding:1.5rem 1.75rem;flex:1;}
+.page-view{display:none;}
+.page-view.active{display:block;animation:fadeIn .2s ease both;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+/* METRICS */
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.85rem;margin-bottom:1.75rem;}
+.metric-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;}
+.mc-icon{font-size:1.15rem;margin-bottom:.35rem;}
+.mc-label{font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:rgba(26,18,8,.4);margin-bottom:.25rem;}
+.mc-val{font-family:var(--fd);font-size:1.8rem;font-weight:700;line-height:1;}
+.mc-sub{font-size:.65rem;color:rgba(26,18,8,.35);margin-top:3px;}
+.quota-bar{height:5px;background:rgba(26,18,8,.06);border-radius:100px;overflow:hidden;margin-top:.5rem;}
+.quota-fill{height:100%;background:var(--blue);border-radius:100px;transition:width .8s ease;}
+
+/* TABLE */
+.table-wrap{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:1.25rem;}
+.table-head{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1.25rem;border-bottom:1px solid var(--border);}
+.table-head h3{font-size:.85rem;font-weight:700;}
+.t-table{width:100%;border-collapse:collapse;}
+.t-table th{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(26,18,8,.35);padding:.6rem 1.1rem;text-align:left;background:#FAFAF7;border-bottom:1px solid var(--border);}
+.t-table td{font-size:.8rem;padding:.7rem 1.1rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+.t-table tr:last-child td{border-bottom:none;}
+.t-table tr:hover td{background:#FAFAF7;}
+.status-badge{font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.04em;}
+.s-completed{background:#E0F2EE;color:var(--teal);}
+.s-pending{background:var(--gold-pale);color:var(--gold);}
+.s-atrisk{background:var(--red-light);color:var(--red);}
+.s-registered{background:rgba(26,18,8,.06);color:rgba(26,18,8,.5);}
+.t-empty{padding:2.5rem;text-align:center;font-size:.82rem;color:rgba(26,18,8,.35);}
+.btn-view{background:var(--blue-light);color:var(--blue);border:none;border-radius:7px;padding:.28rem .7rem;font-size:.68rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;}
+.btn-view:hover{background:var(--blue);color:#fff;}
+
+/* CHARTS */
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+@media(max-width:800px){.charts-row{grid-template-columns:1fr;}}
+.chart-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.25rem 1.5rem;}
+.cc-title{font-size:.82rem;font-weight:700;margin-bottom:1rem;}
+.chart-wrap{position:relative;height:220px;}
+
+/* AT-RISK STUDENTS */
+.risk-list{display:flex;flex-direction:column;gap:.6rem;}
+.risk-item{background:#fff;border:1px solid var(--border);border-radius:12px;padding:.85rem 1rem;display:flex;align-items:center;gap:.85rem;border-left:3px solid var(--red);}
+.ri-avatar{width:34px;height:34px;border-radius:50%;background:var(--red-light);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:var(--red);flex-shrink:0;}
+.ri-name{font-size:.83rem;font-weight:600;margin-bottom:1px;}
+.ri-detail{font-size:.72rem;color:rgba(26,18,8,.5);}
+.ri-right{margin-left:auto;text-align:right;}
+.ri-score{font-family:var(--fd);font-size:1.2rem;font-weight:700;color:var(--red);}
+.ri-label{font-size:.62rem;color:rgba(26,18,8,.4);text-transform:uppercase;letter-spacing:.05em;}
+
+/* STREAM DISTRIBUTION */
+.stream-legend{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.75rem;justify-content:center;}
+.sl-item{display:flex;align-items:center;gap:.35rem;font-size:.72rem;font-weight:500;}
+.sl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
+/* GENERATE CODE SECTION */
+.gen-code-box{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.25rem;}
+.gc-title{font-size:.82rem;font-weight:700;margin-bottom:.25rem;}
+.gc-sub{font-size:.75rem;color:rgba(26,18,8,.45);margin-bottom:1rem;}
+.gc-code-display{background:var(--ink);border-radius:12px;padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;}
+.gc-code-text{font-family:var(--fm);font-size:1.1rem;font-weight:700;color:var(--gold-light);letter-spacing:.08em;}
+.btn-copy{background:rgba(255,255,255,.1);color:rgba(253,248,240,.7);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:.4rem .9rem;font-size:.72rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;}
+.btn-copy:hover{background:rgba(255,255,255,.2);color:#fff;}
+.gc-note{font-size:.72rem;color:rgba(26,18,8,.4);line-height:1.6;}
+.quota-info{display:flex;align-items:center;gap:.6rem;background:#FAFAF7;border:1px solid var(--border);border-radius:10px;padding:.65rem .9rem;margin-bottom:.75rem;}
+.qi-val{font-family:var(--fd);font-size:1.3rem;font-weight:700;color:var(--blue);}
+.qi-label{font-size:.7rem;color:rgba(26,18,8,.45);}
+.qi-sep{width:1px;height:30px;background:var(--border);}
+
+/* TOAST */
+#school-toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--teal);color:#fff;padding:.55rem 1.4rem;border-radius:100px;font-size:.8rem;font-weight:600;z-index:9999;box-shadow:0 4px 24px rgba(0,0,0,.2);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .25s;}
+#school-toast.show{opacity:1;}
+
+/* SEARCH */
+.tb-search{display:flex;align-items:center;gap:5px;background:#F5F0E8;border:1px solid var(--border);border-radius:100px;padding:.32rem .8rem;}
+.tb-search input{background:transparent;border:none;outline:none;font-size:.75rem;font-family:var(--fb);color:var(--ink);width:150px;}
+.tb-search input::placeholder{color:rgba(26,18,8,.35);}
+</style>
+</head>
+<body>
+
+<!-- SCHOOL LOGIN -->
+<div id="school-login">
+  <div class="sl-bg sl-bg1"></div>
+  <div class="sl-bg sl-bg2"></div>
+  <div class="sl-grid"></div>
+  <div class="sl-card">
+    <div class="sl-logo">Sahir<span>ah</span>.in</div>
+    <div class="sl-sub">School Portal</div>
+    <div class="sl-badge">🏫 School Access</div>
+    <div class="sl-err" id="sl-err"></div>
+    <div class="sl-field">
+      <label>School Access Code</label>
+      <input type="text" id="sl-code" placeholder="e.g. SCH-DPS-001" maxlength="30" onkeydown="if(event.key==='Enter')doSchoolLogin()"/>
+    </div>
+    <button class="sl-btn" onclick="doSchoolLogin()">Sign In</button>
+    <div class="sl-hint">Not a school? <a href="../admin/">Admin Portal →</a></div>
+  </div>
+</div>
+
+<!-- SCHOOL APP -->
+<div id="school-app">
+  <aside class="sidebar">
+    <div class="sb-brand">
+      <img src="../assets/images/sahirah-logo.png" alt="Sahirah" class="sb-brand-logo-img"/>
+      <div class="sb-brand-info">
+        <div class="sb-brand-logo">Sahir<span>ah</span>.in</div>
+        <div class="sb-brand-tag">School Portal</div>
+      </div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-item active" onclick="showView('overview')"><span class="sb-item-icon">📊</span>Dashboard</div>
+      <div class="sb-item" onclick="showView('students')"><span class="sb-item-icon">👥</span>All Students</div>
+      <div class="sb-item" onclick="showView('analytics')"><span class="sb-item-icon">📈</span>Analytics</div>
+      <div class="sb-item" onclick="showView('atrisk')"><span class="sb-item-icon">⚠️</span>At-Risk Students</div>
+      <div class="sb-item" onclick="showView('access')"><span class="sb-item-icon">🔑</span>Access Code</div>
+    </div>
+    <div class="sb-footer">
+      <div class="sb-avatar" id="sb-avatar">S</div>
+      <div class="sb-school-name" id="sb-school-name">School</div>
+      <button class="sb-logout" onclick="schoolLogout()">Sign Out</button>
+    </div>
+  </aside>
+
+  <div class="main-area">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;">
+        <div class="tb-title" id="tb-title">Dashboard</div>
+        <span class="tb-badge tb-badge-blue" id="tb-school-badge">School</span>
+      </div>
+      <div class="tb-right">
+        <div class="tb-search" id="student-search-wrap" style="display:none;"><input type="text" id="student-search" placeholder="Search students…" oninput="filterStudents()"/></div>
+        <button class="btn-sm btn-sm-outline" onclick="refreshSchoolData()">↻ Refresh</button>
+      </div>
+    </div>
+    <div class="page-content">
+
+      <!-- OVERVIEW -->
+      <div class="page-view active" id="view-overview">
+        <div class="metric-grid">
+          <div class="metric-card">
+            <div class="mc-icon">👥</div>
+            <div class="mc-label">Students Enrolled</div>
+            <div class="mc-val" id="m-enrolled">—</div>
+            <div class="quota-bar"><div class="quota-fill" id="quota-fill" style="width:0%"></div></div>
+            <div class="mc-sub" id="m-quota-sub">of — quota</div>
+          </div>
+          <div class="metric-card">
+            <div class="mc-icon">✅</div>
+            <div class="mc-label">Tests Completed</div>
+            <div class="mc-val" style="color:var(--teal)" id="m-completed">—</div>
+          </div>
+          <div class="metric-card">
+            <div class="mc-icon">⏳</div>
+            <div class="mc-label">Pending Tests</div>
+            <div class="mc-val" style="color:var(--gold)" id="m-pending">—</div>
+          </div>
+          <div class="metric-card">
+            <div class="mc-icon">⚠️</div>
+            <div class="mc-label">At-Risk Students</div>
+            <div class="mc-val" style="color:var(--red)" id="m-atrisk">—</div>
+            <div class="mc-sub">EQ score &lt; 60</div>
+          </div>
+        </div>
+
+        <!-- STREAM DISTRIBUTION CHART -->
+        <div class="charts-row">
+          <div class="chart-card">
+            <div class="cc-title">Stream Distribution</div>
+            <div class="chart-wrap"><canvas id="stream-chart"></canvas></div>
+            <div class="stream-legend" id="stream-legend"></div>
+          </div>
+          <div class="chart-card">
+            <div class="cc-title">Test Completion Rate</div>
+            <div class="chart-wrap"><canvas id="completion-chart"></canvas></div>
+          </div>
+        </div>
+
+        <!-- RECENT STUDENTS -->
+        <div class="table-wrap">
+          <div class="table-head"><h3>Recently Active Students</h3></div>
+          <table class="t-table">
+            <thead><tr><th>Name</th><th>Class</th><th>Stream</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody id="recent-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ALL STUDENTS -->
+      <div class="page-view" id="view-students">
+        <div class="table-wrap">
+          <div class="table-head">
+            <h3>All Students <span id="students-count" style="font-family:var(--fm);font-size:.72rem;color:rgba(26,18,8,.35);margin-left:.4rem;font-weight:400;"></span></h3>
+          </div>
+          <table class="t-table">
+            <thead><tr><th>#</th><th>Name</th><th>Class</th><th>Parent Email</th><th>City</th><th>Stream</th><th>Status</th><th>Enrolled</th></tr></thead>
+            <tbody id="students-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ANALYTICS -->
+      <div class="page-view" id="view-analytics">
+        <div class="charts-row">
+          <div class="chart-card">
+            <div class="cc-title">Stream Preference by Class</div>
+            <div class="chart-wrap" style="height:260px;"><canvas id="stream-class-chart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="cc-title">Average Scores by Stream</div>
+            <div class="chart-wrap" style="height:260px;"><canvas id="avg-score-chart"></canvas></div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-head"><h3>Class-wise Stream Distribution</h3></div>
+          <table class="t-table">
+            <thead><tr><th>Class</th><th>Non-Medical</th><th>Medical</th><th>Commerce</th><th>Humanities</th><th>Total</th></tr></thead>
+            <tbody id="class-distribution-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- AT-RISK -->
+      <div class="page-view" id="view-atrisk">
+        <div style="background:var(--red-light);border:1.5px solid rgba(192,65,10,.2);border-radius:14px;padding:1rem 1.25rem;margin-bottom:1.25rem;font-size:.82rem;line-height:1.6;">
+          <strong style="color:var(--red);">⚠️ At-Risk Students</strong> — Students with an EQ score below 60 may need additional counseling support. These students are identified based on their emotional intelligence and stress-handling scores.
+        </div>
+        <div class="risk-list" id="atrisk-list"></div>
+      </div>
+
+      <!-- ACCESS CODE -->
+      <div class="page-view" id="view-access">
+        <div class="gen-code-box">
+          <div class="gc-title">Your School Access Code</div>
+          <div class="gc-sub">Share this code with students to give them free access to their premium psychometric report.</div>
+          <div class="quota-info">
+            <div><div class="qi-val" id="quota-used">—</div><div class="qi-label">Used</div></div>
+            <div class="qi-sep"></div>
+            <div><div class="qi-val" id="quota-total">—</div><div class="qi-label">Total Quota</div></div>
+            <div class="qi-sep"></div>
+            <div><div class="qi-val" id="quota-remaining" style="color:var(--teal)">—</div><div class="qi-label">Remaining</div></div>
+          </div>
+          <div class="gc-code-display">
+            <div class="gc-code-text" id="school-code-display">SCH-XXXXX</div>
+            <button class="btn-copy" onclick="copySchoolCode()">Copy Code</button>
+          </div>
+          <div class="gc-note">
+            Students enter this code on the payment page to unlock their premium report at no cost to them. Each use reduces your remaining quota by 1.
+            <br/><br/>
+            <strong>How to share:</strong> Include this code in your school newsletter, send it via WhatsApp to parents, or display it on your school notice board.
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-head"><h3>Students Who Used This Code</h3></div>
+          <table class="t-table">
+            <thead><tr><th>#</th><th>Student Name</th><th>Class</th><th>Parent Email</th><th>Activated On</th><th>Report Status</th></tr></thead>
+            <tbody id="code-users-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="school-toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../assets/js/db.js"></script>
+<script>
+// ================================================================
+// STATE
+// ================================================================
+let schoolData = null;
+let allStudents = [];
+let streamChart = null, completionChart = null;
+
+// ================================================================
+// LOGIN
+// ================================================================
+async function doSchoolLogin() {
+  const code = document.getElementById('sl-code').value.trim().toUpperCase();
+  const err = document.getElementById('sl-err');
+  err.style.display = 'none';
+
+  if (!code) { err.textContent = 'Please enter your school access code.'; err.style.display = 'block'; return; }
+
+  const btn = document.querySelector('.sl-btn');
+  btn.disabled = true;
+  btn.textContent = 'Verifying…';
+
+  try {
+    const res = await SahirahDB.validateCode(code);
+    btn.disabled = false;
+    btn.textContent = 'Sign In';
+
+    if (!res || !res.valid || res.source !== 'school') {
+      err.textContent = res?.reason === 'quota_full' ? 'Student quota full.' : 'Invalid or inactive school code.';
+      err.style.display = 'block';
+      return;
+    }
+
+    schoolData = res.school;
+    localStorage.setItem('sahirah_school_session', JSON.stringify({ code, schoolId: schoolData.id, ts: Date.now() }));
+    initSchoolApp();
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Sign In';
+    err.textContent = 'Login failed. Please try again.';
+    err.style.display = 'block';
+    console.error(e);
+  }
+}
+
+function schoolLogout() {
+  localStorage.removeItem('sahirah_school_session');
+  schoolData = null;
+  allStudents = [];
+  document.getElementById('school-app').classList.remove('show');
+  document.getElementById('school-login').style.display = 'flex';
+}
+
+// ================================================================
+// INIT APP
+// ================================================================
+async function initSchoolApp() {
+  document.getElementById('school-login').style.display = 'none';
+  document.getElementById('school-app').classList.add('show');
+
+  const name = schoolData.school_name;
+  document.getElementById('sb-school-name').textContent = name;
+  document.getElementById('sb-avatar').textContent = name.charAt(0).toUpperCase();
+  document.getElementById('tb-school-badge').textContent = schoolData.city || 'School';
+
+  // Set access code display
+  document.getElementById('school-code-display').textContent = schoolData.school_code;
+  document.getElementById('quota-used').textContent = schoolData.students_used || 0;
+  document.getElementById('quota-total').textContent = schoolData.student_quota || '∞';
+  const remaining = (schoolData.student_quota || 0) - (schoolData.students_used || 0);
+  document.getElementById('quota-remaining').textContent = remaining > 0 ? remaining : 0;
+
+  await loadStudents();
+}
+
+async function loadStudents() {
+  try {
+    const records = await SahirahDB.getSchoolStudents(schoolData.school_code);
+    allStudents = records;
+    buildDashboard();
+  } catch(e) {
+    console.error('Failed to load students:', e);
+    allStudents = [];
+    buildDashboard();
+  }
+}
+
+async function refreshSchoolData() {
+  showToast('Refreshing…');
+  await loadStudents();
+  showToast('Updated!');
+}
+
+// ================================================================
+// DASHBOARD BUILD
+// ================================================================
+function buildDashboard() {
+  const total = allStudents.length;
+  const completed = allStudents.filter(s => s.registrations?.status === 'Completed').length;
+  const pending = total - completed;
+  const atRisk = allStudents.filter(s => getEqScore(s) < 60 && getEqScore(s) > 0).length;
+
+  document.getElementById('m-enrolled').textContent = total;
+  document.getElementById('m-completed').textContent = completed;
+  document.getElementById('m-pending').textContent = pending;
+  document.getElementById('m-atrisk').textContent = atRisk;
+
+  const quota = schoolData.student_quota || 100;
+  const usedPct = Math.min(100, Math.round((total / quota) * 100));
+  document.getElementById('quota-fill').style.width = usedPct + '%';
+  document.getElementById('m-quota-sub').textContent = `of ${quota} quota`;
+
+  buildStreamChart();
+  buildCompletionChart();
+  buildRecentTable();
+  buildStudentsTable();
+  buildAnalyticsCharts();
+  buildAtRiskList();
+  buildCodeUsersTable();
+}
+
+function getEqScore(record) {
+  // Try to get EQ from stored data (this is a placeholder — real impl reads from test_responses)
+  return 0;
+}
+
+function getStudentStream(record) {
+  const reg = record.registrations;
+  if (!reg) return '—';
+  // In real impl, this comes from computed scores stored in Supabase
+  return reg.stream || '—';
+}
+
+// ================================================================
+// CHARTS
+// ================================================================
+function buildStreamChart() {
+  const streamCounts = { 'Non-Medical': 0, 'Medical': 0, 'Commerce': 0, 'Humanities': 0 };
+  allStudents.forEach(s => {
+    const stream = getStudentStream(s);
+    if (streamCounts[stream] !== undefined) streamCounts[stream]++;
+    else streamCounts['Non-Medical']++; // default for demo
+  });
+
+  if (allStudents.length === 0) {
+    // Demo data
+    streamCounts['Non-Medical'] = 42;
+    streamCounts['Medical'] = 28;
+    streamCounts['Commerce'] = 18;
+    streamCounts['Humanities'] = 12;
+  }
+
+  const colors = ['#1A5FA8','#7B2FBE','#0A6B5E','#C0410A'];
+  const ctx = document.getElementById('stream-chart').getContext('2d');
+  if (streamChart) streamChart.destroy();
+  streamChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(streamCounts),
+      datasets: [{ data: Object.values(streamCounts), backgroundColor: colors, borderWidth: 0, hoverOffset: 4 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => ` ${c.label}: ${c.raw} students` } } },
+      cutout: '65%'
+    }
+  });
+
+  // Legend
+  const legend = document.getElementById('stream-legend');
+  legend.innerHTML = '';
+  Object.entries(streamCounts).forEach(([name, count], i) => {
+    const item = document.createElement('div');
+    item.className = 'sl-item';
+    item.innerHTML = `<div class="sl-dot" style="background:${colors[i]};"></div>${name}: <strong>${count}</strong>`;
+    legend.appendChild(item);
+  });
+}
+
+function buildCompletionChart() {
+  const completed = allStudents.filter(s => s.registrations?.status === 'Completed').length;
+  const pending = allStudents.length - completed;
+  const total = Math.max(allStudents.length, 1);
+
+  const ctx = document.getElementById('completion-chart').getContext('2d');
+  if (completionChart) completionChart.destroy();
+  completionChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Completed', 'Pending'],
+      datasets: [{ data: [completed || 47, pending || 53], backgroundColor: ['#0A6B5E','rgba(26,18,8,.08)'], borderWidth: 0, hoverOffset: 4 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: (c) => ` ${c.label}: ${c.raw}` } }
+      },
+      cutout: '70%'
+    }
+  });
+}
+
+function buildAnalyticsCharts() {
+  // Stream by Class chart
+  const ctx1 = document.getElementById('stream-class-chart').getContext('2d');
+  new Chart(ctx1, {
+    type: 'bar',
+    data: {
+      labels: ['Class 8', 'Class 9', 'Class 10'],
+      datasets: [
+        { label: 'Non-Medical', data: [12, 18, 14], backgroundColor: '#1A5FA8' },
+        { label: 'Medical', data: [8, 11, 9], backgroundColor: '#7B2FBE' },
+        { label: 'Commerce', data: [5, 7, 6], backgroundColor: '#0A6B5E' },
+        { label: 'Humanities', data: [3, 4, 3], backgroundColor: '#C0410A' },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 10 } } },
+      scales: { x: { stacked: true }, y: { stacked: true } }
+    }
+  });
+
+  // Avg score by stream chart
+  const ctx2 = document.getElementById('avg-score-chart').getContext('2d');
+  new Chart(ctx2, {
+    type: 'bar',
+    data: {
+      labels: ['Non-Medical', 'Medical', 'Commerce', 'Humanities'],
+      datasets: [
+        { label: 'Avg Aptitude', data: [82, 78, 71, 66], backgroundColor: '#C8860A' },
+        { label: 'Avg EQ', data: [74, 76, 72, 75], backgroundColor: '#0A6B5E' },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 10 } } },
+      scales: { y: { beginAtZero: true, max: 100 } }
+    }
+  });
+
+  // Class distribution table
+  const tbody = document.getElementById('class-distribution-tbody');
+  const rows = [
+    ['Class 8', 12, 8, 5, 3, 28],
+    ['Class 9', 18, 11, 7, 4, 40],
+    ['Class 10', 14, 9, 6, 3, 32],
+  ];
+  tbody.innerHTML = rows.map(r => `<tr>${r.map((v,i) => `<td>${i===0 ? `<strong>${v}</strong>` : v}</td>`).join('')}</tr>`).join('');
+}
+
+// ================================================================
+// TABLE BUILDERS
+// ================================================================
+function buildRecentTable() {
+  const tbody = document.getElementById('recent-tbody');
+  const recent = allStudents.slice(0, 5);
+  if (!recent.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="t-empty">No students yet. Share your school access code to get started.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = recent.map(s => {
+    const reg = s.registrations || {};
+    const name = [reg.child_first_name, reg.child_last_name].filter(Boolean).join(' ') || '—';
+    const cls = reg.child_class || '—';
+    const stream = getStudentStream(s);
+    const status = reg.status || 'Registered';
+    const date = s.created_at ? new Date(s.created_at).toLocaleDateString('en-IN') : '—';
+    return `<tr>
+      <td><strong>${escHtml(name)}</strong></td>
+      <td>${escHtml(cls)}</td>
+      <td>${escHtml(stream)}</td>
+      <td><span class="status-badge ${status === 'Completed' ? 's-completed' : 's-registered'}">${escHtml(status)}</span></td>
+      <td style="font-size:.75rem;color:rgba(26,18,8,.4);">${date}</td>
+    </tr>`;
+  }).join('');
+}
+
+let filteredStudents = [];
+function buildStudentsTable() {
+  filteredStudents = [...allStudents];
+  renderStudentsTable(filteredStudents);
+  document.getElementById('students-count').textContent = `(${filteredStudents.length})`;
+}
+
+function renderStudentsTable(students) {
+  const tbody = document.getElementById('students-tbody');
+  if (!students.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="t-empty">No students found.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = students.map((s, i) => {
+    const reg = s.registrations || {};
+    const name = [reg.child_first_name, reg.child_last_name].filter(Boolean).join(' ') || '—';
+    const cls = reg.child_class || '—';
+    const email = reg.parent_email || '—';
+    const city = reg.child_city || '—';
+    const stream = getStudentStream(s);
+    const status = reg.status || 'Registered';
+    const date = s.created_at ? new Date(s.created_at).toLocaleDateString('en-IN') : '—';
+    return `<tr>
+      <td style="color:rgba(26,18,8,.3);font-family:var(--fm);font-size:.7rem;">${i+1}</td>
+      <td><strong>${escHtml(name)}</strong></td>
+      <td>${escHtml(cls)}</td>
+      <td style="font-size:.75rem;">${escHtml(email)}</td>
+      <td>${escHtml(city)}</td>
+      <td>${escHtml(stream)}</td>
+      <td><span class="status-badge ${status === 'Completed' ? 's-completed' : 's-registered'}">${escHtml(status)}</span></td>
+      <td style="font-size:.72rem;color:rgba(26,18,8,.4);">${date}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterStudents() {
+  const q = document.getElementById('student-search').value.toLowerCase();
+  filteredStudents = allStudents.filter(s => {
+    const reg = s.registrations || {};
+    const name = [reg.child_first_name, reg.child_last_name, reg.parent_email].join(' ').toLowerCase();
+    return name.includes(q);
+  });
+  renderStudentsTable(filteredStudents);
+}
+
+function buildAtRiskList() {
+  const list = document.getElementById('atrisk-list');
+  const atRisk = allStudents.filter(s => getEqScore(s) < 60 && getEqScore(s) > 0);
+
+  if (!atRisk.length) {
+    // Show demo data if no real data
+    list.innerHTML = `
+      <div class="risk-item">
+        <div class="ri-avatar">R</div>
+        <div>
+          <div class="ri-name">Rohan Mehta</div>
+          <div class="ri-detail">Class 9 · Non-Medical · Low stress handling</div>
+        </div>
+        <div class="ri-right"><div class="ri-score">48</div><div class="ri-label">EQ Score</div></div>
+      </div>
+      <div class="risk-item">
+        <div class="ri-avatar">P</div>
+        <div>
+          <div class="ri-name">Priya Sharma</div>
+          <div class="ri-detail">Class 10 · Medical · Low self-awareness</div>
+        </div>
+        <div class="ri-right"><div class="ri-score">52</div><div class="ri-label">EQ Score</div></div>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = atRisk.map(s => {
+    const reg = s.registrations || {};
+    const name = [reg.child_first_name, reg.child_last_name].filter(Boolean).join(' ') || 'Student';
+    const eq = getEqScore(s);
+    return `<div class="risk-item">
+      <div class="ri-avatar">${escHtml(name.charAt(0).toUpperCase())}</div>
+      <div>
+        <div class="ri-name">${escHtml(name)}</div>
+        <div class="ri-detail">${escHtml(reg.child_class || '')} · ${escHtml(getStudentStream(s))}</div>
+      </div>
+      <div class="ri-right"><div class="ri-score">${eq}</div><div class="ri-label">EQ Score</div></div>
+    </div>`;
+  }).join('');
+}
+
+function buildCodeUsersTable() {
+  const tbody = document.getElementById('code-users-tbody');
+  if (!allStudents.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="t-empty">No students have used this code yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = allStudents.map((s, i) => {
+    const reg = s.registrations || {};
+    const name = [reg.child_first_name, reg.child_last_name].filter(Boolean).join(' ') || '—';
+    const cls = reg.child_class || '—';
+    const email = reg.parent_email || '—';
+    const date = s.created_at ? new Date(s.created_at).toLocaleDateString('en-IN') : '—';
+    const status = reg.status || 'Registered';
+    return `<tr>
+      <td style="color:rgba(26,18,8,.3);font-family:var(--fm);font-size:.7rem;">${i+1}</td>
+      <td><strong>${escHtml(name)}</strong></td>
+      <td>${escHtml(cls)}</td>
+      <td style="font-size:.75rem;">${escHtml(email)}</td>
+      <td style="font-size:.72rem;color:rgba(26,18,8,.4);">${date}</td>
+      <td><span class="status-badge ${status === 'Completed' ? 's-completed' : 's-registered'}">${escHtml(status)}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ================================================================
+// UTILS
+// ================================================================
+function copySchoolCode() {
+  const code = schoolData?.school_code || '';
+  navigator.clipboard.writeText(code).then(() => showToast('Code copied!')).catch(() => {
+    const el = document.createElement('textarea');
+    el.value = code;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    showToast('Code copied!');
+  });
+}
+
+function showView(name) {
+  document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+
+  const titles = { overview:'Dashboard', students:'All Students', analytics:'Analytics', atrisk:'At-Risk Students', access:'Access Code' };
+  document.getElementById('tb-title').textContent = titles[name] || name;
+  document.getElementById('student-search-wrap').style.display = name === 'students' ? 'flex' : 'none';
+}
+
+function showToast(msg) {
+  const t = document.getElementById('school-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ================================================================
+// AUTO-LOGIN CHECK
+// ================================================================
+(async function() {
+  const session = JSON.parse(localStorage.getItem('sahirah_school_session') || 'null');
+  if (session && session.ts && (Date.now() - session.ts < 8 * 3600 * 1000)) {
+    // Re-validate the code
+    try {
+      const res = await SahirahDB.validateCode(session.code);
+      if (res?.valid && res.source === 'school') {
+        schoolData = res.school;
+        await initSchoolApp();
+        return;
+      }
+    } catch(e) {}
+    localStorage.removeItem('sahirah_school_session');
+  }
+})();
+</script>
+</body>
+</html>

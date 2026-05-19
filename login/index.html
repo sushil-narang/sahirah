@@ -312,7 +312,7 @@ body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16
     <div class="modal-icon">⏰</div>
     <div class="modal-title">Time's up!</div>
     <div class="modal-sub">Your 2-hour evaluation window has ended. All your answers have been saved automatically. Your personalised report is being generated now.</div>
-    <button class="modal-btn" onclick="window.location.href='../report/'">View My Report →</button>
+    <button class="modal-btn" onclick="window.location.href='../payment/'">View My Report →</button>
   </div>
 </div>
 
@@ -974,7 +974,10 @@ async function submitTest() {
     console.warn('Could not save responses to DB:', e);
     // Navigate anyway — answers are still in localStorage as backup
   }
-  window.location.href = '../report/';
+  // Redirect to payment gate unless user already has paid access
+  const existingAccess = localStorage.getItem('sahirah_access_type');
+  const hasPaidAccess = existingAccess && existingAccess !== 'free';
+  window.location.href = hasPaidAccess ? '../report/' : '../payment/';
 }
 
 // ================================================================

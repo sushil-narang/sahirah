@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co; img-src 'self' data:; frame-ancestors 'none';"/>
+<title>Unlock Your Report — Sahirah.in</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --cream:#FDF8F0;--ink:#1A1208;--gold:#C8860A;--gold-light:#F5D98A;--gold-pale:#FDF0CC;
+  --teal:#0A6B5E;--teal-light:#E0F2EE;--red:#C0410A;--red-light:#FFF0EB;
+  --border:rgba(26,18,8,0.1);--shadow:0 4px 32px rgba(26,18,8,0.08);
+  --blue:#1A5FA8;--blue-light:#E8F2FF;
+  --fd:'Playfair Display',Georgia,serif;--fb:'DM Sans',sans-serif;--fm:'DM Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.6;min-height:100vh;}
+nav{position:sticky;top:0;z-index:100;padding:0 5%;background:rgba(253,248,240,0.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;height:64px;}
+.nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.nav-logo img{height:40px;width:auto;display:block;}
+.nav-logo-text{font-family:var(--fd);font-size:1.15rem;font-weight:700;color:var(--ink);}
+.nav-logo-text span{color:var(--gold);}
+.nav-steps{display:flex;align-items:center;gap:0;font-size:.75rem;}
+.ns{display:flex;align-items:center;gap:6px;padding:0 .75rem;color:rgba(26,18,8,.4);font-weight:500;}
+.ns.done{color:var(--teal);}
+.ns.active{color:var(--ink);font-weight:600;}
+.ns-dot{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0;}
+.ns.done .ns-dot{background:var(--teal);color:#fff;}
+.ns.active .ns-dot{background:var(--ink);color:var(--cream);}
+.ns.todo .ns-dot{background:transparent;border:1.5px solid rgba(26,18,8,.2);color:rgba(26,18,8,.35);}
+.ns-arr{color:rgba(26,18,8,.2);font-size:.7rem;margin:0 2px;}
+
+/* PAGE */
+.page{max-width:940px;margin:0 auto;padding:3rem 5% 5rem;}
+
+/* STUDENT STRIP */
+.student-strip{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.5rem;display:flex;align-items:center;gap:1rem;margin-bottom:2rem;box-shadow:var(--shadow);}
+.ss-avatar{width:44px;height:44px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:1.1rem;font-weight:700;color:var(--gold-light);flex-shrink:0;}
+.ss-name{font-weight:700;font-size:.95rem;}
+.ss-meta{font-size:.78rem;color:rgba(26,18,8,.5);margin-top:1px;}
+.ss-right{margin-left:auto;display:flex;align-items:center;gap:.5rem;}
+.ss-badge{display:flex;align-items:center;gap:5px;background:var(--teal-light);border:1px solid rgba(10,107,94,.25);border-radius:100px;padding:.3rem .8rem;font-size:.72rem;font-weight:600;color:var(--teal);}
+.ss-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);}
+
+/* PAGE TITLE */
+.page-head{text-align:center;margin-bottom:2.5rem;}
+.page-eyebrow{display:inline-flex;align-items:center;gap:7px;background:var(--gold-pale);border:1px solid var(--gold-light);border-radius:100px;padding:5px 14px;font-size:.7rem;font-weight:600;color:var(--gold);letter-spacing:.07em;text-transform:uppercase;margin-bottom:1rem;}
+.page-title{font-family:var(--fd);font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;letter-spacing:-.03em;margin-bottom:.6rem;}
+.page-sub{color:rgba(26,18,8,.55);font-size:.95rem;line-height:1.7;max-width:500px;margin:0 auto;font-weight:300;}
+
+/* ACCESS CODE BOX */
+.access-box{background:#fff;border:1px solid var(--border);border-radius:20px;padding:1.75rem 2rem;margin-bottom:2rem;box-shadow:var(--shadow);}
+.ab-head{display:flex;align-items:center;gap:.65rem;margin-bottom:.25rem;}
+.ab-icon{width:36px;height:36px;border-radius:10px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.ab-title{font-weight:700;font-size:.95rem;}
+.ab-sub{font-size:.8rem;color:rgba(26,18,8,.45);margin-bottom:1.1rem;margin-left:52px;}
+.code-row{display:flex;gap:.75rem;align-items:stretch;}
+.code-input{flex:1;background:#FAFAF7;border:1.5px solid var(--border);border-radius:12px;padding:.75rem 1.1rem;font-size:.95rem;font-family:var(--fm);letter-spacing:.06em;text-transform:uppercase;outline:none;transition:border-color .2s;}
+.code-input::placeholder{text-transform:none;letter-spacing:0;font-family:var(--fb);font-size:.88rem;color:rgba(26,18,8,.3);}
+.code-input:focus{border-color:var(--blue);}
+.code-input.valid{border-color:var(--teal);background:#F5FFFE;}
+.code-input.invalid{border-color:var(--red);background:#FFF9F7;}
+.btn-apply{background:var(--ink);color:var(--cream);border:none;border-radius:12px;padding:.75rem 1.5rem;font-size:.88rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;white-space:nowrap;}
+.btn-apply:hover{background:var(--gold);color:var(--ink);}
+.btn-apply:disabled{opacity:.4;cursor:default;}
+.code-result{margin-top:.85rem;border-radius:12px;padding:.75rem 1rem;font-size:.82rem;display:none;}
+.code-result.success{background:var(--teal-light);border:1px solid rgba(10,107,94,.2);color:var(--teal);}
+.code-result.error{background:var(--red-light);border:1px solid rgba(192,65,10,.2);color:var(--red);}
+.code-result.show{display:flex;align-items:flex-start;gap:.5rem;}
+
+/* DIVIDER */
+.or-divider{display:flex;align-items:center;gap:1rem;margin-bottom:2rem;}
+.or-divider::before,.or-divider::after{content:'';flex:1;border-top:1px solid var(--border);}
+.or-text{font-size:.75rem;font-weight:600;color:rgba(26,18,8,.35);text-transform:uppercase;letter-spacing:.07em;}
+
+/* PLAN CARDS */
+.plans-head{text-align:center;margin-bottom:1.25rem;}
+.plans-head h2{font-family:var(--fd);font-size:1.3rem;font-weight:700;}
+.plans-head p{font-size:.82rem;color:rgba(26,18,8,.45);margin-top:.2rem;}
+.plans-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;}
+@media(max-width:720px){.plans-grid{grid-template-columns:1fr;}}
+.plan-card{background:#fff;border:2px solid var(--border);border-radius:20px;padding:1.75rem 1.5rem;display:flex;flex-direction:column;transition:all .2s;cursor:pointer;position:relative;}
+.plan-card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(26,18,8,.1);}
+.plan-card.popular{border-color:var(--gold);box-shadow:0 4px 24px rgba(200,134,10,.15);}
+.plan-card.selected{border-color:var(--teal);box-shadow:0 0 0 3px rgba(10,107,94,.15);}
+.plan-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--ink);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:.25rem .85rem;border-radius:100px;white-space:nowrap;}
+.plan-icon{font-size:1.5rem;margin-bottom:.85rem;}
+.plan-name{font-weight:700;font-size:1rem;margin-bottom:.25rem;}
+.plan-price{font-family:var(--fd);font-size:2rem;font-weight:900;line-height:1;margin-bottom:.25rem;}
+.plan-price span{font-size:.85rem;font-weight:400;font-family:var(--fb);color:rgba(26,18,8,.4);}
+.plan-desc{font-size:.78rem;color:rgba(26,18,8,.5);margin-bottom:1.1rem;line-height:1.5;}
+.plan-features{flex:1;margin-bottom:1.25rem;}
+.pf-item{display:flex;align-items:flex-start;gap:.5rem;font-size:.8rem;margin-bottom:.5rem;line-height:1.4;}
+.pf-item::before{content:'✓';color:var(--teal);font-weight:700;flex-shrink:0;margin-top:1px;}
+.pf-item.locked{color:rgba(26,18,8,.35);}
+.pf-item.locked::before{content:'🔒';font-size:.65rem;}
+.plan-btn{width:100%;border:none;border-radius:100px;padding:.8rem;font-size:.88rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;}
+.plan-btn-free{background:rgba(26,18,8,.06);color:var(--ink);}
+.plan-btn-free:hover{background:rgba(26,18,8,.1);}
+.plan-btn-basic{background:var(--blue);color:#fff;}
+.plan-btn-basic:hover{background:#0d3d6b;}
+.plan-btn-premium{background:var(--gold);color:var(--ink);}
+.plan-btn-premium:hover{background:var(--gold-light);}
+.plan-original{font-size:.72rem;color:rgba(26,18,8,.35);text-decoration:line-through;margin-left:.25rem;display:none;}
+
+/* PAYMENT MODAL */
+.pay-overlay{position:fixed;inset:0;background:rgba(26,18,8,.7);z-index:1000;display:none;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(6px);}
+.pay-overlay.show{display:flex;}
+.pay-modal{background:#fff;border-radius:22px;padding:2rem;max-width:420px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.3);}
+.pm-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;gap:1rem;}
+.pm-title{font-family:var(--fd);font-size:1.2rem;font-weight:700;}
+.pm-close{background:rgba(26,18,8,.06);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pm-close:hover{background:rgba(26,18,8,.1);}
+.pm-amount-band{background:var(--ink);border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;}
+.pm-plan-name{font-size:.78rem;font-weight:600;color:rgba(253,248,240,.5);}
+.pm-amount{font-family:var(--fd);font-size:1.6rem;font-weight:700;color:var(--gold-light);}
+.pm-amount small{font-size:.75rem;font-family:var(--fb);font-weight:400;color:rgba(253,248,240,.4);}
+.pm-field{margin-bottom:.85rem;}
+.pm-field label{display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:rgba(26,18,8,.4);margin-bottom:.35rem;}
+.pm-field input{width:100%;background:#FAFAF7;border:1.5px solid var(--border);border-radius:10px;padding:.65rem .9rem;font-size:.88rem;font-family:var(--fb);outline:none;transition:border-color .2s;}
+.pm-field input:focus{border-color:var(--teal);}
+.pm-row{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;}
+.pm-upi{background:var(--teal-light);border:1.5px solid rgba(10,107,94,.2);border-radius:12px;padding:.75rem 1rem;display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;cursor:pointer;transition:all .2s;}
+.pm-upi:hover{border-color:var(--teal);}
+.pm-upi-icon{font-size:1.25rem;}
+.pm-upi-text{font-size:.82rem;font-weight:600;color:var(--teal);}
+.pm-upi-sub{font-size:.7rem;color:rgba(10,107,94,.6);}
+.pm-divider{display:flex;align-items:center;gap:.65rem;margin:.5rem 0 .85rem;}
+.pm-divider::before,.pm-divider::after{content:'';flex:1;border-top:1px solid var(--border);}
+.pm-divider span{font-size:.68rem;color:rgba(26,18,8,.3);text-transform:uppercase;letter-spacing:.06em;}
+.btn-pay{width:100%;background:var(--teal);color:#fff;border:none;border-radius:100px;padding:.85rem;font-size:.95rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:background .2s;margin-top:.25rem;}
+.btn-pay:hover{background:#085a4f;}
+.pm-note{font-size:.68rem;color:rgba(26,18,8,.3);text-align:center;margin-top:.75rem;line-height:1.6;}
+
+/* TOAST */
+#pay-toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--teal);color:#fff;padding:.6rem 1.5rem;border-radius:100px;font-size:.82rem;font-weight:600;z-index:9999;box-shadow:0 4px 24px rgba(0,0,0,.2);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .25s;}
+#pay-toast.show{opacity:1;}
+
+/* What's included comparison */
+.compare-strip{margin-top:2.5rem;background:#fff;border:1px solid var(--border);border-radius:20px;padding:1.75rem 2rem;box-shadow:var(--shadow);}
+.cs-title{font-family:var(--fd);font-size:1.1rem;font-weight:700;margin-bottom:1.25rem;text-align:center;}
+.cs-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:.5rem;align-items:center;padding:.55rem .5rem;border-radius:8px;font-size:.8rem;}
+.cs-row:nth-child(even){background:#FAFAF7;}
+.cs-feature{font-weight:500;color:rgba(26,18,8,.75);}
+.cs-cell{text-align:center;font-size:.9rem;}
+.cs-check{color:var(--teal);}
+.cs-cross{color:rgba(26,18,8,.2);}
+.cs-header{font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:rgba(26,18,8,.4);padding-bottom:.5rem;border-bottom:1.5px solid var(--border);}
+.cs-header .cs-cell{font-size:.72rem;font-weight:700;color:rgba(26,18,8,.4);}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../" class="nav-logo">
+    <img src="../assets/images/sahirah-logo.png" alt="Sahirah"/>
+    <span class="nav-logo-text">Sahir<span>ah</span>.in</span>
+  </a>
+  <div class="nav-steps">
+    <div class="ns done"><div class="ns-dot">✓</div>Test Complete</div>
+    <div class="ns-arr">›</div>
+    <div class="ns active"><div class="ns-dot">2</div>Get Report</div>
+    <div class="ns-arr">›</div>
+    <div class="ns todo"><div class="ns-dot">3</div>Download PDF</div>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- STUDENT STRIP -->
+  <div class="student-strip" id="student-strip">
+    <div class="ss-avatar" id="ss-avatar">A</div>
+    <div>
+      <div class="ss-name" id="ss-name">Loading…</div>
+      <div class="ss-meta" id="ss-meta"></div>
+    </div>
+    <div class="ss-right">
+      <div class="ss-badge"><div class="ss-dot"></div>Test Completed</div>
+    </div>
+  </div>
+
+  <!-- HEADING -->
+  <div class="page-head">
+    <div class="page-eyebrow">Step 2 of 3</div>
+    <h1 class="page-title">Unlock Your Full Report</h1>
+    <p class="page-sub">Enter a school code, counselor code, or scholarship coupon — or choose a plan to access your personalised career guidance report.</p>
+  </div>
+
+  <!-- ACCESS CODE -->
+  <div class="access-box">
+    <div class="ab-head">
+      <div class="ab-icon">🔑</div>
+      <div class="ab-title">Have a School, Counselor, or Scholarship Code?</div>
+    </div>
+    <div class="ab-sub">Enter your code below to unlock your premium report for free.</div>
+    <div class="code-row">
+      <input type="text" class="code-input" id="access-code-input" placeholder="e.g. SCH-DPS-001 or SCHOLAR25" maxlength="30" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')applyCode()"/>
+      <button class="btn-apply" onclick="applyCode()" id="btn-apply">Apply Code →</button>
+    </div>
+    <div class="code-result" id="code-result"></div>
+  </div>
+
+  <!-- OR -->
+  <div class="or-divider"><span class="or-text">Or choose a plan</span></div>
+
+  <!-- PLAN CARDS -->
+  <div class="plans-head">
+    <h2>Purchase Your Report</h2>
+    <p>One-time payment · Instant access · No subscription</p>
+  </div>
+  <div class="plans-grid">
+
+    <!-- FREE -->
+    <div class="plan-card" id="plan-free" onclick="selectPlan('free')">
+      <div class="plan-icon">👁️</div>
+      <div class="plan-name">Free Preview</div>
+      <div class="plan-price">₹0 <span>forever</span></div>
+      <div class="plan-desc">See your highlights and understand your top strengths.</div>
+      <ul class="plan-features">
+        <li class="pf-item">Overall personality summary</li>
+        <li class="pf-item">Recommended stream</li>
+        <li class="pf-item">Top 3 career matches</li>
+        <li class="pf-item">Aptitude radar chart</li>
+        <li class="pf-item locked">Full 10–15 page report</li>
+        <li class="pf-item locked">Career roadmap</li>
+        <li class="pf-item locked">PDF download</li>
+      </ul>
+      <button class="plan-btn plan-btn-free" onclick="choosePlan('free',0)">View Free Preview →</button>
+    </div>
+
+    <!-- BASIC -->
+    <div class="plan-card popular" id="plan-basic" onclick="selectPlan('basic')">
+      <div class="plan-badge">Most Popular</div>
+      <div class="plan-icon">📊</div>
+      <div class="plan-name">Basic Report</div>
+      <div class="plan-price" id="basic-price">₹499 <span>one-time</span></div>
+      <div class="plan-desc">Complete AI-generated psychometric report with career guidance.</div>
+      <ul class="plan-features">
+        <li class="pf-item">Everything in Free</li>
+        <li class="pf-item">Full 10–15 page report</li>
+        <li class="pf-item">Deep trait analysis</li>
+        <li class="pf-item">Career roadmap</li>
+        <li class="pf-item">Stream comparison</li>
+        <li class="pf-item">PDF download</li>
+        <li class="pf-item locked">Counseling session (1-on-1)</li>
+      </ul>
+      <button class="plan-btn plan-btn-basic" onclick="choosePlan('basic',499)">Pay ₹499 →</button>
+    </div>
+
+    <!-- PREMIUM -->
+    <div class="plan-card" id="plan-premium" onclick="selectPlan('premium')">
+      <div class="plan-icon">🏆</div>
+      <div class="plan-name">Premium Career Package</div>
+      <div class="plan-price" id="premium-price">₹1499 <span>one-time</span></div>
+      <div class="plan-desc">The complete career package with AI counselor + parent guidance.</div>
+      <ul class="plan-features">
+        <li class="pf-item">Everything in Basic</li>
+        <li class="pf-item">AI counselor insights</li>
+        <li class="pf-item">Parent interpretation guide</li>
+        <li class="pf-item">Learning style analysis</li>
+        <li class="pf-item">Future careers in AI era</li>
+        <li class="pf-item">Leadership analysis</li>
+        <li class="pf-item">1 live counseling session</li>
+      </ul>
+      <button class="plan-btn plan-btn-premium" onclick="choosePlan('premium',1499)">Pay ₹1499 →</button>
+    </div>
+
+  </div>
+
+  <!-- COMPARE TABLE -->
+  <div class="compare-strip">
+    <div class="cs-title">What's included in each plan?</div>
+    <div class="cs-row cs-header">
+      <div class="cs-feature">Feature</div>
+      <div class="cs-cell">Free</div>
+      <div class="cs-cell">Basic</div>
+      <div class="cs-cell">Premium</div>
+    </div>
+    <div class="cs-row"><div class="cs-feature">Overall personality summary</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
+    <div class="cs-row"><div class="cs-feature">Recommended stream</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
+    <div class="cs-row"><div class="cs-feature">Top 3 career matches</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
+    <div class="cs-row"><div class="cs-feature">Aptitude radar chart</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
+    <div class="cs-row"><div class="cs-feature">Full AI-generated report (10–15 pages)</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
+    <div class="cs-row"><div class="cs-feature">Deep personality trait analysis</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
+    <div class="cs-row"><div class="cs-feature">EQ (Emotional Intelligence) breakdown</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
+    <div class="cs-row"><div class="cs-feature">Interest profile (RIASEC model)</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
+    <div class="cs-row"><div class="cs-feature">Entrance exam roadmap</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
+    <div class="cs-row"><div class="cs-feature">Skill gap analysis</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
+    <div class="cs-row"><div class="cs-feature">PDF download</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
+    <div class="cs-row"><div class="cs-feature">Parent interpretation guide</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div></div>
+    <div class="cs-row"><div class="cs-feature">Future careers in AI era</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div></div>
+    <div class="cs-row"><div class="cs-feature">Live 1-on-1 counseling session</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div></div>
+  </div>
+
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="pay-overlay" id="pay-overlay" onclick="if(event.target===this)closePayModal()">
+  <div class="pay-modal">
+    <div class="pm-header">
+      <div class="pm-title" id="pm-title">Complete Payment</div>
+      <button class="pm-close" onclick="closePayModal()">✕</button>
+    </div>
+    <div class="pm-amount-band">
+      <div>
+        <div class="pm-plan-name" id="pm-plan-name">Basic Report</div>
+        <div class="pm-amount" id="pm-amount">₹499 <small>incl. taxes</small></div>
+      </div>
+      <div style="font-size:1.5rem;">💳</div>
+    </div>
+
+    <!-- UPI option -->
+    <div class="pm-upi" onclick="simulatePay()">
+      <div class="pm-upi-icon">📱</div>
+      <div>
+        <div class="pm-upi-text">Pay via UPI</div>
+        <div class="pm-upi-sub">Google Pay, PhonePe, Paytm, BHIM</div>
+      </div>
+      <div style="margin-left:auto;font-size:.75rem;font-weight:700;color:var(--teal);">→</div>
+    </div>
+
+    <div class="pm-divider"><span>or pay by card</span></div>
+
+    <div class="pm-field"><label>Name on Card</label><input type="text" id="pm-name" placeholder="Full name" autocomplete="cc-name"/></div>
+    <div class="pm-field"><label>Card Number</label><input type="text" id="pm-card" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)" autocomplete="cc-number"/></div>
+    <div class="pm-row">
+      <div class="pm-field"><label>Expiry</label><input type="text" id="pm-expiry" placeholder="MM / YY" maxlength="7" oninput="formatExpiry(this)" autocomplete="cc-exp"/></div>
+      <div class="pm-field"><label>CVV</label><input type="text" id="pm-cvv" placeholder="123" maxlength="4" autocomplete="cc-csc"/></div>
+    </div>
+    <button class="btn-pay" onclick="simulatePay()">Pay Now →</button>
+    <div class="pm-note">🔒 Secure 256-bit SSL encryption · Powered by Razorpay<br/>Your payment information is never stored on our servers.</div>
+  </div>
+</div>
+
+<div id="pay-toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../assets/js/db.js"></script>
+<script>
+// ================================================================
+// INIT
+// ================================================================
+let selectedPlan = null;
+let appliedCode = null;
+let appliedDiscount = 0;
+let appliedAccessType = null;
+let schoolId = null;
+let counselorId = null;
+
+const BASE_PRICES = { basic: 499, premium: 1499 };
+
+function init() {
+  // Load student info from localStorage
+  const user = JSON.parse(localStorage.getItem('sahirah_user') || 'null');
+  const name = user?.child_first_name || localStorage.getItem('sahirah_student_name') || 'Student';
+  const cls  = user?.child_class || '';
+  const city = user?.child_city || '';
+
+  const avatar = document.getElementById('ss-avatar');
+  avatar.textContent = name.charAt(0).toUpperCase();
+  document.getElementById('ss-name').textContent = name + (user?.child_last_name ? ' ' + user.child_last_name : '');
+  const metaParts = [cls, city].filter(Boolean);
+  document.getElementById('ss-meta').textContent = metaParts.join(' · ') || 'Psychometric Evaluation';
+}
+
+// ================================================================
+// CODE VALIDATION
+// ================================================================
+async function applyCode() {
+  const input = document.getElementById('access-code-input');
+  const code = input.value.trim();
+  const btn = document.getElementById('btn-apply');
+  const result = document.getElementById('code-result');
+
+  if (!code) { showResult(result, 'error', 'Please enter a code.'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Checking…';
+  result.className = 'code-result';
+
+  try {
+    const res = await SahirahDB.validateCode(code);
+    btn.disabled = false;
+    btn.textContent = 'Apply Code →';
+
+    if (!res || !res.valid) {
+      const msgs = {
+        expired: 'This code has expired.',
+        limit_reached: 'This code has reached its usage limit.',
+        quota_full: 'This school\'s student quota is full. Contact your school admin.',
+        not_found: 'Invalid code. Please check and try again.',
+      };
+      input.classList.add('invalid');
+      showResult(result, 'error', msgs[res?.reason] || 'Invalid code.');
+      return;
+    }
+
+    input.classList.remove('invalid');
+    input.classList.add('valid');
+    appliedCode = code;
+
+    if (res.source === 'school') {
+      appliedAccessType = 'school';
+      schoolId = res.school.id;
+      showResult(result, 'success', `✓ School code accepted — ${res.school.school_name}. Premium access granted. Click below to view your report.`);
+      showFreeAccessCTA(`View Report — School Access (${res.school.school_name})`);
+    } else if (res.source === 'counselor') {
+      appliedAccessType = 'counselor';
+      counselorId = res.counselor.id;
+      showResult(result, 'success', `✓ Counselor code accepted — ${res.counselor.name}. Premium access granted.`);
+      showFreeAccessCTA('View Report — Counselor Access');
+    } else if (res.source === 'coupon') {
+      const c = res.coupon;
+      if (c.discount_pct === 100) {
+        appliedAccessType = 'scholarship';
+        appliedDiscount = 100;
+        showResult(result, 'success', `✓ Scholarship coupon applied! Full premium access granted for free.`);
+        showFreeAccessCTA('View Report — Scholarship Access');
+      } else {
+        appliedDiscount = c.discount_pct;
+        appliedAccessType = c.unlocks_tier || 'premium';
+        const newBasic = Math.round(BASE_PRICES.basic * (1 - appliedDiscount/100));
+        const newPremium = Math.round(BASE_PRICES.premium * (1 - appliedDiscount/100));
+        document.getElementById('basic-price').innerHTML = `₹${newBasic} <span style="text-decoration:line-through;color:rgba(26,18,8,.3);">₹499</span> <span>one-time</span>`;
+        document.getElementById('premium-price').innerHTML = `₹${newPremium} <span style="text-decoration:line-through;color:rgba(26,18,8,.3);">₹1499</span> <span>one-time</span>`;
+        showResult(result, 'success', `✓ Coupon applied! ${appliedDiscount}% discount on all plans.`);
+      }
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Apply Code →';
+    showResult(result, 'error', 'Could not validate code. Please try again.');
+    console.error(e);
+  }
+}
+
+function showFreeAccessCTA(label) {
+  // Replace plan cards with a single CTA
+  const grid = document.querySelector('.plans-grid');
+  grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:2rem;">
+    <div style="font-size:2.5rem;margin-bottom:.75rem;">🎉</div>
+    <div style="font-family:var(--fd);font-size:1.3rem;font-weight:700;margin-bottom:.5rem;">Access Granted!</div>
+    <div style="font-size:.88rem;color:rgba(26,18,8,.5);margin-bottom:1.5rem;">Your premium report is ready. No payment required.</div>
+    <button style="background:var(--teal);color:#fff;border:none;border-radius:100px;padding:1rem 2.5rem;font-size:1rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:background .2s;" onmouseover="this.style.background='#085a4f'" onmouseout="this.style.background='var(--teal)'" onclick="grantAccess(appliedAccessType,0)">${label} →</button>
+  </div>`;
+}
+
+function showResult(el, type, msg) {
+  el.className = `code-result ${type} show`;
+  el.innerHTML = `<span>${type === 'success' ? '✓' : '✗'}</span> ${escHtml(msg)}`;
+}
+
+// ================================================================
+// PLAN SELECTION
+// ================================================================
+function selectPlan(plan) {
+  document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));
+  const card = document.getElementById('plan-' + plan);
+  if (card) card.classList.add('selected');
+  selectedPlan = plan;
+}
+
+function choosePlan(plan, price) {
+  if (plan === 'free') { grantAccess('free', 0); return; }
+  selectPlan(plan);
+  const discount = appliedDiscount || 0;
+  const finalPrice = Math.round(price * (1 - discount/100));
+  openPayModal(plan, finalPrice);
+}
+
+function openPayModal(plan, amount) {
+  const planNames = { basic: 'Basic Report', premium: 'Premium Career Package' };
+  document.getElementById('pm-plan-name').textContent = planNames[plan] || plan;
+  document.getElementById('pm-amount').innerHTML = `₹${amount} <small>incl. taxes</small>`;
+  document.getElementById('pm-title').textContent = 'Complete Payment';
+  document.getElementById('pay-overlay').classList.add('show');
+  selectedPlan = plan;
+  window._payAmount = amount;
+}
+
+function closePayModal() {
+  document.getElementById('pay-overlay').classList.remove('show');
+}
+
+function formatCard(input) {
+  let v = input.value.replace(/\D/g,'').substring(0,16);
+  input.value = v.replace(/(.{4})/g,'$1 ').trim();
+}
+
+function formatExpiry(input) {
+  let v = input.value.replace(/\D/g,'');
+  if (v.length >= 2) v = v.substring(0,2) + ' / ' + v.substring(2,4);
+  input.value = v;
+}
+
+// Simulate payment (replace with Razorpay integration in production)
+function simulatePay() {
+  closePayModal();
+  showToast('Processing payment…');
+  setTimeout(() => {
+    showToast('Payment successful! Redirecting to your report…');
+    setTimeout(() => grantAccess(selectedPlan, window._payAmount || 0), 1200);
+  }, 1800);
+}
+
+// ================================================================
+// GRANT ACCESS & REDIRECT
+// ================================================================
+async function grantAccess(accessType, amountPaid) {
+  localStorage.setItem('sahirah_access_type', accessType);
+
+  // Save payment record to Supabase
+  try {
+    const user = JSON.parse(localStorage.getItem('sahirah_user') || 'null');
+    const regId = user?.reg_id || null;
+    if (regId) {
+      await SahirahDB.savePaymentRecord({
+        reg_id: regId,
+        amount_paise: amountPaid * 100,
+        final_paise: amountPaid * 100,
+        coupon_code: appliedCode || null,
+        discount_pct: appliedDiscount || 0,
+        access_type: accessType,
+        school_id: schoolId || null,
+        counselor_id: counselorId || null,
+        payment_status: amountPaid > 0 ? 'completed' : 'free',
+      });
+
+      if (appliedCode && (accessType === 'school')) {
+        await SahirahDB.incrementSchoolUsage(appliedCode);
+      } else if (appliedCode && (accessType === 'scholarship' || appliedDiscount > 0)) {
+        await SahirahDB.incrementCouponUsage(appliedCode);
+      }
+    }
+  } catch(e) { console.error('Access record save failed:', e); }
+
+  showToast('Unlocking your report…');
+  setTimeout(() => { window.location.href = '../report/'; }, 900);
+}
+
+// ================================================================
+// UTILS
+// ================================================================
+function showToast(msg) {
+  const t = document.getElementById('pay-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+init();
+</script>
+</body>
+</html>
