@@ -379,7 +379,7 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
         <div class="table-wrap">
           <div class="table-head"><h3>All Registered Users</h3></div>
           <table class="t-table">
-            <thead><tr><th>#</th><th>Child Name</th><th>Class</th><th>City</th><th>Parent Email</th><th>Parent Mobile</th><th>Slot</th><th>Registered</th><th>Status</th><th>Action</th></tr></thead>
+            <thead><tr><th>#</th><th>Child Name</th><th>Class</th><th>City</th><th>Source Code</th><th>Parent Email</th><th>Parent Mobile</th><th>Slot</th><th>Registered</th><th>Status</th><th>Action</th></tr></thead>
             <tbody id="users-tbody"></tbody>
           </table>
         </div>
@@ -469,7 +469,7 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
             </div>
           </div>
           <table class="t-table">
-            <thead><tr><th>#</th><th>Name</th><th>Code</th><th>Email</th><th>City</th><th>Commission</th><th>Status</th><th>Toggle</th></tr></thead>
+            <thead><tr><th>#</th><th>Name</th><th>Code</th><th>Email</th><th>City</th><th>Commission</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody id="counselors-tbody"></tbody>
           </table>
         </div>
@@ -698,7 +698,7 @@ function filterTable() {
 
 function matchReg(r) {
   if (!searchTerm) return true;
-  const full = (r.child_first_name + ' ' + r.child_last_name + ' ' + r.parent_email + ' ' + r.reg_id + ' ' + r.parent_mobile).toLowerCase();
+  const full = (r.child_first_name + ' ' + r.child_last_name + ' ' + r.parent_email + ' ' + r.reg_id + ' ' + r.parent_mobile + ' ' + (r.access_code || '')).toLowerCase();
   return full.includes(searchTerm);
 }
 
@@ -742,10 +742,19 @@ function renderOverview() {
   }).join('');
 }
 
+function sourceCodeBadge(r) {
+  if (!r.access_code) return '<span style="color:rgba(26,18,8,.25);font-size:.72rem;">—</span>';
+  const isSchool = r.access_code.toUpperCase().startsWith('SCH');
+  const isCounselor = r.access_code.toUpperCase().startsWith('CNS');
+  const bg = isSchool ? '#E8F2FF' : isCounselor ? 'var(--teal-light)' : 'var(--gold-pale)';
+  const col = isSchool ? '#1A5FA8' : isCounselor ? 'var(--teal)' : 'var(--gold)';
+  return `<span style="font-family:var(--fm);font-size:.7rem;font-weight:700;background:${bg};color:${col};padding:2px 7px;border-radius:6px;">${escAdmin(r.access_code)}</span>`;
+}
+
 function renderUsers() {
   const tbody = document.getElementById('users-tbody');
   const regs = allData.regs.filter(matchReg);
-  if (!regs.length) { tbody.innerHTML = '<tr><td colspan="10" class="t-empty">No registrations yet.</td></tr>'; return; }
+  if (!regs.length) { tbody.innerHTML = '<tr><td colspan="11" class="t-empty">No registrations yet.</td></tr>'; return; }
   tbody.innerHTML = regs.map((r, i) => {
     const status = getStatus(r.reg_id);
     const rj = JSON.stringify(r).replace(/'/g,"&#39;");
@@ -757,6 +766,7 @@ function renderUsers() {
       <td><strong>${childName(r)}</strong></td>
       <td>${r.child_class || '—'}</td>
       <td>${r.child_city || '—'}</td>
+      <td>${sourceCodeBadge(r)}</td>
       <td>${r.parent_email || '—'}</td>
       <td>${r.parent_mobile || '—'}</td>
       <td style="font-size:.78rem">${r.slot || '—'}</td>
@@ -2365,13 +2375,50 @@ async function toggleSchool(id, active) {
 }
 
 function viewSchoolStudents(schoolCode) {
-  showAdminToast(`Loading students for ${schoolCode}…`);
-  // Navigate to users view filtered by school
-  showView('users');
-  setTimeout(() => {
-    const searchInput = document.getElementById('search-input');
-    if (searchInput) { searchInput.value = schoolCode; filterTable(); }
-  }, 200);
+  const students = allData.regs.filter(r => (r.access_code || '').toUpperCase() === schoolCode.toUpperCase());
+  showStudentsModal(schoolCode, students, 'School');
+}
+
+function viewCounselorStudents(counselorCode) {
+  const students = allData.regs.filter(r => (r.access_code || '').toUpperCase() === counselorCode.toUpperCase());
+  showStudentsModal(counselorCode, students, 'Counselor');
+}
+
+function showStudentsModal(code, students, label) {
+  const existing = document.getElementById('students-modal');
+  if (existing) existing.remove();
+  const rows = students.length
+    ? students.map((r, i) => `<tr>
+        <td style="color:rgba(26,18,8,.3);font-family:var(--fm);font-size:.68rem;">${i+1}</td>
+        <td><strong>${childName(r)}</strong></td>
+        <td>${r.child_class || '—'}</td>
+        <td>${r.parent_email || '—'}</td>
+        <td>${r.parent_mobile || '—'}</td>
+        <td>${fmtDate(r.created_at)}</td>
+        <td>${statusBadge(getStatus(r.reg_id))}</td>
+      </tr>`).join('')
+    : `<tr><td colspan="7" class="t-empty">No students have registered with this code yet.</td></tr>`;
+  const modal = document.createElement('div');
+  modal.className = 'form-overlay show';
+  modal.id = 'students-modal';
+  modal.onclick = e => { if(e.target===modal) modal.remove(); };
+  modal.innerHTML = `<div class="form-modal" style="max-width:720px;">
+    <div class="fm-header">
+      <div class="fm-title">${label} Students — <span style="font-family:var(--fm);color:var(--teal)">${escAdmin(code)}</span></div>
+      <button class="fm-close" onclick="this.closest('.form-overlay').remove()">✕</button>
+    </div>
+    <div style="font-size:.78rem;color:rgba(26,18,8,.4);margin-bottom:1rem;">${students.length} student${students.length!==1?'s':''} registered with this code</div>
+    <div style="overflow-x:auto;">
+      <table class="t-table" style="width:100%;">
+        <thead><tr><th>#</th><th>Child Name</th><th>Class</th><th>Parent Email</th><th>Mobile</th><th>Registered</th><th>Status</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div class="fm-footer" style="margin-top:1rem;">
+      <button class="btn-fm-cancel" onclick="this.closest('.form-overlay').remove()">Close</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
 }
 
 // ================================================================
@@ -2511,7 +2558,10 @@ function renderCounselors() {
       <td>${escAdmin(c.city||'—')}</td>
       <td style="font-family:var(--fm);font-size:.78rem;">${c.commission_pct||20}%</td>
       <td><span class="status-badge ${c.is_active?'s-scheduled':'s-reg'}">${c.is_active?'Active':'Inactive'}</span></td>
-      <td><button class="${c.is_active?'toggle-on':'toggle-off'}" onclick='toggleCounselorActive("${c.id}",${!c.is_active})'>${c.is_active?'Deactivate':'Activate'}</button></td>
+      <td>
+        <button class="btn-sm btn-sm-outline" onclick='viewCounselorStudents("${escAdmin(c.counselor_code)}")'>Students</button>
+        <button class="${c.is_active?'toggle-on':'toggle-off'}" onclick='toggleCounselorActive("${c.id}",${!c.is_active})'>${c.is_active?'Deactivate':'Activate'}</button>
+      </td>
     </tr>`).join('');
 }
 

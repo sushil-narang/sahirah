@@ -211,11 +211,12 @@ const SahirahDB = {
   },
 
   // ---- UPDATE REGISTRATION ACCESS ----
-  async updateRegistrationAccess(regId, accessType, accessCode, schoolId) {
+  async updateRegistrationAccess(regId, accessType, accessCode, schoolId, counselorId) {
     await _db.from('registrations').update({
       access_type: accessType,
       access_code: accessCode || null,
       school_id: schoolId || null,
+      counselor_id: counselorId || null,
     }).eq('reg_id', regId);
   },
 };

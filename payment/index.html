@@ -532,6 +532,9 @@ async function grantAccess(accessType, amountPaid) {
       } else if (appliedCode && (accessType === 'scholarship' || appliedDiscount > 0)) {
         await SahirahDB.incrementCouponUsage(appliedCode);
       }
+
+      // Stamp the registrations row so admin can filter students by school / counselor
+      await SahirahDB.updateRegistrationAccess(regId, accessType, appliedCode || null, schoolId || null, counselorId || null);
     }
   } catch(e) { console.error('Access record save failed:', e); }
 
