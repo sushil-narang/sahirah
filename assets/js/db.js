@@ -41,6 +41,17 @@ const SahirahDB = {
 
   // ---- TEST SESSION ----
   // Call when the child clicks "Start test". Returns the new session row (with its id).
+  async getLatestSession(regId) {
+    const { data } = await _db
+      .from('test_sessions')
+      .select('id, status')
+      .eq('reg_id', regId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    return data;
+  },
+
   async startSession(regId) {
     const { data, error } = await _db
       .from('test_sessions')

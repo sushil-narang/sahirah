@@ -310,6 +310,20 @@ body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16
   </div>
 </div>
 
+<!-- SUBMIT CONFIRM MODAL -->
+<div class="modal-overlay" id="submit-confirm-modal">
+  <div class="modal-box">
+    <div class="modal-icon">📋</div>
+    <div class="modal-title">Submit your evaluation?</div>
+    <div class="modal-sub">Once submitted, you cannot return to change your answers. Make sure you have answered as many questions as possible.</div>
+    <div id="submit-stats" style="display:flex;justify-content:center;gap:2rem;margin-bottom:1.5rem;"></div>
+    <div style="display:flex;flex-direction:column;gap:.65rem;">
+      <button class="modal-btn" onclick="confirmSubmit()">Yes, Submit Now</button>
+      <button class="modal-btn" style="background:transparent;color:rgba(26,18,8,.5);border:1.5px solid rgba(26,18,8,.1);" onclick="document.getElementById('submit-confirm-modal').classList.remove('show')">Continue Answering</button>
+    </div>
+  </div>
+</div>
+
 <!-- TIMEOUT MODAL -->
 <div class="modal-overlay" id="timeout-modal">
   <div class="modal-box">
@@ -567,6 +581,17 @@ async function doLogin() {
   if(found) {
     loginAttempts = 0;
     state.currentUser = found;
+
+    // Check if this user already submitted their evaluation
+    try {
+      const session = await SahirahDB.getLatestSession(found.reg_id);
+      if (session && session.status === 'completed') {
+        const access = localStorage.getItem('sahirah_access_type');
+        window.location.href = (access && access !== 'free') ? '../report/' : '../payment/';
+        return;
+      }
+    } catch(e) {}
+
     const slotDate = parseSlotDate(found.slot);
     const now2 = new Date();
     document.getElementById('screen-login').classList.remove('active');
@@ -619,6 +644,13 @@ function startTest() {
 }
 
 function _doStartTest() {
+  // Load answers only for this specific user — always start fresh for new users
+  const userKey = state.currentUser ? 'sahirah_answers_' + state.currentUser.reg_id : null;
+  try {
+    const saved = userKey && localStorage.getItem(userKey);
+    state.answers = saved ? JSON.parse(saved) : {};
+  } catch(e) { state.answers = {}; }
+
   document.getElementById('screen-waiting').style.display='none';
   document.getElementById('screen-test').style.display='flex';
   state.testStarted = true;
@@ -853,7 +885,7 @@ function renderQuestion() {
     const submit = document.createElement('button');
     submit.className = 'btn-qnav btn-finish-mod';
     submit.innerHTML = '✓ Submit Evaluation';
-    submit.onclick = () => submitTest();
+    submit.onclick = () => showSubmitConfirm();
     rightSide.appendChild(submit);
   }
 
@@ -980,7 +1012,7 @@ function showModuleComplete(modIdx) {
         </div>
       </div>
       <button class="mc-next-btn" onclick="renderModule(${modIdx+1})">Start ${nextMod.name} →</button>` :
-      `<button class="mc-next-btn" onclick="submitTest()">✓ Submit Evaluation</button>`}
+      `<button class="mc-next-btn" onclick="showSubmitConfirm()">✓ Submit Evaluation</button>`}
     </div>`;
   content.scrollTo({top:0, behavior:'smooth'});
   updateSidebar();
@@ -990,7 +1022,33 @@ function showModuleComplete(modIdx) {
 // SAVE & SUBMIT
 // ================================================================
 function saveProgress() {
-  try { localStorage.setItem('sahirah_answers', JSON.stringify(state.answers)); } catch(e){}
+  if (!state.currentUser) return;
+  try { localStorage.setItem('sahirah_answers_' + state.currentUser.reg_id, JSON.stringify(state.answers)); } catch(e){}
+}
+
+function showSubmitConfirm() {
+  const totalQ = MODULES.reduce((s,m)=>s+m.questions.length, 0);
+  const answered = Object.keys(state.answers).length;
+  const unanswered = totalQ - answered;
+  document.getElementById('submit-stats').innerHTML = `
+    <div style="text-align:center;">
+      <div style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:#0A6B5E;line-height:1;">${answered}</div>
+      <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;color:rgba(26,18,8,.4);margin-top:3px;">Answered</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:#C0410A;line-height:1;">${unanswered}</div>
+      <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;color:rgba(26,18,8,.4);margin-top:3px;">Unanswered</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:rgba(26,18,8,.4);line-height:1;">${totalQ}</div>
+      <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;color:rgba(26,18,8,.4);margin-top:3px;">Total</div>
+    </div>`;
+  document.getElementById('submit-confirm-modal').classList.add('show');
+}
+
+function confirmSubmit() {
+  document.getElementById('submit-confirm-modal').classList.remove('show');
+  submitTest();
 }
 
 async function submitTest() {
@@ -1017,13 +1075,7 @@ async function submitTest() {
   window.location.href = hasPaidAccess ? '../report/' : '../payment/';
 }
 
-// ================================================================
-// RESTORE PROGRESS
-// ================================================================
-try {
-  const saved = localStorage.getItem('sahirah_answers');
-  if(saved) state.answers = JSON.parse(saved);
-} catch(e){}
+// Progress is restored per-user in _doStartTest()
 
 // ================================================================
 // QUESTION TIMING

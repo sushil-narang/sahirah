@@ -230,6 +230,7 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
   <a href="../" class="nav-logo">Sahir<span>ah</span>.in</a>
   <div class="nav-right">
     <div class="nav-name" id="nav-name"></div>
+    <a href="../" class="btn-dl btn-dl-outline" style="text-decoration:none;">← Home</a>
     <button class="btn-dl btn-dl-outline" onclick="window.print()" id="btn-print" style="display:none;">🖨 Print</button>
     <button class="btn-dl" id="btn-pdf" onclick="downloadPDF()" style="display:none;">⬇ Download PDF</button>
     <a href="../payment/" class="btn-dl" id="btn-upgrade" style="display:none;background:var(--gold);color:var(--ink);">🔓 Unlock Full Report</a>
@@ -543,7 +544,8 @@ function applyAccessControl() {
     document.getElementById('rf-sub').textContent = 'Unlock EQ breakdown, personality analysis, entrance exam roadmap, skill gaps, and PDF download with Premium.';
     document.getElementById('rf-btns').innerHTML = `
       <a href="../payment/" class="rf-btn rf-btn-gold">⭐ Upgrade to Premium</a>
-      <button class="rf-btn rf-btn-outline" onclick="window.print()">🖨 Print Report</button>`;
+      <button class="rf-btn rf-btn-outline" onclick="window.print()">🖨 Print Report</button>
+      <a href="../" class="rf-btn rf-btn-outline">← Back to Home</a>`;
   } else {
     // Premium / School / Counselor / Scholarship — unlock everything
     document.getElementById('btn-print').style.display = 'inline-flex';
