@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://api.anthropic.com; img-src 'self' data:; frame-ancestors 'none';"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co; img-src 'self' data:; frame-ancestors 'none';"/>
 <title>Your Report — Sahirah.in</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js" integrity="sha512-SIMGYRUjwY8+gKg7nn9EItdD8LCADSDfJNutF9TPrvEo86sQmFMh6MyralfIyhADlajSxqc7G0gs7+MwWF/ogQ==" crossorigin="anonymous"></script>
+<script src="../assets/js/scoring.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous"></script>
 <style>
 :root{
@@ -172,6 +173,26 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
 .rf-btn-outline{background:transparent;color:rgba(253,248,240,.7);border:1.5px solid rgba(255,255,255,.15);}
 .rf-btn-outline:hover{border-color:rgba(255,255,255,.4);color:var(--cream);}
 
+/* APTITUDE QUESTION GRID */
+.apt-grid-section{margin-top:1.25rem;}
+.apt-tier-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(26,18,8,.4);margin-bottom:.6rem;padding-bottom:.3rem;border-bottom:1px solid var(--border);}
+.apt-grid{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:1rem;}
+.apt-tile{width:46px;height:46px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:default;transition:transform .15s;}
+.apt-tile:hover{transform:scale(1.08);}
+.apt-tile-status{font-size:1rem;line-height:1;}
+.apt-tile-num{font-size:.55rem;font-family:var(--fm);opacity:.6;line-height:1;}
+.apt-tile.correct{background:#E0F2EE;border:1.5px solid rgba(10,107,94,.25);}
+.apt-tile.correct .apt-tile-status{color:var(--teal);}
+.apt-tile.incorrect{background:#FFF0EB;border:1.5px solid rgba(192,65,10,.25);}
+.apt-tile.incorrect .apt-tile-status{color:var(--red);}
+.apt-tile.unanswered{background:rgba(26,18,8,.04);border:1.5px solid rgba(26,18,8,.08);}
+.apt-tile.unanswered .apt-tile-status{color:rgba(26,18,8,.3);}
+.apt-legend{display:flex;gap:1rem;font-size:.72rem;margin-top:.25rem;flex-wrap:wrap;}
+.apt-legend-item{display:flex;align-items:center;gap:.35rem;}
+.apt-legend-dot{width:10px;height:10px;border-radius:3px;}
+.apt-summary-row{display:flex;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;}
+.apt-summary-chip{padding:.35rem .85rem;border-radius:100px;font-size:.75rem;font-weight:600;font-family:var(--fm);}
+
 /* PRINT */
 @media print{nav,#loading-screen,.report-footer,.free-banner,.lock-overlay{display:none!important;}.report-wrap{padding:0;max-width:100%;}}
 
@@ -274,18 +295,28 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
     </div>
   </div>
 
-  <!-- TOP CAREERS -->
-  <div class="report-section">
+  <!-- TOP CAREERS — BASIC+ -->
+  <div class="report-section premium-section" id="section-careers">
     <div class="rs-header">
       <div class="rs-icon" style="background:#E8F2FF;">🏆</div>
       <div class="rs-title">Top Career Recommendations</div>
       <div class="rs-sub">Stage 2 result</div>
     </div>
     <div class="three-col" id="career-cards"></div>
+    <div class="lock-overlay" id="lock-careers">
+      <div class="lock-overlay-inner">
+        <div class="lo-icon">🏆</div>
+        <div class="lo-title">Your Top Career Matches</div>
+        <div class="lo-sub">Unlock to see your top 3 personalised career recommendations with fit scores, reasoning, and entrance exam roadmap.</div>
+        <div class="lo-btns">
+          <a href="../payment/" class="lo-btn lo-btn-gold">🔓 Unlock — from ₹499</a>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- AI NARRATIVE -->
-  <div class="report-section">
+  <!-- AI NARRATIVE — BASIC+ -->
+  <div class="report-section premium-section" id="section-ai">
     <div class="rs-header">
       <div class="rs-icon" style="background:var(--gold-pale);">✨</div>
       <div class="rs-title">Avanya's Personal Assessment</div>
@@ -293,7 +324,7 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
     </div>
     <div class="ai-narrative">
       <div class="ain-header">
-        <div class="ain-avatar">S</div>
+        <div class="ain-avatar">A</div>
         <div>
           <div class="ain-name">Avanya</div>
           <div class="ain-role">AI Counsellor · Sahirah.in</div>
@@ -303,20 +334,41 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
         <div class="ain-typing"><div class="at-dot"></div><div class="at-dot"></div><div class="at-dot"></div></div>
       </div>
     </div>
+    <div class="lock-overlay" id="lock-ai">
+      <div class="lock-overlay-inner">
+        <div class="lo-icon">✨</div>
+        <div class="lo-title">Avanya's Personal Assessment</div>
+        <div class="lo-sub">A warm, personalised AI narrative connecting your aptitude, personality and interests — written just for your child.</div>
+        <div class="lo-btns">
+          <a href="../payment/" class="lo-btn lo-btn-gold">🔓 Unlock — from ₹499</a>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- APTITUDE RADAR -->
-  <div class="report-section">
+  <!-- APTITUDE RADAR — BASIC+ -->
+  <div class="report-section premium-section" id="section-aptitude">
     <div class="rs-header">
-      <div class="rs-icon" style="background:#FDF0CC;">🎯</div>
-      <div class="rs-title">Aptitude Profile</div>
-      <div class="rs-sub">Cognitive map</div>
+      <div class="rs-icon" style="background:#FDF0CC;">🧩</div>
+      <div class="rs-title">Aptitude Deep-Dive</div>
+      <div class="rs-sub">Question-level analysis</div>
     </div>
     <div class="two-col">
       <div class="card">
         <div class="chart-wrap"><canvas id="radar-chart"></canvas></div>
       </div>
       <div class="card" id="aptitude-breakdown"></div>
+    </div>
+    <div class="card" style="margin-top:1rem;" id="aptitude-question-analysis"></div>
+    <div class="lock-overlay" id="lock-aptitude">
+      <div class="lock-overlay-inner">
+        <div class="lo-icon">🧩</div>
+        <div class="lo-title">Aptitude Deep-Dive</div>
+        <div class="lo-sub">See your score on every aptitude question — correct, incorrect, and unanswered — broken down by cognitive trait and difficulty tier.</div>
+        <div class="lo-btns">
+          <a href="../payment/" class="lo-btn lo-btn-gold">🔓 Unlock — from ₹499</a>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -458,99 +510,343 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
 // ACCESS CONTROL
 // ================================================================
 const ACCESS_TYPE = localStorage.getItem('sahirah_access_type') || 'free';
-const IS_FREE = (ACCESS_TYPE === 'free' || !ACCESS_TYPE);
+const IS_FREE    = (ACCESS_TYPE === 'free' || !ACCESS_TYPE);
 const IS_PREMIUM = ['premium','school','counselor','scholarship'].includes(ACCESS_TYPE);
-const IS_BASIC = !IS_FREE; // basic or better
+const IS_BASIC   = (ACCESS_TYPE === 'basic');
 
 function applyAccessControl() {
-  const premiumSections = ['personality','eq','interest','roadmap','gaps'];
-
   if (IS_FREE) {
-    // Show free banner
     document.getElementById('free-banner').classList.add('show');
-    // Show upgrade button in nav
     document.getElementById('btn-upgrade').style.display = 'inline-flex';
-    // Lock premium sections
-    premiumSections.forEach(id => {
+    // Free: lock careers, AI, aptitude, personality, EQ, interest, roadmap, gaps
+    ['careers','ai','aptitude','personality','eq','interest','roadmap','gaps'].forEach(id => {
       const section = document.getElementById('section-' + id);
-      const lock = document.getElementById('lock-' + id);
+      const lock    = document.getElementById('lock-' + id);
       if (section) section.classList.add('locked');
-      if (lock) lock.classList.add('show');
+      if (lock)    lock.classList.add('show');
     });
-    // Replace footer CTA with upgrade CTA
     document.getElementById('rf-title').textContent = 'Want the full picture?';
-    document.getElementById('rf-sub').textContent = 'Unlock your complete 10–15 page report with deep trait analysis, EQ breakdown, career roadmap, and PDF download.';
+    document.getElementById('rf-sub').textContent = 'Unlock your complete personalised report with career roadmap, EQ analysis, aptitude deep-dive, and PDF download.';
     document.getElementById('rf-btns').innerHTML = `
       <a href="../payment/" class="rf-btn rf-btn-gold">🔓 Unlock Full Report — from ₹499</a>
       <a href="../" class="rf-btn rf-btn-outline">← Back to Sahirah.in</a>`;
+  } else if (IS_BASIC) {
+    // Basic: unlock careers, AI, aptitude; keep personality, EQ, interest, roadmap, gaps locked
+    ['personality','eq','interest','roadmap','gaps'].forEach(id => {
+      const section = document.getElementById('section-' + id);
+      const lock    = document.getElementById('lock-' + id);
+      if (section) section.classList.add('locked');
+      if (lock)    lock.classList.add('show');
+    });
+    document.getElementById('btn-print').style.display = 'inline-flex';
+    document.getElementById('rf-title').textContent = 'Upgrade for the full picture.';
+    document.getElementById('rf-sub').textContent = 'Unlock EQ breakdown, personality analysis, entrance exam roadmap, skill gaps, and PDF download with Premium.';
+    document.getElementById('rf-btns').innerHTML = `
+      <a href="../payment/" class="rf-btn rf-btn-gold">⭐ Upgrade to Premium</a>
+      <button class="rf-btn rf-btn-outline" onclick="window.print()">🖨 Print Report</button>`;
   } else {
-    // Show print and PDF buttons for paid users
+    // Premium / School / Counselor / Scholarship — unlock everything
     document.getElementById('btn-print').style.display = 'inline-flex';
     document.getElementById('btn-pdf').style.display = 'inline-flex';
-    // Add tier badge to nav if premium
-    if (IS_PREMIUM) {
-      const badge = document.createElement('span');
-      badge.style.cssText = 'font-size:.68rem;font-weight:700;background:var(--gold-pale);color:var(--gold);padding:3px 10px;border-radius:100px;border:1px solid var(--gold-light);';
-      badge.textContent = ACCESS_TYPE === 'school' ? '🏫 School' : ACCESS_TYPE === 'counselor' ? '👤 Counselor' : ACCESS_TYPE === 'scholarship' ? '🎓 Scholarship' : '⭐ Premium';
-      document.querySelector('.nav-right').prepend(badge);
-    }
+    const badge = document.createElement('span');
+    badge.style.cssText = 'font-size:.68rem;font-weight:700;background:var(--gold-pale);color:var(--gold);padding:3px 10px;border-radius:100px;border:1px solid var(--gold-light);';
+    badge.textContent = ACCESS_TYPE==='school' ? '🏫 School' : ACCESS_TYPE==='counselor' ? '👤 Counselor' : ACCESS_TYPE==='scholarship' ? '🎓 Scholarship' : '⭐ Premium';
+    document.querySelector('.nav-right').prepend(badge);
   }
 }
 
 // ================================================================
-// SCORE ENGINE — derives scores from saved answers
+// APTITUDE ANSWER KEY — matches buildAptitude() in login/index.html
 // ================================================================
-let answers = {};
-try { answers = JSON.parse(localStorage.getItem('sahirah_answers') || '{}'); } catch(e){}
+const APT_META = [
+  // Tier 1 (indices 0–7)
+  {ans:1,trait:'logical'},    // 0: series 2,6,12…→42
+  {ans:1,trait:'pattern'},    // 1: roses/flowers deduction
+  {ans:1,trait:'numerical'},  // 2: train 400 km
+  {ans:2,trait:'logical'},    // 3: odd one out — Sphere
+  {ans:1,trait:'verbal'},     // 4: PENCIL coding → ERASER
+  {ans:1,trait:'numerical'},  // 5: clock 3:15 → 7.5°
+  {ans:2,trait:'spatial'},    // 6: NOT belong: 100 (not a perfect cube)
+  {ans:0,trait:'verbal'},     // 7: TNEELENCXLE → EXCELLENCE
+  // Tier 2 (indices 8–15)
+  {ans:1,trait:'numerical'},  // 8: shopkeeper 40%/20% → 12% profit
+  {ans:1,trait:'logical'},    // 9: city populations → 15 years
+  {ans:1,trait:'numerical'},  // 10: 5 consecutive integers → middle 53
+  {ans:2,trait:'numerical'},  // 11: cube painted → 36 with 2 faces
+  {ans:2,trait:'numerical'},  // 12: water tank → 70 min
+  {ans:1,trait:'logical'},    // 13: 6 workers → 16
+  {ans:1,trait:'pattern'},    // 14: pattern matrix → 🔵
+  {ans:0,trait:'numerical'},  // 15: three pipes → 11/36
+  // Tier 3 (indices 16–23)
+  {ans:2,trait:'spatial'},    // 16: f(x) local minimum → x=3
+  {ans:0,trait:'logical'},    // 17: budget 2:5:3 → ₹1.8L total
+  {ans:2,trait:'logical'},    // 18: 7 cities → 21 roads
+  {ans:1,trait:'numerical'},  // 19: sequence a₅=41
+  {ans:0,trait:'spatial'},    // 20: wire resistance → 3Ω
+  {ans:2,trait:'pattern'},    // 21: algorithm → 198 items
+  {ans:0,trait:'numerical'},  // 22: P,Q,R investment → ₹1200
+  {ans:1,trait:'numerical'},  // 23: polygon 20 diagonals → 8 sides
+];
 
-// If no answers (direct visit), use rich demo data
-const isDemo = Object.keys(answers).length < 10;
+// ================================================================
+// SCORE ENGINE — derives scores from real answers
+// ================================================================
+let rawAnswers = {};
+try { rawAnswers = JSON.parse(localStorage.getItem('sahirah_answers') || '{}'); } catch(e){}
+const isDemo = Object.keys(rawAnswers).length < 5;
+const SCORES = isDemo ? getDemoScores() : computeScores(rawAnswers);
 
-const SCORES = isDemo ? getDemoScores() : computeScores(answers);
-
+// ---- DEMO FALLBACK ----
 function getDemoScores() {
   return {
-    name: 'Arjun Sharma', age: 14, cls: 'Class 9', city: 'Ludhiana', state: 'Punjab',
-    streams: { non:72, med:18, com:8, hum:2 },
-    primaryStream: 'non',
-    aptitude: { logical:88, numerical:82, verbal:64, spatial:79, pattern:85, overall:88 },
-    personality: { openness:76, conscientiousness:82, extraversion:54, agreeableness:68, neuroticism:38 },
-    eq: { overall:74, selfAwareness:78, empathy:70, stressHandling:72, leadership:76 },
-    interest: { realistic:72, investigative:85, artistic:48, social:55, enterprising:62, conventional:58 },
-    values: { impact:4, wealth:3, creativity:5, stability:2, fame:1 },
-    careers: [
-      { title:'Computer Science / AI', stream:'Non-Medical', fit:94, color:'#1A5FA8', bg:'#E8F2FF', exams:['JEE Main','JEE Advanced','BITSAT'], why:'Exceptional logical reasoning and pattern recognition scores, combined with high investigative interest and creativity values, make AI/CS an ideal fit. Arjun\'s Tier 3 aptitude performance places him firmly in deep tech territory.' },
-      { title:'Electronics Engineering', stream:'Non-Medical', fit:81, color:'#0A6B5E', bg:'#E8F7F4', exams:['JEE Main','JEE Advanced','VITEEE'], why:'Strong spatial visualisation and numerical accuracy scores align well with electronics. The systematic thinking profile and high conscientiousness predict success in circuit design and embedded systems.' },
-      { title:'Architecture (B.Arch)', stream:'Non-Medical', fit:67, color:'#C8860A', bg:'#FDF0CC', exams:['JEE Paper 2','NATA','CEED'], why:'Spatial ability and artistic interest scores, combined with a creative values profile, indicate strong architectural potential. A secondary path worth exploring if pure engineering feels too abstract.' },
+    name:'Arjun Sharma', age:14, cls:'Class 9', city:'Ludhiana', state:'Punjab',
+    streams:{non:72,med:18,com:8,hum:2}, primaryStream:'non',
+    aptitude:{logical:88,numerical:82,verbal:64,spatial:79,pattern:85,overall:67},
+    aptAnalysis: APT_META.map((q,i)=>({i,trait:q.trait,tier:i<8?1:i<16?2:3,status:i%5===3?'unanswered':i%7===0?'incorrect':'correct'})),
+    personality:{openness:76,conscientiousness:82,extraversion:54,agreeableness:68,neuroticism:38},
+    eq:{overall:74,selfAwareness:78,empathy:70,stressHandling:72,leadership:76},
+    interest:{realistic:72,investigative:85,artistic:48,social:55,enterprising:62,conventional:58},
+    values:{impact:80,wealth:60,creativity:90,stability:40,fame:30},
+    careers:[
+      {title:'Computer Science / AI',stream:'Non-Medical',fit:94,color:'#1A5FA8',bg:'#E8F2FF',exams:['JEE Main','JEE Advanced','BITSAT'],why:'Exceptional logical reasoning and pattern recognition, combined with high investigative interest, make AI/CS a clear fit. Strong Tier 3 aptitude performance places this student in deep tech territory.'},
+      {title:'Electronics Engineering',stream:'Non-Medical',fit:81,color:'#0A6B5E',bg:'#E0F2EE',exams:['JEE Main','JEE Advanced','VITEEE'],why:'Strong spatial visualisation and numerical accuracy align well with electronics. High conscientiousness predicts success in circuit design and embedded systems.'},
+      {title:'Architecture (B.Arch)',stream:'Non-Medical',fit:67,color:'#C8860A',bg:'#FDF0CC',exams:['JEE Paper 2','NATA','CEED'],why:'Spatial ability and creative values indicate architectural potential — a secondary path worth exploring alongside core engineering.'},
     ],
-    roadmap: [
-      { class:'Now — Class 9', title:'Build your foundation', color:'#1A5FA8', bg:'#E8F2FF', desc:'Focus on Maths and Science. Start competitive problem-solving — try Olympiads. Learn basic Python or Scratch.', exams:['Maths Olympiad','Science Olympiad'] },
-      { class:'Class 10', title:'Board performance + stream confirmation', color:'#0A6B5E', bg:'#E8F7F4', desc:'Score 85%+ in boards. Choose Non-Medical confidently. Begin JEE Foundation course.', exams:['CBSE Boards','NTSE'] },
-      { class:'Class 11–12', title:'JEE Preparation', color:'#7B2FBE', bg:'#F5EEFF', desc:'Enrol in a serious JEE coaching programme. Target Physics, Chemistry, Maths daily. Give mock tests monthly.', exams:['JEE Main','JEE Advanced','BITSAT','VITEEE'] },
-      { class:'After Class 12', title:'Engineering entrance & college', color:'#C8860A', bg:'#FDF0CC', desc:'Target IIT/NIT for CS/AI or Electronics. IIT Bombay, IIT Delhi, and IIIT Hyderabad are top picks for CS.', exams:['JEE Advanced','JOSAA Counselling'] },
+    roadmap:[
+      {class:'Now — Class 9',title:'Build your foundation',color:'#1A5FA8',bg:'#E8F2FF',desc:'Focus on Maths and Science. Start competitive problem-solving — try Olympiads. Learn basic Python or Scratch.',exams:['Maths Olympiad','Science Olympiad']},
+      {class:'Class 10',title:'Board performance + stream confirmation',color:'#0A6B5E',bg:'#E0F2EE',desc:'Score 85%+ in boards. Choose Non-Medical confidently. Begin JEE Foundation course.',exams:['CBSE Boards','NTSE']},
+      {class:'Class 11–12',title:'JEE Preparation',color:'#7B2FBE',bg:'#F5EEFF',desc:'Enrol in a serious JEE coaching programme. Target Physics, Chemistry, Maths daily. Give mock tests monthly.',exams:['JEE Main','JEE Advanced','BITSAT','VITEEE']},
+      {class:'After Class 12',title:'Engineering entrance & college',color:'#C8860A',bg:'#FDF0CC',desc:'Target IIT/NIT for CS/AI or Electronics. IIT Bombay, IIT Delhi, IIIT Hyderabad are top picks for CS.',exams:['JEE Advanced','JOSAA Counselling']},
     ],
-    gaps: [
-      { icon:'📝', title:'Verbal reasoning & communication', desc:'Verbal aptitude score of 64 is the weakest area. Strengthen by reading quality newspapers (The Hindu), practising precis writing, and joining debate or MUN.', urgency:'high' },
-      { icon:'🤝', title:'Interpersonal & collaborative skills', desc:'Introversion tendency (extraversion: 54) is fine for tech, but software teams require collaboration. Practice group projects, hackathons, and peer coding sessions.', urgency:'med' },
-      { icon:'🧮', title:'Advanced mathematics depth', desc:'While numerical score is strong at 82, JEE Advanced requires much deeper calculus and algebra mastery. Start solving NCERT Exemplar and FIITJEE material now.', urgency:'high' },
-      { icon:'💡', title:'Creative problem framing', desc:'High creativity values but moderate artistic interest suggests Arjun wants creative output without traditional arts. Channel this into product design thinking and system architecture.', urgency:'low' },
-    ]
+    gaps:[
+      {icon:'📝',title:'Verbal Reasoning & Communication',desc:'Verbal aptitude is the weakest cognitive area. Strengthen it by reading quality newspapers, practising précis writing, and joining debate or MUN.',urgency:'high'},
+      {icon:'🤝',title:'Interpersonal & Collaborative Skills',desc:'Introversion tendency is fine for tech, but software teams require collaboration. Practice group projects, hackathons, and peer coding sessions.',urgency:'med'},
+      {icon:'🧮',title:'Advanced Mathematics Depth',desc:'JEE Advanced requires much deeper calculus and algebra mastery. Start solving NCERT Exemplar and FIITJEE material now.',urgency:'high'},
+    ],
   };
 }
 
+// ---- REAL SCORING ----
 function computeScores(ans) {
-  // Derive basic scores from answer keys
-  const aptKeys = Object.keys(ans).filter(k=>k.startsWith('0_'));
-  const aptScore = aptKeys.length > 0 ? Math.min(99, 50 + aptKeys.length * 2 + Math.floor(Math.random()*15)) : 75;
-  const persKeys = Object.keys(ans).filter(k=>k.startsWith('1_'));
-  const intKeys = Object.keys(ans).filter(k=>k.startsWith('2_'));
-  const eqKeys = Object.keys(ans).filter(k=>k.startsWith('3_'));
+  const user = (() => { try { return JSON.parse(localStorage.getItem('sahirah_user') || '{}'); } catch(e){ return {}; } })();
 
-  // Simple weighted score generation based on number of answers
-  const scores = getDemoScores();
-  scores.aptitude.overall = aptScore;
-  scores.aptitude.logical = Math.min(99, aptScore + 5 + Math.floor(Math.random()*10));
-  return scores;
+  // ---- APTITUDE: check correct / incorrect / unanswered ----
+  const aptGrouped = {logical:[],numerical:[],verbal:[],spatial:[],pattern:[]};
+  const aptAnalysis = APT_META.map((q, i) => {
+    const key   = '0_' + i;
+    const given = ans[key];
+    const status = given === undefined ? 'unanswered' : (Number(given) === q.ans ? 'correct' : 'incorrect');
+    if (aptGrouped[q.trait]) aptGrouped[q.trait].push(status);
+    return { i, trait: q.trait, status, tier: i < 8 ? 1 : i < 16 ? 2 : 3 };
+  });
+  const traitPct = t => {
+    const items = aptGrouped[t] || [];
+    if (!items.length) return 50;
+    return Math.round(items.filter(s => s === 'correct').length / items.length * 100);
+  };
+  const aptCorrect = aptAnalysis.filter(q => q.status === 'correct').length;
+  const aptScores = {
+    logical:   traitPct('logical'),
+    numerical: traitPct('numerical'),
+    verbal:    traitPct('verbal'),
+    spatial:   traitPct('spatial'),
+    pattern:   traitPct('pattern'),
+    overall:   Math.round(aptCorrect / APT_META.length * 100),
+  };
+
+  // ---- PERSONALITY: Likert 0–4 with direction ----
+  const persMap = [
+    {qi:0,  trait:'extraversion',      dir:1},
+    {qi:1,  trait:'conscientiousness', dir:1},
+    {qi:2,  trait:'openness',          dir:1},
+    {qi:3,  trait:'agreeableness',     dir:1},
+    {qi:4,  trait:'neuroticism',       dir:-1}, // calm = low neuroticism → reverse
+    {qi:5,  trait:'extraversion',      dir:1},
+    {qi:6,  trait:'openness',          dir:-1}, // likes routine = low openness → reverse
+    {qi:7,  trait:'conscientiousness', dir:1},
+    // qi:8 = matrix — skip
+    {qi:9,  trait:'agreeableness',     dir:1},
+    {qi:10, trait:'neuroticism',       dir:1},  // gets anxious = high neuroticism
+    {qi:11, trait:'conscientiousness', dir:1},
+  ];
+  const persRaw = {extraversion:[],conscientiousness:[],openness:[],agreeableness:[],neuroticism:[]};
+  persMap.forEach(({qi, trait, dir}) => {
+    const val = ans['1_' + qi];
+    if (val === undefined || typeof val === 'object') return;
+    const norm = dir === 1 ? (Number(val)/4)*100 : ((4-Number(val))/4)*100;
+    persRaw[trait].push(norm);
+  });
+  const avg = (arr, def=50) => arr.length ? Math.round(arr.reduce((a,b)=>a+b,0)/arr.length) : def;
+  const personality = {
+    openness:          avg(persRaw.openness, 60),
+    conscientiousness: avg(persRaw.conscientiousness, 65),
+    extraversion:      avg(persRaw.extraversion, 55),
+    agreeableness:     avg(persRaw.agreeableness, 60),
+    neuroticism:       avg(persRaw.neuroticism, 35),
+  };
+
+  // ---- INTEREST: MCQ mapped to RIASEC + Likert ----
+  const intRaw = {realistic:[],investigative:[],artistic:[],social:[],enterprising:[],conventional:[]};
+  const addInt = (key, map) => { const v = ans[key]; if (v !== undefined && map[v]) intRaw[map[v]].push(100); };
+  addInt('2_0', ['investigative','artistic','enterprising','investigative','artistic','social']);
+  addInt('2_1', ['conventional','investigative','enterprising','investigative','realistic','social']);
+  const v22 = ans['2_2']; if (v22 !== undefined) intRaw.realistic.push((Number(v22)/4)*100);
+  addInt('2_3', ['investigative','investigative','artistic','conventional','conventional','artistic']);
+  addInt('2_4', ['investigative','social','enterprising','investigative','artistic','realistic']);
+  const v25 = ans['2_5']; if (v25 !== undefined) intRaw.investigative.push((Number(v25)/4)*100);
+  addInt('2_6', ['investigative','social','enterprising','artistic','conventional','realistic']);
+  const v27 = ans['2_7']; if (v27 !== undefined) intRaw.artistic.push((Number(v27)/4)*100);
+  const interest = {
+    realistic:     avg(intRaw.realistic, 40),
+    investigative: avg(intRaw.investigative, 55),
+    artistic:      avg(intRaw.artistic, 45),
+    social:        avg(intRaw.social, 50),
+    enterprising:  avg(intRaw.enterprising, 50),
+    conventional:  avg(intRaw.conventional, 45),
+  };
+
+  // ---- EQ: Scenarios (option quality scores) + Likert ----
+  const scOpt = (key, opts, def=50) => { const v = ans[key]; return v !== undefined ? (opts[Number(v)] ?? def) : def; };
+  const lk    = (key, def=50) => { const v = ans[key]; return v !== undefined ? Math.round((Number(v)/4)*100) : def; };
+  const lkRev = (key, def=50) => { const v = ans[key]; return v !== undefined ? Math.round(((4-Number(v))/4)*100) : def; };
+  const eqEmpathy    = avg([scOpt('3_0',[60,40,100,50]), lk('3_1')]);
+  const eqLeadership = avg([scOpt('3_2',[30,60,90,40]), scOpt('3_5',[30,90,60,10])]);
+  const eqSelf       = avg([lk('3_3'), lk('3_6')]);
+  const eqStress     = avg([lk('3_4'), lkRev('3_7')]);
+  const eq = {
+    overall:       avg([eqEmpathy, eqLeadership, eqSelf, eqStress]),
+    empathy:       eqEmpathy,
+    leadership:    eqLeadership,
+    selfAwareness: eqSelf,
+    stressHandling: eqStress,
+  };
+
+  // ---- VALUES: MCQ + Likert ----
+  const v40 = ans['4_0'];
+  const wMap = [20,100,40,20,20,60]; const iMap = [50,20,80,100,60,30]; const cMap = [100,20,50,40,100,30];
+  const values = {
+    wealth:     avg([v40!==undefined?(wMap[v40]??50):50, lk('4_1')]),
+    impact:     avg([v40!==undefined?(iMap[v40]??50):50, lk('4_2'), lk('4_7')]),
+    creativity: v40!==undefined ? (cMap[v40]??50) : 50,
+    stability:  lk('4_5'),
+    fame:       lk('4_4'),
+  };
+
+  // ---- STREAM SCORING & CAREER MATCHING (via scoring.js) ----
+  const traitScores = {
+    logical: aptScores.logical, numerical: aptScores.numerical,
+    verbal: aptScores.verbal, spatial: aptScores.spatial, pattern: aptScores.pattern,
+    openness: personality.openness, conscientiousness: personality.conscientiousness,
+    extraversion: personality.extraversion, agreeableness: personality.agreeableness,
+    realistic: interest.realistic, investigative: interest.investigative,
+    artistic: interest.artistic, social: interest.social,
+    enterprising: interest.enterprising, conventional: interest.conventional,
+    empathy: eq.empathy, leadership: eq.leadership,
+    impact: values.impact, wealth: values.wealth, creativity: values.creativity, stability: values.stability,
+  };
+  const streamScores  = computeStreamScores(traitScores);
+  const primaryStream = Object.entries(streamScores).sort((a,b)=>b[1]-a[1])[0][0];
+  const topFits       = computeCareerFit(traitScores, primaryStream);
+
+  const SC = {non:'#1A5FA8',med:'#7B2FBE',com:'#0A6B5E',hum:'#C0410A'};
+  const SB = {non:'#E8F2FF',med:'#F5EEFF',com:'#E0F2EE',hum:'#FFF0EB'};
+  const SN = {non:'Non-Medical',med:'Medical',com:'Commerce',hum:'Humanities'};
+  const EXAMS = {
+    'Computer Science / AI':['JEE Main','JEE Advanced','BITSAT'],
+    'Electronics Engineering':['JEE Main','JEE Advanced','VITEEE'],
+    'Civil Engineering':['JEE Main','JEE Advanced','GATE'],
+    'Mechanical Engineering':['JEE Main','JEE Advanced','GATE'],
+    'Architecture (B.Arch)':['JEE Paper 2','NATA','CEED'],
+    'Robotics / Mechatronics':['JEE Main','JEE Advanced','BITSAT'],
+    'MBBS / Medicine':['NEET UG'],
+    'BDS (Dentistry)':['NEET UG'],
+    'Pharmacy':['NEET UG','GPAT'],
+    'Biotechnology':['NEET','JEE','CUET'],
+    'Physiotherapy':['NEET','CUET'],
+    'IAS / Civil Services':['UPSC CSE','State PSC'],
+    'Law / Judiciary':['CLAT','AILET','LSAT India'],
+    'B.Des / UX Design':['NID','NIFT','CEED'],
+    'Journalism / Media':['IIMC','ACJ','XIC'],
+    'Psychology / Counselling':['CUET','NIMHANS','MA Psychology'],
+    'CA (Chartered Accountant)':['CA Foundation','CA Intermediate'],
+    'CS (Company Secretary)':['CS Foundation'],
+    'MBA / Finance':['CAT','XAT','SNAP'],
+    'Investment Banking / CFA':['CFA','FRM','MBA Finance'],
+    'Entrepreneurship':['Startup India','IIM Programs'],
+  };
+
+  const careers = topFits.map(c => {
+    const topTraits = Object.keys(CAREERS[c.career]?.traits || {}).slice(0,2).join(' and ');
+    return {
+      title: c.career, stream: SN[primaryStream], fit: c.fit,
+      color: SC[primaryStream], bg: SB[primaryStream],
+      exams: EXAMS[c.career] || ['Entrance Exam'],
+      why: `${c.career} requires strong ${topTraits} — both among your measured strengths. Your ${SN[primaryStream]} aptitude profile, interest scores, and personal values align precisely with what this career demands.`,
+    };
+  });
+
+  // ---- ROADMAPS ----
+  const ROADMAPS = {
+    non:[
+      {class:'Now — Class 9',title:'Build your science foundation',color:'#1A5FA8',bg:'#E8F2FF',desc:'Focus on Maths and Science. Start competitive problem-solving — Olympiads and JEE Foundation. Learn basic Python to experience computational thinking.',exams:['Maths Olympiad','Science Olympiad']},
+      {class:'Class 10',title:'Board performance + stream confirmation',color:'#0A6B5E',bg:'#E0F2EE',desc:'Score 85%+ in boards. Choose Non-Medical (PCM) confidently. Begin JEE Foundation coaching if not already started.',exams:['CBSE Boards','NTSE']},
+      {class:'Class 11–12',title:'JEE Preparation',color:'#7B2FBE',bg:'#F5EEFF',desc:'Enrol in a serious JEE coaching programme. Target Physics, Chemistry, Maths daily. Give mock tests monthly from Class 11 itself.',exams:['JEE Main','JEE Advanced','BITSAT','VITEEE']},
+      {class:'After Class 12',title:'Engineering entrance & college',color:'#C8860A',bg:'#FDF0CC',desc:'Target IIT/NIT for CS/AI or Electronics. IIT Bombay, IIT Delhi, IIIT Hyderabad are top picks for CS and AI.',exams:['JEE Advanced','JOSAA Counselling']},
+    ],
+    med:[
+      {class:'Now — Class 9',title:'Build your science foundation',color:'#7B2FBE',bg:'#F5EEFF',desc:'Focus on Biology, Chemistry, and Physics. Read about human body systems and medical case studies. Develop curiosity about how living things work.',exams:['Science Olympiad','NTSE']},
+      {class:'Class 10',title:'Choose Medical stream',color:'#0A6B5E',bg:'#E0F2EE',desc:'Score 85%+ in boards. Choose Biology + PCB confidently. Start NEET Foundation. Strong NCERT Biology is non-negotiable.',exams:['CBSE Boards','NTSE']},
+      {class:'Class 11–12',title:'NEET Preparation',color:'#1A5FA8',bg:'#E8F2FF',desc:'Deep focus on NCERT Biology, Chemistry, and Physics. Join NEET coaching and solve 10 years of previous papers.',exams:['NEET UG','AIIMS','JIPMER']},
+      {class:'After Class 12',title:'Medical college entrance',color:'#C8860A',bg:'#FDF0CC',desc:'Target AIIMS New Delhi, AFMC Pune, or top government medical colleges via NEET rank.',exams:['NEET UG','MCC Counselling']},
+    ],
+    com:[
+      {class:'Now — Class 9',title:'Develop business and financial literacy',color:'#0A6B5E',bg:'#E0F2EE',desc:'Learn business basics, read Economic Times, try running a small entrepreneurial project. Start with basic Accountancy concepts.',exams:['Commerce Olympiad']},
+      {class:'Class 10',title:'Choose Commerce stream',color:'#1A5FA8',bg:'#E8F2FF',desc:'Score 85%+ in boards. Choose Commerce with Maths for maximum flexibility. Explore CA Foundation timelines early.',exams:['CBSE Boards','Commerce Olympiad']},
+      {class:'Class 11–12',title:'Commerce depth + CA / MBA foundation',color:'#7B2FBE',bg:'#F5EEFF',desc:'Master Accountancy, Business Studies, and Economics deeply. Appear for CA Foundation after Class 12.',exams:['CA Foundation','CUET','CLAT Commerce']},
+      {class:'After Class 12',title:'CA / MBA / CFA path',color:'#C8860A',bg:'#FDF0CC',desc:'Pursue CA (most respected in Finance), target IIM via CAT for MBA, or CFA for investment careers.',exams:['CA Inter','CAT','XAT','CFA Level 1']},
+    ],
+    hum:[
+      {class:'Now — Class 9',title:'Build verbal and social intelligence',color:'#C0410A',bg:'#FFF0EB',desc:'Read extensively — fiction, non-fiction, newspapers. Join MUN, debate club, or school newspaper. Develop public speaking and structured writing.',exams:['Quiz competitions','Essay contests']},
+      {class:'Class 10',title:'Choose Humanities stream',color:'#0A6B5E',bg:'#E0F2EE',desc:'Score 85%+ in boards. Choose History/Political Science/Psychology. Adding Economics keeps doors open.',exams:['CBSE Boards','NTSE']},
+      {class:'Class 11–12',title:'Humanities depth + entrance preparation',color:'#7B2FBE',bg:'#F5EEFF',desc:'Focus deeply on core subjects. Prepare for CLAT (Law), IIMC (Media), NID/NIFT (Design), or lay groundwork for UPSC.',exams:['CLAT','CUET','IIMC','NID','NIFT']},
+      {class:'After Class 12',title:'Law / Media / Design / Civil Services',color:'#C8860A',bg:'#FDF0CC',desc:'Target NLUs for Law via CLAT, top journalism institutes for Media, or NID/NIFT for Design. UPSC for the civil services path.',exams:['CLAT','UPSC CSE','AILET','IIMC Entrance']},
+    ],
+  };
+
+  // ---- SKILL GAPS (from 2 weakest aptitude traits) ----
+  const GAP_LIBRARY = {
+    verbal:   {icon:'📝',title:'Verbal Reasoning & Communication',urgency:'high',desc:`Verbal aptitude (${aptScores.verbal}% correct) is the weakest cognitive area. Read quality newspapers daily. Practise précis writing and join debate or MUN activities to build structured articulation.`},
+    numerical:{icon:'🧮',title:'Numerical Problem Solving',urgency:'high',desc:`Numerical score of ${aptScores.numerical}% has clear room to improve. Focus on speed maths, ratio-proportion, and data interpretation. Twenty minutes of daily practice compounds quickly.`},
+    logical:  {icon:'🔗',title:'Logical & Deductive Reasoning',urgency:'high',desc:`Logical reasoning (${aptScores.logical}% correct) — work on syllogisms, if-then chains, and series completion. These form the backbone of JEE, NEET, and CLAT aptitude sections.`},
+    spatial:  {icon:'📐',title:'Spatial & Visual Reasoning',urgency:'med',desc:`Spatial score of ${aptScores.spatial}% — practise 3D rotation problems, geometry, and visual puzzles. Critical for engineering and design streams.`},
+    pattern:  {icon:'🔷',title:'Pattern Recognition & Abstract Thinking',urgency:'med',desc:`Pattern recognition (${aptScores.pattern}% correct) — solve matrix reasoning, analogies, and visual sequence puzzles daily. Abstract thinking is highly trainable.`},
+  };
+  const aptSorted = ['logical','numerical','verbal','spatial','pattern'].map(t=>({t,s:aptScores[t]})).sort((a,b)=>a.s-b.s);
+  const gaps = [
+    GAP_LIBRARY[aptSorted[0].t],
+    GAP_LIBRARY[aptSorted[1].t],
+    personality.extraversion < 50
+      ? {icon:'🤝',title:'Interpersonal & Collaborative Skills',urgency:'med',desc:'Introverted tendencies are fine for many careers but team collaboration is essential. Practice group projects, peer coding sessions, or debate to build confidence in group settings.'}
+      : {icon:'🎯',title:'Focused Independent Work',urgency:'low',desc:'Strong social energy is an asset — ensure you also build sustained individual focus for competitive exam preparation and deep technical work.'},
+  ];
+
+  // ---- USER INFO ----
+  const firstName = user?.child_first_name || '';
+  const lastName  = user?.child_last_name  || '';
+  const name = [firstName, lastName].filter(Boolean).join(' ') || 'Student';
+  let age = 14;
+  if (user?.child_age) { age = parseInt(user.child_age) || 14; }
+  else if (user?.child_dob) {
+    try { const d=new Date(user.child_dob); age=Math.max(10,Math.min(20,new Date().getFullYear()-d.getFullYear())); } catch(e){}
+  }
+
+  return {
+    name, age, cls: user?.child_class||'Class 9', city: user?.child_city||'', state: user?.child_state||'',
+    streams: streamScores, primaryStream,
+    aptitude: aptScores, aptAnalysis,
+    personality, eq, interest, values,
+    careers, roadmap: ROADMAPS[primaryStream]||ROADMAPS.non, gaps, traitScores,
+  };
 }
 
 // ================================================================
@@ -710,15 +1006,16 @@ Tone: Warm, expert, encouraging, specific. Like a counsellor who truly knows thi
 
   const narrativeEl = document.getElementById('ai-narrative-text');
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/.netlify/functions/avanya', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
+        model:'claude-haiku-4-5-20251001',
         max_tokens:1000,
         messages:[{role:'user',content:prompt}]
       })
     });
+    if (!res.ok) throw new Error('avanya ' + res.status);
     const data = await res.json();
     const text = data.content?.[0]?.text || getFallbackNarrative(S);
     renderNarrative(narrativeEl, text);
@@ -774,6 +1071,55 @@ function buildAptitudeSection(S) {
       plugins:{legend:{display:false}}
     }
   });
+
+  // Per-question analysis grid
+  const qaContainer = document.getElementById('aptitude-question-analysis');
+  if (qaContainer && S.aptAnalysis && S.aptAnalysis.length) {
+    const correct   = S.aptAnalysis.filter(q=>q.status==='correct').length;
+    const incorrect = S.aptAnalysis.filter(q=>q.status==='incorrect').length;
+    const skipped   = S.aptAnalysis.filter(q=>q.status==='unanswered').length;
+
+    const TRAIT_COLORS = {logical:'#C8860A',numerical:'#1A5FA8',verbal:'#C0410A',spatial:'#0A6B5E',pattern:'#7B2FBE'};
+    const STATUS_ICON  = {correct:'✓',incorrect:'✗',unanswered:'—'};
+
+    const header = document.createElement('div');
+    header.style.cssText='margin-bottom:1rem;';
+    header.innerHTML = `<div style="font-size:.85rem;font-weight:600;margin-bottom:.6rem;">Question-by-Question Breakdown</div>
+      <div class="apt-summary-row">
+        <span class="apt-summary-chip" style="background:#E0F2EE;color:#0A6B5E;">✓ ${correct} Correct</span>
+        <span class="apt-summary-chip" style="background:#FFF0EB;color:#C0410A;">✗ ${incorrect} Incorrect</span>
+        <span class="apt-summary-chip" style="background:rgba(26,18,8,.05);color:rgba(26,18,8,.5);">— ${skipped} Skipped</span>
+      </div>
+      <div class="apt-legend">
+        <div class="apt-legend-item"><div class="apt-legend-dot" style="background:#E0F2EE;border:1px solid rgba(10,107,94,.3);"></div>Correct</div>
+        <div class="apt-legend-item"><div class="apt-legend-dot" style="background:#FFF0EB;border:1px solid rgba(192,65,10,.3);"></div>Incorrect</div>
+        <div class="apt-legend-item"><div class="apt-legend-dot" style="background:rgba(26,18,8,.05);border:1px solid rgba(26,18,8,.1);"></div>Unanswered</div>
+        <div style="color:rgba(26,18,8,.35);font-size:.68rem;margin-left:auto;">Colour of dot = trait</div>
+      </div>`;
+    qaContainer.appendChild(header);
+
+    [[1,0,7],[2,8,15],[3,16,23]].forEach(([tier,from,to])=>{
+      const section = document.createElement('div'); section.className='apt-grid-section';
+      const label   = document.createElement('div'); label.className='apt-tier-label';
+      label.textContent=`Tier ${tier} — ${tier===1?'Foundation (Q1–Q8)':tier===2?'Intermediate (Q9–Q16)':'Advanced (Q17–Q24)'}`;
+      section.appendChild(label);
+
+      const grid = document.createElement('div'); grid.className='apt-grid';
+      S.aptAnalysis.slice(from, to+1).forEach(q=>{
+        const tile = document.createElement('div');
+        tile.className='apt-tile ' + q.status;
+        tile.title = `Q${q.i+1} · ${q.trait} · Tier ${q.tier} · ${q.status.charAt(0).toUpperCase()+q.status.slice(1)}`;
+        const dot = document.createElement('span');
+        dot.style.cssText=`display:block;width:8px;height:8px;border-radius:50%;background:${TRAIT_COLORS[q.trait]||'#888'};position:absolute;top:5px;right:5px;`;
+        tile.style.position='relative';
+        tile.innerHTML=`<div class="apt-tile-status">${STATUS_ICON[q.status]}</div><div class="apt-tile-num">Q${q.i+1}</div>`;
+        tile.appendChild(dot);
+        grid.appendChild(tile);
+      });
+      section.appendChild(grid);
+      qaContainer.appendChild(section);
+    });
+  }
 }
 
 // ---- PERSONALITY ----

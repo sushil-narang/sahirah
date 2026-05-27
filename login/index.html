@@ -90,6 +90,10 @@ body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16
 .ms-mod-count{font-size:.65rem;font-family:var(--fm);color:rgba(26,18,8,.3);}
 .ms-module.done .ms-mod-name{color:var(--teal);}
 .ms-module.done .ms-mod-count{color:var(--teal);}
+.ms-q-dots{display:flex;flex-wrap:wrap;gap:3px;padding:.3rem .5rem .55rem 1.5rem;}
+.ms-q-dot{width:13px;height:13px;border-radius:3px;background:#E8E4DC;cursor:pointer;transition:background .15s;border:1.5px solid transparent;flex-shrink:0;}
+.ms-q-dot.answered{background:#0A6B5E;border-color:#085041;}
+.ms-q-dot.current{border-color:var(--gold);outline:2px solid rgba(200,134,10,.3);}
 
 /* TEST CONTENT */
 .test-content{flex:1;padding:2rem;overflow-y:auto;max-width:800px;margin:0 auto;width:100%;}
@@ -661,12 +665,30 @@ function buildModuleSidebar() {
   const list = document.getElementById('ms-list');
   list.innerHTML = '';
   MODULES.forEach((mod, idx) => {
-    const div = document.createElement('div');
-    div.className = 'ms-module' + (idx===0?' active':'');
-    div.id = 'ms-mod-'+idx;
-    div.innerHTML = `<div class="ms-mod-dot" style="background:${mod.dot};"></div><div class="ms-mod-name">${mod.icon} ${mod.name}</div><div class="ms-mod-count">${mod.questions.length}Q</div>`;
-    div.onclick = () => { if(idx <= state.moduleIdx) jumpModule(idx); };
-    list.appendChild(div);
+    const section = document.createElement('div');
+    section.id = 'ms-sec-'+idx;
+
+    const header = document.createElement('div');
+    header.className = 'ms-module' + (idx===0?' active':'');
+    header.id = 'ms-mod-'+idx;
+    header.innerHTML = `<div class="ms-mod-dot" style="background:${mod.dot};"></div><div class="ms-mod-name">${mod.icon} ${mod.name}</div><div class="ms-mod-count" id="ms-mod-count-${idx}">0/${mod.questions.length}</div>`;
+    header.onclick = () => { if(idx <= state.moduleIdx) jumpModule(idx); };
+    section.appendChild(header);
+
+    const dotsWrap = document.createElement('div');
+    dotsWrap.className = 'ms-q-dots';
+    dotsWrap.id = 'ms-dots-'+idx;
+    mod.questions.forEach((_, qi) => {
+      const dot = document.createElement('div');
+      dot.className = 'ms-q-dot';
+      dot.id = `ms-dot-${idx}-${qi}`;
+      dot.title = `Q${qi+1}`;
+      dot.onclick = (e) => { e.stopPropagation(); if(idx <= state.moduleIdx) { jumpModule(idx); state.questionIdx = qi; renderQuestion(); } };
+      dotsWrap.appendChild(dot);
+    });
+    section.appendChild(dotsWrap);
+
+    list.appendChild(section);
   });
 }
 
@@ -675,6 +697,18 @@ function updateSidebar() {
     const el = document.getElementById('ms-mod-'+idx);
     if(!el) return;
     el.className = 'ms-module' + (idx===state.moduleIdx?' active':(idx<state.moduleIdx?' done':''));
+
+    const answered = mod.questions.filter((_, qi) => state.answers[idx+'_'+qi] !== undefined).length;
+    const countEl = document.getElementById('ms-mod-count-'+idx);
+    if(countEl) countEl.textContent = answered+'/'+mod.questions.length;
+
+    mod.questions.forEach((_, qi) => {
+      const dot = document.getElementById(`ms-dot-${idx}-${qi}`);
+      if(!dot) return;
+      const isAnswered = state.answers[idx+'_'+qi] !== undefined;
+      const isCurrent = idx === state.moduleIdx && qi === state.questionIdx;
+      dot.className = 'ms-q-dot' + (isAnswered ? ' answered' : '') + (isCurrent ? ' current' : '');
+    });
   });
 }
 
@@ -712,6 +746,8 @@ function renderQuestion() {
   const modIdx = state.moduleIdx;
   const key = modIdx + '_' + qIdx;
   const savedAns = state.answers[key];
+
+  updateSidebar();
 
   // Update progress
   const totalAnswered = Object.keys(state.answers).length;
@@ -920,6 +956,7 @@ function renderPattern(card, q, key, saved) {
 function updateBadge(key) {
   const b = document.getElementById('ans-badge-'+key);
   if(b) b.textContent = '✓ Answered';
+  updateSidebar();
 }
 
 // ================================================================
