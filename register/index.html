@@ -1072,7 +1072,64 @@ function updateRankNums(container) {
 
 document.addEventListener('DOMContentLoaded', function() {
   initDrag('rank-q7');
+  applyDiscoveryOverride();
 });
+
+function applyDiscoveryOverride() {
+  const ovr = localStorage.getItem('discovery_questions_override');
+  if (!ovr) return;
+  try {
+    const qs = JSON.parse(ovr);
+    const cards = document.querySelectorAll('#step2 .q-card');
+    qs.forEach((q, i) => {
+      if (!cards[i]) return;
+      const textEl = cards[i].querySelector('.q-text');
+      if (textEl && q.text) textEl.textContent = q.text;
+
+      if (q.opts) {
+        // MCQ options (.mcq-opts) and radio cards (.radio-cards)
+        const mcqLabels  = cards[i].querySelectorAll('.mcq-opts .mcq-opt label');
+        const cardLabels = cards[i].querySelectorAll('.radio-cards .radio-card label');
+        const labels = mcqLabels.length ? mcqLabels : cardLabels;
+        q.opts.forEach((opt, oi) => {
+          if (!labels[oi]) return;
+          const iconEl = labels[oi].querySelector('.opt-letter, .rc-icon');
+          if (iconEl) {
+            // Remove existing text nodes after the icon, then append updated text
+            Array.from(labels[oi].childNodes).forEach(n => { if (n.nodeType === Node.TEXT_NODE) n.remove(); });
+            labels[oi].appendChild(document.createTextNode(opt));
+          } else {
+            labels[oi].textContent = opt;
+          }
+        });
+      }
+
+      if (q.scale) {
+        const labels = cards[i].querySelectorAll('.likert-opt label');
+        q.scale.forEach((lbl, li) => {
+          if (!labels[li]) return;
+          const iconEl = labels[li].querySelector('span');
+          if (iconEl) {
+            Array.from(labels[li].childNodes).forEach(n => { if (n.nodeType === Node.TEXT_NODE) n.remove(); });
+            labels[li].appendChild(document.createTextNode(lbl));
+          } else {
+            labels[li].textContent = lbl;
+          }
+        });
+      }
+
+      if (q.items) {
+        const items = cards[i].querySelectorAll('.rank-item');
+        q.items.forEach((item, ii) => {
+          if (!items[ii]) return;
+          // .rank-item contains: span.rank-handle, span.rank-num, then a text node
+          Array.from(items[ii].childNodes).forEach(n => { if (n.nodeType === Node.TEXT_NODE) n.remove(); });
+          items[ii].appendChild(document.createTextNode(item));
+        });
+      }
+    });
+  } catch(e) {}
+}
 </script>
 </body>
 </html>

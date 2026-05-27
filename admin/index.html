@@ -337,6 +337,7 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
       <div class="sb-item" onclick="showView('coupons')"><span class="sb-item-icon">🎟️</span>Coupon Codes</div>
       <div class="sb-item" onclick="showView('counselors')"><span class="sb-item-icon">👤</span>Counselors</div>
       <div class="sb-item" onclick="showView('qbank')"><span class="sb-item-icon">🗂️</span>Question Bank</div>
+      <div class="sb-item" onclick="showView('discovery')"><span class="sb-item-icon">🔍</span>Discovery Qs</div>
       <div class="sb-item" onclick="showView('profile')"><span class="sb-item-icon">⚙️</span>Profile</div>
     </div>
     <div class="sb-footer">
@@ -423,6 +424,22 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
           <table class="t-table">
             <thead><tr><th>#</th><th>Module</th><th>Type</th><th>Question</th><th>Correct</th><th>Edit</th><th>Del</th></tr></thead>
             <tbody id="qb-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- DISCOVERY QUESTIONS -->
+      <div class="page-view" id="view-discovery">
+        <div class="table-wrap">
+          <div class="table-head">
+            <h3>Discovery Questions <span style="font-family:var(--fm);font-size:.76rem;color:rgba(26,18,8,.35);margin-left:.5rem;font-weight:400;">12 questions shown during registration</span></h3>
+            <div class="th-actions">
+              <button class="btn-sm" style="background:var(--red-light);color:var(--red);border:1.5px solid rgba(192,65,10,.2);" onclick="resetDiscovery()">↺ Reset to Default</button>
+            </div>
+          </div>
+          <table class="t-table">
+            <thead><tr><th>#</th><th>Type</th><th>Question</th><th>Options / Scale</th><th>Edit</th></tr></thead>
+            <tbody id="disc-tbody"></tbody>
           </table>
         </div>
       </div>
@@ -556,6 +573,22 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
     <div class="qe-modal-footer">
       <button class="btn-cancel-qe" onclick="closeQEdit()">Cancel</button>
       <button class="btn-save-qe" id="qe-save-btn" onclick="saveQEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- DISCOVERY QUESTION EDIT MODAL -->
+<div class="qe-overlay" id="disc-overlay" onclick="if(event.target===this)closeDiscEdit()">
+  <div class="qe-modal">
+    <h3 id="disc-edit-title">Edit Discovery Question</h3>
+    <div class="qe-field">
+      <label>Question Text</label>
+      <textarea id="disc-q-text" rows="3"></textarea>
+    </div>
+    <div id="disc-opts-wrap"></div>
+    <div class="qe-modal-footer">
+      <button class="btn-cancel-qe" onclick="closeDiscEdit()">Cancel</button>
+      <button class="btn-save-qe" onclick="saveDiscEdit()">Save Changes</button>
     </div>
   </div>
 </div>
@@ -833,16 +866,17 @@ function showView(name) {
   document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + name)?.classList.add('active');
   document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
-  const allViews = ['overview','users','completed','inprogress','schools','coupons','counselors','qbank','profile'];
+  const allViews = ['overview','users','completed','inprogress','schools','coupons','counselors','qbank','discovery','profile'];
   const idx = allViews.indexOf(name);
   document.querySelectorAll('.sb-item')[idx]?.classList.add('active');
   const titles = {
     overview:'Overview', users:'Registered Users', completed:'Completed Tests', inprogress:'Tests In Progress',
     schools:'Schools', coupons:'Coupon Codes', counselors:'Counselors / Franchise',
-    qbank:'Question Bank', profile:'Profile'
+    qbank:'Question Bank', discovery:'Discovery Questions', profile:'Profile'
   };
   document.getElementById('tb-title').textContent = titles[name] || name;
   if (name === 'qbank') { if (!qbData) initQBank(); else renderQBank(); }
+  if (name === 'discovery') { if (!discoveryData) initDiscovery(); else renderDiscovery(); }
   if (name === 'schools') loadSchools();
   if (name === 'coupons') loadCoupons();
   if (name === 'counselors') loadCounselors();
@@ -1176,6 +1210,133 @@ function resetQBank() {
   qbData = DEFAULT_QUESTIONS.map(arr => [...arr]);
   renderQBank();
   showAdminToast('Questions reset to default ✓');
+}
+
+// ================================================================
+// DISCOVERY QUESTIONS
+// ================================================================
+const DISCOVERY_DEFAULT = [
+  {type:'mcq',text:'What do you love doing most after school?',opts:['Reading books, writing stories or debating topics','Playing or watching sports, building or fixing things','Drawing, making art, playing music or dancing','Solving puzzles, coding, doing maths or science experiments','Helping others, volunteering or spending time with people']},
+  {type:'mcq',text:'When you face a difficult problem, what do you usually do first?',opts:['Think it through carefully on my own before acting','Talk to someone I trust — a friend or parent','Search for information and study the problem first','Try different solutions right away and learn as I go']},
+  {type:'radio-cards',text:'Which subject do you genuinely enjoy the most in school?',opts:['Maths','Science','Biology','English / Languages','Social Studies / History','Computer Science','Arts / Craft','Commerce / Accounts']},
+  {type:'mcq',text:'If you could spend an entire day doing just one thing without any pressure, it would be…',opts:['Designing something — an app, a building, a poster or a gadget','Reading about history, law, politics or world events','Helping someone — tutoring, counselling or doing social work','Running a business — buying, selling, planning or investing','Experimenting in a lab — chemistry, biology or coding']},
+  {type:'likert',text:'How do you feel when you have to speak or present in front of a group of people?',scale:['😰 Very uncomfortable','😟 Uncomfortable','😐 Neutral','🙂 Comfortable','😄 Love it!']},
+  {type:'likert',text:'Do you prefer working alone or as part of a team?',scale:['Always alone','Mostly alone','Either is fine','Mostly team','Always team']},
+  {type:'rank',text:"When you grow up, which of these matters most to you? Drag to rank from most important (top) to least (bottom).",items:["Making a real difference in people's lives","Earning well and achieving financial security","Doing creative and innovative work","Having a stable, respected career","Being well-known and influential in my field"]},
+  {type:'likert',text:'How often do you start a project or goal and see it fully through to completion?',scale:['Almost never','Rarely','Sometimes','Usually','Always']},
+  {type:'scenario',text:'You notice a classmate sitting alone and looking very upset. What would you most likely do?',opts:["Go sit with them and ask if they're okay — I'd want to help","Tell a teacher or trusted adult so they can handle it properly","Give them space — they probably want to be left alone","Check if my friends know what happened — gather info first"]},
+  {type:'likert',text:'How comfortable are you with numbers, calculations and mathematical reasoning?',scale:['I dislike maths',"It's difficult for me",'Average at it','Quite good at it','Love numbers!']},
+  {type:'likert',text:"Do you enjoy trying new things even if there's a chance you might fail or look silly?",scale:['No — I avoid risk','Rarely try new things','Depends on situation','Usually open to it','Love exploring!']},
+  {type:'open',text:'Is there a person — real or fictional — whom you admire deeply? Who are they and what is it about them that inspires you?'},
+];
+
+let discoveryData = null;
+let discEditIdx = -1;
+
+function initDiscovery() {
+  const ovr = localStorage.getItem('discovery_questions_override');
+  if (ovr) {
+    try {
+      const parsed = JSON.parse(ovr);
+      discoveryData = DISCOVERY_DEFAULT.map((def, i) => parsed[i] ? Object.assign({}, def, parsed[i]) : Object.assign({}, def));
+      renderDiscovery(); return;
+    } catch(e) {}
+  }
+  discoveryData = DISCOVERY_DEFAULT.map(q => Object.assign({}, q, q.opts ? {opts:[...q.opts]} : q.scale ? {scale:[...q.scale]} : q.items ? {items:[...q.items]} : {}));
+  renderDiscovery();
+}
+
+function renderDiscovery() {
+  const isOverride = !!localStorage.getItem('discovery_questions_override');
+  const typeLabels = {mcq:'MCQ','radio-cards':'Radio Cards',likert:'Likert',rank:'Rank',scenario:'Scenario',open:'Open Text'};
+  const typeCls    = {mcq:'tb-mcq','radio-cards':'tb-mcq',likert:'tb-likert',rank:'tb-scenario',scenario:'tb-scenario',open:'tb-matrix'};
+  document.getElementById('disc-tbody').innerHTML = discoveryData.map((q, i) => {
+    const preview = q.opts   ? q.opts.slice(0,2).join(', ') + (q.opts.length>2?'…':'')
+                  : q.scale  ? q.scale[0] + ' → ' + q.scale[q.scale.length-1]
+                  : q.items  ? q.items.slice(0,2).join(', ') + '…'
+                  : '(open text)';
+    return `<tr>
+      <td style="color:rgba(26,18,8,.3);font-family:var(--fm);">${i+1}</td>
+      <td><span class="type-badge ${typeCls[q.type]||''}">${typeLabels[q.type]||q.type}</span></td>
+      <td class="q-short" title="${(q.text||'').replace(/"/g,'&quot;')}">${q.text||''}</td>
+      <td style="font-size:.75rem;color:rgba(26,18,8,.4);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${preview}">${preview}</td>
+      <td><button class="btn-edit" onclick="openDiscEdit(${i})">Edit</button></td>
+    </tr>`;
+  }).join('');
+  if (isOverride) document.getElementById('tb-title').textContent = 'Discovery Questions · custom';
+}
+
+function openDiscEdit(qi) {
+  discEditIdx = qi;
+  const q = discoveryData[qi];
+  const typeLabels = {mcq:'MCQ','radio-cards':'Radio Cards',likert:'Likert Scale',rank:'Rank',scenario:'Scenario',open:'Open Text'};
+  document.getElementById('disc-edit-title').textContent = `Edit Q${qi+1} · ${typeLabels[q.type]||q.type}`;
+  document.getElementById('disc-q-text').value = q.text || '';
+
+  const wrap = document.getElementById('disc-opts-wrap');
+  wrap.innerHTML = '';
+
+  if (q.opts) {
+    const div = document.createElement('div');
+    div.className = 'qe-field';
+    div.innerHTML = '<label>Options</label>';
+    q.opts.forEach((opt, oi) => {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;';
+      row.innerHTML = `<span style="font-family:var(--fm);font-size:.72rem;background:rgba(26,18,8,.06);padding:2px 8px;border-radius:6px;flex-shrink:0;">${String.fromCharCode(65+oi)}</span><input id="disc-opt-${oi}" type="text" value="${opt.replace(/"/g,'&quot;')}" style="flex:1;padding:.4rem .65rem;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-family:var(--fb);" />`;
+      div.appendChild(row);
+    });
+    wrap.appendChild(div);
+  } else if (q.scale) {
+    const div = document.createElement('div');
+    div.className = 'qe-field';
+    div.innerHTML = '<label>Scale Labels (1 → 5)</label>';
+    q.scale.forEach((lbl, li) => {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;';
+      row.innerHTML = `<span style="font-family:var(--fm);font-size:.72rem;background:rgba(26,18,8,.06);padding:2px 8px;border-radius:6px;flex-shrink:0;">${li+1}</span><input id="disc-scale-${li}" type="text" value="${lbl.replace(/"/g,'&quot;')}" style="flex:1;padding:.4rem .65rem;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-family:var(--fb);" />`;
+      div.appendChild(row);
+    });
+    wrap.appendChild(div);
+  } else if (q.items) {
+    const div = document.createElement('div');
+    div.className = 'qe-field';
+    div.innerHTML = '<label>Rank Items (top to bottom)</label>';
+    q.items.forEach((item, ii) => {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;';
+      row.innerHTML = `<span style="font-family:var(--fm);font-size:.72rem;background:rgba(26,18,8,.06);padding:2px 8px;border-radius:6px;flex-shrink:0;">${ii+1}</span><input id="disc-item-${ii}" type="text" value="${item.replace(/"/g,'&quot;')}" style="flex:1;padding:.4rem .65rem;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-family:var(--fb);" />`;
+      div.appendChild(row);
+    });
+    wrap.appendChild(div);
+  }
+
+  document.getElementById('disc-overlay').classList.add('show');
+}
+
+function closeDiscEdit() {
+  document.getElementById('disc-overlay').classList.remove('show');
+}
+
+function saveDiscEdit() {
+  if (discEditIdx < 0) return;
+  const q = discoveryData[discEditIdx];
+  q.text = document.getElementById('disc-q-text').value.trim();
+  if (q.opts)   q.opts  = q.opts.map((_,oi) => (document.getElementById('disc-opt-'+oi)||{}).value?.trim() || _);
+  if (q.scale)  q.scale = q.scale.map((_,li) => (document.getElementById('disc-scale-'+li)||{}).value?.trim() || _);
+  if (q.items)  q.items = q.items.map((_,ii) => (document.getElementById('disc-item-'+ii)||{}).value?.trim() || _);
+  localStorage.setItem('discovery_questions_override', JSON.stringify(discoveryData));
+  closeDiscEdit();
+  renderDiscovery();
+  showAdminToast('Discovery question updated ✓');
+}
+
+function resetDiscovery() {
+  if (!confirm('Reset all discovery questions to default? Custom edits will be lost.')) return;
+  localStorage.removeItem('discovery_questions_override');
+  discoveryData = null;
+  initDiscovery();
+  showAdminToast('Discovery questions reset to default ✓');
 }
 
 function showAdminToast(msg) {
