@@ -750,10 +750,9 @@ const totalSteps = 4;
 function goTo(step) {
   if(step > currentStep && !validateStep(currentStep)) return;
 
-  // Payment gate — step 3 and above require completed payment
+  // Payment gate — step 3+ requires a completed payment in THIS session
   if (step >= 3) {
-    const hasPayment = !!localStorage.getItem('sahirah_payment_info') ||
-                       !!localStorage.getItem('sahirah_access_type');
+    const hasPayment = !!localStorage.getItem('sahirah_payment_info');
     const resuming   = new URLSearchParams(location.search).has('resume');
     if (!hasPayment && !resuming) {
       proceedToPayment();
@@ -1003,18 +1002,24 @@ function proceedToPayment() {
 
 // ---- RESUME AFTER PAYMENT ----
 function tryResume() {
-  const params = new URLSearchParams(location.search);
-  const saved  = JSON.parse(localStorage.getItem('sahirah_pending_reg') || 'null');
+  const params  = new URLSearchParams(location.search);
+  const saved   = JSON.parse(localStorage.getItem('sahirah_pending_reg') || 'null');
   const payInfo = JSON.parse(localStorage.getItem('sahirah_payment_info') || 'null');
 
-  // Also auto-resume if payment is done but user lost the ?resume param (e.g. back button)
   if (!params.has('resume')) {
+    // Auto-resume only when BOTH payment AND form data are present (handles back-button case)
     if (payInfo && saved?.data) {
-      // Payment done + form data present — restore the resume state silently
       history.replaceState(null, '', '/register/?resume=1');
     } else {
-      return; // Fresh visit, nothing to resume
+      return; // Fresh visit — nothing to resume
     }
+  }
+
+  // ?resume=1 is present — still require payment to have been completed
+  if (!payInfo) {
+    // Landed here without payment (e.g. manual URL edit) — send to payment first
+    window.location.href = '/payment/?flow=register';
+    return;
   }
 
   if (!saved?.data) { window.location.href = '/register/'; return; }
@@ -1196,6 +1201,14 @@ function updateRankNums(container) {
 document.addEventListener('DOMContentLoaded', function() {
   initDrag('rank-q7');
   applyDiscoveryOverride();
+
+  // On a completely fresh visit (no ?resume), clear any stale payment data from previous sessions
+  // so old test runs never allow skipping payment for a new registration
+  if (!new URLSearchParams(location.search).has('resume')) {
+    localStorage.removeItem('sahirah_payment_info');
+    localStorage.removeItem('sahirah_pending_reg');
+  }
+
   tryResume();
 });
 
