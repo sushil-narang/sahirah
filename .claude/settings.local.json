@@ -18,7 +18,8 @@
       "Bash(node --input-type=module)",
       "Bash(node -e ' *)",
       "Bash(node *)",
-      "Bash(grep -E '\\\\.\\(js|jsx|ts|tsx|sql|json\\)$')"
+      "Bash(grep -E '\\\\.\\(js|jsx|ts|tsx|sql|json\\)$')",
+      "Bash(git *)"
     ]
   }
 }
