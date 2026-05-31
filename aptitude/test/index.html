@@ -527,6 +527,7 @@ function submitTest() {
         submitted_at: testSession.completed_at,
       }));
       SahirahDB.saveCseAttempts(rows).catch(e => console.warn('Supabase attempt save failed:', e));
+      SahirahDB.saveCseSession(testSession).catch(e => console.warn('Supabase session save failed:', e));
     }
   }
   showCompleteScreen(result);

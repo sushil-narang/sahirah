@@ -357,6 +357,10 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
 <!-- ADMIN TOAST -->
 <div id="admin-toast"></div>
 
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../../assets/js/db.js"></script>
+
 <!-- REPORT MODAL -->
 <div class="overlay" id="report-overlay" onclick="closeReportModal(event)">
   <div class="report-modal">
@@ -403,6 +407,7 @@ let adminLoggedIn = sessionStorage.getItem('cse_admin_auth') === '1';
 let allData = { users: [], sessions: [] };
 let currentView = 'overview';
 let searchTerm = '';
+const _sc = {}; // session cache — avoids JSON.stringify in onclick attributes
 
 if (adminLoggedIn) showApp();
 
@@ -432,14 +437,35 @@ function adminLogout() {
   location.reload();
 }
 
-function refreshData() {
+async function refreshData() {
+  if (typeof SahirahDB !== 'undefined') {
+    try {
+      const [users, sessions] = await Promise.all([
+        SahirahDB.getCseUsers(),
+        SahirahDB.getCseSessions(),
+      ]);
+      allData.users = users;
+      // Merge Supabase completed sessions with any localStorage in-progress sessions
+      const localSessions = JSON.parse(localStorage.getItem(SESSIONS_KEY) || '[]');
+      const inProgressLocal = localSessions.filter(s => s.status === 'in_progress');
+      const supIds = new Set(sessions.map(s => s.id));
+      inProgressLocal.forEach(s => { if (!supIds.has(s.id)) sessions.push(s); });
+      allData.sessions = sessions;
+      renderAllViews();
+      return;
+    } catch(e) {
+      console.warn('Supabase load failed, falling back to localStorage:', e);
+    }
+  }
   allData.users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
   allData.sessions = JSON.parse(localStorage.getItem(SESSIONS_KEY) || '[]');
   renderAllViews();
 }
 
-function getSessionForUser(userId) {
-  return allData.sessions.filter(s => s.user_id === userId).sort((a,b) => new Date(b.started_at) - new Date(a.started_at))[0] || null;
+function getSessionForUser(userId, userEmail) {
+  return allData.sessions
+    .filter(s => s.user_id === userId || (userEmail && s.user_email === userEmail))
+    .sort((a,b) => new Date(b.started_at) - new Date(a.started_at))[0] || null;
 }
 
 function getUserStatus(userId) {
@@ -493,7 +519,7 @@ function renderOverview() {
   const users = allData.users.filter(matchSearch).slice(-10).reverse();
   if (!users.length) { tbody.innerHTML = '<tr><td colspan="6" class="t-empty">No users registered yet.</td></tr>'; return; }
   tbody.innerHTML = users.map(u => {
-    const sess = getSessionForUser(u.id);
+    const sess = getSessionForUser(u.id, u.email);
     const status = sess ? sess.status : 'registered';
     const score = sess?.score ? sess.score.total + '/75' : '—';
     return `<tr>
@@ -502,7 +528,7 @@ function renderOverview() {
       <td>${fmtDate(u.created_at)}</td>
       <td>${statusBadge(status)}</td>
       <td><span style="font-family:var(--fm);font-weight:600;color:var(--cse);">${score}</span></td>
-      <td>${sess?.score ? `<button class="btn-view" onclick='viewReport(${JSON.stringify(sess)})'>View Report</button>` : '—'}</td>
+      <td>${sess?.score ? (_sc[sess.id]=sess, `<button class="btn-view" onclick="viewReport(_sc['${sess.id}'])">View Report</button>`) : '—'}</td>
     </tr>`;
   }).join('');
 }
@@ -512,7 +538,7 @@ function renderUsers() {
   const users = allData.users.filter(matchSearch);
   if (!users.length) { tbody.innerHTML = '<tr><td colspan="7" class="t-empty">No users registered yet.</td></tr>'; return; }
   tbody.innerHTML = users.map((u, i) => {
-    const sess = getSessionForUser(u.id);
+    const sess = getSessionForUser(u.id, u.email);
     const status = sess ? sess.status : 'registered';
     return `<tr>
       <td style="color:rgba(26,18,8,.3);font-family:var(--fm)">${i+1}</td>
@@ -521,7 +547,7 @@ function renderUsers() {
       <td>${u.phone || '—'}</td>
       <td>${fmtDate(u.created_at)}</td>
       <td>${statusBadge(status)}</td>
-      <td>${sess?.score ? `<button class="btn-view" onclick='viewReport(${JSON.stringify(sess)})'>Report</button>` : '—'}</td>
+      <td>${sess?.score ? (_sc[sess.id]=sess, `<button class="btn-view" onclick="viewReport(_sc['${sess.id}'])">Report</button>`) : '—'}</td>
     </tr>`;
   }).join('');
 }
@@ -529,7 +555,7 @@ function renderUsers() {
 function renderCompleted() {
   const tbody = document.getElementById('completed-tbody');
   const sessions = allData.sessions.filter(s => s.status === 'completed' && (!searchTerm || (s.user_name||'').toLowerCase().includes(searchTerm) || (s.user_email||'').toLowerCase().includes(searchTerm)));
-  if (!sessions.length) { tbody.innerHTML = '<tr><td colspan="8" class="t-empty">No completed tests yet.</td></tr>'; return; }
+  if (!sessions.length) { tbody.innerHTML = '<tr><td colspan="9" class="t-empty">No completed tests yet.</td></tr>'; return; }
   tbody.innerHTML = sessions.map((s, i) => {
     const r = s.score || {};
     const fc = s.flag_count || 0;
@@ -545,7 +571,7 @@ function renderCompleted() {
       <td><span style="font-size:.78rem;font-weight:600;">${r.rating || '—'}</span></td>
       <td>${flagCell}</td>
       <td>${fmtDate(s.completed_at)}</td>
-      <td><button class="btn-view" onclick='viewReport(${JSON.stringify(s)})'>View</button></td>
+      <td>${(_sc[s.id]=s, `<button class="btn-view" onclick="viewReport(_sc['${s.id}'])">View</button>`)}</td>
     </tr>`;
   }).join('');
 }
@@ -848,7 +874,7 @@ function showAdminToast(msg) {
 function exportCSV() {
   const rows = [['Name','Email','Phone','Registered','Status','Score','Rating','Recommendation']];
   allData.users.forEach(u => {
-    const sess = getSessionForUser(u.id);
+    const sess = getSessionForUser(u.id, u.email);
     const r = sess?.score || {};
     rows.push([u.name, u.email, u.phone||'', fmtDate(u.created_at), sess?.status || 'registered', r.total || '', r.rating || '', r.recommendation || '']);
   });

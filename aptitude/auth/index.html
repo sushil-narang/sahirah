@@ -209,10 +209,16 @@ function doRegister() {
   saveUsers(users);
   setCurrentUser({ id: newUser.id, name: newUser.name, email: newUser.email });
 
+  if (typeof SahirahDB !== 'undefined') {
+    SahirahDB.saveCseUser(newUser).catch(e => console.warn('Supabase user save failed:', e));
+  }
+
   document.getElementById('btn-register').disabled = true;
   showOk('reg-ok', 'Account created! Welcome, ' + name + '. Taking you to the test portal…');
   setTimeout(() => { location.href = '../test/'; }, 1400);
 }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../../assets/js/db.js"></script>
 </body>
 </html>

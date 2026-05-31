@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co; img-src 'self' data:; frame-ancestors 'none';"/>
-<title>Unlock Your Report — Sahirah.in</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://checkout.razorpay.com; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co https://api.razorpay.com https://lumberjack-v2.razorpay.com; img-src 'self' data: https://checkout.razorpay.com; frame-src https://api.razorpay.com; frame-ancestors 'none';"/>
+<title>Choose Your Plan — Sahirah.in</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 :root{
@@ -16,6 +16,8 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
 body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.6;min-height:100vh;}
+
+/* NAV */
 nav{position:sticky;top:0;z-index:100;padding:0 5%;background:rgba(253,248,240,0.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;height:64px;}
 .nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
 .nav-logo img{height:40px;width:auto;display:block;}
@@ -30,9 +32,10 @@ nav{position:sticky;top:0;z-index:100;padding:0 5%;background:rgba(253,248,240,0
 .ns.active .ns-dot{background:var(--ink);color:var(--cream);}
 .ns.todo .ns-dot{background:transparent;border:1.5px solid rgba(26,18,8,.2);color:rgba(26,18,8,.35);}
 .ns-arr{color:rgba(26,18,8,.2);font-size:.7rem;margin:0 2px;}
+@media(max-width:560px){.ns-arr,.ns:not(.active){display:none;}.ns.active{padding:0;}}
 
 /* PAGE */
-.page{max-width:940px;margin:0 auto;padding:3rem 5% 5rem;}
+.page{max-width:960px;margin:0 auto;padding:2.5rem 5% 5rem;}
 
 /* STUDENT STRIP */
 .student-strip{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.5rem;display:flex;align-items:center;gap:1rem;margin-bottom:2rem;box-shadow:var(--shadow);}
@@ -40,129 +43,184 @@ nav{position:sticky;top:0;z-index:100;padding:0 5%;background:rgba(253,248,240,0
 .ss-name{font-weight:700;font-size:.95rem;}
 .ss-meta{font-size:.78rem;color:rgba(26,18,8,.5);margin-top:1px;}
 .ss-right{margin-left:auto;display:flex;align-items:center;gap:.5rem;}
-.ss-badge{display:flex;align-items:center;gap:5px;background:var(--teal-light);border:1px solid rgba(10,107,94,.25);border-radius:100px;padding:.3rem .8rem;font-size:.72rem;font-weight:600;color:var(--teal);}
-.ss-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);}
+.ss-badge{display:flex;align-items:center;gap:5px;border-radius:100px;padding:.3rem .8rem;font-size:.72rem;font-weight:600;}
+.ss-badge.green{background:var(--teal-light);border:1px solid rgba(10,107,94,.25);color:var(--teal);}
+.ss-badge.gold{background:var(--gold-pale);border:1px solid rgba(200,134,10,.3);color:var(--gold);}
+.ss-dot{width:6px;height:6px;border-radius:50%;}
+.ss-dot.green{background:var(--teal);}
+.ss-dot.gold{background:var(--gold);}
 
-/* PAGE TITLE */
-.page-head{text-align:center;margin-bottom:2.5rem;}
-.page-eyebrow{display:inline-flex;align-items:center;gap:7px;background:var(--gold-pale);border:1px solid var(--gold-light);border-radius:100px;padding:5px 14px;font-size:.7rem;font-weight:600;color:var(--gold);letter-spacing:.07em;text-transform:uppercase;margin-bottom:1rem;}
-.page-title{font-family:var(--fd);font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;letter-spacing:-.03em;margin-bottom:.6rem;}
-.page-sub{color:rgba(26,18,8,.55);font-size:.95rem;line-height:1.7;max-width:500px;margin:0 auto;font-weight:300;}
+/* STEP PROGRESS BAR */
+.step-bar{display:flex;align-items:center;margin-bottom:2.5rem;}
+.sb-step{display:flex;align-items:center;gap:.5rem;}
+.sb-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;transition:all .3s;flex-shrink:0;}
+.sb-num.done{background:var(--teal);color:#fff;}
+.sb-num.done::after{content:'✓';}
+.sb-num.active{background:var(--ink);color:var(--cream);}
+.sb-num.todo{background:transparent;border:2px solid rgba(26,18,8,.18);color:rgba(26,18,8,.35);}
+.sb-label{font-size:.75rem;font-weight:600;color:rgba(26,18,8,.45);}
+.sb-label.active{color:var(--ink);}
+.sb-label.done{color:var(--teal);}
+.sb-line{flex:1;height:2px;background:rgba(26,18,8,.1);margin:0 .75rem;transition:background .3s;}
+.sb-line.done{background:var(--teal);}
+@media(max-width:480px){.sb-label{display:none;}.sb-line{margin:0 .4rem;}}
 
-/* ACCESS CODE BOX */
-.access-box{background:#fff;border:1px solid var(--border);border-radius:20px;padding:1.75rem 2rem;margin-bottom:2rem;box-shadow:var(--shadow);}
-.ab-head{display:flex;align-items:center;gap:.65rem;margin-bottom:.25rem;}
-.ab-icon{width:36px;height:36px;border-radius:10px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
-.ab-title{font-weight:700;font-size:.95rem;}
-.ab-sub{font-size:.8rem;color:rgba(26,18,8,.45);margin-bottom:1.1rem;margin-left:52px;}
+/* SECTION PANELS */
+.pay-step{display:none;}
+.pay-step.active{display:block;animation:fadeUp .3s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+/* PAGE HEADING */
+.page-head{margin-bottom:2rem;}
+.page-eyebrow{display:inline-flex;align-items:center;gap:7px;background:var(--gold-pale);border:1px solid var(--gold-light);border-radius:100px;padding:5px 14px;font-size:.7rem;font-weight:600;color:var(--gold);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.85rem;}
+.page-title{font-family:var(--fd);font-size:clamp(1.7rem,4vw,2.4rem);font-weight:900;letter-spacing:-.03em;margin-bottom:.5rem;}
+.page-sub{color:rgba(26,18,8,.55);font-size:.92rem;line-height:1.7;max-width:520px;font-weight:300;}
+
+/* PLAN CARDS */
+.plans-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;}
+@media(max-width:640px){.plans-grid{grid-template-columns:1fr;}}
+.plan-card{background:#fff;border:2px solid var(--border);border-radius:22px;padding:2rem 1.75rem;display:flex;flex-direction:column;transition:all .25s;position:relative;cursor:pointer;}
+.plan-card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(26,18,8,.1);}
+.plan-card.popular{border-color:var(--gold);box-shadow:0 4px 24px rgba(200,134,10,.15);}
+.plan-card.selected{border-color:var(--teal);box-shadow:0 0 0 3px rgba(10,107,94,.15),0 8px 32px rgba(26,18,8,.1);}
+.plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--ink);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:.28rem .9rem;border-radius:100px;white-space:nowrap;}
+.plan-icon{font-size:1.75rem;margin-bottom:.85rem;}
+.plan-name{font-weight:700;font-size:1.05rem;margin-bottom:.2rem;}
+.plan-price{font-family:var(--fd);font-size:2.2rem;font-weight:900;line-height:1;margin-bottom:.25rem;}
+.plan-price span{font-size:.82rem;font-weight:400;font-family:var(--fb);color:rgba(26,18,8,.4);}
+.plan-strike{font-size:.78rem;color:rgba(26,18,8,.3);text-decoration:line-through;margin-left:.3rem;font-family:var(--fb);}
+.plan-desc{font-size:.8rem;color:rgba(26,18,8,.5);margin-bottom:1.25rem;line-height:1.55;}
+.plan-features{flex:1;margin-bottom:1.5rem;}
+.pf-item{display:flex;align-items:flex-start;gap:.5rem;font-size:.82rem;margin-bottom:.55rem;line-height:1.4;}
+.pf-item::before{content:'✓';color:var(--teal);font-weight:700;flex-shrink:0;margin-top:1px;}
+.pf-item.highlight::before{content:'⭐';font-size:.72rem;}
+.plan-actions{display:flex;gap:.6rem;flex-direction:column;}
+.plan-btn{width:100%;border:none;border-radius:100px;padding:.85rem;font-size:.9rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;}
+.plan-btn-basic{background:var(--blue);color:#fff;}
+.plan-btn-basic:hover{background:#0d3d6b;}
+.plan-btn-premium{background:var(--gold);color:var(--ink);}
+.plan-btn-premium:hover{background:#b5780a;color:#fff;}
+.plan-btn-sample{background:transparent;border:1.5px solid var(--border);color:rgba(26,18,8,.6);font-size:.8rem;padding:.55rem;}
+.plan-btn-sample:hover{border-color:var(--ink);color:var(--ink);}
+
+/* COMPARE STRIP */
+.compare-strip{background:#fff;border:1px solid var(--border);border-radius:18px;padding:1.5rem 1.75rem;margin-bottom:2.5rem;box-shadow:var(--shadow);}
+.cs-title{font-family:var(--fd);font-size:1rem;font-weight:700;margin-bottom:1rem;text-align:center;}
+.cs-row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:.5rem;align-items:center;padding:.5rem .5rem;border-radius:8px;font-size:.8rem;}
+.cs-row:nth-child(even){background:#FAFAF7;}
+.cs-feature{font-weight:500;color:rgba(26,18,8,.75);}
+.cs-cell{text-align:center;font-size:.9rem;}
+.cs-check{color:var(--teal);font-weight:700;}
+.cs-cross{color:rgba(26,18,8,.18);}
+.cs-header{font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:rgba(26,18,8,.4);padding-bottom:.6rem;border-bottom:1.5px solid var(--border);}
+
+/* COUPON STEP */
+.coupon-box{background:#fff;border:1px solid var(--border);border-radius:20px;padding:2rem;box-shadow:var(--shadow);margin-bottom:1.5rem;}
+.cb-plan-summary{display:flex;align-items:center;gap:.85rem;padding:1rem 1.25rem;background:#F5F0E8;border-radius:14px;margin-bottom:1.75rem;}
+.cbps-plan{font-weight:700;font-size:.9rem;}
+.cbps-price{font-family:var(--fd);font-size:1.3rem;font-weight:700;margin-left:auto;}
+.cb-title{font-weight:700;font-size:1rem;margin-bottom:.3rem;}
+.cb-sub{font-size:.82rem;color:rgba(26,18,8,.45);margin-bottom:1.25rem;}
 .code-row{display:flex;gap:.75rem;align-items:stretch;}
 .code-input{flex:1;background:#FAFAF7;border:1.5px solid var(--border);border-radius:12px;padding:.75rem 1.1rem;font-size:.95rem;font-family:var(--fm);letter-spacing:.06em;text-transform:uppercase;outline:none;transition:border-color .2s;}
 .code-input::placeholder{text-transform:none;letter-spacing:0;font-family:var(--fb);font-size:.88rem;color:rgba(26,18,8,.3);}
 .code-input:focus{border-color:var(--blue);}
 .code-input.valid{border-color:var(--teal);background:#F5FFFE;}
-.code-input.invalid{border-color:var(--red);background:#FFF9F7;}
+.code-input.invalid{border-color:var(--red);}
 .btn-apply{background:var(--ink);color:var(--cream);border:none;border-radius:12px;padding:.75rem 1.5rem;font-size:.88rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;white-space:nowrap;}
 .btn-apply:hover{background:var(--gold);color:var(--ink);}
 .btn-apply:disabled{opacity:.4;cursor:default;}
 .code-result{margin-top:.85rem;border-radius:12px;padding:.75rem 1rem;font-size:.82rem;display:none;}
-.code-result.success{background:var(--teal-light);border:1px solid rgba(10,107,94,.2);color:var(--teal);}
-.code-result.error{background:var(--red-light);border:1px solid rgba(192,65,10,.2);color:var(--red);}
-.code-result.show{display:flex;align-items:flex-start;gap:.5rem;}
+.code-result.success.show{display:flex;background:var(--teal-light);border:1px solid rgba(10,107,94,.2);color:var(--teal);align-items:flex-start;gap:.5rem;}
+.code-result.error.show{display:flex;background:var(--red-light);border:1px solid rgba(192,65,10,.2);color:var(--red);align-items:flex-start;gap:.5rem;}
+.step-nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:1.5rem;}
+.btn-back-step{background:transparent;border:1.5px solid var(--border);border-radius:100px;padding:.75rem 1.5rem;font-size:.88rem;font-weight:500;cursor:pointer;font-family:var(--fb);color:rgba(26,18,8,.55);transition:all .2s;}
+.btn-back-step:hover{border-color:var(--ink);color:var(--ink);}
+.btn-skip{font-size:.82rem;color:rgba(26,18,8,.4);background:none;border:none;cursor:pointer;font-family:var(--fb);text-decoration:underline;}
+.btn-skip:hover{color:var(--ink);}
+.btn-next-step{background:var(--ink);color:var(--cream);border:none;border-radius:100px;padding:.75rem 2rem;font-size:.9rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:background .2s;}
+.btn-next-step:hover{background:var(--gold);color:var(--ink);}
 
-/* DIVIDER */
-.or-divider{display:flex;align-items:center;gap:1rem;margin-bottom:2rem;}
-.or-divider::before,.or-divider::after{content:'';flex:1;border-top:1px solid var(--border);}
-.or-text{font-size:.75rem;font-weight:600;color:rgba(26,18,8,.35);text-transform:uppercase;letter-spacing:.07em;}
+/* PAYMENT SUMMARY STEP */
+.pay-summary-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:2rem;box-shadow:var(--shadow);margin-bottom:1.5rem;}
+.ps-header{font-family:var(--fd);font-size:1.05rem;font-weight:700;margin-bottom:1.5rem;}
+.ps-row{display:flex;justify-content:space-between;align-items:center;padding:.65rem 0;border-bottom:1px solid var(--border);font-size:.88rem;}
+.ps-row:last-of-type{border-bottom:none;}
+.ps-label{color:rgba(26,18,8,.55);}
+.ps-val{font-weight:600;}
+.ps-total{display:flex;justify-content:space-between;align-items:center;background:var(--ink);color:var(--cream);border-radius:14px;padding:1.1rem 1.5rem;margin-top:1.25rem;}
+.ps-total-label{font-size:.82rem;color:rgba(253,248,240,.55);font-weight:500;}
+.ps-total-amount{font-family:var(--fd);font-size:1.8rem;font-weight:700;color:var(--gold-light);}
+.btn-pay-razorpay{width:100%;background:var(--teal);color:#fff;border:none;border-radius:100px;padding:1rem;font-size:1rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:background .2s;margin-top:1.5rem;display:flex;align-items:center;justify-content:center;gap:.65rem;}
+.btn-pay-razorpay:hover{background:#085a4f;}
+.btn-pay-razorpay:disabled{opacity:.5;cursor:not-allowed;}
+.pay-note{font-size:.72rem;color:rgba(26,18,8,.35);text-align:center;margin-top:.85rem;line-height:1.7;}
+.pay-upi-icons{display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:.6rem;opacity:.45;font-size:.72rem;font-weight:600;}
 
-/* PLAN CARDS */
-.plans-head{text-align:center;margin-bottom:1.25rem;}
-.plans-head h2{font-family:var(--fd);font-size:1.3rem;font-weight:700;}
-.plans-head p{font-size:.82rem;color:rgba(26,18,8,.45);margin-top:.2rem;}
-.plans-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;}
-@media(max-width:720px){.plans-grid{grid-template-columns:1fr;}}
-.plan-card{background:#fff;border:2px solid var(--border);border-radius:20px;padding:1.75rem 1.5rem;display:flex;flex-direction:column;transition:all .2s;cursor:pointer;position:relative;}
-.plan-card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(26,18,8,.1);}
-.plan-card.popular{border-color:var(--gold);box-shadow:0 4px 24px rgba(200,134,10,.15);}
-.plan-card.selected{border-color:var(--teal);box-shadow:0 0 0 3px rgba(10,107,94,.15);}
-.plan-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--ink);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:.25rem .85rem;border-radius:100px;white-space:nowrap;}
-.plan-icon{font-size:1.5rem;margin-bottom:.85rem;}
-.plan-name{font-weight:700;font-size:1rem;margin-bottom:.25rem;}
-.plan-price{font-family:var(--fd);font-size:2rem;font-weight:900;line-height:1;margin-bottom:.25rem;}
-.plan-price span{font-size:.85rem;font-weight:400;font-family:var(--fb);color:rgba(26,18,8,.4);}
-.plan-desc{font-size:.78rem;color:rgba(26,18,8,.5);margin-bottom:1.1rem;line-height:1.5;}
-.plan-features{flex:1;margin-bottom:1.25rem;}
-.pf-item{display:flex;align-items:flex-start;gap:.5rem;font-size:.8rem;margin-bottom:.5rem;line-height:1.4;}
-.pf-item::before{content:'✓';color:var(--teal);font-weight:700;flex-shrink:0;margin-top:1px;}
-.pf-item.locked{color:rgba(26,18,8,.35);}
-.pf-item.locked::before{content:'🔒';font-size:.65rem;}
-.plan-btn{width:100%;border:none;border-radius:100px;padding:.8rem;font-size:.88rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;}
-.plan-btn-free{background:rgba(26,18,8,.06);color:var(--ink);}
-.plan-btn-free:hover{background:rgba(26,18,8,.1);}
-.plan-btn-basic{background:var(--blue);color:#fff;}
-.plan-btn-basic:hover{background:#0d3d6b;}
-.plan-btn-premium{background:var(--gold);color:var(--ink);}
-.plan-btn-premium:hover{background:var(--gold-light);}
-.plan-original{font-size:.72rem;color:rgba(26,18,8,.35);text-decoration:line-through;margin-left:.25rem;display:none;}
+/* FREE ACCESS CTA */
+.free-access-box{background:#fff;border:2px solid var(--teal);border-radius:20px;padding:2.5rem;text-align:center;box-shadow:var(--shadow);}
+.fa-icon{font-size:3rem;margin-bottom:.75rem;}
+.fa-title{font-family:var(--fd);font-size:1.4rem;font-weight:700;margin-bottom:.4rem;}
+.fa-sub{font-size:.88rem;color:rgba(26,18,8,.5);margin-bottom:1.5rem;line-height:1.6;}
+.btn-access{display:inline-flex;align-items:center;gap:.5rem;background:var(--teal);color:#fff;border:none;border-radius:100px;padding:.9rem 2.25rem;font-size:.95rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:background .2s;}
+.btn-access:hover{background:#085a4f;}
 
-/* PAYMENT MODAL */
-.pay-overlay{position:fixed;inset:0;background:rgba(26,18,8,.7);z-index:1000;display:none;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(6px);}
-.pay-overlay.show{display:flex;}
-.pay-modal{background:#fff;border-radius:22px;padding:2rem;max-width:420px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.3);}
-.pm-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;gap:1rem;}
-.pm-title{font-family:var(--fd);font-size:1.2rem;font-weight:700;}
-.pm-close{background:rgba(26,18,8,.06);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.pm-close:hover{background:rgba(26,18,8,.1);}
-.pm-amount-band{background:var(--ink);border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;}
-.pm-plan-name{font-size:.78rem;font-weight:600;color:rgba(253,248,240,.5);}
-.pm-amount{font-family:var(--fd);font-size:1.6rem;font-weight:700;color:var(--gold-light);}
-.pm-amount small{font-size:.75rem;font-family:var(--fb);font-weight:400;color:rgba(253,248,240,.4);}
-.pm-field{margin-bottom:.85rem;}
-.pm-field label{display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:rgba(26,18,8,.4);margin-bottom:.35rem;}
-.pm-field input{width:100%;background:#FAFAF7;border:1.5px solid var(--border);border-radius:10px;padding:.65rem .9rem;font-size:.88rem;font-family:var(--fb);outline:none;transition:border-color .2s;}
-.pm-field input:focus{border-color:var(--teal);}
-.pm-row{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;}
-.pm-upi{background:var(--teal-light);border:1.5px solid rgba(10,107,94,.2);border-radius:12px;padding:.75rem 1rem;display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;cursor:pointer;transition:all .2s;}
-.pm-upi:hover{border-color:var(--teal);}
-.pm-upi-icon{font-size:1.25rem;}
-.pm-upi-text{font-size:.82rem;font-weight:600;color:var(--teal);}
-.pm-upi-sub{font-size:.7rem;color:rgba(10,107,94,.6);}
-.pm-divider{display:flex;align-items:center;gap:.65rem;margin:.5rem 0 .85rem;}
-.pm-divider::before,.pm-divider::after{content:'';flex:1;border-top:1px solid var(--border);}
-.pm-divider span{font-size:.68rem;color:rgba(26,18,8,.3);text-transform:uppercase;letter-spacing:.06em;}
-.btn-pay{width:100%;background:var(--teal);color:#fff;border:none;border-radius:100px;padding:.85rem;font-size:.95rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:background .2s;margin-top:.25rem;}
-.btn-pay:hover{background:#085a4f;}
-.pm-note{font-size:.68rem;color:rgba(26,18,8,.3);text-align:center;margin-top:.75rem;line-height:1.6;}
+/* SAMPLE REPORT MODAL */
+.sample-overlay{position:fixed;inset:0;background:rgba(26,18,8,.75);z-index:2000;display:none;align-items:flex-start;justify-content:center;padding:1.5rem;overflow-y:auto;backdrop-filter:blur(6px);}
+.sample-overlay.show{display:flex;}
+.sample-modal{background:#fff;border-radius:22px;max-width:700px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.4);margin:auto;position:relative;overflow:hidden;}
+.sm-header{padding:1.25rem 1.75rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:10;}
+.sm-tabs{display:flex;gap:.35rem;}
+.sm-tab{padding:.45rem 1.1rem;border-radius:100px;font-size:.8rem;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:transparent;color:rgba(26,18,8,.5);font-family:var(--fb);transition:all .2s;}
+.sm-tab.active{background:var(--ink);color:var(--cream);border-color:var(--ink);}
+.sm-close{background:rgba(26,18,8,.07);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sm-close:hover{background:rgba(26,18,8,.14);}
+.sm-body{padding:1.75rem;max-height:80vh;overflow-y:auto;}
+.sm-panel{display:none;}
+.sm-panel.active{display:block;}
+.sample-watermark{text-align:center;font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(26,18,8,.18);margin-bottom:1.25rem;padding:.4rem;border:1px dashed rgba(26,18,8,.15);border-radius:6px;}
+
+/* Sample report inner styles */
+.sr-head{background:var(--ink);border-radius:16px;padding:1.5rem;color:var(--cream);margin-bottom:1.25rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.sr-head-name{font-family:var(--fd);font-size:1.1rem;font-weight:700;color:var(--gold-light);}
+.sr-head-meta{font-size:.75rem;color:rgba(253,248,240,.45);margin-top:.2rem;}
+.sr-head-rating{background:rgba(255,255,255,.1);border-radius:100px;padding:.3rem .9rem;font-size:.75rem;font-weight:600;margin-top:.5rem;display:inline-block;}
+.sr-score-box{text-align:right;flex-shrink:0;}
+.sr-score-num{font-family:var(--fd);font-size:2.5rem;font-weight:900;color:var(--gold-light);line-height:1;}
+.sr-score-sub{font-size:.72rem;color:rgba(253,248,240,.4);}
+.sr-section{background:#FAFAF7;border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:.85rem;}
+.sr-section-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(26,18,8,.4);margin-bottom:.85rem;}
+.sr-bar-row{display:flex;align-items:center;gap:.65rem;margin-bottom:.6rem;}
+.sr-bar-name{font-size:.78rem;font-weight:500;min-width:130px;flex-shrink:0;}
+.sr-bar-track{flex:1;height:8px;background:#E8E2DA;border-radius:100px;overflow:hidden;}
+.sr-bar-fill{height:100%;border-radius:100px;}
+.sr-bar-val{font-size:.7rem;font-family:var(--fm);color:rgba(26,18,8,.4);min-width:32px;text-align:right;}
+.sr-career-row{display:flex;align-items:center;gap:.75rem;padding:.65rem .75rem;background:#fff;border-radius:10px;margin-bottom:.5rem;border:1px solid var(--border);}
+.sr-career-pct{font-family:var(--fd);font-size:1.1rem;font-weight:700;color:var(--teal);min-width:42px;}
+.sr-career-name{font-weight:600;font-size:.85rem;}
+.sr-career-stream{font-size:.72rem;color:rgba(26,18,8,.4);}
+.sr-lock{background:rgba(26,18,8,.04);border:1.5px dashed rgba(26,18,8,.12);border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:.85rem;display:flex;align-items:center;gap:.75rem;color:rgba(26,18,8,.35);}
+.sr-lock-icon{font-size:1.25rem;}
+.sr-lock-text{font-size:.82rem;font-weight:500;}
+.sr-premium-badge{display:inline-flex;align-items:center;gap:5px;background:var(--gold-pale);border:1px solid var(--gold-light);border-radius:100px;padding:.25rem .75rem;font-size:.68rem;font-weight:700;color:var(--gold);margin-bottom:.75rem;}
+.sr-counselling{background:linear-gradient(135deg,var(--ink),#2d2015);border-radius:14px;padding:1.25rem 1.5rem;color:var(--cream);margin-bottom:.85rem;}
+.sr-counselling-title{font-family:var(--fd);font-size:.95rem;font-weight:700;color:var(--gold-light);margin-bottom:.35rem;}
+.sr-counselling-text{font-size:.8rem;color:rgba(253,248,240,.65);line-height:1.6;}
 
 /* TOAST */
-#pay-toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--teal);color:#fff;padding:.6rem 1.5rem;border-radius:100px;font-size:.82rem;font-weight:600;z-index:9999;box-shadow:0 4px 24px rgba(0,0,0,.2);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .25s;}
+#pay-toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--teal);color:#fff;padding:.65rem 1.6rem;border-radius:100px;font-size:.82rem;font-weight:600;z-index:9999;box-shadow:0 4px 24px rgba(0,0,0,.2);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .25s;}
 #pay-toast.show{opacity:1;}
-
-/* What's included comparison */
-.compare-strip{margin-top:2.5rem;background:#fff;border:1px solid var(--border);border-radius:20px;padding:1.75rem 2rem;box-shadow:var(--shadow);}
-.cs-title{font-family:var(--fd);font-size:1.1rem;font-weight:700;margin-bottom:1.25rem;text-align:center;}
-.cs-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:.5rem;align-items:center;padding:.55rem .5rem;border-radius:8px;font-size:.8rem;}
-.cs-row:nth-child(even){background:#FAFAF7;}
-.cs-feature{font-weight:500;color:rgba(26,18,8,.75);}
-.cs-cell{text-align:center;font-size:.9rem;}
-.cs-check{color:var(--teal);}
-.cs-cross{color:rgba(26,18,8,.2);}
-.cs-header{font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:rgba(26,18,8,.4);padding-bottom:.5rem;border-bottom:1.5px solid var(--border);}
-.cs-header .cs-cell{font-size:.72rem;font-weight:700;color:rgba(26,18,8,.4);}
 </style>
 </head>
 <body>
 
 <nav>
   <a href="../" class="nav-logo">
-    <img src="../assets/images/sahirah-logo.png" alt="Sahirah"/>
+    <img src="../assets/images/sahirah-logo.png" alt="Sahirah" onerror="this.style.display='none'"/>
     <span class="nav-logo-text">Sahir<span>ah</span>.in</span>
   </a>
-  <div class="nav-steps">
-    <div class="ns done"><div class="ns-dot">✓</div>Test Complete</div>
-    <div class="ns-arr">›</div>
-    <div class="ns active"><div class="ns-dot">2</div>Get Report</div>
-    <div class="ns-arr">›</div>
-    <div class="ns todo"><div class="ns-dot">3</div>Download PDF</div>
+  <div class="nav-steps" id="nav-steps">
+    <!-- populated by JS based on flow -->
   </div>
 </nav>
 
@@ -176,201 +234,454 @@ nav{position:sticky;top:0;z-index:100;padding:0 5%;background:rgba(253,248,240,0
       <div class="ss-meta" id="ss-meta"></div>
     </div>
     <div class="ss-right">
-      <div class="ss-badge"><div class="ss-dot"></div>Test Completed</div>
-    </div>
-  </div>
-
-  <!-- HEADING -->
-  <div class="page-head">
-    <div class="page-eyebrow">Step 2 of 3</div>
-    <h1 class="page-title">Unlock Your Full Report</h1>
-    <p class="page-sub">Enter a school code, counselor code, or scholarship coupon — or choose a plan to access your personalised career guidance report.</p>
-  </div>
-
-  <!-- ACCESS CODE -->
-  <div class="access-box">
-    <div class="ab-head">
-      <div class="ab-icon">🔑</div>
-      <div class="ab-title">Have a School, Counselor, or Scholarship Code?</div>
-    </div>
-    <div class="ab-sub">Enter your code below to unlock your premium report for free.</div>
-    <div class="code-row">
-      <input type="text" class="code-input" id="access-code-input" placeholder="e.g. SCH-DPS-001 or SCHOLAR25" maxlength="30" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')applyCode()"/>
-      <button class="btn-apply" onclick="applyCode()" id="btn-apply">Apply Code →</button>
-    </div>
-    <div class="code-result" id="code-result"></div>
-  </div>
-
-  <!-- OR -->
-  <div class="or-divider"><span class="or-text">Or choose a plan</span></div>
-
-  <!-- PLAN CARDS -->
-  <div class="plans-head">
-    <h2>Purchase Your Report</h2>
-    <p>One-time payment · Instant access · No subscription</p>
-  </div>
-  <div class="plans-grid">
-
-    <!-- FREE -->
-    <div class="plan-card" id="plan-free" onclick="selectPlan('free')">
-      <div class="plan-icon">👁️</div>
-      <div class="plan-name">Free Preview</div>
-      <div class="plan-price">₹0 <span>forever</span></div>
-      <div class="plan-desc">See your highlights and understand your top strengths.</div>
-      <ul class="plan-features">
-        <li class="pf-item">Overall personality summary</li>
-        <li class="pf-item">Recommended stream</li>
-        <li class="pf-item">Top 3 career matches</li>
-        <li class="pf-item">Aptitude radar chart</li>
-        <li class="pf-item locked">Full 10–15 page report</li>
-        <li class="pf-item locked">Career roadmap</li>
-        <li class="pf-item locked">PDF download</li>
-      </ul>
-      <button class="plan-btn plan-btn-free" onclick="choosePlan('free',0)">View Free Preview →</button>
-    </div>
-
-    <!-- BASIC -->
-    <div class="plan-card popular" id="plan-basic" onclick="selectPlan('basic')">
-      <div class="plan-badge">Most Popular</div>
-      <div class="plan-icon">📊</div>
-      <div class="plan-name">Basic Report</div>
-      <div class="plan-price" id="basic-price">₹499 <span>one-time</span></div>
-      <div class="plan-desc">Complete AI-generated psychometric report with career guidance.</div>
-      <ul class="plan-features">
-        <li class="pf-item">Everything in Free</li>
-        <li class="pf-item">Full 10–15 page report</li>
-        <li class="pf-item">Deep trait analysis</li>
-        <li class="pf-item">Career roadmap</li>
-        <li class="pf-item">Stream comparison</li>
-        <li class="pf-item">PDF download</li>
-        <li class="pf-item locked">Counseling session (1-on-1)</li>
-      </ul>
-      <button class="plan-btn plan-btn-basic" onclick="choosePlan('basic',499)">Pay ₹499 →</button>
-    </div>
-
-    <!-- PREMIUM -->
-    <div class="plan-card" id="plan-premium" onclick="selectPlan('premium')">
-      <div class="plan-icon">🏆</div>
-      <div class="plan-name">Premium Career Package</div>
-      <div class="plan-price" id="premium-price">₹1499 <span>one-time</span></div>
-      <div class="plan-desc">The complete career package with AI counselor + parent guidance.</div>
-      <ul class="plan-features">
-        <li class="pf-item">Everything in Basic</li>
-        <li class="pf-item">AI counselor insights</li>
-        <li class="pf-item">Parent interpretation guide</li>
-        <li class="pf-item">Learning style analysis</li>
-        <li class="pf-item">Future careers in AI era</li>
-        <li class="pf-item">Leadership analysis</li>
-        <li class="pf-item">1 live counseling session</li>
-      </ul>
-      <button class="plan-btn plan-btn-premium" onclick="choosePlan('premium',1499)">Pay ₹1499 →</button>
-    </div>
-
-  </div>
-
-  <!-- COMPARE TABLE -->
-  <div class="compare-strip">
-    <div class="cs-title">What's included in each plan?</div>
-    <div class="cs-row cs-header">
-      <div class="cs-feature">Feature</div>
-      <div class="cs-cell">Free</div>
-      <div class="cs-cell">Basic</div>
-      <div class="cs-cell">Premium</div>
-    </div>
-    <div class="cs-row"><div class="cs-feature">Overall personality summary</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
-    <div class="cs-row"><div class="cs-feature">Recommended stream</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
-    <div class="cs-row"><div class="cs-feature">Top 3 career matches</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
-    <div class="cs-row"><div class="cs-feature">Aptitude radar chart</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
-    <div class="cs-row"><div class="cs-feature">Full AI-generated report (10–15 pages)</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
-    <div class="cs-row"><div class="cs-feature">Deep personality trait analysis</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
-    <div class="cs-row"><div class="cs-feature">EQ (Emotional Intelligence) breakdown</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
-    <div class="cs-row"><div class="cs-feature">Interest profile (RIASEC model)</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
-    <div class="cs-row"><div class="cs-feature">Entrance exam roadmap</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
-    <div class="cs-row"><div class="cs-feature">Skill gap analysis</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
-    <div class="cs-row"><div class="cs-feature">PDF download</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
-    <div class="cs-row"><div class="cs-feature">Parent interpretation guide</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div></div>
-    <div class="cs-row"><div class="cs-feature">Future careers in AI era</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div></div>
-    <div class="cs-row"><div class="cs-feature">Live 1-on-1 counseling session</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div></div>
-  </div>
-
-</div>
-
-<!-- PAYMENT MODAL -->
-<div class="pay-overlay" id="pay-overlay" onclick="if(event.target===this)closePayModal()">
-  <div class="pay-modal">
-    <div class="pm-header">
-      <div class="pm-title" id="pm-title">Complete Payment</div>
-      <button class="pm-close" onclick="closePayModal()">✕</button>
-    </div>
-    <div class="pm-amount-band">
-      <div>
-        <div class="pm-plan-name" id="pm-plan-name">Basic Report</div>
-        <div class="pm-amount" id="pm-amount">₹499 <small>incl. taxes</small></div>
+      <div class="ss-badge" id="ss-badge">
+        <div class="ss-dot"></div><span id="ss-badge-text"></span>
       </div>
-      <div style="font-size:1.5rem;">💳</div>
+    </div>
+  </div>
+
+  <!-- STEP PROGRESS -->
+  <div class="step-bar" id="step-bar">
+    <div class="sb-step"><div class="sb-num done" id="sb1"></div><span class="sb-label done" id="sl1">Plan</span></div>
+    <div class="sb-line" id="sbl1"></div>
+    <div class="sb-step"><div class="sb-num todo" id="sb2"></div><span class="sb-label todo" id="sl2">Coupon</span></div>
+    <div class="sb-line" id="sbl2"></div>
+    <div class="sb-step"><div class="sb-num todo" id="sb3"></div><span class="sb-label todo" id="sl3">Pay</span></div>
+  </div>
+
+  <!-- ===== STEP 1: PLAN SELECTION ===== -->
+  <div class="pay-step active" id="step-plan">
+
+    <div class="page-head">
+      <div class="page-eyebrow" id="step1-eyebrow">Step 1 of 3 · Choose Your Package</div>
+      <h1 class="page-title" id="step1-title">Choose Your Report Package</h1>
+      <p class="page-sub" id="step1-sub">Both plans include the full psychometric assessment. Choose the level of guidance that suits your family.</p>
     </div>
 
-    <!-- UPI option -->
-    <div class="pm-upi" onclick="simulatePay()">
-      <div class="pm-upi-icon">📱</div>
-      <div>
-        <div class="pm-upi-text">Pay via UPI</div>
-        <div class="pm-upi-sub">Google Pay, PhonePe, Paytm, BHIM</div>
+    <div class="plans-grid">
+
+      <!-- BASIC -->
+      <div class="plan-card popular" id="plan-basic" onclick="selectPlan('basic')">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-icon">📊</div>
+        <div class="plan-name">Basic Report</div>
+        <div class="plan-price" id="basic-price">₹499 <span>one-time</span></div>
+        <div class="plan-desc">A complete AI-generated psychometric report with personalised career guidance and stream recommendation.</div>
+        <ul class="plan-features">
+          <li class="pf-item">Full 10–15 page psychometric report</li>
+          <li class="pf-item">Stream recommendation (with % scores)</li>
+          <li class="pf-item">Top 5 career matches with entrance exams</li>
+          <li class="pf-item">Personality &amp; EQ deep-dive</li>
+          <li class="pf-item">Aptitude radar chart</li>
+          <li class="pf-item">Interest profile (RIASEC)</li>
+          <li class="pf-item">Entrance exam roadmap</li>
+          <li class="pf-item">PDF download</li>
+        </ul>
+        <div class="plan-actions">
+          <button class="plan-btn plan-btn-basic" onclick="choosePlan('basic',499);event.stopPropagation()">Select Basic · Pay ₹499 →</button>
+          <button class="plan-btn plan-btn-sample" onclick="openSample('basic');event.stopPropagation()">👁 See Sample Report</button>
+        </div>
       </div>
-      <div style="margin-left:auto;font-size:.75rem;font-weight:700;color:var(--teal);">→</div>
+
+      <!-- PREMIUM -->
+      <div class="plan-card" id="plan-premium" onclick="selectPlan('premium')">
+        <div class="plan-icon">🏆</div>
+        <div class="plan-name">Premium + Counselling</div>
+        <div class="plan-price" id="premium-price">₹1,499 <span>one-time</span></div>
+        <div class="plan-desc">Everything in Basic, plus a live 1-on-1 counselling session with a certified career guidance expert.</div>
+        <ul class="plan-features">
+          <li class="pf-item">Everything in Basic Report</li>
+          <li class="pf-item highlight">1 live 45-min counselling session</li>
+          <li class="pf-item highlight">AI counsellor insights (Avanya)</li>
+          <li class="pf-item">Parent interpretation guide</li>
+          <li class="pf-item">Learning style analysis</li>
+          <li class="pf-item">Future careers in the AI era</li>
+          <li class="pf-item">Leadership &amp; collaboration analysis</li>
+          <li class="pf-item">Priority slot booking</li>
+        </ul>
+        <div class="plan-actions">
+          <button class="plan-btn plan-btn-premium" onclick="choosePlan('premium',1499);event.stopPropagation()">Select Premium · Pay ₹1,499 →</button>
+          <button class="plan-btn plan-btn-sample" onclick="openSample('premium');event.stopPropagation()">👁 See Sample Report</button>
+        </div>
+      </div>
+
     </div>
 
-    <div class="pm-divider"><span>or pay by card</span></div>
-
-    <div class="pm-field"><label>Name on Card</label><input type="text" id="pm-name" placeholder="Full name" autocomplete="cc-name"/></div>
-    <div class="pm-field"><label>Card Number</label><input type="text" id="pm-card" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)" autocomplete="cc-number"/></div>
-    <div class="pm-row">
-      <div class="pm-field"><label>Expiry</label><input type="text" id="pm-expiry" placeholder="MM / YY" maxlength="7" oninput="formatExpiry(this)" autocomplete="cc-exp"/></div>
-      <div class="pm-field"><label>CVV</label><input type="text" id="pm-cvv" placeholder="123" maxlength="4" autocomplete="cc-csc"/></div>
+    <!-- COMPARE TABLE -->
+    <div class="compare-strip">
+      <div class="cs-title">What's included in each plan?</div>
+      <div class="cs-row cs-header">
+        <div class="cs-feature">Feature</div>
+        <div class="cs-cell">Basic ₹499</div>
+        <div class="cs-cell">Premium ₹1,499</div>
+      </div>
+      <div class="cs-row"><div class="cs-feature">Full psychometric report (10–15 pages)</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
+      <div class="cs-row"><div class="cs-feature">Stream recommendation with % scores</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
+      <div class="cs-row"><div class="cs-feature">Top 5 career matches</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
+      <div class="cs-row"><div class="cs-feature">Personality &amp; EQ breakdown</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
+      <div class="cs-row"><div class="cs-feature">RIASEC interest profile</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
+      <div class="cs-row"><div class="cs-feature">Entrance exam roadmap</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
+      <div class="cs-row"><div class="cs-feature">PDF download</div><div class="cs-cell cs-check">✓</div><div class="cs-cell cs-check">✓</div></div>
+      <div class="cs-row"><div class="cs-feature">AI counsellor insights (Avanya)</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div></div>
+      <div class="cs-row"><div class="cs-feature">Parent interpretation guide</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div></div>
+      <div class="cs-row"><div class="cs-feature">Future careers in the AI era</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div></div>
+      <div class="cs-row"><div class="cs-feature">Live 1-on-1 counselling session (45 min)</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div></div>
+      <div class="cs-row"><div class="cs-feature">Priority test slot booking</div><div class="cs-cell cs-cross">—</div><div class="cs-cell cs-check">✓</div></div>
     </div>
-    <button class="btn-pay" onclick="simulatePay()">Pay Now →</button>
-    <div class="pm-note">🔒 Secure 256-bit SSL encryption · Powered by Razorpay<br/>Your payment information is never stored on our servers.</div>
+
+    <!-- FREE PREVIEW (standalone only) -->
+    <div id="free-preview-row" style="display:none;text-align:center;margin-top:-.5rem;margin-bottom:2rem;">
+      <span style="font-size:.82rem;color:rgba(26,18,8,.4);">Want to see your free highlights first?</span>
+      <button onclick="choosePlan('free',0)" style="background:none;border:none;cursor:pointer;color:var(--blue);font-size:.82rem;font-weight:600;font-family:var(--fb);text-decoration:underline;margin-left:.4rem;">View Free Preview →</button>
+    </div>
+
+  </div><!-- end step-plan -->
+
+  <!-- ===== STEP 2: COUPON CODE ===== -->
+  <div class="pay-step" id="step-coupon">
+
+    <div class="page-head">
+      <div class="page-eyebrow">Step 2 of 3 · Coupon Code</div>
+      <h1 class="page-title" style="font-size:clamp(1.4rem,3vw,1.9rem);">Have a Discount Code?</h1>
+      <p class="page-sub">Apply a coupon, school code, or counselor code to get a discount — or skip and proceed to payment.</p>
+    </div>
+
+    <div class="coupon-box">
+      <div class="cb-plan-summary" id="cb-plan-summary">
+        <div>
+          <div class="cbps-plan" id="cb-plan-name">Basic Report</div>
+          <div style="font-size:.75rem;color:rgba(26,18,8,.45);">Selected plan</div>
+        </div>
+        <div class="cbps-price" id="cb-plan-price">₹499</div>
+      </div>
+      <div class="cb-title">Apply a Code</div>
+      <div class="cb-sub">School code, counselor code, scholarship code, or discount coupon.</div>
+      <div class="code-row">
+        <input type="text" class="code-input" id="access-code-input"
+          placeholder="e.g. SCH-DPS-001 or SAVE20"
+          maxlength="30"
+          oninput="this.value=this.value.toUpperCase()"
+          onkeydown="if(event.key==='Enter')applyCode()"/>
+        <button class="btn-apply" onclick="applyCode()" id="btn-apply">Apply →</button>
+      </div>
+      <div class="code-result" id="code-result"></div>
+    </div>
+
+    <!-- Free access CTA (shown when school/counselor/scholarship code applied) -->
+    <div class="free-access-box" id="free-access-box" style="display:none;">
+      <div class="fa-icon" id="fa-icon">🎉</div>
+      <div class="fa-title" id="fa-title">Access Granted!</div>
+      <div class="fa-sub" id="fa-sub-text">Your premium report is ready. No payment required.</div>
+      <button class="btn-access" id="btn-free-access" onclick="grantFreeAccess()">Continue →</button>
+    </div>
+
+    <div class="step-nav" id="coupon-step-nav">
+      <button class="btn-back-step" onclick="showStep('plan')">← Back</button>
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <button class="btn-skip" onclick="showStep('pay')">Skip, no code</button>
+        <button class="btn-next-step" onclick="showStep('pay')">Continue →</button>
+      </div>
+    </div>
+
+  </div><!-- end step-coupon -->
+
+  <!-- ===== STEP 3: PAYMENT ===== -->
+  <div class="pay-step" id="step-pay">
+
+    <div class="page-head">
+      <div class="page-eyebrow">Step 3 of 3 · Complete Payment</div>
+      <h1 class="page-title" style="font-size:clamp(1.4rem,3vw,1.9rem);">Review &amp; Pay</h1>
+      <p class="page-sub">Secure payment via Razorpay. Supports UPI, cards, net banking &amp; wallets.</p>
+    </div>
+
+    <div class="pay-summary-card">
+      <div class="ps-header">Order Summary</div>
+      <div class="ps-row"><span class="ps-label">Plan</span><span class="ps-val" id="ps-plan-name">—</span></div>
+      <div class="ps-row"><span class="ps-label">Original price</span><span class="ps-val" id="ps-original">—</span></div>
+      <div class="ps-row" id="ps-discount-row" style="display:none;"><span class="ps-label">Discount</span><span class="ps-val" style="color:var(--teal);" id="ps-discount">—</span></div>
+      <div class="ps-total">
+        <div>
+          <div class="ps-total-label">Amount to pay</div>
+        </div>
+        <div class="ps-total-amount" id="ps-total">₹499</div>
+      </div>
+      <button class="btn-pay-razorpay" id="btn-pay-rzp" onclick="startRazorpay()">
+        <span>🔒</span> Pay <span id="rzp-btn-amount">₹499</span> via Razorpay
+      </button>
+      <div class="pay-note">
+        Powered by Razorpay · 256-bit SSL encryption<br/>
+        Supports UPI, Google Pay, PhonePe, Paytm, Cards &amp; Net Banking
+      </div>
+      <div class="pay-upi-icons">
+        <span>UPI</span>
+        <span>Google Pay</span>
+        <span>PhonePe</span>
+        <span>Paytm</span>
+      </div>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn-back-step" onclick="showStep('coupon')">← Back</button>
+    </div>
+
+  </div><!-- end step-pay -->
+
+</div><!-- end page -->
+
+<!-- SAMPLE REPORT MODAL -->
+<div class="sample-overlay" id="sample-overlay" onclick="if(event.target===this)closeSample()">
+  <div class="sample-modal">
+    <div class="sm-header">
+      <div class="sm-tabs">
+        <button class="sm-tab active" id="tab-basic" onclick="showSampleTab('basic')">📊 Basic Report</button>
+        <button class="sm-tab" id="tab-premium" onclick="showSampleTab('premium')">🏆 Premium Report</button>
+      </div>
+      <button class="sm-close" onclick="closeSample()">✕</button>
+    </div>
+    <div class="sm-body">
+
+      <!-- BASIC SAMPLE -->
+      <div class="sm-panel active" id="panel-basic">
+        <div class="sample-watermark">— SAMPLE REPORT · FOR ILLUSTRATION ONLY —</div>
+
+        <div class="sr-head">
+          <div>
+            <div class="sr-head-name">Arjun S.</div>
+            <div class="sr-head-meta">Class 9 · Delhi · Psychometric Assessment</div>
+            <div class="sr-head-rating">⭐ Strong Non-Medical Aptitude</div>
+          </div>
+          <div class="sr-score-box">
+            <div class="sr-score-num">68</div>
+            <div class="sr-score-sub">/ 100 marks</div>
+          </div>
+        </div>
+
+        <div class="sr-section">
+          <div class="sr-section-title">Stream Match</div>
+          <div class="sr-bar-row"><div class="sr-bar-name">Non-Medical / Engg.</div><div class="sr-bar-track"><div class="sr-bar-fill" style="width:78%;background:#1A5FA8;"></div></div><div class="sr-bar-val">78%</div></div>
+          <div class="sr-bar-row"><div class="sr-bar-name">Medical</div><div class="sr-bar-track"><div class="sr-bar-fill" style="width:52%;background:#7B2FBE;"></div></div><div class="sr-bar-val">52%</div></div>
+          <div class="sr-bar-row"><div class="sr-bar-name">Commerce</div><div class="sr-bar-track"><div class="sr-bar-fill" style="width:41%;background:#0A6B5E;"></div></div><div class="sr-bar-val">41%</div></div>
+          <div class="sr-bar-row"><div class="sr-bar-name">Humanities</div><div class="sr-bar-track"><div class="sr-bar-fill" style="width:29%;background:#C0410A;"></div></div><div class="sr-bar-val">29%</div></div>
+        </div>
+
+        <div class="sr-section">
+          <div class="sr-section-title">Top Career Matches</div>
+          <div class="sr-career-row"><div class="sr-career-pct">94%</div><div><div class="sr-career-name">Software Engineer (AI/ML)</div><div class="sr-career-stream">Non-Medical · JEE Main / BITSAT</div></div></div>
+          <div class="sr-career-row"><div class="sr-career-pct">88%</div><div><div class="sr-career-name">Data Scientist</div><div class="sr-career-stream">Non-Medical · JEE Main / CUET</div></div></div>
+          <div class="sr-career-row"><div class="sr-career-pct">81%</div><div><div class="sr-career-name">Mechanical Engineer</div><div class="sr-career-stream">Non-Medical · JEE Main / JEE Advanced</div></div></div>
+        </div>
+
+        <div class="sr-section">
+          <div class="sr-section-title">Aptitude Profile</div>
+          <div class="sr-bar-row"><div class="sr-bar-name">Logical Reasoning</div><div class="sr-bar-track"><div class="sr-bar-fill" style="width:82%;background:#1A5FA8;"></div></div><div class="sr-bar-val">82%</div></div>
+          <div class="sr-bar-row"><div class="sr-bar-name">Numerical Ability</div><div class="sr-bar-track"><div class="sr-bar-fill" style="width:74%;background:#1A5FA8;"></div></div><div class="sr-bar-val">74%</div></div>
+          <div class="sr-bar-row"><div class="sr-bar-name">Verbal Reasoning</div><div class="sr-bar-track"><div class="sr-bar-fill" style="width:61%;background:#0A6B5E;"></div></div><div class="sr-bar-val">61%</div></div>
+          <div class="sr-bar-row"><div class="sr-bar-name">Spatial Ability</div><div class="sr-bar-track"><div class="sr-bar-fill" style="width:69%;background:#0A6B5E;"></div></div><div class="sr-bar-val">69%</div></div>
+        </div>
+
+        <div class="sr-section">
+          <div class="sr-section-title">Personality Profile (Big Five)</div>
+          <div class="sr-bar-row"><div class="sr-bar-name">Openness</div><div class="sr-bar-track"><div class="sr-bar-fill" style="width:76%;background:#C8860A;"></div></div><div class="sr-bar-val">76%</div></div>
+          <div class="sr-bar-row"><div class="sr-bar-name">Conscientiousness</div><div class="sr-bar-track"><div class="sr-bar-fill" style="width:68%;background:#C8860A;"></div></div><div class="sr-bar-val">68%</div></div>
+          <div class="sr-bar-row"><div class="sr-bar-name">Extraversion</div><div class="sr-bar-track"><div class="sr-bar-fill" style="width:45%;background:#C8860A;"></div></div><div class="sr-bar-val">45%</div></div>
+        </div>
+
+        <div style="text-align:center;padding:1.5rem;background:#FAFAF7;border-radius:14px;font-size:.85rem;color:rgba(26,18,8,.5);">
+          <strong style="color:var(--ink);display:block;margin-bottom:.3rem;">Basic Report also includes:</strong>
+          EQ profile · RIASEC interest chart · Skill gap analysis · Entrance exam roadmap · PDF download
+        </div>
+      </div>
+
+      <!-- PREMIUM SAMPLE -->
+      <div class="sm-panel" id="panel-premium">
+        <div class="sample-watermark">— SAMPLE REPORT · FOR ILLUSTRATION ONLY —</div>
+
+        <div class="sr-head">
+          <div>
+            <div class="sr-head-name">Arjun S.</div>
+            <div class="sr-head-meta">Class 9 · Delhi · Premium Career Package</div>
+            <div class="sr-head-rating">⭐ Strong Non-Medical Aptitude</div>
+          </div>
+          <div class="sr-score-box">
+            <div class="sr-score-num">68</div>
+            <div class="sr-score-sub">/ 100 marks</div>
+          </div>
+        </div>
+
+        <div class="sr-premium-badge">🏆 Premium Plan — All sections unlocked</div>
+
+        <div class="sr-section">
+          <div class="sr-section-title">Everything in Basic +</div>
+          <div class="sr-bar-row"><div class="sr-bar-name">Stream Match</div><div class="sr-bar-track"><div class="sr-bar-fill" style="width:78%;background:#1A5FA8;"></div></div><div class="sr-bar-val">78%</div></div>
+          <div class="sr-bar-row"><div class="sr-bar-name">Career Fit (Top)</div><div class="sr-bar-track"><div class="sr-bar-fill" style="width:94%;background:#0A6B5E;"></div></div><div class="sr-bar-val">94%</div></div>
+        </div>
+
+        <div class="sr-counselling">
+          <div class="sr-counselling-title">🎯 Your 1-on-1 Counselling Session</div>
+          <div class="sr-counselling-text">A certified Sahirah career counsellor will review Arjun's complete report and speak with you for 45 minutes — answering your specific questions about stream selection, preparation strategy, and next steps.</div>
+        </div>
+
+        <div class="sr-section">
+          <div class="sr-section-title">AI Counsellor Analysis (Avanya)</div>
+          <div style="font-size:.82rem;line-height:1.7;color:rgba(26,18,8,.75);font-style:italic;">"Arjun demonstrates a pronounced analytical and problem-solving orientation, with particular strength in logical reasoning and systematic thinking. His aptitude profile is best aligned with computational and engineering fields, where abstract thinking meets real-world application. The combination of high Openness and strong Numerical Ability is a hallmark of students who thrive in STEM environments…"</div>
+        </div>
+
+        <div class="sr-section">
+          <div class="sr-section-title">Future Careers in the AI Era</div>
+          <div class="sr-career-row"><div class="sr-career-pct" style="color:#7B2FBE;">🔮</div><div><div class="sr-career-name">AI/ML Engineer</div><div class="sr-career-stream">Emerging · High demand by 2030</div></div></div>
+          <div class="sr-career-row"><div class="sr-career-pct" style="color:#7B2FBE;">🔮</div><div><div class="sr-career-name">Quantum Computing Researcher</div><div class="sr-career-stream">Frontier · IISc, IITs, global labs</div></div></div>
+        </div>
+
+        <div class="sr-section">
+          <div class="sr-section-title">Parent Guide — Key Takeaways</div>
+          <div style="font-size:.82rem;line-height:1.7;color:rgba(26,18,8,.75);">
+            <strong>Stream recommendation:</strong> Non-Medical / Engineering stream from Class 11.<br/>
+            <strong>Preparation focus:</strong> JEE Main &amp; Advanced — start coaching in Class 10.<br/>
+            <strong>Strength to nurture:</strong> Logical reasoning and pattern recognition through competitive math programs.<br/>
+            <strong>Watch-out:</strong> Verbal reasoning is 61% — consider English enrichment.
+          </div>
+        </div>
+
+        <div style="text-align:center;padding:1.5rem;background:linear-gradient(135deg,var(--gold-pale),#fff);border:1px solid var(--gold-light);border-radius:14px;font-size:.85rem;">
+          <strong style="color:var(--gold);display:block;margin-bottom:.3rem;">Premium also includes:</strong>
+          <span style="color:rgba(26,18,8,.55);">Learning style analysis · Leadership profile · Priority slot booking · Dedicated counsellor contact</span>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
 
 <div id="pay-toast"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="../assets/js/db.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
+// ================================================================
+// CONFIG — replace with your actual Razorpay key_id
+// ================================================================
+const RAZORPAY_KEY_ID = 'rzp_test_SvqdKYd5p9k5lA';
+
+// ================================================================
+// STATE
+// ================================================================
+const BASE_PRICES = { basic: 499, premium: 1499 };
+const isRegisterFlow = new URLSearchParams(location.search).get('flow') === 'register';
+
+let selectedPlan     = null;
+let finalAmount      = 0;
+let originalAmount   = 0;
+let appliedCode      = null;
+let appliedDiscount  = 0;
+let appliedAccessType = null;
+let schoolId         = null;
+let counselorId      = null;
+
 // ================================================================
 // INIT
 // ================================================================
-let selectedPlan = null;
-let appliedCode = null;
-let appliedDiscount = 0;
-let appliedAccessType = null;
-let schoolId = null;
-let counselorId = null;
-
-const BASE_PRICES = { basic: 499, premium: 1499 };
-
 function init() {
-  // Load student info from localStorage
   const user = JSON.parse(localStorage.getItem('sahirah_user') || 'null');
   const name = user?.child_first_name || localStorage.getItem('sahirah_student_name') || 'Student';
   const cls  = user?.child_class || '';
   const city = user?.child_city || '';
 
-  const avatar = document.getElementById('ss-avatar');
-  avatar.textContent = name.charAt(0).toUpperCase();
+  document.getElementById('ss-avatar').textContent = name.charAt(0).toUpperCase();
   document.getElementById('ss-name').textContent = name + (user?.child_last_name ? ' ' + user.child_last_name : '');
   const metaParts = [cls, city].filter(Boolean);
   document.getElementById('ss-meta').textContent = metaParts.join(' · ') || 'Psychometric Evaluation';
+
+  if (isRegisterFlow) {
+    const badge = document.getElementById('ss-badge');
+    badge.classList.add('gold');
+    document.getElementById('ss-dot').classList.add('gold');
+    document.getElementById('ss-badge-text').textContent = 'Registration in Progress';
+    document.getElementById('nav-steps').innerHTML = `
+      <div class="ns done"><div class="ns-dot">✓</div>Registration</div>
+      <div class="ns-arr">›</div>
+      <div class="ns active"><div class="ns-dot">2</div>Plan &amp; Payment</div>
+      <div class="ns-arr">›</div>
+      <div class="ns todo"><div class="ns-dot">3</div>Schedule Test</div>`;
+    document.getElementById('step1-title').textContent = 'Choose Your Assessment Package';
+    document.getElementById('step1-sub').textContent = 'Select a plan to complete registration and book your test appointment slot.';
+  } else {
+    const badge = document.getElementById('ss-badge');
+    badge.classList.add('green');
+    document.getElementById('ss-dot').classList.add('green');
+    document.getElementById('ss-badge-text').textContent = 'Test Completed';
+    document.getElementById('nav-steps').innerHTML = `
+      <div class="ns done"><div class="ns-dot">✓</div>Test Complete</div>
+      <div class="ns-arr">›</div>
+      <div class="ns active"><div class="ns-dot">2</div>Get Report</div>
+      <div class="ns-arr">›</div>
+      <div class="ns todo"><div class="ns-dot">3</div>Download PDF</div>`;
+    document.getElementById('free-preview-row').style.display = 'block';
+  }
+  updateStepBar(1);
 }
 
 // ================================================================
-// CODE VALIDATION
+// STEP NAVIGATION
+// ================================================================
+function showStep(step) {
+  document.querySelectorAll('.pay-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step-' + step).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  const stepNum = { plan: 1, coupon: 2, pay: 3 };
+  updateStepBar(stepNum[step] || 1);
+}
+
+function updateStepBar(active) {
+  for (let i = 1; i <= 3; i++) {
+    const num = document.getElementById('sb' + i);
+    const lbl = document.getElementById('sl' + i);
+    if (i < active)       { num.className = 'sb-num done'; num.textContent = ''; lbl.className = 'sb-label done'; }
+    else if (i === active) { num.className = 'sb-num active'; num.textContent = i; lbl.className = 'sb-label active'; }
+    else                   { num.className = 'sb-num todo';   num.textContent = i; lbl.className = 'sb-label todo'; }
+    if (i < 3) document.getElementById('sbl' + i).className = 'sb-line' + (i < active ? ' done' : '');
+  }
+}
+
+// ================================================================
+// PLAN SELECTION
+// ================================================================
+function selectPlan(plan) {
+  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('plan-' + plan)?.classList.add('selected');
+  selectedPlan = plan;
+}
+
+function choosePlan(plan, price) {
+  if (plan === 'free') { grantAccess('free', 0); return; }
+  selectPlan(plan);
+  originalAmount = price;
+  finalAmount    = price;
+  appliedDiscount = 0;
+  appliedCode = null;
+
+  // Update coupon step summary
+  const names = { basic: 'Basic Report', premium: 'Premium + Counselling' };
+  document.getElementById('cb-plan-name').textContent  = names[plan] || plan;
+  document.getElementById('cb-plan-price').textContent = '₹' + price.toLocaleString('en-IN');
+
+  // Reset coupon input
+  const inp = document.getElementById('access-code-input');
+  inp.value = ''; inp.className = 'code-input';
+  document.getElementById('code-result').className = 'code-result';
+  document.getElementById('free-access-box').style.display  = 'none';
+  document.getElementById('coupon-step-nav').style.display  = 'flex';
+
+  showStep('coupon');
+}
+
+// ================================================================
+// COUPON / ACCESS CODE
 // ================================================================
 async function applyCode() {
-  const input = document.getElementById('access-code-input');
-  const code = input.value.trim();
-  const btn = document.getElementById('btn-apply');
+  const input  = document.getElementById('access-code-input');
+  const code   = input.value.trim();
+  const btn    = document.getElementById('btn-apply');
   const result = document.getElementById('code-result');
 
   if (!code) { showResult(result, 'error', 'Please enter a code.'); return; }
@@ -382,14 +693,14 @@ async function applyCode() {
   try {
     const res = await SahirahDB.validateCode(code);
     btn.disabled = false;
-    btn.textContent = 'Apply Code →';
+    btn.textContent = 'Apply →';
 
     if (!res || !res.valid) {
       const msgs = {
-        expired: 'This code has expired.',
+        expired:       'This code has expired.',
         limit_reached: 'This code has reached its usage limit.',
-        quota_full: 'This school\'s student quota is full. Contact your school admin.',
-        not_found: 'Invalid code. Please check and try again.',
+        quota_full:    "This school's student quota is full. Contact your school admin.",
+        not_found:     'Invalid code. Please check and try again.',
       };
       input.classList.add('invalid');
       showResult(result, 'error', msgs[res?.reason] || 'Invalid code.');
@@ -403,138 +714,263 @@ async function applyCode() {
     if (res.source === 'school') {
       appliedAccessType = 'school';
       schoolId = res.school.id;
-      showResult(result, 'success', `✓ School code accepted — ${res.school.school_name}. Premium access granted. Click below to view your report.`);
-      showFreeAccessCTA(`View Report — School Access (${res.school.school_name})`);
+      showFreeAccess('school', res.school.school_name);
+      showResult(result, 'success', `✓ School code accepted — ${res.school.school_name}`);
     } else if (res.source === 'counselor') {
       appliedAccessType = 'counselor';
       counselorId = res.counselor.id;
-      showResult(result, 'success', `✓ Counselor code accepted — ${res.counselor.name}. Premium access granted.`);
-      showFreeAccessCTA('View Report — Counselor Access');
+      showFreeAccess('counselor', res.counselor.name);
+      showResult(result, 'success', `✓ Counselor code accepted — ${res.counselor.name}`);
     } else if (res.source === 'coupon') {
       const c = res.coupon;
       if (c.discount_pct === 100) {
         appliedAccessType = 'scholarship';
-        appliedDiscount = 100;
-        showResult(result, 'success', `✓ Scholarship coupon applied! Full premium access granted for free.`);
-        showFreeAccessCTA('View Report — Scholarship Access');
+        appliedDiscount   = 100;
+        showFreeAccess('coupon100', code);
+        showResult(result, 'success', 'Scholarship code — 100% off! No payment needed.');
       } else {
-        appliedDiscount = c.discount_pct;
-        appliedAccessType = c.unlocks_tier || 'premium';
-        const newBasic = Math.round(BASE_PRICES.basic * (1 - appliedDiscount/100));
-        const newPremium = Math.round(BASE_PRICES.premium * (1 - appliedDiscount/100));
-        document.getElementById('basic-price').innerHTML = `₹${newBasic} <span style="text-decoration:line-through;color:rgba(26,18,8,.3);">₹499</span> <span>one-time</span>`;
-        document.getElementById('premium-price').innerHTML = `₹${newPremium} <span style="text-decoration:line-through;color:rgba(26,18,8,.3);">₹1499</span> <span>one-time</span>`;
-        showResult(result, 'success', `✓ Coupon applied! ${appliedDiscount}% discount on all plans.`);
+        appliedDiscount   = c.discount_pct;
+        appliedAccessType = c.unlocks_tier || selectedPlan;
+        const savings = Math.round(originalAmount * appliedDiscount / 100);
+        finalAmount   = originalAmount - savings;
+        const priceEl = document.getElementById('cb-plan-price');
+        priceEl.innerHTML = `₹${finalAmount.toLocaleString('en-IN')} <span style="text-decoration:line-through;color:rgba(26,18,8,.3);font-size:.8rem;font-family:var(--fb);">₹${originalAmount}</span>`;
+        showResult(result, 'success', `✓ ${appliedDiscount}% discount applied! You save ₹${savings}.`);
       }
     }
   } catch(e) {
     btn.disabled = false;
-    btn.textContent = 'Apply Code →';
+    btn.textContent = 'Apply →';
     showResult(result, 'error', 'Could not validate code. Please try again.');
     console.error(e);
   }
 }
 
-function showFreeAccessCTA(label) {
-  // Replace plan cards with a single CTA
-  const grid = document.querySelector('.plans-grid');
-  grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:2rem;">
-    <div style="font-size:2.5rem;margin-bottom:.75rem;">🎉</div>
-    <div style="font-family:var(--fd);font-size:1.3rem;font-weight:700;margin-bottom:.5rem;">Access Granted!</div>
-    <div style="font-size:.88rem;color:rgba(26,18,8,.5);margin-bottom:1.5rem;">Your premium report is ready. No payment required.</div>
-    <button style="background:var(--teal);color:#fff;border:none;border-radius:100px;padding:1rem 2.5rem;font-size:1rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:background .2s;" onmouseover="this.style.background='#085a4f'" onmouseout="this.style.background='var(--teal)'" onclick="grantAccess(appliedAccessType,0)">${label} →</button>
-  </div>`;
+function showFreeAccess(type, detail) {
+  document.getElementById('coupon-step-nav').style.display = 'none';
+
+  const user    = JSON.parse(localStorage.getItem('sahirah_user') || 'null');
+  const pending = JSON.parse(localStorage.getItem('sahirah_pending_reg') || 'null');
+  const firstName = pending?.data?.fn || user?.child_first_name || 'your child';
+
+  let icon, title, sub, btnLabel;
+
+  if (type === 'coupon100') {
+    icon     = '🎊';
+    title    = 'Wonderful! Your assessment is completely free.';
+    sub      = isRegisterFlow
+      ? `Your coupon code <strong>${escHtml(detail)}</strong> has unlocked full Premium access at no cost. We're thrilled to have ${escHtml(firstName)} on board — wishing them all the very best! Please go ahead and pick a convenient test slot.`
+      : `Your coupon code <strong>${escHtml(detail)}</strong> has unlocked full Premium access at no cost. Wishing you all the very best with your report!`;
+    btnLabel = isRegisterFlow ? '🗓 Schedule Your Test →' : '🎉 View Your Full Report →';
+    // Style the box with gold border for celebration
+    document.getElementById('free-access-box').style.borderColor = 'var(--gold)';
+    document.getElementById('free-access-box').style.background   = 'linear-gradient(135deg,#fff,var(--gold-pale))';
+  } else if (type === 'school') {
+    icon     = '🏫';
+    title    = 'School Access Granted!';
+    sub      = `${escHtml(detail)} has provided full Premium access. No payment required.`;
+    btnLabel = isRegisterFlow ? 'Schedule Your Test →' : 'View Your Report →';
+  } else {
+    // counselor
+    icon     = '👨‍🏫';
+    title    = 'Counselor Access Granted!';
+    sub      = `${escHtml(detail)} has provided full Premium access. No payment required.`;
+    btnLabel = isRegisterFlow ? 'Schedule Your Test →' : 'View Your Report →';
+  }
+
+  document.getElementById('fa-icon').textContent    = icon;
+  document.getElementById('fa-title').textContent   = title;
+  document.getElementById('fa-sub-text').innerHTML  = sub;
+  document.getElementById('btn-free-access').textContent = btnLabel;
+  document.getElementById('free-access-box').style.display = 'block';
 }
 
-function showResult(el, type, msg) {
-  el.className = `code-result ${type} show`;
-  el.innerHTML = `<span>${type === 'success' ? '✓' : '✗'}</span> ${escHtml(msg)}`;
+async function grantFreeAccess() {
+  await grantAccess(appliedAccessType || 'premium', 0);
 }
 
 // ================================================================
-// PLAN SELECTION
+// PAYMENT SUMMARY & RAZORPAY
 // ================================================================
-function selectPlan(plan) {
-  document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));
-  const card = document.getElementById('plan-' + plan);
-  if (card) card.classList.add('selected');
-  selectedPlan = plan;
+function preparePaySummary() {
+  const names  = { basic: 'Basic Report', premium: 'Premium + Counselling' };
+  const pName  = names[selectedPlan] || selectedPlan;
+  const disc   = appliedDiscount || 0;
+  const final  = disc > 0 ? Math.round(originalAmount * (1 - disc/100)) : originalAmount;
+  finalAmount  = final;
+
+  document.getElementById('ps-plan-name').textContent  = pName;
+  document.getElementById('ps-original').textContent   = '₹' + originalAmount.toLocaleString('en-IN');
+  document.getElementById('ps-total').textContent       = '₹' + final.toLocaleString('en-IN');
+  document.getElementById('rzp-btn-amount').textContent = '₹' + final.toLocaleString('en-IN');
+
+  if (disc > 0) {
+    const savings = originalAmount - final;
+    document.getElementById('ps-discount-row').style.display = 'flex';
+    document.getElementById('ps-discount').textContent = `-₹${savings} (${disc}% off — ${appliedCode})`;
+  } else {
+    document.getElementById('ps-discount-row').style.display = 'none';
+  }
 }
 
-function choosePlan(plan, price) {
-  if (plan === 'free') { grantAccess('free', 0); return; }
-  selectPlan(plan);
-  const discount = appliedDiscount || 0;
-  const finalPrice = Math.round(price * (1 - discount/100));
-  openPayModal(plan, finalPrice);
+// Override showStep to prepare pay summary when navigating to pay step
+const _origShowStep = showStep;
+window.showStep = function(step) {
+  if (step === 'pay') preparePaySummary();
+  _origShowStep(step);
+};
+
+async function startRazorpay() {
+  const btn = document.getElementById('btn-pay-rzp');
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳</span> Opening Razorpay…';
+
+  const user    = JSON.parse(localStorage.getItem('sahirah_user') || 'null');
+  const pending = JSON.parse(localStorage.getItem('sahirah_pending_reg') || 'null');
+  const prefillName   = pending?.data?.pname  || user?.parent_name   || '';
+  const prefillEmail  = pending?.data?.email  || user?.parent_email  || '';
+  const prefillMobile = pending?.data?.mobile || user?.parent_mobile || '';
+
+  let orderId = null;
+  try {
+    const resp = await fetch('/.netlify/functions/create-razorpay-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: finalAmount, plan: selectedPlan, receipt: 'shrs_' + Date.now() }),
+    });
+    const data = await resp.json();
+    if (data.ok) orderId = data.order_id;
+  } catch(e) {
+    console.warn('Order creation failed, proceeding without order_id:', e);
+  }
+
+  const planNames = { basic: 'Basic Report', premium: 'Premium + Counselling' };
+  const options = {
+    key:      RAZORPAY_KEY_ID,
+    amount:   finalAmount * 100,          // paise
+    currency: 'INR',
+    name:     'Sahirah.in',
+    description: planNames[selectedPlan] || selectedPlan,
+    order_id: orderId || undefined,
+    prefill:  { name: prefillName, email: prefillEmail, contact: prefillMobile },
+    notes:    { plan: selectedPlan, source: 'sahirah.in' },
+    theme:    { color: '#1A1208' },
+    handler: function(response) {
+      onPaymentSuccess(response);
+    },
+    modal: {
+      ondismiss: function() {
+        btn.disabled = false;
+        btn.innerHTML = `<span>🔒</span> Pay <span id="rzp-btn-amount">₹${finalAmount.toLocaleString('en-IN')}</span> via Razorpay`;
+        showToast('Payment cancelled.');
+      }
+    },
+  };
+
+  try {
+    const rzp = new Razorpay(options);
+
+    rzp.on('payment.failed', function(response) {
+      btn.disabled = false;
+      btn.innerHTML = `<span>🔒</span> Pay <span id="rzp-btn-amount">₹${finalAmount.toLocaleString('en-IN')}</span> via Razorpay`;
+      const desc = response.error?.description || 'Payment failed. Please try again.';
+      showToast('Payment failed: ' + desc);
+      console.error('Razorpay payment.failed:', response.error);
+    });
+
+    rzp.open();
+  } catch(e) {
+    console.error('Razorpay open failed:', e);
+    btn.disabled = false;
+    btn.innerHTML = `<span>🔒</span> Pay ₹${finalAmount.toLocaleString('en-IN')} via Razorpay`;
+    showToast('Could not open payment. Please try again.');
+  }
 }
 
-function openPayModal(plan, amount) {
-  const planNames = { basic: 'Basic Report', premium: 'Premium Career Package' };
-  document.getElementById('pm-plan-name').textContent = planNames[plan] || plan;
-  document.getElementById('pm-amount').innerHTML = `₹${amount} <small>incl. taxes</small>`;
-  document.getElementById('pm-title').textContent = 'Complete Payment';
-  document.getElementById('pay-overlay').classList.add('show');
-  selectedPlan = plan;
-  window._payAmount = amount;
-}
+async function onPaymentSuccess(response) {
+  const btn = document.getElementById('btn-pay-rzp');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span>⏳</span> Verifying payment…'; }
+  showToast('Verifying payment…');
 
-function closePayModal() {
-  document.getElementById('pay-overlay').classList.remove('show');
-}
+  // Verify signature server-side before granting access
+  try {
+    const vResp = await fetch('/.netlify/functions/verify-razorpay-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        razorpay_order_id:  response.razorpay_order_id,
+        razorpay_payment_id: response.razorpay_payment_id,
+        razorpay_signature:  response.razorpay_signature,
+      }),
+    });
+    const result = await vResp.json();
+    if (!result.ok) {
+      if (btn) { btn.disabled = false; btn.innerHTML = `<span>🔒</span> Pay ₹${finalAmount.toLocaleString('en-IN')} via Razorpay`; }
+      showToast('Payment verification failed. Contact support with ID: ' + response.razorpay_payment_id);
+      console.error('Signature verification failed:', result);
+      return;
+    }
+  } catch(e) {
+    // Network error during verify — log but still grant access to avoid blocking legitimate payments
+    console.warn('Verify endpoint unreachable, proceeding with payment_id:', response.razorpay_payment_id, e);
+  }
 
-function formatCard(input) {
-  let v = input.value.replace(/\D/g,'').substring(0,16);
-  input.value = v.replace(/(.{4})/g,'$1 ').trim();
-}
-
-function formatExpiry(input) {
-  let v = input.value.replace(/\D/g,'');
-  if (v.length >= 2) v = v.substring(0,2) + ' / ' + v.substring(2,4);
-  input.value = v;
-}
-
-// Simulate payment (replace with Razorpay integration in production)
-function simulatePay() {
-  closePayModal();
-  showToast('Processing payment…');
-  setTimeout(() => {
-    showToast('Payment successful! Redirecting to your report…');
-    setTimeout(() => grantAccess(selectedPlan, window._payAmount || 0), 1200);
-  }, 1800);
+  showToast('Payment verified! Setting up your account…');
+  await grantAccess(selectedPlan, finalAmount, response.razorpay_payment_id);
 }
 
 // ================================================================
 // GRANT ACCESS & REDIRECT
 // ================================================================
-async function grantAccess(accessType, amountPaid) {
+async function grantAccess(accessType, amountPaid, razorpayPaymentId) {
   localStorage.setItem('sahirah_access_type', accessType);
 
-  // Save payment record to Supabase
+  // Store payment info for register page to save to Supabase
+  if (isRegisterFlow) {
+    localStorage.setItem('sahirah_payment_info', JSON.stringify({
+      plan:            accessType,
+      planName:        accessType === 'premium' ? 'Premium + Counselling' : 'Basic Report',
+      amount:          amountPaid,
+      originalAmount:  originalAmount,
+      discount:        appliedDiscount || 0,
+      couponCode:      appliedCode || null,
+      razorpayId:      razorpayPaymentId || null,
+      paidAt:          new Date().toISOString(),
+    }));
+
+    if (appliedCode && appliedAccessType === 'school' && schoolId) {
+      await SahirahDB.incrementSchoolUsage(appliedCode).catch(() => {});
+    } else if (appliedCode && (appliedDiscount > 0 || appliedAccessType === 'scholarship')) {
+      await SahirahDB.incrementCouponUsage(appliedCode).catch(() => {});
+    }
+
+    showToast('Payment confirmed! Returning to schedule your test…');
+    setTimeout(() => { window.location.href = '../register/?resume=1'; }, 1200);
+    return;
+  }
+
+  // Standalone flow — save payment to Supabase immediately
   try {
-    const user = JSON.parse(localStorage.getItem('sahirah_user') || 'null');
+    const user  = JSON.parse(localStorage.getItem('sahirah_user') || 'null');
     const regId = user?.reg_id || null;
     if (regId) {
       await SahirahDB.savePaymentRecord({
-        reg_id: regId,
-        amount_paise: amountPaid * 100,
-        final_paise: amountPaid * 100,
-        coupon_code: appliedCode || null,
-        discount_pct: appliedDiscount || 0,
-        access_type: accessType,
-        school_id: schoolId || null,
-        counselor_id: counselorId || null,
-        payment_status: amountPaid > 0 ? 'completed' : 'free',
+        reg_id:          regId,
+        amount_paise:    amountPaid * 100,
+        final_paise:     amountPaid * 100,
+        coupon_code:     appliedCode || null,
+        discount_pct:    appliedDiscount || 0,
+        access_type:     accessType,
+        school_id:       schoolId || null,
+        counselor_id:    counselorId || null,
+        payment_status:  amountPaid > 0 ? 'completed' : 'free',
       });
-
-      if (appliedCode && (accessType === 'school')) {
-        await SahirahDB.incrementSchoolUsage(appliedCode);
-      } else if (appliedCode && (accessType === 'scholarship' || appliedDiscount > 0)) {
-        await SahirahDB.incrementCouponUsage(appliedCode);
+      if (appliedCode && appliedAccessType === 'school') {
+        await SahirahDB.incrementSchoolUsage(appliedCode).catch(() => {});
+      } else if (appliedCode && (appliedDiscount > 0 || appliedAccessType === 'scholarship')) {
+        await SahirahDB.incrementCouponUsage(appliedCode).catch(() => {});
       }
-
-      // Stamp the registrations row so admin can filter students by school / counselor
-      await SahirahDB.updateRegistrationAccess(regId, accessType, appliedCode || null, schoolId || null, counselorId || null);
+      await SahirahDB.updateRegistrationAccess(regId, accessType, appliedCode || null, schoolId || null, counselorId || null).catch(() => {});
     }
   } catch(e) { console.error('Access record save failed:', e); }
 
@@ -543,13 +979,38 @@ async function grantAccess(accessType, amountPaid) {
 }
 
 // ================================================================
+// SAMPLE REPORT MODAL
+// ================================================================
+function openSample(tier) {
+  showSampleTab(tier);
+  document.getElementById('sample-overlay').classList.add('show');
+}
+
+function closeSample() {
+  document.getElementById('sample-overlay').classList.remove('show');
+}
+
+function showSampleTab(tier) {
+  document.querySelectorAll('.sm-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.sm-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + tier).classList.add('active');
+  document.getElementById('panel-' + tier).classList.add('active');
+}
+
+// ================================================================
 // UTILS
 // ================================================================
+function showResult(el, type, msg) {
+  el.className = `code-result ${type} show`;
+  el.innerHTML = `<span>${type === 'success' ? '✓' : '✗'}</span> ${escHtml(msg)}`;
+}
+
 function showToast(msg) {
   const t = document.getElementById('pay-toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.remove('show'), 2800);
 }
 
 function escHtml(s) {

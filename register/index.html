@@ -558,7 +558,7 @@ nav{position:sticky;top:0;z-index:100;padding:0 5%;background:rgba(253,248,240,0
 
       <div class="form-nav">
         <button class="btn-back-form" onclick="goTo(1)">← Back</button>
-        <button class="btn-next" onclick="goTo(3)">Continue to Schedule <span>→</span></button>
+        <button class="btn-next" onclick="proceedToPayment()">Continue to Payment <span>→</span></button>
       </div>
     </div>
 
@@ -948,6 +948,79 @@ async function hashPassword(password) {
 function isValidEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e); }
 function isValidName(n) { return n.trim().length >= 1 && n.trim().length <= 60 && /^[\p{L}\s'\-\.]+$/u.test(n.trim()); }
 
+// ---- PAYMENT REDIRECT (end of step 2) ----
+function proceedToPayment() {
+  // Save all step-1 and discovery data to localStorage before leaving
+  const d = {
+    fn:       document.getElementById('child-fname').value.trim(),
+    ln:       document.getElementById('child-lname').value.trim(),
+    dob:      document.getElementById('child-dob').value || null,
+    gender:   document.getElementById('child-gender').value || null,
+    cls:      document.getElementById('child-class').value,
+    age:      document.getElementById('child-age').value || null,
+    school:   document.getElementById('child-school').value.trim() || null,
+    city:     document.getElementById('child-city').value.trim() || null,
+    state:    document.getElementById('child-state').value || null,
+    pname:    document.getElementById('parent-name').value.trim() || null,
+    mobile:   document.getElementById('parent-mobile').value.trim() || null,
+    email:    document.getElementById('parent-email').value.trim(),
+    rel:      document.getElementById('parent-rel').value || null,
+    referral: document.getElementById('referral').value || null,
+  };
+  const disc = {};
+  for (let i = 1; i <= 11; i++) {
+    const el = document.querySelector(`input[name="q${i}"]:checked`);
+    if (el) disc[`q${i}`] = el.value;
+  }
+  const q12el = document.getElementById('q12-text');
+  if (q12el && q12el.value.trim()) disc['q12'] = q12el.value.trim();
+  const rankOrder = Array.from(document.querySelectorAll('#rank-q7 .rank-item')).map(el => el.dataset.val);
+  if (rankOrder.length) disc['q7_rank'] = rankOrder.join(',');
+
+  localStorage.setItem('sahirah_pending_reg', JSON.stringify({ data: d, disc, savedAt: new Date().toISOString() }));
+  // Also populate sahirah_user so payment page can show student name
+  localStorage.setItem('sahirah_user', JSON.stringify({
+    child_first_name: d.fn, child_last_name: d.ln, child_class: d.cls, child_city: d.city,
+    parent_name: d.pname, parent_email: d.email, parent_mobile: d.mobile,
+  }));
+  window.location.href = '../payment/?flow=register';
+}
+
+// ---- RESUME AFTER PAYMENT ----
+function tryResume() {
+  const params = new URLSearchParams(location.search);
+  if (!params.has('resume')) return;
+  const saved = JSON.parse(localStorage.getItem('sahirah_pending_reg') || 'null');
+  if (!saved?.data) { window.location.href = '../register/'; return; }
+
+  const d = saved.data;
+  const set = (id, val) => { const el = document.getElementById(id); if (el && val != null) el.value = val; };
+  set('child-fname', d.fn); set('child-lname', d.ln); set('child-dob', d.dob);
+  set('child-gender', d.gender); set('child-class', d.cls); set('child-age', d.age);
+  set('child-school', d.school); set('child-city', d.city); set('child-state', d.state);
+  set('parent-name', d.pname); set('parent-mobile', d.mobile); set('parent-email', d.email);
+  set('parent-rel', d.rel); set('referral', d.referral);
+
+  // Show payment-confirmed banner at top of step 3
+  const payInfo = JSON.parse(localStorage.getItem('sahirah_payment_info') || 'null');
+  if (payInfo) {
+    const banner = document.createElement('div');
+    banner.style.cssText = 'background:#d1fae5;border:1px solid #6ee7b7;border-radius:12px;padding:.85rem 1.25rem;margin-bottom:1.5rem;font-size:.88rem;color:#065f46;font-weight:500;display:flex;align-items:center;gap:.75rem;';
+    const planLabel = payInfo.plan === 'premium' ? 'Premium Career Package' : 'Basic Report';
+    banner.innerHTML = `<span style="font-size:1.2rem;">✅</span><span><strong>Payment confirmed!</strong> ${planLabel} · ₹${payInfo.amount} paid · Now choose your test appointment slot.</span>`;
+    const step3 = document.getElementById('step3');
+    step3.insertBefore(banner, step3.firstChild);
+  }
+
+  // Jump directly to step 3
+  document.getElementById('step1').classList.remove('active');
+  document.getElementById('step3').classList.add('active');
+  updateProgress(3);
+  currentStep = 3;
+  buildSlots();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 // ---- FORM SUBMIT ----
 async function submitForm() {
   if(!document.getElementById('agree-terms').checked) { alert('Please agree to the terms to continue.'); return; }
@@ -996,17 +1069,21 @@ async function submitForm() {
     status:           'Registered',
   };
 
-  // Collect discovery answers (q1–q12)
-  const disc = {};
-  for (let i = 1; i <= 11; i++) {
-    const el = document.querySelector(`input[name="q${i}"]:checked`);
-    if (el) disc[`q${i}`] = el.value;
+  // Collect discovery answers — use cached version if resuming after payment
+  const _savedPending = JSON.parse(localStorage.getItem('sahirah_pending_reg') || 'null');
+  let disc = {};
+  if (_savedPending?.disc && Object.keys(_savedPending.disc).length) {
+    disc = _savedPending.disc;
+  } else {
+    for (let i = 1; i <= 11; i++) {
+      const el = document.querySelector(`input[name="q${i}"]:checked`);
+      if (el) disc[`q${i}`] = el.value;
+    }
+    const q12el = document.getElementById('q12-text');
+    if (q12el && q12el.value.trim()) disc['q12'] = q12el.value.trim();
+    const rankOrder = Array.from(document.querySelectorAll('#rank-q7 .rank-item')).map(el => el.dataset.val);
+    if (rankOrder.length) disc['q7_rank'] = rankOrder.join(',');
   }
-  const q12el = document.getElementById('q12-text');
-  if (q12el && q12el.value.trim()) disc['q12'] = q12el.value.trim();
-  // Rank question (q7): read current drag order via data-val attributes
-  const rankOrder = Array.from(document.querySelectorAll('#rank-q7 .rank-item')).map(el => el.dataset.val);
-  if (rankOrder.length) disc['q7_rank'] = rankOrder.join(',');
 
   const submitBtn = document.querySelector('.btn-submit');
   if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Saving…'; }
@@ -1017,6 +1094,26 @@ async function submitForm() {
     if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '✓ Confirm Registration'; }
     alert('Registration could not be saved. Please try again.');
     return;
+  }
+
+  // Save payment record if user paid during registration flow
+  const _payInfo = JSON.parse(localStorage.getItem('sahirah_payment_info') || 'null');
+  if (_payInfo) {
+    try {
+      await SahirahDB.savePaymentRecord({
+        reg_id:         regId,
+        amount_paise:   _payInfo.amount * 100,
+        final_paise:    _payInfo.amount * 100,
+        coupon_code:    _payInfo.couponCode || null,
+        discount_pct:   _payInfo.discount || 0,
+        access_type:    _payInfo.plan,
+        payment_status: 'completed',
+      });
+      await SahirahDB.updateRegistrationAccess(regId, _payInfo.plan, _payInfo.couponCode || null, null, null);
+      localStorage.setItem('sahirah_access_type', _payInfo.plan);
+    } catch(e) { console.warn('Payment record save failed:', e); }
+    localStorage.removeItem('sahirah_payment_info');
+    localStorage.removeItem('sahirah_pending_reg');
   }
 
   // Send login credentials email via Netlify function (non-fatal — credentials shown on screen too)
@@ -1073,6 +1170,7 @@ function updateRankNums(container) {
 document.addEventListener('DOMContentLoaded', function() {
   initDrag('rank-q7');
   applyDiscoveryOverride();
+  tryResume();
 });
 
 function applyDiscoveryOverride() {

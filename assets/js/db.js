@@ -97,6 +97,56 @@ const SahirahDB = {
     if (error) console.error('saveCseAttempts error:', error);
   },
 
+  async saveCseUser(user) {
+    const { error } = await _db.from('cse_users').upsert([{
+      email:      user.email,
+      local_id:   user.id,
+      name:       user.name,
+      phone:      user.phone || null,
+      created_at: user.created_at || new Date().toISOString(),
+    }], { onConflict: 'email' });
+    if (error) console.error('saveCseUser error:', error);
+  },
+
+  async getCseUsers() {
+    const { data, error } = await _db.from('cse_users')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return (data || []).map(u => ({
+      id:         u.local_id || u.email,
+      name:       u.name,
+      email:      u.email,
+      phone:      u.phone,
+      created_at: u.created_at,
+    }));
+  },
+
+  async saveCseSession(session) {
+    const { error } = await _db.from('cse_sessions').upsert([{
+      id:             session.id,
+      user_email:     session.user_email,
+      user_name:      session.user_name,
+      user_id:        session.user_id,
+      started_at:     session.started_at,
+      completed_at:   session.completed_at,
+      status:         session.status,
+      score:          session.score || null,
+      flags:          session.flags || [],
+      flag_count:     session.flag_count || 0,
+      answer_details: session.answer_details || [],
+    }], { onConflict: 'id' });
+    if (error) console.error('saveCseSession error:', error);
+  },
+
+  async getCseSessions() {
+    const { data, error } = await _db.from('cse_sessions')
+      .select('*')
+      .order('started_at', { ascending: false });
+    if (error) throw error;
+    return data || [];
+  },
+
   // ---- COUPON / ACCESS CODE VALIDATION ----
   async validateCode(code) {
     if (!code) return null;

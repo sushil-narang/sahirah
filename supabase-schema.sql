@@ -126,6 +126,46 @@ CREATE POLICY "anon_insert_cse_att" ON cse_question_attempts FOR INSERT WITH CHE
 CREATE POLICY "anon_select_cse_att" ON cse_question_attempts FOR SELECT USING     (true);
 
 -- ================================================================
+-- 6a. CSE REGISTERED USERS
+--     One row per user who registered via the aptitude auth page.
+-- ================================================================
+CREATE TABLE IF NOT EXISTS cse_users (
+  email            text        PRIMARY KEY,
+  local_id         text,        -- random ID assigned in browser localStorage
+  name             text,
+  phone            text,
+  created_at       timestamptz  DEFAULT now()
+);
+
+ALTER TABLE cse_users ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "anon_insert_cse_users" ON cse_users FOR INSERT WITH CHECK (true);
+CREATE POLICY "anon_upsert_cse_users" ON cse_users FOR UPDATE USING (true);
+CREATE POLICY "anon_select_cse_users" ON cse_users FOR SELECT USING (true);
+
+-- ================================================================
+-- 6b. CSE TEST SESSIONS
+--     One row per completed test session (full result snapshot).
+-- ================================================================
+CREATE TABLE IF NOT EXISTS cse_sessions (
+  id               text        PRIMARY KEY,   -- session id (sess-XXXXXXXX)
+  user_email       text        NOT NULL,
+  user_name        text,
+  user_id          text,        -- browser localStorage user id
+  started_at       timestamptz,
+  completed_at     timestamptz,
+  status           text        DEFAULT 'completed',
+  score            jsonb,       -- {total, max, percentage, rating, recommendation, categories}
+  flags            jsonb,       -- array of proctoring flag objects
+  flag_count       int          DEFAULT 0,
+  answer_details   jsonb        -- array of per-question detail objects
+);
+
+ALTER TABLE cse_sessions ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "anon_insert_cse_sess" ON cse_sessions FOR INSERT WITH CHECK (true);
+CREATE POLICY "anon_upsert_cse_sess" ON cse_sessions FOR UPDATE USING (true);
+CREATE POLICY "anon_select_cse_sess" ON cse_sessions FOR SELECT USING (true);
+
+-- ================================================================
 -- HYBRID REVENUE MODEL TABLES
 -- ================================================================
 
