@@ -1033,7 +1033,6 @@ function tryResume() {
   set('parent-rel', d.rel); set('referral', d.referral);
 
   // Show payment-confirmed banner at top of step 3
-  const payInfo = JSON.parse(localStorage.getItem('sahirah_payment_info') || 'null');
   if (payInfo) {
     const banner = document.createElement('div');
     banner.style.cssText = 'background:#d1fae5;border:1px solid #6ee7b7;border-radius:12px;padding:.85rem 1.25rem;margin-bottom:1.5rem;font-size:.88rem;color:#065f46;font-weight:500;display:flex;align-items:center;gap:.75rem;';
