@@ -749,6 +749,18 @@ const totalSteps = 4;
 
 function goTo(step) {
   if(step > currentStep && !validateStep(currentStep)) return;
+
+  // Payment gate — step 3 and above require completed payment
+  if (step >= 3) {
+    const hasPayment = !!localStorage.getItem('sahirah_payment_info') ||
+                       !!localStorage.getItem('sahirah_access_type');
+    const resuming   = new URLSearchParams(location.search).has('resume');
+    if (!hasPayment && !resuming) {
+      proceedToPayment();
+      return;
+    }
+  }
+
   document.getElementById('step' + currentStep).classList.remove('active');
   document.getElementById('step' + step).classList.add('active');
   updateProgress(step);
@@ -977,21 +989,35 @@ function proceedToPayment() {
   const rankOrder = Array.from(document.querySelectorAll('#rank-q7 .rank-item')).map(el => el.dataset.val);
   if (rankOrder.length) disc['q7_rank'] = rankOrder.join(',');
 
-  localStorage.setItem('sahirah_pending_reg', JSON.stringify({ data: d, disc, savedAt: new Date().toISOString() }));
-  // Also populate sahirah_user so payment page can show student name
-  localStorage.setItem('sahirah_user', JSON.stringify({
-    child_first_name: d.fn, child_last_name: d.ln, child_class: d.cls, child_city: d.city,
-    parent_name: d.pname, parent_email: d.email, parent_mobile: d.mobile,
-  }));
-  window.location.href = '../payment/?flow=register';
+  try {
+    localStorage.setItem('sahirah_pending_reg', JSON.stringify({ data: d, disc, savedAt: new Date().toISOString() }));
+    localStorage.setItem('sahirah_user', JSON.stringify({
+      child_first_name: d.fn, child_last_name: d.ln, child_class: d.cls, child_city: d.city,
+      parent_name: d.pname, parent_email: d.email, parent_mobile: d.mobile,
+    }));
+  } catch(e) {
+    console.error('localStorage save failed:', e);
+  }
+  window.location.href = '/payment/?flow=register';
 }
 
 // ---- RESUME AFTER PAYMENT ----
 function tryResume() {
   const params = new URLSearchParams(location.search);
-  if (!params.has('resume')) return;
-  const saved = JSON.parse(localStorage.getItem('sahirah_pending_reg') || 'null');
-  if (!saved?.data) { window.location.href = '../register/'; return; }
+  const saved  = JSON.parse(localStorage.getItem('sahirah_pending_reg') || 'null');
+  const payInfo = JSON.parse(localStorage.getItem('sahirah_payment_info') || 'null');
+
+  // Also auto-resume if payment is done but user lost the ?resume param (e.g. back button)
+  if (!params.has('resume')) {
+    if (payInfo && saved?.data) {
+      // Payment done + form data present — restore the resume state silently
+      history.replaceState(null, '', '/register/?resume=1');
+    } else {
+      return; // Fresh visit, nothing to resume
+    }
+  }
+
+  if (!saved?.data) { window.location.href = '/register/'; return; }
 
   const d = saved.data;
   const set = (id, val) => { const el = document.getElementById(id); if (el && val != null) el.value = val; };

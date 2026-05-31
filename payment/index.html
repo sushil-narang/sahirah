@@ -945,7 +945,7 @@ async function grantAccess(accessType, amountPaid, razorpayPaymentId) {
     }
 
     showToast('Payment confirmed! Returning to schedule your test…');
-    setTimeout(() => { window.location.href = '../register/?resume=1'; }, 1200);
+    setTimeout(() => { window.location.href = '/register/?resume=1'; }, 1200);
     return;
   }
 
@@ -975,7 +975,7 @@ async function grantAccess(accessType, amountPaid, razorpayPaymentId) {
   } catch(e) { console.error('Access record save failed:', e); }
 
   showToast('Unlocking your report…');
-  setTimeout(() => { window.location.href = '../report/'; }, 900);
+  setTimeout(() => { window.location.href = '/report/'; }, 900);
 }
 
 // ================================================================
