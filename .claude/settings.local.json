@@ -19,7 +19,10 @@
       "Bash(node -e ' *)",
       "Bash(node *)",
       "Bash(grep -E '\\\\.\\(js|jsx|ts|tsx|sql|json\\)$')",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Skill(run)",
+      "Bash(grep -E \"\\\\.\\(html|js\\)$\")",
+      "Bash(awk '{print $9, \"—\", $5}')"
     ]
   }
 }

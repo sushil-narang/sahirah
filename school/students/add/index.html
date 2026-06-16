@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co; img-src 'self' data:; frame-ancestors 'none';"/>
+<title>Add Student — Sahirah.in</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --cream:#FDF8F0;--ink:#1A1208;--gold:#C8860A;--gold-light:#F5D98A;--gold-pale:#FDF0CC;
+  --teal:#0A6B5E;--teal-light:#E0F2EE;--red:#C0410A;--red-light:#FFF0EB;
+  --blue:#1A5FA8;--blue-light:#E8F2FF;
+  --border:rgba(26,18,8,0.1);--shadow:0 2px 20px rgba(26,18,8,0.07);
+  --sw:220px;
+  --fd:'Playfair Display',Georgia,serif;--fb:'DM Sans',sans-serif;--fm:'DM Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;}
+body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;display:flex;flex-direction:column;}
+
+.main-area{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 1.75rem;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;}
+.tb-title{font-family:var(--fd);font-size:1rem;font-weight:700;}
+.tb-right{display:flex;gap:.75rem;}
+
+.page-content{padding:1.75rem 2rem;flex:1;max-width:900px;}
+
+.form-container{background:#fff;border:1px solid var(--border);border-radius:16px;padding:2rem;}
+
+.form-header{margin-bottom:2rem;}
+.form-eyebrow{display:inline-flex;align-items:center;gap:5px;background:var(--teal-light);border:1px solid rgba(10,107,94,.2);border-radius:100px;padding:4px 12px;font-size:.65rem;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;}
+.form-title{font-family:var(--fd);font-size:1.8rem;font-weight:700;margin-bottom:.4rem;}
+.form-subtitle{font-size:.85rem;color:rgba(26,18,8,.55);line-height:1.6;}
+
+.form-section{margin-bottom:2rem;}
+.section-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(26,18,8,.4);margin-bottom:1rem;}
+
+.form-group{margin-bottom:1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.form-group.full{grid-template-columns:1fr;}
+.form-group.three{grid-template-columns:1fr 1fr 1fr;}
+
+.field{display:flex;flex-direction:column;gap:.35rem;}
+.field label{font-size:.75rem;font-weight:600;color:rgba(26,18,8,.65);letter-spacing:.02em;}
+.field input,.field select{background:#FAFAF7;border:1.5px solid var(--border);border-radius:10px;padding:.7rem 1rem;font-size:.9rem;color:var(--ink);font-family:var(--fb);outline:none;transition:border-color .2s,box-shadow .2s;}
+.field input:focus,.field select:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(10,107,94,.08);}
+.field input::placeholder{color:rgba(26,18,8,.3);}
+
+.field .required::after{content:'*';color:var(--red);margin-left:3px;}
+
+.error-msg{background:var(--red-light);border:1px solid rgba(192,65,10,.2);border-radius:10px;padding:.65rem 1rem;font-size:.78rem;color:var(--red);margin-bottom:1.5rem;display:none;}
+.error-msg.show{display:flex;align-items:flex-start;gap:.5rem;}
+.error-msg::before{content:'⚠';flex-shrink:0;font-weight:700;}
+
+.success-msg{background:#E0F2EE;border:1px solid rgba(10,107,94,.2);border-radius:10px;padding:.65rem 1rem;font-size:.78rem;color:var(--teal);margin-bottom:1.5rem;display:none;}
+.success-msg.show{display:flex;align-items:flex-start;gap:.5rem;}
+.success-msg::before{content:'✓';flex-shrink:0;font-weight:700;}
+
+.form-actions{display:flex;gap:1rem;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);}
+
+.btn{display:inline-flex;align-items:center;gap:.5rem;border:none;border-radius:100px;padding:.75rem 2rem;font-size:.88rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;}
+
+.btn-primary{background:var(--teal);color:#fff;}
+.btn-primary:hover{background:#085a4f;transform:translateY(-1px);}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+
+.btn-secondary{background:transparent;border:1.5px solid var(--border);color:rgba(26,18,8,.6);}
+.btn-secondary:hover{border-color:var(--teal);color:var(--teal);}
+
+.btn.loading::after{content:'';position:absolute;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;margin-left:.5rem;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.form-hint{font-size:.72rem;color:rgba(26,18,8,.4);margin-top:.4rem;line-height:1.5;}
+
+.quick-actions{background:#F5F0E8;border-radius:12px;padding:1.25rem;margin-top:2rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.qa-item{display:flex;align-items:center;gap:1rem;}
+.qa-icon{font-size:1.5rem;}
+.qa-content{flex:1;}
+.qa-title{font-size:.82rem;font-weight:600;margin-bottom:.2rem;}
+.qa-sub{font-size:.72rem;color:rgba(26,18,8,.55);}
+.qa-link{color:var(--teal);text-decoration:none;font-weight:600;}
+
+@media(max-width:800px){
+  .main-area{margin-left:0;}
+  .form-group{grid-template-columns:1fr;}
+  .form-group.three{grid-template-columns:1fr;}
+  .quick-actions{grid-template-columns:1fr;}
+  .form-actions{flex-direction:column;}
+  .btn{width:100%;justify-content:center;}
+}
+</style>
+</head>
+<body>
+
+<div class="main-area">
+  <div class="topbar">
+    <div>
+      <div class="tb-title">Add Student</div>
+    </div>
+    <div class="tb-right">
+      <button class="btn btn-secondary" onclick="history.back()" style="padding:.5rem 1.2rem;font-size:.8rem;">← Back</button>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div class="form-container">
+      <div class="form-header">
+        <div class="form-eyebrow">👥 Individual Enrollment</div>
+        <div class="form-title">Add a New Student</div>
+        <div class="form-subtitle">Register a single student to your school. For bulk enrollment, <a href="../bulk-upload/" style="color:var(--teal);font-weight:600;text-decoration:none;">use CSV upload</a>.</div>
+      </div>
+
+      <div class="error-msg" id="error"></div>
+      <div class="success-msg" id="success"></div>
+
+      <!-- STUDENT INFORMATION -->
+      <div class="form-section">
+        <div class="section-title">Student Information</div>
+
+        <div class="form-group">
+          <div class="field">
+            <label class="required">First Name</label>
+            <input type="text" id="firstName" placeholder="e.g. Aarav" maxlength="50"/>
+          </div>
+          <div class="field">
+            <label class="required">Last Name</label>
+            <input type="text" id="lastName" placeholder="e.g. Sharma" maxlength="50"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="field">
+            <label>Date of Birth</label>
+            <input type="date" id="dob"/>
+            <div class="form-hint">Optional: Helps calculate age for recommendations</div>
+          </div>
+          <div class="field">
+            <label class="required">Class / Grade</label>
+            <select id="class">
+              <option value="">Select class...</option>
+              <option value="Class 9">Class 9</option>
+              <option value="Class 10">Class 10</option>
+              <option value="Class 11">Class 11</option>
+              <option value="Class 12">Class 12</option>
+              <option value="STD 9">STD 9</option>
+              <option value="STD 10">STD 10</option>
+              <option value="STD 11">STD 11</option>
+              <option value="STD 12">STD 12</option>
+              <option value="Grade 9">Grade 9</option>
+              <option value="Grade 10">Grade 10</option>
+              <option value="Grade 11">Grade 11</option>
+              <option value="Grade 12">Grade 12</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTACT INFORMATION -->
+      <div class="form-section">
+        <div class="section-title">Contact Information</div>
+
+        <div class="form-group">
+          <div class="field">
+            <label class="required">Student Email Address</label>
+            <input type="email" id="studentEmail" placeholder="student@example.com"/>
+            <div class="form-hint">Used for login and updates</div>
+          </div>
+          <div class="field">
+            <label>Student Phone (Optional)</label>
+            <input type="tel" id="studentPhone" placeholder="+91 98765 43210"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="field">
+            <label>Parent / Guardian Name</label>
+            <input type="text" id="parentName" placeholder="e.g. Rajesh Sharma" maxlength="100"/>
+          </div>
+          <div class="field">
+            <label>Parent Email Address</label>
+            <input type="email" id="parentEmail" placeholder="parent@example.com"/>
+            <div class="form-hint">For receiving updates and reports</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="field">
+            <label>Parent Phone Number</label>
+            <input type="tel" id="parentPhone" placeholder="+91 98765 43210"/>
+          </div>
+          <div class="field">
+            <label>City</label>
+            <input type="text" id="city" placeholder="e.g. Delhi" maxlength="50"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADDITIONAL NOTES -->
+      <div class="form-section">
+        <div class="section-title">Additional Notes</div>
+
+        <div class="form-group full">
+          <div class="field">
+            <label>Internal Notes (Optional)</label>
+            <textarea id="notes" placeholder="Any special notes about this student..." style="resize:vertical;min-height:80px;border:1.5px solid var(--border);border-radius:10px;padding:.7rem 1rem;font-size:.9rem;outline:none;transition:border-color .2s;" maxlength="200"></textarea>
+            <div class="form-hint">Visible only to you — not shown to student</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="form-actions">
+        <button class="btn btn-primary" id="submitBtn" onclick="addStudent()">
+          <span>Register Student</span>
+        </button>
+        <button class="btn btn-secondary" onclick="history.back()">Cancel</button>
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="quick-actions">
+        <div class="qa-item">
+          <div class="qa-icon">📋</div>
+          <div class="qa-content">
+            <div class="qa-title">Add Another Student?</div>
+            <div class="qa-sub">Form will reset after submission</div>
+          </div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-icon">📊</div>
+          <div class="qa-content">
+            <div class="qa-title">Bulk Upload Available</div>
+            <div class="qa-sub"><a href="../bulk-upload/" class="qa-link">Upload CSV →</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../../assets/js/db.js"></script>
+
+<script>
+// ================================================================
+// ADD STUDENT FORM
+// ================================================================
+
+function getSchoolSession() {
+  const session = localStorage.getItem('sahirah_school_session');
+  if (!session) {
+    showError('School session not found. Please login again.');
+    window.location.href = '/school-auth/login/';
+    return null;
+  }
+  return JSON.parse(session);
+}
+
+function showError(msg) {
+  const el = document.getElementById('error');
+  el.textContent = msg;
+  el.classList.add('show');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function showSuccess(msg) {
+  const el = document.getElementById('success');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function clearMessages() {
+  document.getElementById('error').classList.remove('show');
+  document.getElementById('success').classList.remove('show');
+}
+
+function validateForm() {
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName = document.getElementById('lastName').value.trim();
+  const studentClass = document.getElementById('class').value;
+  const studentEmail = document.getElementById('studentEmail').value.trim();
+
+  const errors = [];
+
+  if (!firstName) errors.push('First name is required');
+  if (!lastName) errors.push('Last name is required');
+  if (!studentClass) errors.push('Class/Grade is required');
+  if (!studentEmail) errors.push('Student email is required');
+  else if (!isValidEmail(studentEmail)) errors.push('Invalid student email format');
+
+  if (errors.length > 0) {
+    showError(errors.join(' • '));
+    return false;
+  }
+
+  return true;
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+async function addStudent() {
+  clearMessages();
+
+  if (!validateForm()) {
+    return;
+  }
+
+  const session = getSchoolSession();
+  if (!session) return;
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Registering...';
+
+  try {
+    const studentData = {
+      first_name: document.getElementById('firstName').value.trim(),
+      last_name: document.getElementById('lastName').value.trim(),
+      dob: document.getElementById('dob').value || null,
+      class: document.getElementById('class').value,
+      email: document.getElementById('studentEmail').value.trim(),
+      phone: document.getElementById('studentPhone').value.trim() || null,
+      parent_name: document.getElementById('parentName').value.trim() || null,
+      parent_email: document.getElementById('parentEmail').value.trim() || null,
+      parent_phone: document.getElementById('parentPhone').value.trim() || null,
+      city: document.getElementById('city').value.trim() || null,
+      notes: document.getElementById('notes').value.trim() || null
+    };
+
+    const result = await SahirahDB.addSchoolStudent(session.schoolId, studentData);
+
+    if (!result.success) {
+      showError(result.error || 'Failed to register student');
+      btn.disabled = false;
+      btn.textContent = 'Register Student';
+      return;
+    }
+
+    // Show success and reset form
+    showSuccess(`✓ ${studentData.first_name} ${studentData.last_name} registered successfully! (ID: ${result.reg_id})`);
+
+    // Reset form after 1.5 seconds
+    setTimeout(() => {
+      document.getElementById('firstName').value = '';
+      document.getElementById('lastName').value = '';
+      document.getElementById('dob').value = '';
+      document.getElementById('class').value = '';
+      document.getElementById('studentEmail').value = '';
+      document.getElementById('studentPhone').value = '';
+      document.getElementById('parentName').value = '';
+      document.getElementById('parentEmail').value = '';
+      document.getElementById('parentPhone').value = '';
+      document.getElementById('city').value = '';
+      document.getElementById('notes').value = '';
+
+      btn.disabled = false;
+      btn.textContent = 'Register Student';
+      document.getElementById('success').classList.remove('show');
+
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    }, 1500);
+
+  } catch(e) {
+    console.error('Add student error:', e);
+    showError('An error occurred. Please try again.');
+    btn.disabled = false;
+    btn.textContent = 'Register Student';
+  }
+}
+</script>
+
+</body>
+</html>

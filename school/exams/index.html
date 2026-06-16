@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co; img-src 'self' data:; frame-ancestors 'none';"/>
+<title>Exam Scheduling — Sahirah.in</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --cream:#FDF8F0;--ink:#1A1208;--gold:#C8860A;--gold-light:#F5D98A;--gold-pale:#FDF0CC;
+  --teal:#0A6B5E;--teal-light:#E0F2EE;--red:#C0410A;--red-light:#FFF0EB;
+  --blue:#1A5FA8;--blue-light:#E8F2FF;
+  --border:rgba(26,18,8,0.1);--shadow:0 2px 20px rgba(26,18,8,0.07);
+  --sw:220px;
+  --fd:'Playfair Display',Georgia,serif;--fb:'DM Sans',sans-serif;--fm:'DM Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;}
+body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;display:flex;flex-direction:column;}
+
+.main-area{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 1.75rem;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;}
+.tb-title{font-family:var(--fd);font-size:1rem;font-weight:700;}
+.tb-right{display:flex;gap:.75rem;}
+
+.page-content{padding:1.75rem 2rem;flex:1;}
+
+.btn{display:inline-flex;align-items:center;gap:.5rem;border:none;border-radius:100px;padding:.5rem 1.2rem;font-size:.82rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;}
+.btn-primary{background:var(--teal);color:#fff;}
+.btn-primary:hover{background:#085a4f;}
+.btn-secondary{background:transparent;border:1.5px solid var(--border);color:rgba(26,18,8,.6);}
+.btn-secondary:hover{border-color:var(--teal);color:var(--teal);}
+
+.msg{border-radius:10px;padding:.75rem 1rem;font-size:.82rem;margin-bottom:1.5rem;display:none;align-items:flex-start;gap:.5rem;}
+.msg.show{display:flex;}
+.msg::before{flex-shrink:0;font-weight:700;}
+.msg-error{background:var(--red-light);border:1px solid rgba(192,65,10,.2);color:var(--red);}
+.msg-error::before{content:'⚠';}
+.msg-success{background:#E0F2EE;border:1px solid rgba(10,107,94,.2);color:var(--teal);}
+.msg-success::before{content:'✓';}
+
+.tabs{display:flex;gap:.5rem;border-bottom:1px solid var(--border);margin-bottom:2rem;}
+.tab-btn{padding:.75rem 1.5rem;border:none;background:transparent;border-bottom:2px solid transparent;cursor:pointer;font-size:.85rem;font-weight:600;color:rgba(26,18,8,.5);transition:all .2s;}
+.tab-btn.active{border-color:var(--teal);color:var(--teal);}
+.tab-btn:hover{color:var(--teal);}
+
+.tab-content{display:none;}
+.tab-content.active{display:block;animation:slideIn .3s ease;}
+@keyframes slideIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+/* EXAM FORM */
+.form-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:2rem;margin-bottom:2rem;box-shadow:var(--shadow);}
+.form-group{margin-bottom:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.form-group.full{grid-template-columns:1fr;}
+
+.field{display:flex;flex-direction:column;gap:.4rem;}
+.field label{font-size:.75rem;font-weight:600;color:rgba(26,18,8,.65);}
+.field input,.field select,.field textarea{background:#FAFAF7;border:1.5px solid var(--border);border-radius:10px;padding:.7rem 1rem;font-size:.9rem;color:var(--ink);font-family:var(--fb);outline:none;transition:border-color .2s,box-shadow .2s;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(10,107,94,.08);}
+.field textarea{resize:vertical;min-height:80px;}
+
+.form-actions{display:flex;gap:1rem;margin-top:2rem;}
+.form-actions button{flex:1;padding:.75rem;border:none;border-radius:100px;font-size:.88rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;}
+.btn-create{background:var(--teal);color:#fff;}
+.btn-create:hover{background:#085a4f;}
+.btn-cancel{background:transparent;border:1.5px solid var(--border);color:rgba(26,18,8,.6);}
+.btn-cancel:hover{border-color:var(--teal);color:var(--teal);}
+
+/* EXAM LIST */
+.exam-list{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:1000px){.exam-list{grid-template-columns:1fr;}}
+
+.exam-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:1.5rem;transition:all .2s;}
+.exam-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,18,8,.1);}
+
+.exam-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:1rem;}
+.exam-name{font-size:1rem;font-weight:700;font-family:var(--fd);}
+.exam-badge{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .6rem;border-radius:6px;font-size:.65rem;font-weight:700;text-transform:uppercase;}
+.exam-badge-draft{background:var(--gold-pale);color:var(--gold);}
+.exam-badge-published{background:#E0F2EE;color:var(--teal);}
+.exam-badge-completed{background:#E0F2EE;color:var(--teal);}
+
+.exam-detail{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;font-size:.82rem;}
+.exam-detail-icon{font-size:1rem;}
+.exam-detail-text{color:rgba(26,18,8,.65);}
+
+.exam-capacity{background:#FAFAF7;border-radius:10px;padding:.75rem 1rem;margin-bottom:1rem;}
+.capacity-label{font-size:.7rem;color:rgba(26,18,8,.45);text-transform:uppercase;margin-bottom:.3rem;}
+.capacity-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.capacity-fill{height:100%;background:var(--teal);border-radius:3px;transition:width .3s;}
+.capacity-info{display:flex;justify-content:space-between;font-size:.72rem;margin-top:.4rem;color:rgba(26,18,8,.5);}
+
+.exam-actions{display:flex;gap:.5rem;flex-wrap:wrap;}
+.btn-sm{padding:.4rem .8rem;border:none;border-radius:8px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;}
+.btn-sm-view{background:var(--blue-light);color:var(--blue);}
+.btn-sm-view:hover{background:var(--blue);color:#fff;}
+.btn-sm-edit{background:var(--gold-pale);color:var(--gold);}
+.btn-sm-edit:hover{background:var(--gold);color:#fff;}
+.btn-sm-delete{background:var(--red-light);color:var(--red);}
+.btn-sm-delete:hover{background:var(--red);color:#fff;}
+
+.empty-state{text-align:center;padding:3rem 2rem;color:rgba(26,18,8,.4);}
+.empty-icon{font-size:3rem;margin-bottom:1rem;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(26,18,8,.65);z-index:1000;display:none;align-items:center;justify-content:center;padding:2rem;overflow-y:auto;backdrop-filter:blur(4px);}
+.modal-overlay.show{display:flex;}
+.modal{background:#fff;border-radius:20px;padding:2rem;max-width:600px;width:100%;box-shadow:0 20px 80px rgba(0,0,0,.3);}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;}
+.modal-title{font-family:var(--fd);font-size:1.3rem;font-weight:700;}
+.modal-close{background:none;border:none;font-size:1.5rem;cursor:pointer;opacity:.5;transition:opacity .2s;}
+.modal-close:hover{opacity:1;}
+
+@media(max-width:800px){
+  .main-area{margin-left:0;}
+  .exam-list{grid-template-columns:1fr;}
+  .tabs{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+
+<div class="main-area">
+  <div class="topbar">
+    <div class="tb-title">Exam Scheduling</div>
+    <div class="tb-right">
+      <button class="btn btn-secondary" onclick="window.location.href='../students/list/'">👥 All Students</button>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div class="msg msg-error" id="errorMsg"></div>
+    <div class="msg msg-success" id="successMsg"></div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('create')">➕ Create Exam</button>
+      <button class="tab-btn" onclick="switchTab('list')">📋 All Exams</button>
+    </div>
+
+    <!-- TAB: CREATE EXAM -->
+    <div id="tab-create" class="tab-content active">
+      <div class="form-card">
+        <div style="margin-bottom:2rem;">
+          <div style="font-family:var(--fd);font-size:1.3rem;font-weight:700;margin-bottom:.5rem;">Create New Exam</div>
+          <div style="font-size:.85rem;color:rgba(26,18,8,.55);">Schedule a new exam session for your students</div>
+        </div>
+
+        <div class="form-group">
+          <div class="field">
+            <label>Exam Name <span style="color:var(--red);">*</span></label>
+            <input type="text" id="examName" placeholder="e.g. Biology Final Exam" maxlength="100"/>
+          </div>
+          <div class="field">
+            <label>Exam Date <span style="color:var(--red);">*</span></label>
+            <input type="date" id="examDate"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="field">
+            <label>Exam Time <span style="color:var(--red);">*</span></label>
+            <input type="time" id="examTime"/>
+          </div>
+          <div class="field">
+            <label>Student Capacity <span style="color:var(--red);">*</span></label>
+            <input type="number" id="examCapacity" min="1" max="1000" value="50"/>
+          </div>
+        </div>
+
+        <div class="form-group full">
+          <div class="field">
+            <label>Description (Optional)</label>
+            <textarea id="examDescription" placeholder="Add details about this exam..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-create" onclick="createExam()">Create Exam</button>
+          <button class="btn-cancel" onclick="resetExamForm()">Clear Form</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: EXAM LIST -->
+    <div id="tab-list" class="tab-content">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+        <div>
+          <div style="font-size:.9rem;color:rgba(26,18,8,.6);">
+            <span id="examCount">0</span> exams scheduled
+          </div>
+        </div>
+        <button class="btn btn-secondary" onclick="refreshExams()">↻ Refresh</button>
+      </div>
+
+      <div class="exam-list" id="examList">
+        <div class="empty-state" style="grid-column:1/-1;">
+          <div class="empty-icon">📅</div>
+          <div>No exams scheduled yet</div>
+          <div style="font-size:.8rem;margin-top:.5rem;">Create your first exam to get started</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXAM DETAILS MODAL -->
+<div class="modal-overlay" id="detailsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalExamName">Exam Details</div>
+      <button class="modal-close" onclick="closeDetailsModal()">✕</button>
+    </div>
+
+    <div style="margin-bottom:1.5rem;">
+      <div style="font-size:.75rem;color:rgba(26,18,8,.5);text-transform:uppercase;margin-bottom:.5rem;">Registered Students</div>
+      <div id="registeredCount" style="font-size:1.5rem;font-weight:700;">—</div>
+    </div>
+
+    <div style="background:#FAFAF7;border-radius:10px;padding:1rem;margin-bottom:1.5rem;">
+      <div style="font-size:.75rem;color:rgba(26,18,8,.5);text-transform:uppercase;margin-bottom:.75rem;">Exam Details</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;font-size:.82rem;">
+        <div>
+          <div style="color:rgba(26,18,8,.5);margin-bottom:.2rem;">Date & Time</div>
+          <div style="font-weight:600;" id="detailDateTime">—</div>
+        </div>
+        <div>
+          <div style="color:rgba(26,18,8,.5);margin-bottom:.2rem;">Capacity</div>
+          <div style="font-weight:600;" id="detailCapacity">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+      <button class="btn btn-primary" style="flex:1;" onclick="publishExam()">Publish Exam</button>
+      <button class="btn btn-secondary" onclick="closeDetailsModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../assets/js/db.js"></script>
+
+<script>
+// ================================================================
+// EXAM SCHEDULING
+// ================================================================
+
+let allExams = [];
+let selectedExamId = null;
+
+async function getSchoolSession() {
+  const session = localStorage.getItem('sahirah_school_session');
+  if (!session) {
+    window.location.href = '/school-auth/login/';
+    return null;
+  }
+  return JSON.parse(session);
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  event.target.classList.add('active');
+
+  if (tab === 'list') {
+    loadExams();
+  }
+}
+
+async function createExam() {
+  const session = await getSchoolSession();
+  if (!session) return;
+
+  const name = document.getElementById('examName').value.trim();
+  const date = document.getElementById('examDate').value;
+  const time = document.getElementById('examTime').value;
+  const capacity = parseInt(document.getElementById('examCapacity').value);
+  const description = document.getElementById('examDescription').value.trim();
+
+  if (!name || !date || !time || !capacity) {
+    showError('All required fields must be filled');
+    return;
+  }
+
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Creating...';
+
+  try {
+    const result = await SahirahDB.createExamSchedule(session.schoolId, {
+      name: name,
+      description: description || null,
+      date: date,
+      time: time,
+      capacity: capacity
+    });
+
+    if (!result.success) {
+      showError(result.error || 'Failed to create exam');
+      btn.disabled = false;
+      btn.textContent = 'Create Exam';
+      return;
+    }
+
+    showSuccess(`"${name}" exam created successfully!`);
+    resetExamForm();
+    btn.disabled = false;
+    btn.textContent = 'Create Exam';
+
+    setTimeout(() => {
+      switchTab('list');
+    }, 1000);
+
+  } catch(e) {
+    console.error('Create exam error:', e);
+    showError('Failed to create exam');
+    btn.disabled = false;
+    btn.textContent = 'Create Exam';
+  }
+}
+
+async function loadExams() {
+  const session = await getSchoolSession();
+  if (!session) return;
+
+  try {
+    const result = await SahirahDB.getSchoolExams(session.schoolId);
+
+    if (!result.success) {
+      showError('Failed to load exams');
+      return;
+    }
+
+    allExams = result.exams || [];
+    renderExams();
+    document.getElementById('examCount').textContent = allExams.length;
+  } catch(e) {
+    console.error('Load exams error:', e);
+    showError('Failed to load exams');
+  }
+}
+
+function renderExams() {
+  const container = document.getElementById('examList');
+
+  if (allExams.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1;">
+        <div class="empty-icon">📅</div>
+        <div>No exams scheduled yet</div>
+        <div style="font-size:.8rem;margin-top:.5rem;">Create your first exam to get started</div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = allExams.map(exam => {
+    const capacityPercent = Math.round((exam.registered_count || 0) / exam.capacity * 100);
+    const statusBadge = exam.status === 'draft' ?
+      `<span class="exam-badge exam-badge-draft">Draft</span>` :
+      `<span class="exam-badge exam-badge-published">Published</span>`;
+
+    return `
+      <div class="exam-card">
+        <div class="exam-header">
+          <div class="exam-name">${escapeHtml(exam.exam_name)}</div>
+          ${statusBadge}
+        </div>
+
+        <div class="exam-detail">
+          <div class="exam-detail-icon">📅</div>
+          <div class="exam-detail-text">${formatDate(exam.scheduled_date)} at ${formatTime(exam.scheduled_time)}</div>
+        </div>
+
+        ${exam.exam_description ? `
+        <div class="exam-detail">
+          <div class="exam-detail-icon">📝</div>
+          <div class="exam-detail-text">${escapeHtml(exam.exam_description)}</div>
+        </div>
+        ` : ''}
+
+        <div class="exam-capacity">
+          <div class="capacity-label">Capacity</div>
+          <div class="capacity-bar">
+            <div class="capacity-fill" style="width:${capacityPercent}%"></div>
+          </div>
+          <div class="capacity-info">
+            <span>${exam.registered_count || 0} / ${exam.capacity} registered</span>
+            <span>${capacityPercent}%</span>
+          </div>
+        </div>
+
+        <div class="exam-actions">
+          <button class="btn-sm btn-sm-view" onclick="viewExamDetails('${exam.id}')">View</button>
+          ${exam.status === 'draft' ? `
+            <button class="btn-sm btn-sm-edit" onclick="publishExam('${exam.id}')">Publish</button>
+          ` : ''}
+          <button class="btn-sm btn-sm-delete" onclick="deleteExam('${exam.id}', '${escapeHtml(exam.exam_name)}')">Delete</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function viewExamDetails(examId) {
+  selectedExamId = examId;
+  const exam = allExams.find(e => e.id === examId);
+  if (!exam) return;
+
+  document.getElementById('modalExamName').textContent = exam.exam_name;
+  document.getElementById('registeredCount').textContent = exam.registered_count || 0;
+  document.getElementById('detailDateTime').textContent = `${formatDate(exam.scheduled_date)} at ${formatTime(exam.scheduled_time)}`;
+  document.getElementById('detailCapacity').textContent = `${exam.registered_count || 0} / ${exam.capacity}`;
+
+  document.getElementById('detailsModal').classList.add('show');
+}
+
+function closeDetailsModal() {
+  document.getElementById('detailsModal').classList.remove('show');
+  selectedExamId = null;
+}
+
+async function publishExam(examId) {
+  examId = examId || selectedExamId;
+  if (!examId) return;
+
+  const exam = allExams.find(e => e.id === examId);
+  if (!exam) return;
+
+  if (confirm(`Publish "${exam.exam_name}"? Students will be able to register.`)) {
+    try {
+      const { error } = await _db
+        .from('exam_schedules')
+        .update({status: 'published', is_visible_to_students: true})
+        .eq('id', examId);
+
+      if (error) throw error;
+
+      showSuccess(`"${exam.exam_name}" has been published`);
+      closeDetailsModal();
+      loadExams();
+    } catch(e) {
+      console.error('Publish error:', e);
+      showError('Failed to publish exam');
+    }
+  }
+}
+
+async function deleteExam(examId, examName) {
+  if (!confirm(`Delete "${examName}"? This action cannot be undone.`)) return;
+
+  try {
+    await _db.from('exam_schedules').delete().eq('id', examId);
+    showSuccess(`"${examName}" has been deleted`);
+    loadExams();
+  } catch(e) {
+    console.error('Delete error:', e);
+    showError('Failed to delete exam');
+  }
+}
+
+async function refreshExams() {
+  await loadExams();
+  showSuccess('Exams refreshed');
+}
+
+function resetExamForm() {
+  document.getElementById('examName').value = '';
+  document.getElementById('examDate').value = '';
+  document.getElementById('examTime').value = '';
+  document.getElementById('examCapacity').value = '50';
+  document.getElementById('examDescription').value = '';
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+function showSuccess(msg) {
+  const el = document.getElementById('successMsg');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '—';
+  return new Date(dateStr).toLocaleDateString('en-IN', {
+    day: '2-digit', month: 'short', year: 'numeric'
+  });
+}
+
+function formatTime(timeStr) {
+  if (!timeStr) return '—';
+  const [hours, minutes] = timeStr.split(':');
+  const h = parseInt(hours);
+  const m = minutes;
+  const period = h >= 12 ? 'PM' : 'AM';
+  const displayH = h % 12 || 12;
+  return `${displayH}:${m} ${period}`;
+}
+
+function escapeHtml(text) {
+  return String(text || '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+</script>
+
+</body>
+</html>

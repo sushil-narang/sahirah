@@ -187,10 +187,23 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
     </div>
     <div class="sb-nav">
       <div class="sb-item active" onclick="showView('overview')"><span class="sb-item-icon">📊</span>Dashboard</div>
-      <div class="sb-item" onclick="showView('students')"><span class="sb-item-icon">👥</span>All Students</div>
-      <div class="sb-item" onclick="showView('analytics')"><span class="sb-item-icon">📈</span>Analytics</div>
-      <div class="sb-item" onclick="showView('atrisk')"><span class="sb-item-icon">⚠️</span>At-Risk Students</div>
-      <div class="sb-item" onclick="showView('access')"><span class="sb-item-icon">🔑</span>Access Code</div>
+
+      <!-- PHASE 2 & 3: STUDENT & EXAM MANAGEMENT -->
+      <div style="border-top:1px solid rgba(255,255,255,.07);margin:8px 0;padding:8px 0;">
+        <div class="sb-item" onclick="window.location.href='students/list/'"><span class="sb-item-icon">👥</span>All Students</div>
+        <div class="sb-item" onclick="window.location.href='students/add/'"><span class="sb-item-icon">➕</span>Add Student</div>
+        <div class="sb-item" onclick="window.location.href='students/bulk-upload/'"><span class="sb-item-icon">📤</span>Bulk Upload</div>
+      </div>
+
+      <div style="border-top:1px solid rgba(255,255,255,.07);margin:8px 0;padding:8px 0;">
+        <div class="sb-item" onclick="window.location.href='exams/'"><span class="sb-item-icon">📅</span>Exam Scheduling</div>
+      </div>
+
+      <div style="border-top:1px solid rgba(255,255,255,.07);margin:8px 0;padding:8px 0;">
+        <div class="sb-item" onclick="showView('analytics')"><span class="sb-item-icon">📈</span>Analytics</div>
+        <div class="sb-item" onclick="showView('atrisk')"><span class="sb-item-icon">⚠️</span>At-Risk Students</div>
+        <div class="sb-item" onclick="showView('access')"><span class="sb-item-icon">🔑</span>Access Code</div>
+      </div>
     </div>
     <div class="sb-footer">
       <div class="sb-avatar" id="sb-avatar">S</div>

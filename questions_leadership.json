@@ -1,0 +1,252 @@
+{
+  "module": {
+    "id": "lea",
+    "name": "Leadership Readiness",
+    "description": "Evaluate your potential to lead, influence, and manage teams effectively",
+    "question_count": 16,
+    "scoring_type": "likert_scale",
+    "created_date": "2026-06-16"
+  },
+  "questions": [
+    {
+      "id": "q_lea_001",
+      "text": "I can inspire others to work toward a common goal",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "vision_communication",
+      "context": "Articulating direction and motivating others",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_lea_002",
+      "text": "I take responsibility for team outcomes, even if something goes wrong",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "accountability",
+      "context": "Owning outcomes - important in India team contexts",
+      "difficulty": "hard"
+    },
+    {
+      "id": "q_lea_003",
+      "text": "I can make difficult decisions when others are uncertain",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "decision_making",
+      "context": "Decisiveness under ambiguity",
+      "difficulty": "hard"
+    },
+    {
+      "id": "q_lea_004",
+      "text": "I naturally take initiative to solve problems without being asked",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "initiative",
+      "context": "Proactive problem identification and solving",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_lea_005",
+      "text": "I listen carefully to others' perspectives before making decisions",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "active_listening",
+      "context": "Inclusive decision-making - valued in Indian culture",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q_lea_006",
+      "text": "I can convince others to support my ideas or approach",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "persuasion",
+      "context": "Influencing and gaining buy-in",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_lea_007",
+      "text": "I help develop the skills and confidence of people around me",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "mentoring",
+      "context": "Developing others - important leadership trait",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_lea_008",
+      "text": "I can handle conflict constructively and find win-win solutions",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "conflict_resolution",
+      "context": "Dispute management and negotiation",
+      "difficulty": "hard"
+    },
+    {
+      "id": "q_lea_009",
+      "text": "I think strategically about long-term goals and impact",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "strategic_thinking",
+      "context": "Big-picture vision and planning",
+      "difficulty": "hard"
+    },
+    {
+      "id": "q_lea_010",
+      "text": "I am comfortable delegating tasks and trust others to execute",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "delegation",
+      "context": "Trust and empowerment",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_lea_011",
+      "text": "I adapt my communication style based on the person or situation",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "communication_flexibility",
+      "context": "Tailored messaging and interpersonal awareness",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_lea_012",
+      "text": "I stay calm and focused under pressure or crisis",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "emotional_stability",
+      "context": "Composure during crises",
+      "difficulty": "hard"
+    },
+    {
+      "id": "q_lea_013",
+      "text": "I seek feedback and actively work on self-improvement",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "self_awareness",
+      "context": "Growth mindset and continuous learning",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_lea_014",
+      "text": "I follow through on commitments and meet my responsibilities",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "reliability",
+      "context": "Trust and credibility - crucial in India",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q_lea_015",
+      "text": "I can build strong relationships and foster team cohesion",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "team_building",
+      "context": "Social bonding and group cohesion",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_lea_016",
+      "text": "I stand up for what I believe in, even if it's unpopular",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "moral_courage",
+      "context": "Ethical leadership and integrity",
+      "difficulty": "hard"
+    }
+  ]
+}

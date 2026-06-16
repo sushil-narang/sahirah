@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co; img-src 'self' data:; frame-ancestors 'none';"/>
+<title>Reset Password — Sahirah.in</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --cream:#FDF8F0;--ink:#1A1208;--gold:#C8860A;--gold-light:#F5D98A;--gold-pale:#FDF0CC;
+  --teal:#0A6B5E;--teal-light:#E0F2EE;--red:#C0410A;--red-light:#FFF0EB;
+  --blue:#1A5FA8;--blue-light:#E8F2FF;
+  --border:rgba(26,18,8,0.1);--shadow:0 4px 32px rgba(26,18,8,0.08);
+  --fd:'Playfair Display',Georgia,serif;--fb:'DM Sans',sans-serif;--fm:'DM Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.6;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5%;background:rgba(253,248,240,0.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;height:64px;}
+.nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.nav-logo img{height:40px;width:auto;display:block;}
+.nav-logo-text{font-family:var(--fd);font-size:1.15rem;font-weight:700;color:var(--ink);}
+.nav-logo-text span{color:var(--gold);}
+.nav-back{display:flex;align-items:center;gap:6px;text-decoration:none;color:rgba(26,18,8,0.5);font-size:.85rem;font-weight:500;transition:color .2s;}
+.nav-back:hover{color:var(--ink);}
+
+.container{max-width:380px;width:100%;margin-top:64px;}
+.card{background:#fff;border-radius:20px;padding:2.5rem;box-shadow:0 8px 32px rgba(26,18,8,.1);border:1px solid var(--border);}
+
+.card-header{text-align:center;margin-bottom:2rem;}
+.card-title{font-family:var(--fd);font-size:1.3rem;font-weight:700;margin-bottom:.3rem;}
+.card-title span{color:var(--gold);}
+.card-sub{font-size:.9rem;color:rgba(26,18,8,.55);}
+
+.form-group{margin-bottom:1.25rem;}
+.form-group label{display:block;font-size:.75rem;font-weight:600;color:rgba(26,18,8,.6);margin-bottom:.5rem;}
+.form-group input{width:100%;background:#FAFAF7;border:1.5px solid var(--border);border-radius:12px;padding:.85rem 1.1rem;font-size:.95rem;font-family:var(--fb);outline:none;transition:border-color .2s,box-shadow .2s;}
+.form-group input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(10,107,94,.08);}
+
+.error-msg,.success-msg{border-radius:10px;padding:.75rem 1rem;font-size:.82rem;margin-bottom:1.25rem;display:none;align-items:flex-start;gap:.5rem;}
+.error-msg{background:var(--red-light);border:1px solid rgba(192,65,10,.2);color:var(--red);}
+.error-msg::before{content:'⚠';font-weight:700;flex-shrink:0;}
+.success-msg{background:#E0F2EE;border:1px solid rgba(10,107,94,.2);color:var(--teal);}
+.success-msg::before{content:'✓';font-weight:700;flex-shrink:0;}
+
+.error-msg.show,.success-msg.show{display:flex;}
+
+.btn{width:100%;border:none;border-radius:100px;padding:.95rem;font-size:.95rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;margin-bottom:1rem;}
+.btn-primary{background:var(--teal);color:#fff;}
+.btn-primary:hover{background:#085a4f;transform:translateY(-1px);}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+.btn-secondary{background:transparent;border:1.5px solid var(--border);color:rgba(26,18,8,.6);}
+.btn-secondary:hover{border-color:var(--teal);color:var(--teal);}
+
+.step-indicator{display:flex;align-items:center;gap:1rem;margin-bottom:2rem;}
+.step{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--border);color:rgba(26,18,8,.4);font-size:.8rem;font-weight:700;flex-shrink:0;}
+.step.active{background:var(--teal);color:#fff;}
+.step.done{background:var(--teal);color:#fff;}
+.step.done::after{content:'✓'}
+.step-label{font-size:.8rem;color:rgba(26,18,8,.5);}
+.step.active .step-label{color:var(--ink);font-weight:600;}
+
+.step-content{display:none;}
+.step-content.active{display:block;animation:slideIn .3s ease;}
+@keyframes slideIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+.back-link{text-align:center;margin-top:1.5rem;}
+.back-link a{font-size:.82rem;color:var(--teal);text-decoration:none;font-weight:500;}
+.back-link a:hover{text-decoration:underline;}
+
+@media(max-width:600px){
+  body{padding:1rem;}
+  .card{padding:2rem;}
+  .step-indicator{gap:.5rem;}
+  .step-label{display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../../" class="nav-logo">
+    <img src="../../assets/images/sahirah-logo.png" alt="Sahirah"/>
+    <div class="nav-logo-text">Sahir<span>ah</span>.in</div>
+  </a>
+  <a href="../login/" class="nav-back">← Back to Login</a>
+</nav>
+
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Sahir<span>ah</span>.in</div>
+      <div class="card-sub">Reset Your Password</div>
+    </div>
+
+    <!-- STEP INDICATOR -->
+    <div class="step-indicator">
+      <div class="step active" id="step1">1</div>
+      <div class="step-label">Email Verification</div>
+      <div class="step" id="step2">2</div>
+      <div class="step-label">Reset Code</div>
+      <div class="step" id="step3">3</div>
+      <div class="step-label">New Password</div>
+    </div>
+
+    <!-- STEP 1: EMAIL VERIFICATION -->
+    <div id="content-step1" class="step-content active">
+      <div class="error-msg" id="error1"></div>
+      <div class="success-msg" id="success1"></div>
+
+      <p style="font-size:.85rem;color:rgba(26,18,8,.55);margin-bottom:1.5rem;line-height:1.6;">
+        Enter the email address associated with your school account. We'll send you a 6-digit code to reset your password.
+      </p>
+
+      <div class="form-group">
+        <label for="email1">School Email Address</label>
+        <input type="email" id="email1" placeholder="principal@school.edu"/>
+      </div>
+
+      <button class="btn btn-primary" onclick="sendResetCode()">Send Reset Code</button>
+      <button class="btn btn-secondary" onclick="window.location.href='../login/'">Cancel</button>
+    </div>
+
+    <!-- STEP 2: CODE VERIFICATION -->
+    <div id="content-step2" class="step-content">
+      <div class="error-msg" id="error2"></div>
+
+      <p style="font-size:.85rem;color:rgba(26,18,8,.55);margin-bottom:1.5rem;line-height:1.6;">
+        Check your email for a 6-digit code. Enter it below. The code expires in 15 minutes.
+      </p>
+
+      <div class="form-group">
+        <label for="code">Reset Code</label>
+        <input type="text" id="code" placeholder="000000" maxlength="6" onkeydown="if(event.key==='Enter') verifyCode()"/>
+      </div>
+
+      <button class="btn btn-primary" onclick="verifyCode()">Verify Code</button>
+      <div class="back-link">
+        <a onclick="goToStep(1)">← Back</a>
+      </div>
+    </div>
+
+    <!-- STEP 3: NEW PASSWORD -->
+    <div id="content-step3" class="step-content">
+      <div class="error-msg" id="error3"></div>
+      <div class="success-msg" id="success3"></div>
+
+      <p style="font-size:.85rem;color:rgba(26,18,8,.55);margin-bottom:1.5rem;line-height:1.6;">
+        Create a strong password. Use at least 8 characters with uppercase, lowercase, and numbers.
+      </p>
+
+      <div class="form-group">
+        <label for="newPassword">New Password</label>
+        <input type="password" id="newPassword" placeholder="••••••••" oninput="checkPasswordStrength()"/>
+        <div id="pwd-strength" style="font-size:.7rem;margin-top:.4rem;display:none;">
+          <div id="strength-bar" style="height:4px;background:var(--border);border-radius:2px;margin-bottom:.3rem;overflow:hidden;">
+            <div id="strength-fill" style="height:100%;width:0%;background:var(--red);transition:all .2s;"></div>
+          </div>
+          <span id="strength-text" style="color:var(--red);">Weak</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter') resetPassword()"/>
+      </div>
+
+      <button class="btn btn-primary" onclick="resetPassword()">Reset Password</button>
+      <div class="back-link">
+        <a onclick="goToStep(2)">← Back</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../assets/js/db.js"></script>
+
+<script>
+let currentStep = 1;
+let resetEmail = '';
+let resetCode = '';
+let resetToken = '';
+
+function goToStep(step) {
+  document.getElementById(`content-step${currentStep}`).classList.remove('active');
+  document.getElementById(`step${currentStep}`).classList.remove('active');
+
+  currentStep = step;
+  document.getElementById(`content-step${step}`).classList.add('active');
+  document.getElementById(`step${step}`).classList.add('active');
+
+  // Clear errors
+  document.getElementById(`error${step}`).classList.remove('show');
+}
+
+async function sendResetCode() {
+  resetEmail = document.getElementById('email1').value.trim();
+  const errorEl = document.getElementById('error1');
+  const successEl = document.getElementById('success1');
+
+  errorEl.classList.remove('show');
+  successEl.classList.remove('show');
+
+  if (!resetEmail) {
+    errorEl.textContent = 'Please enter your email address.';
+    errorEl.classList.add('show');
+    return;
+  }
+
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  try {
+    const result = await SahirahDB.sendPasswordResetCode(resetEmail);
+
+    if (!result.success) {
+      errorEl.textContent = result.error || 'Failed to send reset code. Please try again.';
+      errorEl.classList.add('show');
+      btn.disabled = false;
+      btn.textContent = 'Send Reset Code';
+      return;
+    }
+
+    successEl.textContent = `Reset code sent to ${resetEmail}`;
+    successEl.classList.add('show');
+
+    setTimeout(() => goToStep(2), 1500);
+  } catch(e) {
+    console.error('Reset error:', e);
+    errorEl.textContent = 'An error occurred. Please try again.';
+    errorEl.classList.add('show');
+    btn.disabled = false;
+    btn.textContent = 'Send Reset Code';
+  }
+}
+
+async function verifyCode() {
+  resetCode = document.getElementById('code').value.trim();
+  const errorEl = document.getElementById('error2');
+
+  errorEl.classList.remove('show');
+
+  if (!resetCode || resetCode.length !== 6) {
+    errorEl.textContent = 'Please enter a valid 6-digit code.';
+    errorEl.classList.add('show');
+    return;
+  }
+
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Verifying...';
+
+  try {
+    const result = await SahirahDB.verifyPasswordResetCode(resetEmail, resetCode);
+
+    if (!result.success) {
+      errorEl.textContent = result.error || 'Invalid or expired code. Please try again.';
+      errorEl.classList.add('show');
+      btn.disabled = false;
+      btn.textContent = 'Verify Code';
+      return;
+    }
+
+    resetToken = result.token;
+    goToStep(3);
+  } catch(e) {
+    console.error('Verify error:', e);
+    errorEl.textContent = 'An error occurred. Please try again.';
+    errorEl.classList.add('show');
+    btn.disabled = false;
+    btn.textContent = 'Verify Code';
+  }
+}
+
+function checkPasswordStrength() {
+  const pwd = document.getElementById('newPassword').value;
+  const strengthBar = document.getElementById('strength-fill');
+  const strengthText = document.getElementById('strength-text');
+  const strengthDiv = document.getElementById('pwd-strength');
+
+  if (!pwd) {
+    strengthDiv.style.display = 'none';
+    return;
+  }
+
+  strengthDiv.style.display = 'block';
+  let strength = 0;
+
+  if (pwd.length >= 8) strength += 25;
+  if (/[a-z]/.test(pwd)) strength += 25;
+  if (/[A-Z]/.test(pwd)) strength += 25;
+  if (/\d/.test(pwd)) strength += 25;
+
+  strengthBar.style.width = strength + '%';
+  if (strength < 50) {
+    strengthBar.style.background = '#C0410A';
+    strengthText.textContent = 'Weak';
+    strengthText.style.color = '#C0410A';
+  } else if (strength < 75) {
+    strengthBar.style.background = '#C8860A';
+    strengthText.textContent = 'Fair';
+    strengthText.style.color = '#C8860A';
+  } else {
+    strengthBar.style.background = '#0A6B5E';
+    strengthText.textContent = 'Strong';
+    strengthText.style.color = '#0A6B5E';
+  }
+}
+
+async function resetPassword() {
+  const newPwd = document.getElementById('newPassword').value;
+  const confirmPwd = document.getElementById('confirmPassword').value;
+  const errorEl = document.getElementById('error3');
+  const successEl = document.getElementById('success3');
+
+  errorEl.classList.remove('show');
+  successEl.classList.remove('show');
+
+  if (!newPwd || newPwd.length < 8) {
+    errorEl.textContent = 'Password must be at least 8 characters.';
+    errorEl.classList.add('show');
+    return;
+  }
+
+  if (newPwd !== confirmPwd) {
+    errorEl.textContent = 'Passwords do not match.';
+    errorEl.classList.add('show');
+    return;
+  }
+
+  if (!/[a-z]/.test(newPwd) || !/[A-Z]/.test(newPwd) || !/\d/.test(newPwd)) {
+    errorEl.textContent = 'Password must include uppercase, lowercase, and numbers.';
+    errorEl.classList.add('show');
+    return;
+  }
+
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Resetting...';
+
+  try {
+    const result = await SahirahDB.resetPassword(resetEmail, resetToken, newPwd);
+
+    if (!result.success) {
+      errorEl.textContent = result.error || 'Failed to reset password. Please try again.';
+      errorEl.classList.add('show');
+      btn.disabled = false;
+      btn.textContent = 'Reset Password';
+      return;
+    }
+
+    successEl.textContent = 'Password reset successfully! Redirecting to login...';
+    successEl.classList.add('show');
+
+    setTimeout(() => {
+      window.location.href = '../login/';
+    }, 2000);
+  } catch(e) {
+    console.error('Reset password error:', e);
+    errorEl.textContent = 'An error occurred. Please try again.';
+    errorEl.classList.add('show');
+    btn.disabled = false;
+    btn.textContent = 'Reset Password';
+  }
+}
+</script>
+
+</body>
+</html>

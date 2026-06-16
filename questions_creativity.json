@@ -1,0 +1,252 @@
+{
+  "module": {
+    "id": "cre",
+    "name": "Creativity Index",
+    "description": "Assess your creative thinking, innovation, and ability to generate original solutions",
+    "question_count": 16,
+    "scoring_type": "likert_scale",
+    "created_date": "2026-06-16"
+  },
+  "questions": [
+    {
+      "id": "q_cre_001",
+      "text": "I often come up with new and unusual ideas",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "idea_generation",
+      "context": "Divergent thinking and originality",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q_cre_002",
+      "text": "When solving a problem, I explore multiple different approaches",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "flexibility",
+      "context": "Multiple solution pathways",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_cre_003",
+      "text": "I'm willing to take risks and try unconventional methods",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "risk_taking",
+      "context": "Willingness to challenge conventions",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_cre_004",
+      "text": "I can combine different ideas to create something completely new",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "synthesis",
+      "context": "Combining existing concepts innovatively",
+      "difficulty": "hard"
+    },
+    {
+      "id": "q_cre_005",
+      "text": "I enjoy working on projects that have no standard solution",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "ambiguity_tolerance",
+      "context": "Comfort with open-ended problems",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_cre_006",
+      "text": "I notice connections others might miss between different subjects",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "pattern_recognition",
+      "context": "Seeing non-obvious relationships",
+      "difficulty": "hard"
+    },
+    {
+      "id": "q_cre_007",
+      "text": "I can develop many different solutions for the same problem",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "fluency",
+      "context": "Generating quantity of ideas",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_cre_008",
+      "text": "When given an everyday object, I can imagine many different uses for it",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "divergent_thinking",
+      "context": "Functional fixedness overcoming",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_cre_009",
+      "text": "I express my ideas creatively (art, writing, music, design, etc.)",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "creative_expression",
+      "context": "Artistic or creative output",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q_cre_010",
+      "text": "I enjoy imagining 'what if' scenarios and exploring possibilities",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "imaginative_thinking",
+      "context": "Hypothetical and counterfactual thinking",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q_cre_011",
+      "text": "I'm able to improve or refine ideas (my own or others')",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "elaboration",
+      "context": "Building on and enhancing ideas",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_cre_012",
+      "text": "I challenge the status quo and question 'why we do things this way'",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "critical_thinking",
+      "context": "Innovation through questioning - India context",
+      "difficulty": "hard"
+    },
+    {
+      "id": "q_cre_013",
+      "text": "I can adapt my thinking style based on what a project needs",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "cognitive_flexibility",
+      "context": "Shifting between creative and analytical modes",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_cre_014",
+      "text": "I enjoy experimenting with new techniques or materials",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "experimentation",
+      "context": "Hands-on exploration and learning by doing",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q_cre_015",
+      "text": "I can turn a failure or mistake into a learning opportunity or innovation",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "creative_failure",
+      "context": "Innovation from setbacks",
+      "difficulty": "hard"
+    },
+    {
+      "id": "q_cre_016",
+      "text": "I am known for bringing fresh perspectives to team projects or discussions",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "collaborative_creativity",
+      "context": "Creative contribution in group settings - India schools",
+      "difficulty": "medium"
+    }
+  ]
+}

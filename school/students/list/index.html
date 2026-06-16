@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co; img-src 'self' data:; frame-ancestors 'none';"/>
+<title>All Students — Sahirah.in</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --cream:#FDF8F0;--ink:#1A1208;--gold:#C8860A;--gold-light:#F5D98A;--gold-pale:#FDF0CC;
+  --teal:#0A6B5E;--teal-light:#E0F2EE;--red:#C0410A;--red-light:#FFF0EB;
+  --blue:#1A5FA8;--blue-light:#E8F2FF;
+  --border:rgba(26,18,8,0.1);--shadow:0 2px 20px rgba(26,18,8,0.07);
+  --sw:220px;
+  --fd:'Playfair Display',Georgia,serif;--fb:'DM Sans',sans-serif;--fm:'DM Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;}
+body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;display:flex;flex-direction:column;}
+
+.main-area{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 1.75rem;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;}
+.tb-title{font-family:var(--fd);font-size:1rem;font-weight:700;}
+.tb-right{display:flex;gap:.75rem;align-items:center;}
+
+.page-content{padding:1.75rem 2rem;flex:1;}
+
+.controls{display:flex;gap:1rem;margin-bottom:1.75rem;flex-wrap:wrap;}
+.search-box{flex:1;min-width:250px;display:flex;align-items:center;gap:.5rem;background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:.5rem .9rem;}
+.search-box input{flex:1;background:transparent;border:none;outline:none;font-size:.85rem;font-family:var(--fb);}
+.search-box input::placeholder{color:rgba(26,18,8,.3);}
+
+.btn{display:inline-flex;align-items:center;gap:.5rem;border:none;border-radius:100px;padding:.5rem 1.2rem;font-size:.82rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;}
+.btn-primary{background:var(--teal);color:#fff;}
+.btn-primary:hover{background:#085a4f;}
+.btn-secondary{background:transparent;border:1.5px solid var(--border);color:rgba(26,18,8,.6);}
+.btn-secondary:hover{border-color:var(--teal);color:var(--teal);}
+
+.filter-section{display:flex;gap:.75rem;flex-wrap:wrap;}
+.filter-btn{padding:.4rem .85rem;border:1.5px solid var(--border);background:#fff;border-radius:8px;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;color:rgba(26,18,8,.6);}
+.filter-btn.active{background:var(--teal);border-color:var(--teal);color:#fff;}
+.filter-btn:hover{border-color:var(--teal);color:var(--teal);}
+
+.msg{border-radius:10px;padding:.75rem 1rem;font-size:.82rem;margin-bottom:1.5rem;display:none;align-items:flex-start;gap:.5rem;}
+.msg.show{display:flex;}
+.msg::before{flex-shrink:0;font-weight:700;}
+.msg-error{background:var(--red-light);border:1px solid rgba(192,65,10,.2);color:var(--red);}
+.msg-error::before{content:'⚠';}
+.msg-success{background:#E0F2EE;border:1px solid rgba(10,107,94,.2);color:var(--teal);}
+.msg-success::before{content:'✓';}
+
+.table-wrap{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:1.5rem;box-shadow:var(--shadow);}
+.table-head{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.4rem;border-bottom:1px solid var(--border);background:#FAFAF7;}
+.table-head h3{font-size:.85rem;font-weight:700;}
+
+.t-table{width:100%;border-collapse:collapse;font-size:.82rem;}
+.t-table th{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(26,18,8,.35);padding:.75rem 1.1rem;text-align:left;background:#fff;border-bottom:1px solid var(--border);}
+.t-table td{padding:.75rem 1.1rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+.t-table tr:hover td{background:#F5F0E8;}
+.t-table tr:last-child td{border-bottom:none;}
+
+.student-name{font-weight:600;display:flex;flex-direction:column;gap:2px;}
+.student-email{font-size:.7rem;color:rgba(26,18,8,.45);font-family:var(--fm);}
+
+.status-badge{display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .7rem;border-radius:6px;font-size:.68rem;font-weight:700;text-transform:uppercase;}
+.s-registered{background:rgba(26,18,8,.06);color:rgba(26,18,8,.5);}
+.s-test-started{background:#E8F2FF;color:#1A5FA8;}
+.s-completed{background:#E0F2EE;color:var(--teal);}
+
+.action-cell{display:flex;gap:.4rem;}
+.btn-sm{padding:.3rem .6rem;border:none;border-radius:6px;font-size:.68rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;}
+.btn-sm-edit{background:#F5D98A;color:var(--gold);border:1px solid rgba(200,134,10,.2);}
+.btn-sm-edit:hover{background:var(--gold);color:#fff;}
+.btn-sm-delete{background:#FFF0EB;color:var(--red);border:1px solid rgba(192,65,10,.2);}
+.btn-sm-delete:hover{background:var(--red);color:#fff;}
+
+.t-empty{padding:2.5rem;text-align:center;font-size:.85rem;color:rgba(26,18,8,.35);}
+
+.pagination{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:1.25rem;border-top:1px solid var(--border);margin-top:1rem;}
+.page-btn{width:32px;height:32px;border:1px solid var(--border);background:#fff;border-radius:6px;cursor:pointer;font-size:.75rem;font-weight:600;transition:all .2s;}
+.page-btn:hover{border-color:var(--teal);color:var(--teal);}
+.page-btn.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+.page-info{font-size:.78rem;color:rgba(26,18,8,.5);margin:0 1rem;}
+
+/* EDIT MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(26,18,8,.65);z-index:1000;display:none;align-items:center;justify-content:center;padding:2rem;overflow-y:auto;backdrop-filter:blur(4px);}
+.modal-overlay.show{display:flex;}
+.modal{background:#fff;border-radius:20px;padding:2rem;max-width:500px;width:100%;box-shadow:0 20px 80px rgba(0,0,0,.3);}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;}
+.modal-title{font-family:var(--fd);font-size:1.3rem;font-weight:700;}
+.modal-close{background:none;border:none;font-size:1.5rem;cursor:pointer;opacity:.5;transition:opacity .2s;}
+.modal-close:hover{opacity:1;}
+
+.form-group{margin-bottom:1.25rem;}
+.form-group label{display:block;font-size:.75rem;font-weight:600;color:rgba(26,18,8,.65);margin-bottom:.5rem;}
+.form-group input,.form-group select{width:100%;background:#FAFAF7;border:1.5px solid var(--border);border-radius:10px;padding:.65rem .9rem;font-size:.85rem;font-family:var(--fb);outline:none;transition:border-color .2s;}
+.form-group input:focus,.form-group select:focus{border-color:var(--teal);}
+
+.modal-actions{display:flex;gap:1rem;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);}
+.modal-actions button{flex:1;padding:.65rem;border:none;border-radius:100px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;}
+.btn-save{background:var(--teal);color:#fff;}
+.btn-save:hover{background:#085a4f;}
+.btn-cancel{background:transparent;border:1.5px solid var(--border);color:rgba(26,18,8,.6);}
+.btn-cancel:hover{border-color:var(--teal);color:var(--teal);}
+
+@media(max-width:800px){
+  .main-area{margin-left:0;}
+  .controls{flex-direction:column;}
+  .search-box{min-width:100%;}
+  .t-table{font-size:.75rem;}
+  .t-table th,.t-table td{padding:.5rem .7rem;}
+  .action-cell{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<div class="main-area">
+  <div class="topbar">
+    <div class="tb-title">All Students</div>
+    <div class="tb-right">
+      <button class="btn btn-primary" onclick="window.location.href='../add/'">+ Add Student</button>
+      <button class="btn btn-secondary" onclick="window.location.href='../bulk-upload/'">📤 Bulk Upload</button>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div class="msg msg-error" id="errorMsg"></div>
+    <div class="msg msg-success" id="successMsg"></div>
+
+    <!-- CONTROLS -->
+    <div class="controls">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="searchInput" placeholder="Search by name, email, or class..." oninput="filterStudents()"/>
+      </div>
+      <button class="btn btn-secondary" onclick="refreshStudents()">↻ Refresh</button>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filter-section" id="filterSection" style="display:none;">
+      <span style="font-size:.75rem;font-weight:600;color:rgba(26,18,8,.5);padding:.5rem 0;">Filter by class:</span>
+      <button class="filter-btn active" onclick="filterByClass('')">All</button>
+      <button class="filter-btn" onclick="filterByClass('Class 9')">Class 9</button>
+      <button class="filter-btn" onclick="filterByClass('Class 10')">Class 10</button>
+      <button class="filter-btn" onclick="filterByClass('Class 11')">Class 11</button>
+      <button class="filter-btn" onclick="filterByClass('Class 12')">Class 12</button>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+      <div class="table-head">
+        <h3>
+          Students
+          <span id="studentCount" style="font-family:var(--fm);font-size:.72rem;color:rgba(26,18,8,.35);margin-left:.5rem;font-weight:400;"></span>
+        </h3>
+        <div style="display:flex;gap:.5rem;">
+          <button class="btn btn-secondary" style="font-size:.75rem;padding:.4rem .8rem;" onclick="toggleFilters()">⚙️ Filters</button>
+        </div>
+      </div>
+
+      <table class="t-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Class</th>
+            <th>Parent</th>
+            <th>Status</th>
+            <th>Enrolled</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="studentsTbody">
+          <tr><td colspan="8" class="t-empty">Loading students...</td></tr>
+        </tbody>
+      </table>
+
+      <div class="pagination" id="paginationDiv" style="display:none;">
+        <button class="page-btn" onclick="previousPage()">←</button>
+        <div class="page-info">
+          Page <span id="currentPage">1</span> of <span id="totalPages">1</span>
+        </div>
+        <button class="page-btn" onclick="nextPage()">→</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT STUDENT MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Edit Student</div>
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
+    </div>
+
+    <div class="form-group">
+      <label>First Name</label>
+      <input type="text" id="editFirstName"/>
+    </div>
+
+    <div class="form-group">
+      <label>Last Name</label>
+      <input type="text" id="editLastName"/>
+    </div>
+
+    <div class="form-group">
+      <label>Class</label>
+      <select id="editClass">
+        <option value="Class 9">Class 9</option>
+        <option value="Class 10">Class 10</option>
+        <option value="Class 11">Class 11</option>
+        <option value="Class 12">Class 12</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="editEmail" disabled style="background:#f0f0f0;cursor:not-allowed;"/>
+      <div style="font-size:.7rem;color:rgba(26,18,8,.4);margin-top:.3rem;">Email cannot be changed</div>
+    </div>
+
+    <div class="form-group">
+      <label>Parent Email</label>
+      <input type="email" id="editParentEmail"/>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-save" onclick="saveStudent()">Save Changes</button>
+      <button class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../../assets/js/db.js"></script>
+
+<script>
+// ================================================================
+// STUDENT LIST MANAGEMENT
+// ================================================================
+
+let allStudents = [];
+let filteredStudents = [];
+let currentPage = 1;
+const itemsPerPage = 25;
+let selectedStudent = null;
+let currentClassFilter = '';
+let showFilters = false;
+
+async function getSchoolSession() {
+  const session = localStorage.getItem('sahirah_school_session');
+  if (!session) {
+    window.location.href = '/school-auth/login/';
+    return null;
+  }
+  return JSON.parse(session);
+}
+
+async function loadStudents() {
+  const session = await getSchoolSession();
+  if (!session) return;
+
+  try {
+    // For now, load from registrations table
+    // In production, load from school_student_registrations for better performance
+    const { data } = await _db
+      .from('school_student_registrations')
+      .select('*')
+      .eq('school_id', session.schoolId)
+      .order('created_at', {ascending: false});
+
+    allStudents = data || [];
+    filteredStudents = [...allStudents];
+    currentPage = 1;
+    renderStudents();
+    document.getElementById('studentCount').textContent = `(${allStudents.length})`;
+  } catch(e) {
+    console.error('Load students error:', e);
+    showError('Failed to load students');
+  }
+}
+
+function filterStudents() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+
+  filteredStudents = allStudents.filter(s => {
+    const matchesSearch =
+      (s.student_first_name || '').toLowerCase().includes(search) ||
+      (s.student_last_name || '').toLowerCase().includes(search) ||
+      (s.student_email || '').toLowerCase().includes(search) ||
+      (s.student_class || '').toLowerCase().includes(search);
+
+    const matchesClass = currentClassFilter === '' || s.student_class === currentClassFilter;
+
+    return matchesSearch && matchesClass;
+  });
+
+  currentPage = 1;
+  renderStudents();
+}
+
+function filterByClass(classname) {
+  currentClassFilter = classname;
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  filterStudents();
+}
+
+function toggleFilters() {
+  showFilters = !showFilters;
+  document.getElementById('filterSection').style.display = showFilters ? 'flex' : 'none';
+}
+
+function renderStudents() {
+  const tbody = document.getElementById('studentsTbody');
+  const start = (currentPage - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  const pageStudents = filteredStudents.slice(start, end);
+
+  if (pageStudents.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" class="t-empty">No students found</td></tr>';
+    document.getElementById('paginationDiv').style.display = 'none';
+    return;
+  }
+
+  tbody.innerHTML = pageStudents.map((s, idx) => `
+    <tr>
+      <td style="color:rgba(26,18,8,.3);font-family:var(--fm);font-size:.7rem;">${start + idx + 1}</td>
+      <td>
+        <div class="student-name">
+          ${escapeHtml(s.student_first_name)} ${escapeHtml(s.student_last_name)}
+          <span class="student-email">${escapeHtml(s.student_email)}</span>
+        </div>
+      </td>
+      <td style="font-family:var(--fm);font-size:.75rem;">${escapeHtml(s.student_email)}</td>
+      <td>${escapeHtml(s.student_class || '—')}</td>
+      <td style="font-size:.75rem;">${escapeHtml(s.parent_name || '—')}</td>
+      <td><span class="status-badge s-registered">Registered</span></td>
+      <td style="font-family:var(--fm);font-size:.7rem;">${formatDate(s.created_at)}</td>
+      <td>
+        <div class="action-cell">
+          <button class="btn-sm btn-sm-edit" onclick="editStudent('${escapeHtml(s.id)}')">Edit</button>
+          <button class="btn-sm btn-sm-delete" onclick="deleteStudent('${escapeHtml(s.id)}', '${escapeHtml(s.student_first_name)} ${escapeHtml(s.student_last_name)}')">Delete</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+
+  // Pagination
+  const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
+  if (totalPages > 1) {
+    document.getElementById('paginationDiv').style.display = 'flex';
+    document.getElementById('currentPage').textContent = currentPage;
+    document.getElementById('totalPages').textContent = totalPages;
+  } else {
+    document.getElementById('paginationDiv').style.display = 'none';
+  }
+}
+
+function nextPage() {
+  const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
+  if (currentPage < totalPages) {
+    currentPage++;
+    renderStudents();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+}
+
+function previousPage() {
+  if (currentPage > 1) {
+    currentPage--;
+    renderStudents();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+}
+
+function editStudent(id) {
+  selectedStudent = allStudents.find(s => s.id === id);
+  if (!selectedStudent) return;
+
+  document.getElementById('editFirstName').value = selectedStudent.student_first_name;
+  document.getElementById('editLastName').value = selectedStudent.student_last_name;
+  document.getElementById('editClass').value = selectedStudent.student_class;
+  document.getElementById('editEmail').value = selectedStudent.student_email;
+  document.getElementById('editParentEmail').value = selectedStudent.parent_email || '';
+
+  document.getElementById('editModal').classList.add('show');
+}
+
+function closeEditModal() {
+  document.getElementById('editModal').classList.remove('show');
+  selectedStudent = null;
+}
+
+async function saveStudent() {
+  if (!selectedStudent) return;
+
+  const firstName = document.getElementById('editFirstName').value.trim();
+  const lastName = document.getElementById('editLastName').value.trim();
+  const studentClass = document.getElementById('editClass').value;
+  const parentEmail = document.getElementById('editParentEmail').value.trim();
+
+  if (!firstName || !lastName || !studentClass) {
+    showError('All fields are required');
+    return;
+  }
+
+  const btn = event.target;
+  btn.disabled = true;
+
+  try {
+    const { error } = await _db
+      .from('school_student_registrations')
+      .update({
+        student_first_name: firstName,
+        student_last_name: lastName,
+        student_class: studentClass,
+        parent_email: parentEmail || null,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', selectedStudent.id);
+
+    if (error) throw error;
+
+    showSuccess(`${firstName} ${lastName} updated successfully`);
+    closeEditModal();
+    loadStudents();
+  } catch(e) {
+    console.error('Update error:', e);
+    showError('Failed to update student');
+  }
+
+  btn.disabled = false;
+}
+
+async function deleteStudent(id, name) {
+  if (!confirm(`Are you sure you want to delete ${name}? This action cannot be undone.`)) {
+    return;
+  }
+
+  try {
+    // Delete from school_student_registrations
+    await _db.from('school_student_registrations').delete().eq('id', id);
+
+    showSuccess(`${name} has been deleted`);
+    loadStudents();
+  } catch(e) {
+    console.error('Delete error:', e);
+    showError('Failed to delete student');
+  }
+}
+
+async function refreshStudents() {
+  await loadStudents();
+  showSuccess('Students refreshed');
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+function showSuccess(msg) {
+  const el = document.getElementById('successMsg');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '—';
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-IN', {day: '2-digit', month: 'short', year: '2-digit'});
+}
+
+function escapeHtml(text) {
+  return String(text || '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+// Load students on page load
+window.addEventListener('load', loadStudents);
+</script>
+
+</body>
+</html>

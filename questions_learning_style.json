@@ -1,0 +1,180 @@
+{
+  "module": {
+    "id": "ls",
+    "name": "Learning Style",
+    "description": "Identify how you learn best: Visual, Auditory, Reading/Writing, or Kinesthetic",
+    "question_count": 12,
+    "scoring_type": "categorical",
+    "created_date": "2026-06-16"
+  },
+  "questions": [
+    {
+      "id": "q_ls_001",
+      "text": "When learning a new concept in class, you prefer:",
+      "type": "multiple_choice",
+      "options": [
+        {"value": "V", "label": "Diagrams, charts, or visual presentations on the board"},
+        {"value": "A", "label": "Teacher explaining it verbally in detail"},
+        {"value": "R", "label": "Reading from textbooks or written notes"},
+        {"value": "K", "label": "Doing hands-on activities or experiments"}
+      ],
+      "scoring_dimension": "learning_style_category",
+      "context": "Classroom learning preference",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q_ls_002",
+      "text": "If you need to assemble something (like a project model), you would:",
+      "type": "multiple_choice",
+      "options": [
+        {"value": "V", "label": "Look at the picture or diagram provided"},
+        {"value": "A", "label": "Ask someone to explain it step-by-step"},
+        {"value": "R", "label": "Read the instructions carefully first"},
+        {"value": "K", "label": "Start building and figure it out as you go"}
+      ],
+      "scoring_dimension": "learning_style_category",
+      "context": "Hands-on assembly preference - India school projects",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q_ls_003",
+      "text": "When you get lost in a new place, you typically:",
+      "type": "multiple_choice",
+      "options": [
+        {"value": "V", "label": "Look at a map or GPS"},
+        {"value": "A", "label": "Ask someone for directions verbally"},
+        {"value": "R", "label": "Read street signs and written directions"},
+        {"value": "K", "label": "Wander around and explore until you find it"}
+      ],
+      "scoring_dimension": "learning_style_category",
+      "context": "Navigation and spatial understanding",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q_ls_004",
+      "text": "When remembering important information (like exam dates), you usually:",
+      "type": "multiple_choice",
+      "options": [
+        {"value": "V", "label": "Visualize it in your mind or write it in color-coded notes"},
+        {"value": "A", "label": "Repeat it aloud several times"},
+        {"value": "R", "label": "Write it down in a planner or notebook"},
+        {"value": "K", "label": "Practice the information repeatedly"}
+      ],
+      "scoring_dimension": "learning_style_category",
+      "context": "Memory and retention strategies",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q_ls_005",
+      "text": "During a subject like Physics or Chemistry, you learn best through:",
+      "type": "multiple_choice",
+      "options": [
+        {"value": "V", "label": "Diagrams, molecular models, or flowcharts"},
+        {"value": "A", "label": "Teacher's explanations and class discussions"},
+        {"value": "R", "label": "Reading chapters and working through examples"},
+        {"value": "K", "label": "Lab experiments and practical demonstrations"}
+      ],
+      "scoring_dimension": "learning_style_category",
+      "context": "STEM learning - India curriculum",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_ls_006",
+      "text": "When working on a group project, your role is usually to:",
+      "type": "multiple_choice",
+      "options": [
+        {"value": "V", "label": "Create visuals, posters, or PowerPoint slides"},
+        {"value": "A", "label": "Lead discussions and present findings to others"},
+        {"value": "R", "label": "Write the content and organize the presentation"},
+        {"value": "K", "label": "Build models or create physical demonstrations"}
+      ],
+      "scoring_dimension": "learning_style_category",
+      "context": "Group project participation - India schools",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q_ls_007",
+      "text": "For a History or Social Studies topic, you prefer to learn by:",
+      "type": "multiple_choice",
+      "options": [
+        {"value": "V", "label": "Watching documentaries or viewing maps/timelines"},
+        {"value": "A", "label": "Listening to stories and discussions about events"},
+        {"value": "R", "label": "Reading historical accounts and taking detailed notes"},
+        {"value": "K", "label": "Visiting museums or re-enacting historical events"}
+      ],
+      "scoring_dimension": "learning_style_category",
+      "context": "Humanities learning preference",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_ls_008",
+      "text": "When you struggle with a concept, you tend to:",
+      "type": "multiple_choice",
+      "options": [
+        {"value": "V", "label": "Draw pictures or create mind maps to understand it"},
+        {"value": "A", "label": "Ask your teacher or friends to explain it verbally"},
+        {"value": "R", "label": "Look for additional reading materials or examples"},
+        {"value": "K", "label": "Practice with real examples or work through problems"}
+      ],
+      "scoring_dimension": "learning_style_category",
+      "context": "Learning recovery strategy",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_ls_009",
+      "text": "Your ideal study environment includes:",
+      "type": "multiple_choice",
+      "options": [
+        {"value": "V", "label": "Good lighting, organized desk, color-coded materials"},
+        {"value": "A", "label": "Quiet place, or studying with a study buddy to discuss"},
+        {"value": "R", "label": "Books, notes, and written resources all around"},
+        {"value": "K", "label": "Space to move around, fidget tools, or take breaks"}
+      ],
+      "scoring_dimension": "learning_style_category",
+      "context": "Study environment preferences",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q_ls_010",
+      "text": "When learning a new language (English, Hindi, etc.), you do best with:",
+      "type": "multiple_choice",
+      "options": [
+        {"value": "V", "label": "Written examples and reading comprehension"},
+        {"value": "A", "label": "Listening to native speakers and speaking practice"},
+        {"value": "R", "label": "Grammar rules and written exercises"},
+        {"value": "K", "label": "Role-playing conversations and practical usage"}
+      ],
+      "scoring_dimension": "learning_style_category",
+      "context": "Language learning - India multilingual context",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_ls_011",
+      "text": "During online classes, you find it easier to focus when:",
+      "type": "multiple_choice",
+      "options": [
+        {"value": "V", "label": "There are slides with visuals and clear structure"},
+        {"value": "A", "label": "The teacher speaks clearly and there's interactive discussion"},
+        {"value": "R", "label": "Detailed notes or transcripts are provided"},
+        {"value": "K", "label": "There are activities, quizzes, or things to do"}
+      ],
+      "scoring_dimension": "learning_style_category",
+      "context": "Post-COVID online learning reality",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q_ls_012",
+      "text": "After a lesson, you best retain information by:",
+      "type": "multiple_choice",
+      "options": [
+        {"value": "V", "label": "Creating summaries with diagrams and colors"},
+        {"value": "A", "label": "Discussing it with classmates or explaining to others"},
+        {"value": "R", "label": "Re-reading and rewriting notes"},
+        {"value": "K", "label": "Applying it through problems, projects, or practice"}
+      ],
+      "scoring_dimension": "learning_style_category",
+      "context": "Consolidation and retention strategy",
+      "difficulty": "medium"
+    }
+  ]
+}

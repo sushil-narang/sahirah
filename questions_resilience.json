@@ -1,0 +1,282 @@
+{
+  "module": {
+    "id": "res",
+    "name": "Resilience Index",
+    "description": "Measure your ability to handle stress, bounce back from challenges, and persist through difficulties",
+    "question_count": 18,
+    "scoring_type": "likert_scale",
+    "created_date": "2026-06-16"
+  },
+  "questions": [
+    {
+      "id": "q_res_001",
+      "text": "I am able to adapt to change",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "adaptability",
+      "context": "Flexibility and change management",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q_res_002",
+      "text": "When faced with a difficult exam or assignment, I have a plan to tackle it",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "problem_solving",
+      "context": "Academic stress management - India schools",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_res_003",
+      "text": "I tend to bounce back after a failure or disappointment",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "bounce_back",
+      "context": "Recovery from failure",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_res_004",
+      "text": "I believe I can find solutions to my problems, even during tough times",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "self_efficacy",
+      "context": "Belief in problem-solving ability",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q_res_005",
+      "text": "Staying focused on my goals helps me get through stressful periods",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "goal_focus",
+      "context": "Purpose and motivation under stress",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_res_006",
+      "text": "I have the ability to control how I respond to difficult situations",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "emotional_control",
+      "context": "Emotional regulation and agency",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_res_007",
+      "text": "I look for creative solutions when facing obstacles",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "creative_problem_solving",
+      "context": "Innovation under pressure",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_res_008",
+      "text": "Facing pressure or competition brings out my best efforts",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "pressure_performance",
+      "context": "Thriving under competition - India's education culture",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_res_009",
+      "text": "I have people I can rely on during difficult times",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "social_support",
+      "context": "Family/friend support system",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q_res_010",
+      "text": "I learn from my mistakes rather than dwelling on them",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "growth_mindset",
+      "context": "Learning from failure",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_res_011",
+      "text": "I remain optimistic even when facing major challenges",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "optimism",
+      "context": "Positive outlook during adversity",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_res_012",
+      "text": "I take action when there's something I can do about a problem",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "action_orientation",
+      "context": "Agency and proactive behavior",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q_res_013",
+      "text": "I find ways to relieve stress and manage my emotions",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "stress_management",
+      "context": "Coping mechanisms and self-care",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_res_014",
+      "text": "I can handle criticism without losing confidence",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "feedback_resilience",
+      "context": "Handling feedback from teachers/parents - India culture",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_res_015",
+      "text": "I persist in my efforts even when progress is slow",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "persistence",
+      "context": "Long-term effort and delayed gratification",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_res_016",
+      "text": "I have a sense of purpose that guides my decisions",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "purpose",
+      "context": "Life direction and meaning",
+      "difficulty": "hard"
+    },
+    {
+      "id": "q_res_017",
+      "text": "When things don't go as planned, I adapt my approach",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "flexibility",
+      "context": "Adjusting strategies and plans",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q_res_018",
+      "text": "I believe that adversity has made me stronger",
+      "type": "likert_scale",
+      "options": [
+        {"value": 1, "label": "Not at all true"},
+        {"value": 2, "label": "Rarely true"},
+        {"value": 3, "label": "Sometimes true"},
+        {"value": 4, "label": "Often true"},
+        {"value": 5, "label": "True nearly all the time"}
+      ],
+      "scoring_dimension": "post_traumatic_growth",
+      "context": "Growth through challenges",
+      "difficulty": "hard"
+    }
+  ]
+}

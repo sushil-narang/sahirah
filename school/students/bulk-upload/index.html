@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co; img-src 'self' data:; frame-ancestors 'none';"/>
+<title>Bulk Upload — Sahirah.in</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --cream:#FDF8F0;--ink:#1A1208;--gold:#C8860A;--gold-light:#F5D98A;--gold-pale:#FDF0CC;
+  --teal:#0A6B5E;--teal-light:#E0F2EE;--red:#C0410A;--red-light:#FFF0EB;
+  --blue:#1A5FA8;--blue-light:#E8F2FF;
+  --border:rgba(26,18,8,0.1);--shadow:0 2px 20px rgba(26,18,8,0.07);
+  --sw:220px;
+  --fd:'Playfair Display',Georgia,serif;--fb:'DM Sans',sans-serif;--fm:'DM Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;}
+body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;display:flex;flex-direction:column;}
+
+.main-area{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 1.75rem;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;}
+.tb-title{font-family:var(--fd);font-size:1rem;font-weight:700;}
+.tb-right{display:flex;gap:.75rem;}
+
+.page-content{padding:1.75rem 2rem;flex:1;max-width:900px;}
+
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:2rem;margin-bottom:1.5rem;}
+
+.card-header{margin-bottom:2rem;}
+.card-eyebrow{display:inline-flex;align-items:center;gap:5px;background:var(--teal-light);border:1px solid rgba(10,107,94,.2);border-radius:100px;padding:4px 12px;font-size:.65rem;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;}
+.card-title{font-family:var(--fd);font-size:1.8rem;font-weight:700;margin-bottom:.4rem;}
+.card-subtitle{font-size:.85rem;color:rgba(26,18,8,.55);line-height:1.6;}
+
+/* UPLOAD AREA */
+.upload-zone{border:2px dashed var(--teal);border-radius:14px;padding:2.5rem;text-align:center;cursor:pointer;transition:all .2s;background:rgba(10,107,94,.02);}
+.upload-zone:hover{border-color:var(--teal);background:rgba(10,107,94,.05);box-shadow:0 4px 24px rgba(10,107,94,.08);}
+.upload-zone.active{border-color:var(--teal);background:#E0F2EE;}
+.upload-zone-icon{font-size:3rem;margin-bottom:1rem;}
+.upload-zone-title{font-size:1rem;font-weight:600;margin-bottom:.5rem;}
+.upload-zone-sub{font-size:.85rem;color:rgba(26,18,8,.55);}
+
+.file-input{display:none;}
+
+.btn{display:inline-flex;align-items:center;gap:.5rem;border:none;border-radius:100px;padding:.75rem 1.5rem;font-size:.88rem;font-weight:600;cursor:pointer;font-family:var(--fb);transition:all .2s;}
+.btn-primary{background:var(--teal);color:#fff;}
+.btn-primary:hover{background:#085a4f;transform:translateY(-1px);}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+.btn-secondary{background:transparent;border:1.5px solid var(--border);color:rgba(26,18,8,.6);}
+.btn-secondary:hover{border-color:var(--teal);color:var(--teal);}
+.btn-sm{padding:.5rem 1rem;font-size:.8rem;}
+
+.template-section{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem;}
+.template-card{background:#F5F0E8;border:1px solid var(--border);border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;gap:.75rem;}
+.template-icon{font-size:1.8rem;}
+.template-title{font-size:.88rem;font-weight:600;}
+.template-desc{font-size:.78rem;color:rgba(26,18,8,.55);}
+
+/* ERROR & SUCCESS MESSAGES */
+.msg{border-radius:10px;padding:.75rem 1rem;font-size:.82rem;margin-bottom:1.5rem;display:none;}
+.msg.show{display:flex;align-items:flex-start;gap:.5rem;}
+.msg::before{flex-shrink:0;font-weight:700;}
+
+.error-msg{background:var(--red-light);border:1px solid rgba(192,65,10,.2);color:var(--red);}
+.error-msg::before{content:'⚠';}
+
+.success-msg{background:#E0F2EE;border:1px solid rgba(10,107,94,.2);color:var(--teal);}
+.success-msg::before{content:'✓';}
+
+.warning-msg{background:var(--gold-pale);border:1px solid rgba(200,134,10,.2);color:var(--gold);}
+.warning-msg::before{content:'ⓘ';}
+
+/* PREVIEW TABLE */
+.preview-section{margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border);}
+.preview-title{font-size:.88rem;font-weight:700;margin-bottom:1rem;}
+.preview-table{overflow-x:auto;border:1px solid var(--border);border-radius:10px;}
+.preview-table table{width:100%;border-collapse:collapse;font-size:.78rem;}
+.preview-table th{background:#FAFAF7;padding:.65rem .85rem;text-align:left;font-weight:600;border-bottom:1px solid var(--border);}
+.preview-table td{padding:.65rem .85rem;border-bottom:1px solid var(--border);}
+.preview-table tr:hover td{background:#F5F0E8;}
+.preview-table tr.error td{background:#FFF5F5;}
+
+.row-status{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .6rem;border-radius:6px;font-size:.7rem;font-weight:600;}
+.row-status.valid{background:#E0F2EE;color:var(--teal);}
+.row-status.error{background:var(--red-light);color:var(--red);}
+
+.error-list{background:#FFF5F5;border:1px solid rgba(192,65,10,.1);border-radius:10px;padding:.75rem 1rem;margin-top:.5rem;max-height:150px;overflow-y:auto;}
+.error-item{font-size:.7rem;color:var(--red);margin-bottom:.4rem;padding:.3rem;font-family:var(--fm);}
+
+/* UPLOAD HISTORY */
+.history-section{margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border);}
+.history-title{font-size:.88rem;font-weight:700;margin-bottom:1rem;}
+.history-table{width:100%;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.history-table th{background:#FAFAF7;padding:.65rem .85rem;font-size:.75rem;font-weight:600;border-bottom:1px solid var(--border);text-align:left;}
+.history-table td{padding:.65rem .85rem;border-bottom:1px solid var(--border);font-size:.8rem;}
+.history-table tr:hover td{background:#F5F0E8;}
+
+.status-badge{display:inline-flex;align-items:center;gap:.35rem;padding:.3rem .7rem;border-radius:6px;font-size:.7rem;font-weight:600;}
+.status-success{background:#E0F2EE;color:var(--teal);}
+.status-partial{background:var(--gold-pale);color:var(--gold);}
+.status-failed{background:var(--red-light);color:var(--red);}
+
+@media(max-width:800px){
+  .main-area{margin-left:0;}
+  .template-section{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="main-area">
+  <div class="topbar">
+    <div>
+      <div class="tb-title">Bulk Upload Students</div>
+    </div>
+    <div class="tb-right">
+      <button class="btn btn-secondary" onclick="history.back()" style="padding:.5rem 1.2rem;font-size:.8rem;">← Back</button>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <!-- MESSAGES -->
+    <div class="msg error-msg" id="errorMsg"></div>
+    <div class="msg success-msg" id="successMsg"></div>
+    <div class="msg warning-msg" id="warningMsg"></div>
+
+    <!-- TEMPLATE SECTION -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-eyebrow">📋 CSV Template</div>
+        <div class="card-title">Download Template</div>
+        <div class="card-subtitle">Start with our pre-formatted template. Fill it out offline, then upload.</div>
+      </div>
+
+      <div class="template-section">
+        <div class="template-card">
+          <div class="template-icon">📥</div>
+          <div class="template-title">Download CSV Template</div>
+          <div class="template-desc">Get a properly formatted spreadsheet with column headers</div>
+          <button class="btn btn-primary btn-sm" onclick="downloadTemplate()" style="margin-top:auto;justify-content:center;">Download Template</button>
+        </div>
+
+        <div class="template-card">
+          <div class="template-icon">📖</div>
+          <div class="template-title">View Field Guide</div>
+          <div class="template-desc">Learn what each field means and requirements</div>
+          <button class="btn btn-secondary btn-sm" onclick="showFieldGuide()" style="margin-top:auto;justify-content:center;">View Guide</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- UPLOAD SECTION -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-eyebrow">📤 Upload CSV</div>
+        <div class="card-title">Import Students</div>
+        <div class="card-subtitle">Drag & drop your CSV file or click to select.</div>
+      </div>
+
+      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('csvFile').click()">
+        <div class="upload-zone-icon">📁</div>
+        <div class="upload-zone-title">Drop CSV file here or click to select</div>
+        <div class="upload-zone-sub">Maximum 5,000 rows • UTF-8 encoding • Max 2 MB</div>
+      </div>
+
+      <input type="file" id="csvFile" class="file-input" accept=".csv" onchange="handleFileSelect(event)"/>
+
+      <div id="previewContainer" style="display:none;">
+        <div class="preview-section">
+          <div class="preview-title">Preview (First 10 rows)</div>
+          <div class="preview-table">
+            <table id="previewTable"></table>
+          </div>
+        </div>
+
+        <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;gap:1rem;flex-wrap:wrap;">
+          <div>
+            <div style="font-size:.75rem;color:rgba(26,18,8,.5);margin-bottom:.3rem;">Valid Rows</div>
+            <div style="font-size:1.5rem;font-weight:700;color:var(--teal);" id="validCount">0</div>
+          </div>
+          <div>
+            <div style="font-size:.75rem;color:rgba(26,18,8,.5);margin-bottom:.3rem;">Errors</div>
+            <div style="font-size:1.5rem;font-weight:700;color:var(--red);" id="errorCount">0</div>
+          </div>
+        </div>
+
+        <div id="errorSummary" style="display:none;margin-top:1.5rem;"></div>
+
+        <div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;">
+          <button class="btn btn-primary" id="uploadBtn" onclick="uploadCSV()">Upload <span id="uploadCount">0</span> Records</button>
+          <button class="btn btn-secondary" onclick="cancelUpload()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- UPLOAD HISTORY -->
+    <div class="card history-section" id="historySection" style="display:none;">
+      <div class="history-title">Recent Uploads</div>
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>File Name</th>
+            <th>Date</th>
+            <th>Records</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- FIELD GUIDE MODAL -->
+<div id="fieldGuideModal" style="display:none;position:fixed;inset:0;background:rgba(26,18,8,.65);z-index:1000;padding:2rem;overflow-y:auto;backdrop-filter:blur(4px);">
+  <div style="background:#fff;border-radius:20px;padding:2rem;max-width:600px;margin:auto;box-shadow:0 20px 80px rgba(0,0,0,.3);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+      <div style="font-family:var(--fd);font-size:1.3rem;font-weight:700;">CSV Field Guide</div>
+      <button onclick="document.getElementById('fieldGuideModal').style.display='none'" style="background:none;border:none;font-size:1.5rem;cursor:pointer;opacity:.5;transition:opacity .2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.5'">✕</button>
+    </div>
+
+    <div style="max-height:400px;overflow-y:auto;">
+      <div style="margin-bottom:1.5rem;">
+        <div style="font-weight:600;margin-bottom:.5rem;font-family:var(--fm);font-size:.85rem;color:var(--teal);">📌 REQUIRED FIELDS</div>
+        <ul style="list-style:none;padding:0;font-size:.85rem;line-height:1.8;">
+          <li><strong>student_first_name</strong> — First name (max 50 chars)</li>
+          <li><strong>student_last_name</strong> — Last name (max 50 chars)</li>
+          <li><strong>student_class</strong> — Class (e.g. Class 10, STD 11)</li>
+          <li><strong>student_email</strong> — Valid email address</li>
+        </ul>
+      </div>
+
+      <div style="margin-bottom:1.5rem;">
+        <div style="font-weight:600;margin-bottom:.5rem;font-family:var(--fm);font-size:.85rem;color:var(--gold);">✓ OPTIONAL FIELDS</div>
+        <ul style="list-style:none;padding:0;font-size:.85rem;line-height:1.8;">
+          <li><strong>student_dob</strong> — Date of birth (YYYY-MM-DD)</li>
+          <li><strong>parent_name</strong> — Parent/guardian name</li>
+          <li><strong>parent_email</strong> — Parent email</li>
+          <li><strong>parent_phone</strong> — Parent phone (10-15 digits)</li>
+          <li><strong>city</strong> — City name (max 50 chars)</li>
+          <li><strong>notes</strong> — Internal notes (max 200 chars)</li>
+        </ul>
+      </div>
+
+      <div>
+        <div style="font-weight:600;margin-bottom:.5rem;font-family:var(--fm);font-size:.85rem;color:var(--red);">⚠️ VALIDATION RULES</div>
+        <ul style="list-style:none;padding:0;font-size:.85rem;line-height:1.8;">
+          <li>No duplicate email addresses in same upload</li>
+          <li>DOB must result in reasonable student age (8+ years)</li>
+          <li>Class must be a recognized value</li>
+          <li>Emails must be valid format</li>
+          <li>Max 5,000 rows per upload</li>
+        </ul>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="document.getElementById('fieldGuideModal').style.display='none'" style="width:100%;justify-content:center;margin-top:1.5rem;">Got it</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../../assets/js/db.js"></script>
+<script src="../../../assets/js/csv-handler.js"></script>
+
+<script>
+// ================================================================
+// BULK UPLOAD HANDLER
+// ================================================================
+
+let uploadedFile = null;
+let csvData = [];
+let validRows = [];
+let invalidRows = [];
+
+const uploadZone = document.getElementById('uploadZone');
+
+// Drag & drop
+uploadZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadZone.classList.add('active');
+});
+
+uploadZone.addEventListener('dragleave', () => {
+  uploadZone.classList.remove('active');
+});
+
+uploadZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadZone.classList.remove('active');
+  const files = e.dataTransfer.files;
+  if (files.length > 0) {
+    document.getElementById('csvFile').files = files;
+    handleFileSelect({target: {files}});
+  }
+});
+
+function handleFileSelect(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  clearMessages();
+
+  if (!file.name.endsWith('.csv')) {
+    showError('Please upload a CSV file');
+    return;
+  }
+
+  if (file.size > 2 * 1024 * 1024) {
+    showError('File is too large (max 2 MB)');
+    return;
+  }
+
+  uploadedFile = file;
+  const reader = new FileReader();
+
+  reader.onload = (e) => {
+    try {
+      const csv = e.target.result;
+      parseCSV(csv, file.name);
+    } catch(err) {
+      showError('Error reading file: ' + err.message);
+    }
+  };
+
+  reader.readAsText(file);
+}
+
+function parseCSV(csvText, filename) {
+  const lines = csvText.trim().split('\n');
+  if (lines.length < 2) {
+    showError('CSV must have headers and at least one data row');
+    return;
+  }
+
+  const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+  csvData = [];
+  validRows = [];
+  invalidRows = [];
+
+  const requiredFields = ['student_first_name', 'student_last_name', 'student_class', 'student_email'];
+  const missingRequired = requiredFields.filter(f => !headers.includes(f));
+
+  if (missingRequired.length > 0) {
+    showError(`Missing required columns: ${missingRequired.join(', ')}`);
+    return;
+  }
+
+  // Parse rows
+  for (let i = 1; i < Math.min(lines.length, 5001); i++) {
+    if (!lines[i].trim()) continue;
+
+    const values = lines[i].split(',').map(v => v.trim());
+    const row = {};
+    const rowErrors = [];
+
+    headers.forEach((header, idx) => {
+      row[header] = values[idx] || '';
+    });
+
+    // Validate row
+    if (!row.student_first_name) rowErrors.push('First name required');
+    if (!row.student_last_name) rowErrors.push('Last name required');
+    if (!row.student_class) rowErrors.push('Class required');
+    if (!row.student_email) rowErrors.push('Email required');
+    else if (!isValidEmail(row.student_email)) rowErrors.push('Invalid email format');
+    if (row.student_dob && !isValidDate(row.student_dob)) rowErrors.push('Invalid DOB format (use YYYY-MM-DD)');
+
+    if (rowErrors.length === 0) {
+      validRows.push(row);
+    } else {
+      invalidRows.push({row, errors: rowErrors, lineNumber: i + 1});
+    }
+
+    csvData.push({row, errors: rowErrors, lineNumber: i + 1});
+  }
+
+  if (lines.length > 5001) {
+    showWarning(`Only first 5,000 rows will be imported. Your file has ${lines.length - 1} rows.`);
+  }
+
+  displayPreview();
+}
+
+function displayPreview() {
+  const table = document.getElementById('previewTable');
+  const headers = Object.keys(csvData[0]?.row || {});
+
+  let html = '<tr>';
+  headers.forEach(h => {
+    html += `<th>${h}</th><th style="width:80px;">Status</th>`;
+  });
+  html += '</tr>';
+
+  const displayRows = csvData.slice(0, 10);
+  displayRows.forEach((item) => {
+    const isValid = item.errors.length === 0;
+    html += `<tr class="${isValid ? '' : 'error'}">`;
+    headers.forEach(h => {
+      html += `<td>${escapeHtml(item.row[h] || '')}</td>`;
+    });
+    if (isValid) {
+      html += `<td><span class="row-status valid">✓ Valid</span></td>`;
+    } else {
+      html += `<td><span class="row-status error">✕ Error</span></td>`;
+    }
+    html += '</tr>';
+  });
+
+  table.innerHTML = html;
+
+  document.getElementById('validCount').textContent = validRows.length;
+  document.getElementById('errorCount').textContent = invalidRows.length;
+  document.getElementById('uploadCount').textContent = validRows.length;
+
+  if (invalidRows.length > 0) {
+    const errorSum = document.getElementById('errorSummary');
+    errorSum.style.display = 'block';
+    errorSum.innerHTML = `<div style="background:var(--red-light);border:1px solid rgba(192,65,10,.2);border-radius:10px;padding:1rem;">
+      <div style="font-weight:600;margin-bottom:.75rem;">Errors Found:</div>
+      <div class="error-list">
+        ${invalidRows.map(item => `
+          <div class="error-item">
+            Row ${item.lineNumber}: ${item.errors.join(', ')}
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+  }
+
+  document.getElementById('previewContainer').style.display = 'block';
+}
+
+async function uploadCSV() {
+  if (validRows.length === 0) {
+    showError('No valid rows to upload');
+    return;
+  }
+
+  const session = localStorage.getItem('sahirah_school_session');
+  if (!session) {
+    window.location.href = '/school-auth/login/';
+    return;
+  }
+
+  const schoolSession = JSON.parse(session);
+  const btn = document.getElementById('uploadBtn');
+  btn.disabled = true;
+
+  try {
+    const uploadResult = await SahirahDB.trackCsvUpload(schoolSession.schoolId, {
+      filename: uploadedFile.name,
+      file_size: uploadedFile.size,
+      total_records: validRows.length + invalidRows.length,
+      successful_imports: validRows.length,
+      failed_imports: invalidRows.length,
+      status: 'processing',
+      uploaded_by_email: schoolSession.email,
+      errors: invalidRows.length > 0 ? invalidRows.map(r => ({row: r.lineNumber, errors: r.errors})) : null
+    });
+
+    let successCount = 0;
+    let failCount = 0;
+
+    // Import valid rows
+    for (const row of validRows) {
+      try {
+        const result = await SahirahDB.addSchoolStudent(schoolSession.schoolId, {
+          first_name: row.student_first_name,
+          last_name: row.student_last_name,
+          dob: row.student_dob || null,
+          class: row.student_class,
+          email: row.student_email,
+          phone: row.student_phone || null,
+          parent_name: row.parent_name || null,
+          parent_email: row.parent_email || null,
+          parent_phone: row.parent_phone || null,
+          city: row.city || null,
+          notes: row.notes || null
+        });
+
+        if (result.success) {
+          successCount++;
+        } else {
+          failCount++;
+        }
+      } catch(e) {
+        failCount++;
+      }
+    }
+
+    // Update upload record
+    await SahirahDB.trackCsvUpload(schoolSession.schoolId, {
+      filename: uploadedFile.name,
+      file_size: uploadedFile.size,
+      total_records: validRows.length + invalidRows.length,
+      successful_imports: successCount,
+      failed_imports: failCount,
+      skipped_records: invalidRows.length,
+      status: failCount === 0 ? 'success' : 'partial',
+      uploaded_by_email: schoolSession.email,
+      processed_at: new Date().toISOString(),
+      errors: invalidRows.length > 0 ? invalidRows.map(r => ({row: r.lineNumber, errors: r.errors})) : null
+    });
+
+    showSuccess(`✓ Imported ${successCount} students successfully!${failCount > 0 ? ` (${failCount} failed)` : ''}`);
+
+    setTimeout(() => {
+      cancelUpload();
+    }, 2000);
+
+  } catch(e) {
+    console.error('Upload error:', e);
+    showError('Upload failed: ' + e.message);
+  }
+
+  btn.disabled = false;
+}
+
+function cancelUpload() {
+  uploadedFile = null;
+  csvData = [];
+  validRows = [];
+  invalidRows = [];
+  document.getElementById('csvFile').value = '';
+  document.getElementById('previewContainer').style.display = 'none';
+  clearMessages();
+}
+
+function downloadTemplate() {
+  const headers = ['student_first_name', 'student_last_name', 'student_dob', 'student_class', 'student_email', 'parent_name', 'parent_email', 'parent_phone', 'city', 'notes'];
+  const sampleData = [
+    ['Aarav', 'Sharma', '2008-03-15', 'Class 12', 'aarav@example.com', 'Rajesh Sharma', 'rajesh@example.com', '9876543210', 'Delhi', 'Science student'],
+    ['Ananya', 'Patel', '2008-05-22', 'Class 12', 'ananya@example.com', 'Priya Patel', 'priya@example.com', '9876543211', 'Mumbai', 'Top performer'],
+    ['Arjun', 'Verma', '2007-11-10', 'Class 11', 'arjun@example.com', 'Vikram Verma', 'vikram@example.com', '9876543212', 'Bangalore', ''],
+  ];
+
+  const csv = [headers, ...sampleData].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+
+  const blob = new Blob([csv], {type: 'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `sahirah_student_template_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function showFieldGuide() {
+  document.getElementById('fieldGuideModal').style.display = 'flex';
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.classList.add('show');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function showSuccess(msg) {
+  const el = document.getElementById('successMsg');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function showWarning(msg) {
+  const el = document.getElementById('warningMsg');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function clearMessages() {
+  document.getElementById('errorMsg').classList.remove('show');
+  document.getElementById('successMsg').classList.remove('show');
+  document.getElementById('warningMsg').classList.remove('show');
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function isValidDate(date) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(date) && !isNaN(new Date(date));
+}
+
+function escapeHtml(text) {
+  return String(text).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+</script>
+
+</body>
+</html>
