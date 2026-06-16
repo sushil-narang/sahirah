@@ -685,4 +685,64 @@ const SahirahDB = {
     const signature = btoa('client-side-signature-not-secure');
     return `${header}.${body}.${signature}`;
   },
+
+  // ---- CURIOSITY INDEX ----
+  async saveCuriosityIndex(sessionId, curiosityData) {
+    if (!sessionId || !curiosityData) return;
+    try {
+      // Save curiosity index summary
+      const { error } = await _db
+        .from('test_sessions')
+        .update({
+          curiosity_index_score: curiosityData.score,
+          curiosity_profile: curiosityData.profile,
+          curiosity_dominant_type: curiosityData.dominantType,
+          curiosity_data: JSON.stringify(curiosityData)
+        })
+        .eq('id', sessionId);
+      if (error) throw error;
+
+      // Save individual questions if any
+      if (curiosityData.all_questions && curiosityData.all_questions.length) {
+        const questionRows = curiosityData.all_questions.map(q => ({
+          session_id: sessionId,
+          question_text: q.text,
+          question_category: q.category,
+          module_name: q.module,
+          asked_at: q.timestamp
+        }));
+        await _db.from('curiosity_questions').insert(questionRows);
+      }
+    } catch(e) {
+      console.warn('Could not save curiosity index:', e);
+    }
+  },
+
+  async getCuriosityIndex(sessionId) {
+    try {
+      const { data: sessionData } = await _db
+        .from('test_sessions')
+        .select('curiosity_index_score, curiosity_profile, curiosity_dominant_type, curiosity_data')
+        .eq('id', sessionId)
+        .single();
+
+      const { data: questions } = await _db
+        .from('curiosity_questions')
+        .select('*')
+        .eq('session_id', sessionId)
+        .order('asked_at', { ascending: true });
+
+      if (sessionData && sessionData.curiosity_data) {
+        const curiosityData = JSON.parse(sessionData.curiosity_data);
+        return {
+          ...curiosityData,
+          all_questions: questions || []
+        };
+      }
+      return null;
+    } catch(e) {
+      console.warn('Could not fetch curiosity index:', e);
+      return null;
+    }
+  },
 };

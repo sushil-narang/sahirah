@@ -1096,6 +1096,8 @@ async function submitTest() {
   try {
     if (state.sessionId) {
       await SahirahDB.submitSession(state.sessionId, state.answers);
+      // Save curiosity data to database
+      await SahirahDB.saveCuriosityIndex(state.sessionId, curiosityData);
     }
   } catch(e) {
     console.warn('Could not save responses to DB:', e);
