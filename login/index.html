@@ -212,6 +212,10 @@ body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16
 .btn-pg:hover{background:#a86d08;}
 .btn-pg:disabled{opacity:.5;cursor:not-allowed;}
 </style>
+
+<!-- Curiosity Index System -->
+<script src="/assets/js/curiosity-index.js"></script>
+<script src="/assets/js/curiosity-ui.js"></script>
 </head>
 <body>
 
@@ -656,6 +660,11 @@ function _doStartTest() {
   state.testStarted = true;
   proctorTestActive = true;
   proctorFlags = [];
+
+  // Initialize Curiosity Index tracking
+  const testSessionId = 'test_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+  curiosityIndex.init(testSessionId);
+
   buildModuleSidebar();
   renderModule(0);
   startTimer();
@@ -742,6 +751,15 @@ function updateSidebar() {
       dot.className = 'ms-q-dot' + (isAnswered ? ' answered' : '') + (isCurrent ? ' current' : '');
     });
   });
+}
+
+// ================================================================
+// CURIOSITY INDEX
+// ================================================================
+function saveCuriosityAndMove(nextModIdx) {
+  // Save current module's curiosity data and move to next module
+  curiosityIndex.saveToSession();
+  renderModule(nextModIdx);
 }
 
 // ================================================================
@@ -1011,9 +1029,18 @@ function showModuleComplete(modIdx) {
           <div><div style="font-size:.9rem;font-weight:600;">${nextMod.name}</div><div style="font-size:.78rem;color:rgba(26,18,8,.45);">${nextMod.questions.length} questions</div></div>
         </div>
       </div>
-      <button class="mc-next-btn" onclick="renderModule(${modIdx+1})">Start ${nextMod.name} →</button>` :
+      <button class="mc-next-btn" onclick="saveCuriosityAndMove(${modIdx+1})">Start ${nextMod.name} →</button>` :
       `<button class="mc-next-btn" onclick="showSubmitConfirm()">✓ Submit Evaluation</button>`}
     </div>`;
+
+  // Add Curiosity Index component
+  const curiosityUI = createCuriosityIndexUI(mod.name, (question) => {
+    console.log('Curiosity question recorded:', question);
+  });
+  if (curiosityUI) {
+    content.appendChild(curiosityUI);
+  }
+
   content.scrollTo({top:0, behavior:'smooth'});
   updateSidebar();
 }
@@ -1061,6 +1088,11 @@ async function submitTest() {
   }
   try { localStorage.setItem('sahirah_question_times', JSON.stringify(questionTimes)); } catch(e){}
   saveProgress(); // keep localStorage as backup
+
+  // Export and save Curiosity Index data
+  const curiosityData = curiosityIndex.exportForReport();
+  try { localStorage.setItem('sahirah_curiosity_index', JSON.stringify(curiosityData)); } catch(e){}
+
   try {
     if (state.sessionId) {
       await SahirahDB.submitSession(state.sessionId, state.answers);
