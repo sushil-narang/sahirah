@@ -1187,8 +1187,8 @@ function importQBank(e) {
   reader.onload = function(ev) {
     try {
       const data = JSON.parse(ev.target.result);
-      if (!Array.isArray(data) || data.length !== 6) {
-        showAdminToast('Invalid JSON — expected array of 6 module objects'); return;
+      if (!Array.isArray(data) || data.length !== QB_MODULES.length) {
+        showAdminToast('Invalid JSON — expected array of ' + QB_MODULES.length + ' module objects'); return;
       }
       let added = 0;
       data.forEach(entry => {
