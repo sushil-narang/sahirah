@@ -1,0 +1,440 @@
+[
+  {
+    "module": "Aptitude Assessment",
+    "questions": []
+  },
+  {
+    "module": "Personality Profile",
+    "questions": []
+  },
+  {
+    "module": "Interest Inventory",
+    "questions": []
+  },
+  {
+    "module": "Emotional Intelligence",
+    "questions": []
+  },
+  {
+    "module": "Values & Motivation",
+    "questions": []
+  },
+  {
+    "module": "Situational Judgement",
+    "questions": []
+  },
+  {
+    "module": "Learning Style",
+    "questions": [
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "When learning a new concept in class, you prefer:",
+        "opts": [
+          "Diagrams, charts, or visual presentations on the board",
+          "Teacher explaining it verbally in detail",
+          "Reading from textbooks or written notes",
+          "Doing hands-on activities or experiments"
+        ],
+        "ans": 0
+      },
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "If you need to assemble something (like a project model), you would:",
+        "opts": [
+          "Look at the picture or diagram provided",
+          "Ask someone to explain it step-by-step",
+          "Read the instructions carefully first",
+          "Start building and figure it out as you go"
+        ],
+        "ans": 0
+      },
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "When you get lost in a new place, you typically:",
+        "opts": [
+          "Look at a map or GPS",
+          "Ask someone for directions verbally",
+          "Read street signs and written directions",
+          "Wander around and explore until you find it"
+        ],
+        "ans": 0
+      },
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "When remembering important information (like exam dates), you usually:",
+        "opts": [
+          "Visualize it in your mind or write it in color-coded notes",
+          "Repeat it aloud several times",
+          "Write it down in a planner or notebook",
+          "Practice the information repeatedly"
+        ],
+        "ans": 0
+      },
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "During a subject like Physics or Chemistry, you learn best through:",
+        "opts": [
+          "Diagrams, molecular models, or flowcharts",
+          "Teacher's explanations and class discussions",
+          "Reading chapters and working through examples",
+          "Lab experiments and practical demonstrations"
+        ],
+        "ans": 0
+      },
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "When working on a group project, your role is usually to:",
+        "opts": [
+          "Create visuals, posters, or PowerPoint slides",
+          "Lead discussions and present findings to others",
+          "Write the content and organize the presentation",
+          "Build models or create physical demonstrations"
+        ],
+        "ans": 0
+      },
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "For a History or Social Studies topic, you prefer to learn by:",
+        "opts": [
+          "Watching documentaries or viewing maps/timelines",
+          "Listening to stories and discussions about events",
+          "Reading historical accounts and taking detailed notes",
+          "Visiting museums or re-enacting historical events"
+        ],
+        "ans": 0
+      },
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "When you struggle with a concept, you tend to:",
+        "opts": [
+          "Draw pictures or create mind maps to understand it",
+          "Ask your teacher or friends to explain it verbally",
+          "Look for additional reading materials or examples",
+          "Practice with real examples or work through problems"
+        ],
+        "ans": 0
+      },
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "Your ideal study environment includes:",
+        "opts": [
+          "Good lighting, organized desk, color-coded materials",
+          "Quiet place, or studying with a study buddy to discuss",
+          "Books, notes, and written resources all around",
+          "Space to move around, fidget tools, or take breaks"
+        ],
+        "ans": 0
+      },
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "When learning a new language (English, Hindi, etc.), you do best with:",
+        "opts": [
+          "Written examples and reading comprehension",
+          "Listening to native speakers and speaking practice",
+          "Grammar rules and written exercises",
+          "Role-playing conversations and practical usage"
+        ],
+        "ans": 0
+      },
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "During online classes, you find it easier to focus when:",
+        "opts": [
+          "There are slides with visuals and clear structure",
+          "The teacher speaks clearly and there's interactive discussion",
+          "Detailed notes or transcripts are provided",
+          "There are activities, quizzes, or things to do"
+        ],
+        "ans": 0
+      },
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "After a lesson, you best retain information by:",
+        "opts": [
+          "Creating summaries with diagrams and colors",
+          "Discussing it with classmates or explaining to others",
+          "Re-reading and rewriting notes",
+          "Applying it through problems, projects, or practice"
+        ],
+        "ans": 0
+      }
+    ]
+  },
+  {
+    "module": "Resilience Index",
+    "questions": [
+      {
+        "type": "likert",
+        "text": "I am able to adapt to change",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "When faced with a difficult exam or assignment, I have a plan to tackle it",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I tend to bounce back after a failure or disappointment",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I believe I can find solutions to my problems, even during tough times",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "Staying focused on my goals helps me get through stressful periods",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I have the ability to control how I respond to difficult situations",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I look for creative solutions when facing obstacles",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "Facing pressure or competition brings out my best efforts",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I have people I can rely on during difficult times",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I learn from my mistakes rather than dwelling on them",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I remain optimistic even when facing major challenges",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I take action when there's something I can do about a problem",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I find ways to relieve stress and manage my emotions",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I can handle criticism without losing confidence",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I persist in my efforts even when progress is slow",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I have a sense of purpose that guides my decisions",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "When things don't go as planned, I adapt my approach",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I believe that adversity has made me stronger",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      }
+    ]
+  },
+  {
+    "module": "Creativity Index",
+    "questions": [
+      {
+        "type": "likert",
+        "text": "I often come up with new and unusual ideas",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "When solving a problem, I explore multiple different approaches",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I'm willing to take risks and try unconventional methods",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I can combine different ideas to create something completely new",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I enjoy working on projects that have no standard solution",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I notice connections others might miss between different subjects",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I can develop many different solutions for the same problem",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "When given an everyday object, I can imagine many different uses for it",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I express my ideas creatively (art, writing, music, design, etc.)",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I enjoy imagining 'what if' scenarios and exploring possibilities",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I'm able to improve or refine ideas (my own or others')",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I challenge the status quo and question 'why we do things this way'",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I can adapt my thinking style based on what a project needs",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I enjoy experimenting with new techniques or materials",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I can turn a failure or mistake into a learning opportunity or innovation",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I am known for bringing fresh perspectives to team projects or discussions",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      }
+    ]
+  },
+  {
+    "module": "Leadership Readiness",
+    "questions": [
+      {
+        "type": "likert",
+        "text": "I can inspire others to work toward a common goal",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I take responsibility for team outcomes, even if something goes wrong",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I can make difficult decisions when others are uncertain",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I naturally take initiative to solve problems without being asked",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I listen carefully to others' perspectives before making decisions",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I can convince others to support my ideas or approach",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I help develop the skills and confidence of people around me",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I can handle conflict constructively and find win-win solutions",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I think strategically about long-term goals and impact",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I am comfortable delegating tasks and trust others to execute",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I adapt my communication style based on the person or situation",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I stay calm and focused under pressure or crisis",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I seek feedback and actively work on self-improvement",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I follow through on commitments and meet my responsibilities",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I can build strong relationships and foster team cohesion",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      },
+      {
+        "type": "likert",
+        "text": "I stand up for what I believe in, even if it's unpopular",
+        "scale": ["Not at all true", "Rarely true", "Sometimes true", "Often true", "True nearly all the time"]
+      }
+    ]
+  }
+]

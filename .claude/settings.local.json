@@ -22,7 +22,8 @@
       "Bash(git *)",
       "Skill(run)",
       "Bash(grep -E \"\\\\.\\(html|js\\)$\")",
-      "Bash(awk '{print $9, \"—\", $5}')"
+      "Bash(awk '{print $9, \"—\", $5}')",
+      "Bash(python3 *)"
     ]
   }
 }

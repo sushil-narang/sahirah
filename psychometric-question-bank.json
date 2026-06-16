@@ -1,0 +1,1510 @@
+[
+  {
+    "module": "Aptitude Assessment",
+    "questions": [
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "Which number comes next in the series: 2, 6, 12, 20, 30, __?",
+        "opts": [
+          "40",
+          "42",
+          "36",
+          "44"
+        ],
+        "ans": 1
+      },
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "If all Roses are Flowers and some Flowers are Red, which conclusion is definitely true?",
+        "opts": [
+          "All roses are red",
+          "Some roses may be red",
+          "No roses are red",
+          "All flowers are roses"
+        ],
+        "ans": 1
+      },
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "A train travels 240 km in 3 hours. At the same speed, how far will it travel in 5 hours?",
+        "opts": [
+          "350 km",
+          "400 km",
+          "380 km",
+          "420 km"
+        ],
+        "ans": 1
+      },
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "Find the odd one out: Triangle, Square, Circle, Sphere, Rectangle",
+        "opts": [
+          "Triangle",
+          "Circle",
+          "Sphere",
+          "Rectangle"
+        ],
+        "ans": 2
+      },
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "If PENCIL is coded as PENCIL, how is ERASER coded in the same logic?",
+        "opts": [
+          "REASRE",
+          "ERASER",
+          "RASEER",
+          "ARERES"
+        ],
+        "ans": 1
+      },
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "A clock shows 3:15. What is the angle between the hour and minute hands?",
+        "opts": [
+          "0°",
+          "7.5°",
+          "15°",
+          "52.5°"
+        ],
+        "ans": 1
+      },
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "Which of these does NOT belong: 8, 27, 64, 100, 125?",
+        "opts": [
+          "27",
+          "64",
+          "100",
+          "125"
+        ],
+        "ans": 2
+      },
+      {
+        "type": "mcq",
+        "tier": 1,
+        "text": "Rearrange TNEELENCXLE to form a meaningful word:",
+        "opts": [
+          "EXCELLENCE",
+          "EXELLENCTE",
+          "EXCELTENLE",
+          "NELLECTEXE"
+        ],
+        "ans": 0
+      },
+      {
+        "type": "mcq",
+        "tier": 2,
+        "text": "A shopkeeper marks a product 40% above cost and gives a 20% discount. What is the profit %?",
+        "opts": [
+          "10%",
+          "12%",
+          "14%",
+          "16%"
+        ],
+        "ans": 1
+      },
+      {
+        "type": "scenario",
+        "tier": 2,
+        "context": "A data table shows: City A population 2.4M grows at 3%/yr; City B population 3.1M grows at 1%/yr.",
+        "text": "In approximately how many years will City A's population exceed City B's?",
+        "opts": [
+          "12 years",
+          "15 years",
+          "18 years",
+          "21 years"
+        ],
+        "ans": 1
+      },
+      {
+        "type": "mcq",
+        "tier": 2,
+        "text": "If the sum of 5 consecutive integers is 265, what is the middle integer?",
+        "opts": [
+          "51",
+          "53",
+          "55",
+          "57"
+        ],
+        "ans": 1
+      },
+      {
+        "type": "mcq",
+        "tier": 2,
+        "text": "A cube is painted red on all faces and cut into 125 smaller equal cubes. How many cubes have exactly 2 red faces?",
+        "opts": [
+          "12",
+          "24",
+          "36",
+          "48"
+        ],
+        "ans": 2
+      },
+      {
+        "type": "mcq",
+        "tier": 2,
+        "text": "Water flows into a tank at 15 L/min and drains at 8 L/min. Starting empty, how long to fill a 490 L tank?",
+        "opts": [
+          "60 min",
+          "65 min",
+          "70 min",
+          "75 min"
+        ],
+        "ans": 2
+      },
+      {
+        "type": "mcq",
+        "tier": 2,
+        "text": "If 6 workers complete a task in 8 days, how many workers are needed to finish it in 3 days?",
+        "opts": [
+          "14",
+          "16",
+          "18",
+          "20"
+        ],
+        "ans": 1
+      },
+      {
+        "type": "mcq",
+        "tier": 2,
+        "text": "Three pipes A, B, C can fill a cistern in 6, 9, 12 hours respectively. All three are opened together. What fraction is filled in 1 hour?",
+        "opts": [
+          "11/36",
+          "13/36",
+          "7/18",
+          "5/12"
+        ],
+        "ans": 0
+      },
+      {
+        "type": "mcq",
+        "tier": 3,
+        "text": "A function f(x) = x³ − 6x² + 9x − 4. At which value of x does f(x) have a local minimum?",
+        "opts": [
+          "x=1",
+          "x=2",
+          "x=3",
+          "x=4"
+        ],
+        "ans": 2
+      },
+      {
+        "type": "scenario",
+        "tier": 3,
+        "context": "A startup allocates ₹18L budget. Marketing:Development:Operations = 2:5:3. Development costs increase 20% mid-year.",
+        "text": "By how much must other departments reduce to keep the total budget unchanged?",
+        "opts": [
+          "₹1.8L total",
+          "₹2.0L total",
+          "₹2.16L total",
+          "₹1.5L total"
+        ],
+        "ans": 0
+      },
+      {
+        "type": "mcq",
+        "tier": 3,
+        "text": "In a network of 7 cities, each pair connected by exactly one road, how many roads exist in total?",
+        "opts": [
+          "14",
+          "18",
+          "21",
+          "28"
+        ],
+        "ans": 2
+      },
+      {
+        "type": "mcq",
+        "text": "A sequence is defined by a₁=2, aₙ=3aₙ₋₁−1. What is a₅?",
+        "opts": [
+          "121",
+          "122",
+          "123",
+          "124"
+        ],
+        "ans": 1
+      },
+      {
+        "type": "mcq",
+        "tier": 3,
+        "text": "A wire of resistance 12Ω is bent into a circle. What is the resistance between two diametrically opposite points?",
+        "opts": [
+          "3Ω",
+          "4Ω",
+          "6Ω",
+          "12Ω"
+        ],
+        "ans": 0
+      },
+      {
+        "type": "scenario",
+        "text": "After 3 complete iterations, how many items remain?",
+        "context": "An algorithm processes N items. Each iteration doubles remaining items and removes 1. Starting at N=100.",
+        "opts": [
+          "199",
+          "397",
+          "793",
+          "794"
+        ],
+        "ans": 2
+      },
+      {
+        "type": "mcq",
+        "text": "P, Q, R invest ₹5000, ₹6000, ₹4000. P withdraws half after 4 months. Total profit after 12 months is ₹6900. P's share?",
+        "opts": [
+          "₹1725",
+          "₹4005",
+          "₹1700",
+          "₹1380"
+        ],
+        "ans": 0
+      },
+      {
+        "type": "mcq",
+        "tier": 3,
+        "text": "A convex polygon has 20 diagonals. How many sides does it have?",
+        "opts": [
+          "7",
+          "8",
+          "9",
+          "10"
+        ],
+        "ans": 1
+      }
+    ]
+  },
+  {
+    "module": "Personality Profile",
+    "questions": [
+      {
+        "type": "likert",
+        "text": "I enjoy meeting new people and feel energised after social interactions.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I prefer to have a detailed plan before starting any task rather than figuring it out as I go.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I often think about abstract ideas, theories, and hypothetical scenarios for fun.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I find it easy to understand and share the feelings of others.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I stay calm and focused even when facing unexpected problems or setbacks.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I like to be in charge and naturally take the lead in group situations.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I find routine and predictability comforting rather than boring.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "When I start something, I almost always follow through to completion.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "matrix",
+        "text": "Rate how accurately each statement describes you across these traits:",
+        "rows": [
+          "I am detail-oriented",
+          "I enjoy creative work",
+          "I am assertive",
+          "I adapt easily to change"
+        ],
+        "cols": [
+          "Not at all",
+          "A little",
+          "Somewhat",
+          "Quite a lot",
+          "Very much"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I enjoy helping others even when there is nothing in it for me.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I get anxious or overwhelmed when there is too much to do at once.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I prefer facts and evidence over intuition when making important decisions.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I enjoy solving puzzles, riddles, or problems that require logical thinking.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I express my thoughts and feelings better through writing, art, or speaking than through numbers.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I am willing to take risks and try new things, even if I might fail.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I keep working on a difficult task until I find a solution, even if it takes a long time.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I am curious about how things work and often ask questions to understand them better.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I work better alone than in a group when I need to focus on something important.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "matrix",
+        "text": "Rate how accurately each statement describes you:",
+        "rows": [
+          "I notice when others are sad or upset",
+          "I enjoy debating and convincing others of my views",
+          "I am organised with my time and belongings",
+          "I get bored easily with repetitive tasks"
+        ],
+        "cols": [
+          "Not at all",
+          "A little",
+          "Somewhat",
+          "Quite a lot",
+          "Very much"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I feel comfortable making decisions quickly under pressure.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "Interest Inventory",
+    "questions": [
+      {
+        "type": "mcq",
+        "text": "Which activity would you most enjoy doing for a full week?",
+        "opts": [
+          "Coding an app or website",
+          "Designing a logo or illustration",
+          "Running a small business or startup",
+          "Conducting a science experiment",
+          "Writing a speech or news article",
+          "Organising a community event"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "mcq",
+        "text": "Which of these problems excites you most to solve?",
+        "opts": [
+          "Why is traffic so bad in cities?",
+          "How do vaccines work at the molecular level?",
+          "Why do some businesses succeed while others fail?",
+          "How can AI understand human language?",
+          "How do bridges stay standing under load?",
+          "How do we reduce poverty in rural India?"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "I would enjoy a career that involves working outdoors or with my hands.",
+        "scale": [
+          "Not at all",
+          "Unlikely",
+          "Neutral",
+          "Possibly",
+          "Definitely"
+        ]
+      },
+      {
+        "type": "mcq",
+        "text": "If you had to pick a college course right now, which would you choose?",
+        "opts": [
+          "Computer Science or Data Science",
+          "Medicine or Biotechnology",
+          "Architecture or Product Design",
+          "Law or Political Science",
+          "Commerce or Finance",
+          "Art, Music or Film"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "mcq",
+        "text": "Which type of book or content do you enjoy most in your free time?",
+        "opts": [
+          "Tech, coding or science blogs",
+          "Biographies of leaders or history books",
+          "Business, economics or finance content",
+          "Mystery, crime or detective stories",
+          "Creative writing, poetry or art",
+          "Sports, fitness or nature documentaries"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "I enjoy work that involves analysing data and finding patterns.",
+        "scale": [
+          "Not at all",
+          "Unlikely",
+          "Neutral",
+          "Possibly",
+          "Definitely"
+        ]
+      },
+      {
+        "type": "mcq",
+        "text": "Which of these best describes your dream workplace?",
+        "opts": [
+          "A research lab or tech company",
+          "A hospital or healthcare facility",
+          "A courtroom, government office or NGO",
+          "A design studio or creative agency",
+          "A bank, consultancy or startup",
+          "An outdoor field site or construction project"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "I find artistic and creative activities more satisfying than technical ones.",
+        "scale": [
+          "Not at all",
+          "Unlikely",
+          "Neutral",
+          "Possibly",
+          "Definitely"
+        ]
+      },
+      {
+        "type": "matrix",
+        "text": "Rate how much you enjoy each of these school subjects:",
+        "rows": [
+          "Mathematics",
+          "Physics or Chemistry",
+          "Biology",
+          "History or Political Science",
+          "Economics or Business Studies",
+          "Languages or Literature"
+        ],
+        "cols": [
+          "Strongly dislike",
+          "Dislike",
+          "Neutral",
+          "Like",
+          "Strongly like"
+        ]
+      },
+      {
+        "type": "mcq",
+        "text": "Which of these YouTube channels or shows would you watch on a free Sunday?",
+        "opts": [
+          "Science explainer channels (Veritasium, Vsauce)",
+          "Medical or health documentaries",
+          "Business case studies (Shark Tank, startup stories)",
+          "History, politics or current affairs analysis",
+          "Art, design or film-making tutorials",
+          "Coding or technology product reviews"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "mcq",
+        "text": "In a school project, which role would you naturally pick?",
+        "opts": [
+          "The researcher who finds and analyses information",
+          "The designer who makes it look attractive",
+          "The leader who organises everyone and plans timelines",
+          "The presenter who speaks in front of the class",
+          "The builder who creates the model or prototype",
+          "The writer who prepares the report"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "I am curious about how the human body works and how diseases are treated.",
+        "scale": [
+          "Not at all",
+          "Unlikely",
+          "Neutral",
+          "Possibly",
+          "Definitely"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I enjoy following news about the stock market, businesses, and the economy.",
+        "scale": [
+          "Not at all",
+          "Unlikely",
+          "Neutral",
+          "Possibly",
+          "Definitely"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I enjoy debating social issues, politics, or arguing different sides of a topic.",
+        "scale": [
+          "Not at all",
+          "Unlikely",
+          "Neutral",
+          "Possibly",
+          "Definitely"
+        ]
+      },
+      {
+        "type": "mcq",
+        "text": "Which of these activities sounds most fun to you?",
+        "opts": [
+          "Building a working robot or machine",
+          "Solving a difficult math or physics problem",
+          "Helping a sick person feel better",
+          "Starting a small business and selling something",
+          "Writing a story, song or making a film",
+          "Organising a debate or social campaign"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "I would enjoy a job where I get to invent new technology or machines.",
+        "scale": [
+          "Not at all",
+          "Unlikely",
+          "Neutral",
+          "Possibly",
+          "Definitely"
+        ]
+      },
+      {
+        "type": "matrix",
+        "text": "Rate how interested you would be in each of these career activities:",
+        "rows": [
+          "Examining patients and diagnosing illnesses",
+          "Writing computer programs or designing software",
+          "Managing money, accounts or investments",
+          "Teaching, counselling or social work",
+          "Designing buildings, products or graphics",
+          "Reporting news or doing legal work"
+        ],
+        "cols": [
+          "Not at all",
+          "A little",
+          "Somewhat",
+          "Quite a lot",
+          "Very much"
+        ]
+      },
+      {
+        "type": "mcq",
+        "text": "Which of these famous people's careers would you most like to have?",
+        "opts": [
+          "A doctor or medical researcher (like APJ Abdul Kalam, Dr. Devi Shetty)",
+          "A scientist or engineer (like CV Raman, Sundar Pichai)",
+          "A business leader (like Ratan Tata, Falguni Nayar)",
+          "A lawyer, judge or civil servant (like Fali Nariman, IAS officers)",
+          "An artist, writer or filmmaker (like Ruskin Bond, AR Rahman)",
+          "A social worker or activist (like Medha Patkar, Sonam Wangchuk)"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "I prefer working with numbers, formulas and calculations over words and stories.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "mcq",
+        "text": "If you had ₹10,000 and one free month, what would you most enjoy doing?",
+        "opts": [
+          "Building a small electronics or coding project",
+          "Volunteering at a hospital or clinic",
+          "Trading in stocks or starting a small online shop",
+          "Travelling and writing a blog or making a documentary",
+          "Attending a workshop on art, music or design",
+          "Running a campaign or awareness drive on a social issue"
+        ],
+        "ans": -1
+      }
+    ]
+  },
+  {
+    "module": "Emotional Intelligence",
+    "questions": [
+      {
+        "type": "scenario",
+        "context": "Your close friend just failed an important exam they had studied very hard for. They are not saying much but look upset.",
+        "text": "What is your most natural response?",
+        "opts": [
+          "Give them space — they'll talk when ready",
+          "Immediately try to cheer them up with jokes",
+          "Sit with them quietly and let them know you're there",
+          "Suggest practical steps to improve next time"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "I notice when someone is feeling upset or uncomfortable, even when they don't say anything.",
+        "scale": [
+          "Never",
+          "Rarely",
+          "Sometimes",
+          "Usually",
+          "Always"
+        ]
+      },
+      {
+        "type": "scenario",
+        "context": "You are working on a group project and one member is not contributing. The deadline is tomorrow.",
+        "text": "How do you handle it?",
+        "opts": [
+          "Do their work quietly to avoid conflict",
+          "Confront them directly and firmly",
+          "Talk to them privately to understand why",
+          "Tell the group leader and let them deal with it"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "When I make a mistake, I take responsibility for it rather than making excuses.",
+        "scale": [
+          "Never",
+          "Rarely",
+          "Sometimes",
+          "Usually",
+          "Always"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I can stay focused and perform well even when I am nervous or under pressure.",
+        "scale": [
+          "Never",
+          "Rarely",
+          "Sometimes",
+          "Usually",
+          "Always"
+        ]
+      },
+      {
+        "type": "scenario",
+        "context": "You believe strongly that a decision being made by your group is wrong. The rest of the group disagrees.",
+        "text": "What do you do?",
+        "opts": [
+          "Go along with the group to avoid friction",
+          "Express your view clearly but respect the group's final call",
+          "Try to change everyone's mind persistently",
+          "Leave the group if they won't change their decision"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "I can identify what emotion I am feeling and understand why I feel that way.",
+        "scale": [
+          "Never",
+          "Rarely",
+          "Sometimes",
+          "Usually",
+          "Always"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I find it difficult to stay motivated when working on long tasks that take weeks or months.",
+        "scale": [
+          "Never",
+          "Rarely",
+          "Sometimes",
+          "Usually",
+          "Always"
+        ]
+      },
+      {
+        "type": "scenario",
+        "context": "Your younger sibling accidentally breaks something of yours that mattered a lot to you. They look scared and immediately apologise.",
+        "text": "What is your most natural first reaction?",
+        "opts": [
+          "Shout at them — they need to learn to be careful",
+          "Stay quiet, walk away, and process your anger alone first",
+          "Tell them it's okay even though you feel hurt inside",
+          "Acknowledge that you are upset but reassure them it was an accident"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "When someone gives me harsh criticism about my work, I can listen calmly and find what is useful in it.",
+        "scale": [
+          "Never",
+          "Rarely",
+          "Sometimes",
+          "Usually",
+          "Always"
+        ]
+      },
+      {
+        "type": "scenario",
+        "context": "You worked very hard for a competition but lost to someone you feel did not deserve to win as much as you did.",
+        "text": "How do you handle this feeling?",
+        "opts": [
+          "Avoid the winner and complain about the result to others",
+          "Accept it outwardly but stay bitter for a long time",
+          "Congratulate the winner genuinely and analyse where you can improve",
+          "Tell yourself the competition was unfair and move on"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "When my classmates do better than me in exams, I feel inspired rather than jealous.",
+        "scale": [
+          "Never",
+          "Rarely",
+          "Sometimes",
+          "Usually",
+          "Always"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I can usually tell what someone is feeling just by looking at their face or body language.",
+        "scale": [
+          "Never",
+          "Rarely",
+          "Sometimes",
+          "Usually",
+          "Always"
+        ]
+      },
+      {
+        "type": "scenario",
+        "context": "Two of your close friends have had a big fight and both are now expecting you to take their side.",
+        "text": "What do you do?",
+        "opts": [
+          "Pick the side of whoever you think is right",
+          "Avoid both of them until they sort it out themselves",
+          "Listen to both separately without taking sides and encourage them to talk",
+          "Tell them both they are being childish and to grow up"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "Before reacting in anger, I am able to pause and think about what I want to say.",
+        "scale": [
+          "Never",
+          "Rarely",
+          "Sometimes",
+          "Usually",
+          "Always"
+        ]
+      },
+      {
+        "type": "scenario",
+        "context": "Your parents are pressuring you to choose a career path that you do not feel passionate about. They have strong opinions and get upset when you push back.",
+        "text": "How do you handle the situation?",
+        "opts": [
+          "Agree with them to keep peace, even though you feel unhappy inside",
+          "Argue back firmly until they understand your view",
+          "Listen to their concerns, share yours calmly, and ask for time to discuss",
+          "Avoid the conversation completely and decide silently on your own"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "When I make a mistake, I am kind to myself instead of being harsh and self-critical.",
+        "scale": [
+          "Never",
+          "Rarely",
+          "Sometimes",
+          "Usually",
+          "Always"
+        ]
+      },
+      {
+        "type": "scenario",
+        "context": "A new student joins your class who comes from a different region, speaks differently, and is being quietly mocked by some classmates.",
+        "text": "What is your most likely action?",
+        "opts": [
+          "Stay out of it — it's not your problem",
+          "Quietly go and talk to the new student, making them feel welcome",
+          "Confront the classmates who are mocking them",
+          "Tell a teacher about what is happening"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "matrix",
+        "text": "Rate how often each statement is true for you:",
+        "rows": [
+          "I can calm myself down when I am very upset",
+          "I bounce back quickly after a disappointment",
+          "I can express my feelings clearly in words",
+          "I notice when my mood is affecting how I treat others",
+          "I genuinely feel happy when others succeed"
+        ],
+        "cols": [
+          "Never",
+          "Rarely",
+          "Sometimes",
+          "Usually",
+          "Always"
+        ]
+      },
+      {
+        "type": "scenario",
+        "context": "You receive a very low grade on an assignment you genuinely thought you had done well on. You feel embarrassed and discouraged.",
+        "text": "What is your most likely response after the initial reaction?",
+        "opts": [
+          "Decide the subject is not for you and lose interest",
+          "Blame the teacher for being unfair and tell your friends",
+          "Reflect on what went wrong and ask the teacher for feedback",
+          "Push the feeling aside and pretend it does not matter"
+        ],
+        "ans": -1
+      }
+    ]
+  },
+  {
+    "module": "Values & Motivation",
+    "questions": [
+      {
+        "type": "mcq",
+        "text": "Which of these would make you feel most proud of your career?",
+        "opts": [
+          "Inventing or building something used by millions",
+          "Earning enough to give your family a great life",
+          "Being recognised as the best in your field",
+          "Making a positive difference in people's daily lives",
+          "Having the freedom to create whatever you want",
+          "Holding a position of authority and responsibility"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "Having financial security is more important to me than doing work I am passionate about.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I want my work to have a clear positive impact on society — even if it pays less.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "mcq",
+        "text": "You receive two job offers. One pays ₹1.5L/month doing work you find dull. The other pays ₹60K doing work you love. Which do you choose?",
+        "opts": [
+          "₹1.5L — financial security comes first",
+          "₹60K — passion matters more than money",
+          "It depends on other factors",
+          "I would negotiate both offers"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "I enjoy recognition and being known as someone who excels in their field.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I would rather work in a stable government job than a risky but exciting startup.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "mcq",
+        "text": "Which value most guides your decisions in life?",
+        "opts": [
+          "Integrity — always doing what is right",
+          "Achievement — always performing at my best",
+          "Compassion — always helping others first",
+          "Freedom — always having the choice to choose my own path"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "I believe the meaning and purpose of my work matters more than anything else.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I would rather have a job that gives me time for family and hobbies than one that pays much more but takes up all my time.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "mcq",
+        "text": "Which of these would matter most to you in your future career?",
+        "opts": [
+          "Learning new things and growing every year",
+          "Earning enough to support my family well",
+          "Being respected and looked up to in society",
+          "Having freedom to make my own decisions",
+          "Building deep relationships with my colleagues",
+          "Competing and being the best at what I do"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "Earning the respect and admiration of my family and community matters a lot to me.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "likert",
+        "text": "I would happily take a lower salary if my work involves continuously learning and growing.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "mcq",
+        "text": "Which work setting would suit you best in the long run?",
+        "opts": [
+          "Working independently — being my own boss",
+          "Working in a small close-knit team",
+          "Working in a large organisation with clear structure",
+          "Working directly with clients or the public",
+          "Working in a research or creative environment",
+          "Working in a leadership role managing others"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "I am willing to work very hard for many years now if it leads to a much better life later.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "scenario",
+        "context": "You are offered a very high-paying job, but to do well in it you would need to occasionally bend the rules and not be fully honest with clients.",
+        "text": "What would you do?",
+        "opts": [
+          "Accept it — that is how the real world works",
+          "Accept it but try to be honest wherever possible",
+          "Refuse it — honesty is non-negotiable for me",
+          "Take it for a few years, save money, then leave"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "I prefer doing things in a tried and tested way rather than constantly trying new methods.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "mcq",
+        "text": "Where would you most like to live and work in your future?",
+        "opts": [
+          "In my hometown, close to family",
+          "In a major Indian city like Bengaluru, Mumbai or Delhi",
+          "Abroad — in the US, UK, Europe or similar",
+          "In a small town or rural area helping local communities",
+          "Travelling frequently — different places, no fixed base",
+          "Wherever the best opportunity takes me"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "likert",
+        "text": "I am motivated more by winning and being the best than by working together with others as a team.",
+        "scale": [
+          "Strongly disagree",
+          "Disagree",
+          "Neutral",
+          "Agree",
+          "Strongly agree"
+        ]
+      },
+      {
+        "type": "scenario",
+        "context": "Imagine you are 30 years old. You have to choose between two life paths.",
+        "text": "Which one would you most likely pick?",
+        "opts": [
+          "A senior role at an established company with good salary, predictable life and weekends off",
+          "Founding your own startup — long hours, uncertain income, but full ownership of what you build",
+          "A government or teaching job with strong job security and a respected place in society",
+          "A creative or social-impact career with modest income but deep personal satisfaction"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "matrix",
+        "text": "Rate how important each of these is to you in choosing a career:",
+        "rows": [
+          "High income and financial growth",
+          "Helping people and making a difference",
+          "Job security and stability",
+          "Creative freedom and self-expression",
+          "Status, respect and recognition",
+          "Continuous learning and skill development"
+        ],
+        "cols": [
+          "Not important",
+          "Slightly important",
+          "Moderately important",
+          "Very important",
+          "Extremely important"
+        ]
+      }
+    ]
+  },
+  {
+    "module": "Situational Judgement",
+    "questions": [
+      {
+        "type": "scenario",
+        "context": "You are selected as team leader for a school science fair project. Two team members have a strong disagreement about the project direction and neither will back down.",
+        "text": "As leader, what do you do first?",
+        "opts": [
+          "Decide yourself and ask everyone to follow",
+          "Let them argue it out — the better idea will win",
+          "Facilitate a structured discussion where both sides present their case",
+          "Ask a teacher to resolve it"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "scenario",
+        "context": "You discover that a classmate copied answers from you in an exam without your knowledge. The teacher suspects you were both cheating.",
+        "text": "How do you respond?",
+        "opts": [
+          "Deny everything — you didn't do anything wrong",
+          "Tell the teacher exactly what happened honestly",
+          "Protect your classmate — it's not a big deal",
+          "Stay quiet and hope it blows over"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "scenario",
+        "context": "You are midway through a 3-month project when you realise the approach you've been using has a fundamental flaw. Starting over will cost weeks.",
+        "text": "What is your most likely action?",
+        "opts": [
+          "Keep going — too much work already done",
+          "Immediately restart with the correct approach",
+          "Find a workaround to patch the flaw without restarting",
+          "Discuss with your mentor or team before deciding"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "scenario",
+        "context": "Your manager assigns you a task with unclear instructions. When you ask for clarification, they say \"just figure it out.\"",
+        "text": "How do you proceed?",
+        "opts": [
+          "Do nothing until you get clear instructions",
+          "Make your best interpretation, document it, and proceed",
+          "Ask a colleague who might know what's expected",
+          "Escalate to someone more senior"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "scenario",
+        "context": "You work at a company and notice a senior colleague regularly taking credit for a junior team member's ideas in meetings.",
+        "text": "What do you do?",
+        "opts": [
+          "It's not your business — stay out of it",
+          "Speak privately to the junior colleague and encourage them to speak up",
+          "Raise it directly with the senior colleague",
+          "Mention it to a manager or HR"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "scenario",
+        "context": "You have been given two weeks to complete a major assignment. After one week you realise you have significantly underestimated the work needed.",
+        "text": "What is your first step?",
+        "opts": [
+          "Work day and night to somehow finish on time",
+          "Immediately communicate the situation to whoever assigned the task",
+          "Submit whatever you have on the deadline",
+          "Ask for an extension without explaining why"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "scenario",
+        "context": "You strongly believe a decision your school or organisation is making is ethically wrong, but you are the most junior person in the room.",
+        "text": "What would you do?",
+        "opts": [
+          "Stay silent — it's not your place",
+          "Wait and see if anyone else raises it first",
+          "Speak up respectfully and clearly explain your concern",
+          "Write a private letter to the decision-maker"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "scenario",
+        "context": "You are presenting a project to an audience when someone asks a technical question you genuinely do not know the answer to.",
+        "text": "How do you respond?",
+        "opts": [
+          "Bluff — give a confident-sounding answer",
+          "Say honestly you don't know and will follow up",
+          "Change the subject smoothly",
+          "Ask the audience if anyone knows"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "scenario",
+        "context": "You have an exam tomorrow, an assignment due today, and a close friend has just called saying they urgently need to talk about a personal problem.",
+        "text": "What is your most likely course of action?",
+        "opts": [
+          "Tell your friend you'll call back tomorrow — exams come first",
+          "Drop everything and meet your friend immediately",
+          "Talk to your friend briefly to understand urgency, then plan accordingly",
+          "Submit the assignment quickly, then call your friend, then study"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "scenario",
+        "context": "You give a class presentation and forget your lines midway. Some students laugh and you feel humiliated.",
+        "text": "What do you do next?",
+        "opts": [
+          "Quickly end the presentation and rush back to your seat",
+          "Pause, take a breath, acknowledge the slip lightly and continue",
+          "Make an excuse like feeling unwell and stop",
+          "Push through stiffly without acknowledging anything"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "scenario",
+        "context": "Your friends are planning to skip school to watch a movie and are pressuring you to come along. You don't want to go but they call you boring for refusing.",
+        "text": "How do you respond?",
+        "opts": [
+          "Go along with them — friends matter more than one day of school",
+          "Refuse firmly without making a big deal about it",
+          "Make up an excuse like being unwell to get out of it",
+          "Refuse and try to convince them not to go either"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "scenario",
+        "context": "You notice that the school computer lab's printer has been broken for over a week, affecting many students. No one has fixed it and no teacher seems to be acting on it.",
+        "text": "What is your most likely action?",
+        "opts": [
+          "Wait — someone in charge will eventually handle it",
+          "Complain about it with classmates but do nothing",
+          "Approach a teacher or admin staff and report it clearly",
+          "Try to fix it yourself or find someone who can"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "scenario",
+        "context": "You want to start a small initiative at school — perhaps a coding club or a charity drive — but you need permission from a teacher who is generally hesitant about new ideas.",
+        "text": "How do you approach this?",
+        "opts": [
+          "Drop the idea — it isn't worth the trouble",
+          "Approach the teacher with a clear plan, written proposal and how it benefits students",
+          "Get a group of friends and approach the teacher together to add weight",
+          "Go to a different teacher who might be more open to the idea"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "scenario",
+        "context": "A teacher has unfairly accused you of something you did not do in front of the whole class. Other students saw you didn't do it but stayed silent.",
+        "text": "What do you do?",
+        "opts": [
+          "Stay quiet — challenging a teacher publicly will only make it worse",
+          "Defend yourself politely in class right then and there",
+          "Speak to the teacher privately after class to clear the matter",
+          "Tell your parents and ask them to handle it"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "scenario",
+        "context": "You have been given a school project to build a working model but the budget you have is very small and the materials you originally planned for are too expensive.",
+        "text": "What is your most likely approach?",
+        "opts": [
+          "Submit a simpler model that fits the budget",
+          "Ask parents for extra money to buy the original materials",
+          "Look for cheaper alternatives or recycled materials that still work",
+          "Team up with classmates to share costs and resources"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "scenario",
+        "context": "You are struggling badly with one school subject. A classmate offers to help you regularly, but you feel embarrassed accepting help.",
+        "text": "What do you do?",
+        "opts": [
+          "Politely refuse and try to figure it out alone",
+          "Accept the help gratefully and offer to help them in another subject in return",
+          "Accept the help just once to see if it works",
+          "Ask a teacher or tutor instead — it feels less embarrassing"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "scenario",
+        "context": "You find a wallet with ₹2000 cash and an ID card on the school playground. There are no witnesses around.",
+        "text": "What do you do?",
+        "opts": [
+          "Hand over the entire wallet to the school office or security",
+          "Use the ID to find the owner and return it directly",
+          "Take it home and figure out what to do later",
+          "Keep the cash since no one saw and hand in just the wallet"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "scenario",
+        "context": "Your best friend tells you a serious personal secret — they are being bullied online and ask you not to tell anyone, including their parents.",
+        "text": "What do you do?",
+        "opts": [
+          "Respect their wish and stay silent as promised",
+          "Stay silent but try to support them and reduce the bullying yourself",
+          "Tell a trusted adult quietly even though you promised not to",
+          "Convince your friend to tell their parents or a counsellor themselves"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "scenario",
+        "context": "You receive ₹5000 as a gift on your birthday. You want a new gadget worth ₹4500 but you also know your savings are very low.",
+        "text": "What is your most likely decision?",
+        "opts": [
+          "Buy the gadget — birthday money is meant to be enjoyed",
+          "Save all of it for the future",
+          "Save most of it and spend a small portion on something small you like",
+          "Buy the gadget but only after saving enough on your own to cover most of it"
+        ],
+        "ans": -1
+      },
+      {
+        "type": "scenario",
+        "context": "You and a classmate worked equally hard on a group project, but the teacher praises only the classmate by name in front of the class. You feel hurt and overlooked.",
+        "text": "How do you handle it?",
+        "opts": [
+          "Stay quiet and feel bitter about it for a while",
+          "Talk to the teacher privately and respectfully share that you also contributed",
+          "Confront the classmate and ask them to clarify with the teacher",
+          "Let it go — recognition isn't the most important thing"
+        ],
+        "ans": -1
+      }
+    ]
+  }
+]
