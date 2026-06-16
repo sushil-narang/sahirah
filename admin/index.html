@@ -1203,7 +1203,10 @@ function importQBank(e) {
       localStorage.setItem('psycho_questions_override', JSON.stringify(qbData));
       renderQBank();
       showAdminToast('Imported ✓ — ' + added + ' questions added to existing bank');
-    } catch { showAdminToast('Could not parse JSON file'); }
+    } catch(err) {
+      console.error('Import error:', err);
+      showAdminToast('Error: ' + (err.message || 'Could not parse JSON file'));
+    }
     e.target.value = '';
   };
   reader.readAsText(file);
