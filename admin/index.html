@@ -987,7 +987,7 @@ const DEFAULT_QUESTIONS = [
   ],
 ];
 
-let qbData = null;  // array of 6 question arrays (current working copy)
+let qbData = null;  // array of question arrays (current working copy) - now supports 10+ modules
 let qbFilter = 'all';
 let qbEditRef = null; // {mi, qi} or null for add mode
 
@@ -996,11 +996,11 @@ function initQBank() {
   if (override) {
     try {
       const ovr = JSON.parse(override);
-      qbData = DEFAULT_QUESTIONS.map((def, i) => ovr[i] && ovr[i].length ? ovr[i] : def);
+      qbData = QB_MODULES.map((_, i) => ovr[i] && ovr[i].length ? ovr[i] : (DEFAULT_QUESTIONS[i] || []));
       renderQBank(); return;
     } catch(e) {}
   }
-  qbData = DEFAULT_QUESTIONS.map(arr => [...arr]);
+  qbData = QB_MODULES.map((_, i) => DEFAULT_QUESTIONS[i] ? [...DEFAULT_QUESTIONS[i]] : []);
   renderQBank();
 }
 
