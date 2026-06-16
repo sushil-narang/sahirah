@@ -296,6 +296,54 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
     </div>
   </div>
 
+  <!-- CURIOSITY INDEX -->
+  <div class="report-section" id="section-curiosity">
+    <div class="rs-header">
+      <div class="rs-icon" style="background:#F5EEFF;">💭</div>
+      <div class="rs-title">Curiosity Index</div>
+      <div class="rs-sub">Behavioral insight</div>
+    </div>
+    <div class="card">
+      <!-- Score Band -->
+      <div id="curiosity-score-band" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;padding:1.25rem;background:rgba(123,47,190,.05);border-radius:14px;border:1px solid rgba(123,47,190,.15);">
+        <div style="text-align:center;">
+          <div style="font-family:var(--fm);font-size:1.8rem;font-weight:700;color:#7B2FBE;line-height:1;" id="curiosity-score">--</div>
+          <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;color:rgba(26,18,8,.4);margin-top:4px;">Curiosity Score</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:var(--fm);font-size:1rem;font-weight:600;color:#7B2FBE;line-height:1;" id="curiosity-who">0%</div>
+          <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;color:rgba(26,18,8,.4);margin-top:4px;">WHO</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:var(--fm);font-size:1rem;font-weight:600;color:#1A5FA8;line-height:1;" id="curiosity-what">0%</div>
+          <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;color:rgba(26,18,8,.4);margin-top:4px;">WHAT</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:var(--fm);font-size:1rem;font-weight:600;color:#0A6B5E;line-height:1;" id="curiosity-how">0%</div>
+          <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;color:rgba(26,18,8,.4);margin-top:4px;">HOW</div>
+        </div>
+      </div>
+
+      <!-- Profile & Profile Text -->
+      <div style="background:rgba(123,47,190,.08);border:1px solid rgba(123,47,190,.15);border-radius:12px;padding:1rem;margin-bottom:1.25rem;">
+        <div style="font-weight:600;color:#7B2FBE;margin-bottom:.5rem;font-size:.9rem;" id="curiosity-profile">Your Profile</div>
+        <div style="font-size:.85rem;line-height:1.6;color:rgba(26,18,8,.7);" id="curiosity-interpretation"></div>
+      </div>
+
+      <!-- Questions Display -->
+      <div id="curiosity-questions-wrap" style="display:none;">
+        <div style="font-weight:600;color:rgba(26,18,8,.6);margin-bottom:.75rem;font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;" id="curiosity-questions-count">Questions Asked</div>
+        <div id="curiosity-questions-list" style="display:flex;flex-direction:column;gap:.5rem;max-height:300px;overflow-y:auto;">
+          <!-- Questions will be inserted here -->
+        </div>
+      </div>
+
+      <div id="curiosity-no-questions" style="text-align:center;padding:1.5rem;color:rgba(26,18,8,.5);font-size:.85rem;">
+        No questions were asked during the assessment.
+      </div>
+    </div>
+  </div>
+
   <!-- TOP CAREERS — BASIC+ -->
   <div class="report-section premium-section" id="section-careers">
     <div class="rs-header">
@@ -898,6 +946,7 @@ function buildReport() {
   pill.innerHTML = `✓ Primary Stream: ${streamNames[primary]}`;
 
   buildStreamBars(S);
+  buildCuriosityIndex(S);
   buildCareerCards(S);
   buildAIReport(S);
   buildAptitudeSection(S);
@@ -945,6 +994,129 @@ function buildStreamBars(S) {
   verdictEl.appendChild(br);
   verdictEl.appendChild(span);
   setTimeout(()=>{ document.querySelectorAll('.sb-fill').forEach(el=>{ el.style.transition='width 1.2s ease'; el.style.width=el.dataset.width+'%'; }); }, 200);
+}
+
+// ---- CURIOSITY INDEX ----
+function buildCuriosityIndex(S) {
+  // Try to get curiosity data from localStorage
+  let curiosityData = null;
+  try {
+    const stored = localStorage.getItem('sahirah_curiosity_index');
+    if (stored) {
+      curiosityData = JSON.parse(stored);
+    }
+  } catch(e) {
+    console.warn('Could not parse curiosity data:', e);
+  }
+
+  // If no data, hide the section
+  if (!curiosityData || curiosityData.total === 0) {
+    const section = document.getElementById('section-curiosity');
+    if (section) section.style.display = 'none';
+    return;
+  }
+
+  // Populate curiosity score
+  document.getElementById('curiosity-score').textContent = curiosityData.score;
+
+  // Populate WHO/WHAT/HOW/WHY percentages
+  document.getElementById('curiosity-who').textContent = curiosityData.distribution.WHO_percent + '%';
+  document.getElementById('curiosity-what').textContent = curiosityData.distribution.WHAT_percent + '%';
+  document.getElementById('curiosity-how').textContent = curiosityData.distribution.HOW_percent + '%';
+
+  // Populate profile
+  const profileEl = document.getElementById('curiosity-profile');
+  profileEl.textContent = curiosityData.profile + ' — ' + curiosityData.dominantType;
+
+  // Populate interpretation
+  const interpEl = document.getElementById('curiosity-interpretation');
+  if (curiosityData.interpretation) {
+    interpEl.innerHTML = `<strong>${curiosityData.interpretation.profile}</strong><br><br>${curiosityData.interpretation.dominantType}`;
+  }
+
+  // Show/hide questions
+  if (curiosityData.all_questions && curiosityData.all_questions.length > 0) {
+    document.getElementById('curiosity-questions-wrap').style.display = 'block';
+    document.getElementById('curiosity-no-questions').style.display = 'none';
+
+    const qCount = document.getElementById('curiosity-questions-count');
+    qCount.textContent = 'Questions Asked (' + curiosityData.all_questions.length + ')';
+
+    const qList = document.getElementById('curiosity-questions-list');
+    qList.innerHTML = '';
+
+    // Color mapping for categories
+    const categoryColors = {
+      'WHO': '#C0410A',
+      'WHAT': '#1A5FA8',
+      'HOW': '#0A6B5E',
+      'WHY': '#7B2FBE'
+    };
+
+    curiosityData.all_questions.forEach(q => {
+      const qEl = document.createElement('div');
+      qEl.style.cssText = `
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        background: rgba(26, 18, 8, 0.02);
+        border-radius: 8px;
+        border-left: 3px solid ${categoryColors[q.question_category] || '#999'};
+      `;
+
+      const categoryBadge = document.createElement('span');
+      categoryBadge.style.cssText = `
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        background: ${categoryColors[q.question_category] || '#999'};
+        color: white;
+        border-radius: 50%;
+        font-weight: 700;
+        font-size: 0.7rem;
+        flex-shrink: 0;
+        font-family: 'DM Mono', monospace;
+      `;
+      categoryBadge.textContent = q.question_category.charAt(0);
+
+      const textEl = document.createElement('div');
+      textEl.style.cssText = `
+        flex: 1;
+        min-width: 0;
+      `;
+
+      const questionText = document.createElement('p');
+      questionText.style.cssText = `
+        margin: 0;
+        font-size: 0.85rem;
+        color: rgba(26, 18, 8, 0.8);
+        line-height: 1.5;
+        word-break: break-word;
+      `;
+      questionText.textContent = q.question_text;
+
+      const moduleText = document.createElement('p');
+      moduleText.style.cssText = `
+        margin: 0.25rem 0 0 0;
+        font-size: 0.7rem;
+        color: rgba(26, 18, 8, 0.4);
+      `;
+      moduleText.textContent = 'Asked in: ' + q.module_name;
+
+      textEl.appendChild(questionText);
+      textEl.appendChild(moduleText);
+
+      qEl.appendChild(categoryBadge);
+      qEl.appendChild(textEl);
+      qList.appendChild(qEl);
+    });
+  } else {
+    document.getElementById('curiosity-questions-wrap').style.display = 'none';
+    document.getElementById('curiosity-no-questions').style.display = 'block';
+  }
 }
 
 // ---- CAREER CARDS ----
