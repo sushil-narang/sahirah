@@ -2,6 +2,9 @@
   publish = "."
   functions = "netlify/functions"
 
+[functions]
+  included_files = ["psychometric-question-bank-final-validated.json"]
+
 [[headers]]
   for = "/*"
   [headers.values]
