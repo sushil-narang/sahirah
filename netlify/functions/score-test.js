@@ -177,6 +177,9 @@ exports.handler = async (event) => {
     const careerFits = (careers || []).map(career => {
       let num = 0, den = 0;
       let below_cutoff = false;
+      let reality_check_dim = null;
+      let reality_check_score = null;
+      let reality_check_weight = -1;
 
       DIMENSIONS.forEach(dim => {
         const w = career['weight_' + dim] || 0;
@@ -186,6 +189,13 @@ exports.handler = async (event) => {
 
         const minReq = career['min_req_' + dim] || 0;
         if (minReq > 0 && (dimension_scores[dim] ?? 0) < minReq) below_cutoff = true;
+
+        // Reality check: this career's highest-weighted dimension where the student scored below 70
+        if (w > 0 && s < 70 && w > reality_check_weight) {
+          reality_check_weight = w;
+          reality_check_dim = dim;
+          reality_check_score = s;
+        }
       });
 
       const fit = den > 0 ? Math.round((num / den) * 100) : 0;
@@ -199,10 +209,12 @@ exports.handler = async (event) => {
         bg: career.display_color ? career.display_color + '11' : '#FDF8F0',
         why: career.why_text || `Strong match for your ${primary_stream} profile.`,
         exams: career.exams || [],
+        reality_check_dim,
+        reality_check_score,
       };
     });
 
-    const top_careers = careerFits.sort((a, b) => b.fit - a.fit).slice(0, 3);
+    const top_careers = careerFits.sort((a, b) => b.fit - a.fit).slice(0, 5);
 
     // ---- STEP 6: Write results ----
     const score_json = { skill_scores, dimension_scores, stream_scores, primary_stream, top_careers };
