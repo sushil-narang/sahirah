@@ -63,10 +63,12 @@ exports.handler = async (event) => {
     }
   }
 
-  // ---- SEED module_questions ----
+  // ---- SEED module_questions (batched to avoid function timeout) ----
+  const BATCH_SIZE = 25;
+  const allQuestions = [];
   for (const mod of questionBank) {
     for (const q of mod.questions) {
-      const row = {
+      allQuestions.push({
         question_id:     q.id ?? null,
         module_id:       q.module_id ?? null,
         question_text:   q.text ?? null,
@@ -84,18 +86,21 @@ exports.handler = async (event) => {
         option_scores:   q.option_scores ?? null,
         rows:            q.rows ?? null,
         cols:            q.cols ?? null,
-      };
+      });
+    }
+  }
 
-      try {
-        const { error } = await db.from('module_questions').upsert(row, { onConflict: 'question_id' });
-        if (error) {
-          errors.push({ question_id: row.question_id, error: error.message });
-        } else {
-          questionsUpserted++;
-        }
-      } catch (err) {
-        errors.push({ question_id: row.question_id, error: err.message });
+  for (let i = 0; i < allQuestions.length; i += BATCH_SIZE) {
+    const batch = allQuestions.slice(i, i + BATCH_SIZE);
+    try {
+      const { error } = await db.from('module_questions').upsert(batch, { onConflict: 'question_id' });
+      if (error) {
+        batch.forEach(row => errors.push({ question_id: row.question_id, error: error.message }));
+      } else {
+        questionsUpserted += batch.length;
       }
+    } catch (err) {
+      batch.forEach(row => errors.push({ question_id: row.question_id, error: err.message }));
     }
   }
 
