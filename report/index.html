@@ -67,6 +67,10 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
 .rh-date{font-size:.72rem;color:rgba(253,248,240,.25);margin-top:.75rem;}
 .rh-logo{height:32px;margin-bottom:1rem;}
 .rh-report-id{font-size:.72rem;color:rgba(253,248,240,.4);font-family:var(--fm);margin-top:.4rem;}
+.es-table td{padding:.65rem 0;border-bottom:1px solid var(--border);}
+.es-table tr:last-child td{border-bottom:none;}
+.es-label{font-size:.78rem;color:rgba(26,18,8,.5);font-weight:600;width:40%;}
+.es-value{font-size:.95rem;font-weight:700;color:var(--ink);}
 
 /* SECTION */
 .report-section{margin-bottom:2rem;}
@@ -290,6 +294,34 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
     </div>
   </div>
 
+  <!-- S2: EXECUTIVE SUMMARY -->
+  <div class="report-section" id="section-summary">
+    <div class="rs-header">
+      <div class="rs-icon" style="background:#FDF0CC;">📋</div>
+      <div class="rs-title">Executive Summary</div>
+      <div class="rs-sub">At a glance</div>
+    </div>
+    <div class="card" style="margin-bottom:1.25rem;">
+      <table class="es-table" style="width:100%;border-collapse:collapse;">
+        <tr><td class="es-label">Primary Stream</td><td class="es-value" id="es-stream"></td></tr>
+        <tr><td class="es-label">Top Career Match</td><td class="es-value" id="es-career"></td></tr>
+        <tr><td class="es-label">Dominant Trait</td><td class="es-value" id="es-trait"></td></tr>
+      </table>
+    </div>
+    <div class="ai-narrative">
+      <div class="ain-header">
+        <div class="ain-avatar">A</div>
+        <div>
+          <div class="ain-name">Avanya</div>
+          <div class="ain-role">AI Counsellor · Sahirah.in</div>
+        </div>
+      </div>
+      <div class="ain-text" id="ai-narrative-text">
+        <div class="ain-typing"><div class="at-dot"></div><div class="at-dot"></div><div class="at-dot"></div></div>
+      </div>
+    </div>
+  </div>
+
   <!-- STREAM MATCH -->
   <div class="report-section">
     <div class="rs-header">
@@ -364,37 +396,6 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
         <div class="lo-icon">🏆</div>
         <div class="lo-title">Your Top Career Matches</div>
         <div class="lo-sub">Unlock to see your top 3 personalised career recommendations with fit scores, reasoning, and entrance exam roadmap.</div>
-        <div class="lo-btns">
-          <a href="../payment/" class="lo-btn lo-btn-gold">🔓 Unlock — from ₹499</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- AI NARRATIVE — BASIC+ -->
-  <div class="report-section premium-section" id="section-ai">
-    <div class="rs-header">
-      <div class="rs-icon" style="background:var(--gold-pale);">✨</div>
-      <div class="rs-title">Avanya's Personal Assessment</div>
-      <div class="rs-sub">AI-generated</div>
-    </div>
-    <div class="ai-narrative">
-      <div class="ain-header">
-        <div class="ain-avatar">A</div>
-        <div>
-          <div class="ain-name">Avanya</div>
-          <div class="ain-role">AI Counsellor · Sahirah.in</div>
-        </div>
-      </div>
-      <div class="ain-text" id="ai-narrative-text">
-        <div class="ain-typing"><div class="at-dot"></div><div class="at-dot"></div><div class="at-dot"></div></div>
-      </div>
-    </div>
-    <div class="lock-overlay" id="lock-ai">
-      <div class="lock-overlay-inner">
-        <div class="lo-icon">✨</div>
-        <div class="lo-title">Avanya's Personal Assessment</div>
-        <div class="lo-sub">A warm, personalised AI narrative connecting your aptitude, personality and interests — written just for your child.</div>
         <div class="lo-btns">
           <a href="../payment/" class="lo-btn lo-btn-gold">🔓 Unlock — from ₹499</a>
         </div>
@@ -1091,6 +1092,36 @@ function showReport() {
 // ================================================================
 // BUILD REPORT
 // ================================================================
+const streamNamesFull = {non:'Non-Medical',med:'Medical',com:'Commerce',hum:'Humanities'};
+
+const SKILL_DISPLAY_NAMES = {
+  logical: 'Logical Reasoning', numerical: 'Numerical Ability', pattern: 'Pattern Recognition',
+  spatial: 'Spatial Reasoning', verbal: 'Verbal Aptitude',
+  agreeableness: 'Agreeableness', conscientiousness: 'Conscientiousness',
+  extraversion: 'Extraversion', openness: 'Openness to Experience', stability: 'Emotional Stability',
+  artistic: 'Artistic Interest', conventional: 'Conventional Interest', enterprising: 'Enterprising Drive',
+  investigative: 'Investigative Curiosity', realistic: 'Practical Orientation', social: 'Social Interest',
+  empathy: 'Empathy', self_awareness: 'Self-Awareness', social_skill: 'Social Skill', stress_regulation: 'Stress Regulation',
+  creativity_value: 'Creativity', growth: 'Growth Orientation', impact: 'Impact-Driven',
+  recognition: 'Recognition-Driven', stability_value: 'Stability-Seeking', wealth: 'Wealth-Driven',
+  leadership_judgement: 'Leadership Judgement', integrity: 'Integrity',
+  adaptability: 'Adaptability', collaboration: 'Collaboration',
+};
+
+function buildExecutiveSummary(S) {
+  document.getElementById('es-stream').textContent =
+    `${streamNamesFull[S.primaryStream] || S.primaryStream} — ${S.streams[S.primaryStream]}% Confidence`;
+
+  const topCareer = S.careers?.[0];
+  document.getElementById('es-career').textContent = topCareer
+    ? `${topCareer.title} (${topCareer.fit}% fit)`
+    : '—';
+
+  const [dominantKey, dominantScore] = Object.entries(S.traitScores || {}).sort((a,b) => b[1]-a[1])[0] || ['—', 0];
+  document.getElementById('es-trait').textContent =
+    `${SKILL_DISPLAY_NAMES[dominantKey] || dominantKey} (${dominantScore}/100)`;
+}
+
 function buildCoverPage(S) {
   document.getElementById('rh-name').textContent = S.name;
   document.getElementById('rh-meta').textContent = `Age ${S.age} · ${S.cls} · ${S.city}, ${S.state}`;
@@ -1108,19 +1139,7 @@ function buildReport() {
   // Nav
   document.getElementById('nav-name').textContent = S.name + "'s Report";
   buildCoverPage(S);
-
-  const streamColors = {non:'#1A5FA8',med:'#7B2FBE',com:'#0A6B5E',hum:'#C0410A'};
-  const streamNames = {non:'Non-Medical',med:'Medical',com:'Commerce',hum:'Humanities'};
-  const primary = S.primaryStream;
-  // rh-stream-pill removed from the cover in the Phase 6 redesign — re-homed
-  // to S2 (Executive Summary) in Step 3. Guarded here so buildReport() doesn't
-  // break in the meantime.
-  const pill = document.getElementById('rh-stream-pill');
-  if (pill) {
-    pill.style.background = streamColors[primary];
-    pill.style.color = '#fff';
-    pill.innerHTML = `✓ Primary Stream: ${streamNames[primary]}`;
-  }
+  buildExecutiveSummary(S);
 
   buildStreamBars(S);
   buildCuriosityIndex(S);
