@@ -641,13 +641,10 @@ const APT_META = [
 ];
 
 // ================================================================
-// SCORE ENGINE — derives scores from real answers
+// SCORE ENGINE (legacy, kept as dead code until 2D is confirmed working)
 // ================================================================
-const regId = localStorage.getItem('sahirah_reg_id');
-let rawAnswers = {};
-try { rawAnswers = JSON.parse(localStorage.getItem('sahirah_answers_' + regId) || '{}'); } catch(e){}
-const hasResults = !!regId && Object.keys(rawAnswers).length >= 5;
-const SCORES = hasResults ? computeScores(rawAnswers) : null;
+let SCORES = null;
+let reportError = null;
 
 // ---- DEMO FALLBACK ----
 function getDemoScores() {
@@ -903,28 +900,158 @@ function computeScores(ans) {
 }
 
 // ================================================================
-// LOADING ANIMATION
+// PHASE 2D — Supabase-backed report loading
 // ================================================================
-if (!hasResults) {
+const ROADMAPS = {
+  non:[
+    {class:'Now — Class 9',title:'Build your science foundation',color:'#1A5FA8',bg:'#E8F2FF',desc:'Focus on Maths and Science. Start competitive problem-solving — Olympiads and JEE Foundation. Learn basic Python to experience computational thinking.',exams:['Maths Olympiad','Science Olympiad']},
+    {class:'Class 10',title:'Board performance + stream confirmation',color:'#0A6B5E',bg:'#E0F2EE',desc:'Score 85%+ in boards. Choose Non-Medical (PCM) confidently. Begin JEE Foundation coaching if not already started.',exams:['CBSE Boards','NTSE']},
+    {class:'Class 11–12',title:'JEE Preparation',color:'#7B2FBE',bg:'#F5EEFF',desc:'Enrol in a serious JEE coaching programme. Target Physics, Chemistry, Maths daily. Give mock tests monthly from Class 11 itself.',exams:['JEE Main','JEE Advanced','BITSAT','VITEEE']},
+    {class:'After Class 12',title:'Engineering entrance & college',color:'#C8860A',bg:'#FDF0CC',desc:'Target IIT/NIT for CS/AI or Electronics. IIT Bombay, IIT Delhi, IIIT Hyderabad are top picks for CS and AI.',exams:['JEE Advanced','JOSAA Counselling']},
+  ],
+  med:[
+    {class:'Now — Class 9',title:'Build your science foundation',color:'#7B2FBE',bg:'#F5EEFF',desc:'Focus on Biology, Chemistry, and Physics. Read about human body systems and medical case studies. Develop curiosity about how living things work.',exams:['Science Olympiad','NTSE']},
+    {class:'Class 10',title:'Choose Medical stream',color:'#0A6B5E',bg:'#E0F2EE',desc:'Score 85%+ in boards. Choose Biology + PCB confidently. Start NEET Foundation. Strong NCERT Biology is non-negotiable.',exams:['CBSE Boards','NTSE']},
+    {class:'Class 11–12',title:'NEET Preparation',color:'#1A5FA8',bg:'#E8F2FF',desc:'Deep focus on NCERT Biology, Chemistry, and Physics. Join NEET coaching and solve 10 years of previous papers.',exams:['NEET UG','AIIMS','JIPMER']},
+    {class:'After Class 12',title:'Medical college entrance',color:'#C8860A',bg:'#FDF0CC',desc:'Target AIIMS New Delhi, AFMC Pune, or top government medical colleges via NEET rank.',exams:['NEET UG','MCC Counselling']},
+  ],
+  com:[
+    {class:'Now — Class 9',title:'Develop business and financial literacy',color:'#0A6B5E',bg:'#E0F2EE',desc:'Learn business basics, read Economic Times, try running a small entrepreneurial project. Start with basic Accountancy concepts.',exams:['Commerce Olympiad']},
+    {class:'Class 10',title:'Choose Commerce stream',color:'#1A5FA8',bg:'#E8F2FF',desc:'Score 85%+ in boards. Choose Commerce with Maths for maximum flexibility. Explore CA Foundation timelines early.',exams:['CBSE Boards','Commerce Olympiad']},
+    {class:'Class 11–12',title:'Commerce depth + CA / MBA foundation',color:'#7B2FBE',bg:'#F5EEFF',desc:'Master Accountancy, Business Studies, and Economics deeply. Appear for CA Foundation after Class 12.',exams:['CA Foundation','CUET','CLAT Commerce']},
+    {class:'After Class 12',title:'CA / MBA / CFA path',color:'#C8860A',bg:'#FDF0CC',desc:'Pursue CA (most respected in Finance), target IIM via CAT for MBA, or CFA for investment careers.',exams:['CA Inter','CAT','XAT','CFA Level 1']},
+  ],
+  hum:[
+    {class:'Now — Class 9',title:'Build verbal and social intelligence',color:'#C0410A',bg:'#FFF0EB',desc:'Read extensively — fiction, non-fiction, newspapers. Join MUN, debate club, or school newspaper. Develop public speaking and structured writing.',exams:['Quiz competitions','Essay contests']},
+    {class:'Class 10',title:'Choose Humanities stream',color:'#0A6B5E',bg:'#E0F2EE',desc:'Score 85%+ in boards. Choose History/Political Science/Psychology. Adding Economics keeps doors open.',exams:['CBSE Boards','NTSE']},
+    {class:'Class 11–12',title:'Humanities depth + entrance preparation',color:'#7B2FBE',bg:'#F5EEFF',desc:'Focus deeply on core subjects. Prepare for CLAT (Law), IIMC (Media), NID/NIFT (Design), or lay groundwork for UPSC.',exams:['CLAT','CUET','IIMC','NID','NIFT']},
+    {class:'After Class 12',title:'Law / Media / Design / Civil Services',color:'#C8860A',bg:'#FDF0CC',desc:'Target NLUs for Law via CLAT, top journalism institutes for Media, or NID/NIFT for Design. UPSC for the civil services path.',exams:['CLAT','UPSC CSE','AILET','IIMC Entrance']},
+  ],
+};
+
+function getRoadmap(primaryStream) {
+  return ROADMAPS[primaryStream] || ROADMAPS.non;
+}
+
+function computeGaps(sk) {
+  const GAP_LIBRARY = {
+    verbal:   {icon:'📝',title:'Verbal Reasoning & Communication',urgency:'high',desc:`Verbal aptitude (${sk.verbal??50}% correct) is the weakest cognitive area. Read quality newspapers daily. Practise précis writing and join debate or MUN activities to build structured articulation.`},
+    numerical:{icon:'🧮',title:'Numerical Problem Solving',urgency:'high',desc:`Numerical score of ${sk.numerical??50}% has clear room to improve. Focus on speed maths, ratio-proportion, and data interpretation. Twenty minutes of daily practice compounds quickly.`},
+    logical:  {icon:'🔗',title:'Logical & Deductive Reasoning',urgency:'high',desc:`Logical reasoning (${sk.logical??50}% correct) — work on syllogisms, if-then chains, and series completion. These form the backbone of JEE, NEET, and CLAT aptitude sections.`},
+    spatial:  {icon:'📐',title:'Spatial & Visual Reasoning',urgency:'med',desc:`Spatial score of ${sk.spatial??50}% — practise 3D rotation problems, geometry, and visual puzzles. Critical for engineering and design streams.`},
+    pattern:  {icon:'🔷',title:'Pattern Recognition & Abstract Thinking',urgency:'med',desc:`Pattern recognition (${sk.pattern??50}% correct) — solve matrix reasoning, analogies, and visual sequence puzzles daily. Abstract thinking is highly trainable.`},
+  };
+  const aptSorted = ['logical','numerical','verbal','spatial','pattern']
+    .map(t => ({ t, s: sk[t] ?? 50 })).sort((a, b) => a.s - b.s);
+  return [
+    GAP_LIBRARY[aptSorted[0].t],
+    GAP_LIBRARY[aptSorted[1].t],
+    (sk.extraversion ?? 50) < 50
+      ? {icon:'🤝',title:'Interpersonal & Collaborative Skills',urgency:'med',desc:'Introverted tendencies are fine for many careers but team collaboration is essential. Practice group projects, peer coding sessions, or debate to build confidence in group settings.'}
+      : {icon:'🎯',title:'Focused Independent Work',urgency:'low',desc:'Strong social energy is an asset — ensure you also build sustained individual focus for competitive exam preparation and deep technical work.'},
+  ];
+}
+
+async function initReport(sessionId, regId) {
+  const { data: session, error: sessionErr } = await _db
+    .from('test_sessions')
+    .select('score_json, primary_stream, status, reg_id')
+    .eq('id', sessionId)
+    .single();
+
+  if (sessionErr || !session) {
+    reportError = {
+      title: 'Results Not Found',
+      message: "We couldn't load your test results. This can happen if you switched browsers or cleared your browser data.<br><br>Please contact <strong>hello@sahirah.in</strong> with your Registration ID and we will restore your results.",
+    };
+    return;
+  }
+
+  if (session.status !== 'scored') {
+    reportError = {
+      title: 'Still Processing',
+      message: 'Your results are still being processed. Please wait a moment and refresh this page.',
+    };
+    return;
+  }
+
+  const { data: reg } = await _db
+    .from('registrations')
+    .select('child_first_name, child_last_name, child_class, child_city, child_state, child_age')
+    .eq('reg_id', regId)
+    .single();
+
+  const S = session.score_json;
+  const sk = S.skill_scores;
+
+  SCORES = {
+    name: [reg?.child_first_name, reg?.child_last_name].filter(Boolean).join(' ') || 'Student',
+    age: reg?.child_age || '',
+    cls: reg?.child_class || '',
+    city: reg?.child_city || '',
+    state: reg?.child_state || '',
+
+    streams: S.stream_scores,
+    primaryStream: S.primary_stream,
+    careers: S.top_careers,
+
+    aptitude: {
+      logical: sk.logical ?? 50, numerical: sk.numerical ?? 50, verbal: sk.verbal ?? 50,
+      spatial: sk.spatial ?? 50, pattern: sk.pattern ?? 50,
+      overall: Math.round(((sk.logical??50)+(sk.numerical??50)+(sk.verbal??50)+(sk.spatial??50)+(sk.pattern??50))/5),
+    },
+    aptAnalysis: [],
+
+    personality: {
+      openness: sk.openness ?? 50, conscientiousness: sk.conscientiousness ?? 50,
+      extraversion: sk.extraversion ?? 50, agreeableness: sk.agreeableness ?? 50,
+      neuroticism: 100 - (sk.stability ?? 50),
+    },
+
+    eq: {
+      overall: Math.round(((sk.self_awareness??50)+(sk.empathy??50)+(sk.stress_regulation??50)+(sk.social_skill??50))/4),
+      selfAwareness: sk.self_awareness ?? 50, empathy: sk.empathy ?? 50,
+      stressHandling: sk.stress_regulation ?? 50, leadership: sk.leadership_judgement ?? 50,
+    },
+
+    interest: {
+      realistic: sk.realistic ?? 50, investigative: sk.investigative ?? 50, artistic: sk.artistic ?? 50,
+      social: sk.social ?? 50, enterprising: sk.enterprising ?? 50, conventional: sk.conventional ?? 50,
+    },
+
+    values: {
+      wealth: sk.wealth ?? 50, impact: sk.impact ?? 50, creativity: sk.creativity_value ?? 50,
+      stability: sk.stability_value ?? 50, recognition: sk.recognition ?? 50, growth: sk.growth ?? 50,
+    },
+
+    roadmap: getRoadmap(S.primary_stream),
+    gaps: computeGaps(sk),
+    traitScores: sk,
+  };
+}
+
+function showResultsNotFound(title, message) {
   document.getElementById('loading-screen').style.display = 'none';
   document.getElementById('report-content').style.display = 'block';
   document.getElementById('report-content').innerHTML = `
     <div style="text-align:center;padding:3rem;font-family:sans-serif;">
-      <h2 style="color:#C8860A;">Results Not Found</h2>
-      <p style="color:#6B5F52;max-width:400px;margin:1rem auto;">
-        We couldn't load your test results. This can happen if you
-        switched browsers or cleared your browser data.
-      </p>
-      <p style="color:#6B5F52;">
-        Please contact <strong>hello@sahirah.in</strong> with your
-        Registration ID and we will restore your results.
-      </p>
+      <h2 style="color:#C8860A;">${title}</h2>
+      <p style="color:#6B5F52;max-width:400px;margin:1rem auto;">${message}</p>
     </div>`;
+}
+
+const sahirahSessionId = localStorage.getItem('sahirah_session_id');
+const sahirahRegId = localStorage.getItem('sahirah_reg_id');
+
+if (!sahirahSessionId || !sahirahRegId) {
+  showResultsNotFound('Results Not Found', "We couldn't load your test results. This can happen if you switched browsers or cleared your browser data.<br><br>Please contact <strong>hello@sahirah.in</strong> with your Registration ID and we will restore your results.");
 } else {
+  const initReportPromise = initReport(sahirahSessionId, sahirahRegId);
+
   const loadSteps = ['ls1','ls2','ls3','ls4','ls5','ls6'];
   let loadIdx = 2;
   const loadInterval = setInterval(()=>{
-    if(loadIdx >= loadSteps.length){ clearInterval(loadInterval); showReport(); return; }
+    if(loadIdx >= loadSteps.length){ clearInterval(loadInterval); finishLoading(); return; }
     document.getElementById(loadSteps[loadIdx-1]).classList.remove('active');
     document.getElementById(loadSteps[loadIdx-1]).classList.add('done');
     if(loadIdx < loadSteps.length){
@@ -932,6 +1059,19 @@ if (!hasResults) {
     }
     loadIdx++;
   }, 1200);
+
+  async function finishLoading() {
+    await initReportPromise;
+    setTimeout(()=>{
+      if (SCORES) {
+        document.getElementById('loading-screen').style.display='none';
+        document.getElementById('report-content').style.display='block';
+        buildReport();
+      } else {
+        showResultsNotFound(reportError?.title || 'Results Not Found', reportError?.message || "We couldn't load your test results.");
+      }
+    }, 600);
+  }
 }
 
 function showReport() {
