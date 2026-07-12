@@ -17,6 +17,26 @@ const DIMENSIONS = [
   'emotional_resilience','leadership','divergent_thinking',
 ];
 
+// Maps the raw `skill` string on each question (e.g. 'logical', 'self_awareness')
+// to the career_profiles dimension column suffix (e.g. 'apt_logical', 'eq_self_awareness').
+// Verified against the actual skill values seeded in module_questions.
+const SKILL_TO_DIMENSION = {
+  logical: 'apt_logical', numerical: 'apt_numerical', pattern: 'apt_pattern',
+  spatial: 'apt_spatial', verbal: 'apt_verbal',
+  agreeableness: 'per_agreeableness', conscientiousness: 'per_conscientiousness',
+  extraversion: 'per_extraversion', openness: 'per_openness', stability: 'per_stability',
+  artistic: 'int_artistic', conventional: 'int_conventional', enterprising: 'int_enterprising',
+  investigative: 'int_investigative', realistic: 'int_realistic', social: 'int_social',
+  empathy: 'eq_empathy', self_awareness: 'eq_self_awareness',
+  social_skill: 'eq_social_skill', stress_regulation: 'eq_stress_regulation',
+  creativity_value: 'val_creativity_value', growth: 'val_growth', impact: 'val_impact',
+  recognition: 'val_recognition', stability_value: 'val_stability_value', wealth: 'val_wealth',
+  leadership_judgement: 'leadership',
+  integrity: 'eq_self_awareness',
+  adaptability: 'per_stability',
+  collaboration: 'eq_social_skill',
+};
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
@@ -119,6 +139,14 @@ exports.handler = async (event) => {
       });
     }
 
+    // ---- STEP 3.5: Translate skill_scores to career_profiles dimension names ----
+    const dimension_scores = {};
+    Object.entries(skill_scores).forEach(([skill, score]) => {
+      const dim = SKILL_TO_DIMENSION[skill];
+      if (dim) dimension_scores[dim] = score;
+      else dimension_scores[skill] = score; // pass through if no mapping
+    });
+
     // ---- STEP 4: Stage 1 — stream scores ----
     const raw = {};
     STREAMS.forEach(s => {
@@ -152,22 +180,32 @@ exports.handler = async (event) => {
 
       DIMENSIONS.forEach(dim => {
         const w = career['weight_' + dim] || 0;
-        const s = skill_scores[dim] ?? 50;
+        const s = dimension_scores[dim] ?? 50;
         num += s * w;
         den += 100 * w;
 
         const minReq = career['min_req_' + dim] || 0;
-        if (minReq > 0 && (skill_scores[dim] ?? 0) < minReq) below_cutoff = true;
+        if (minReq > 0 && (dimension_scores[dim] ?? 0) < minReq) below_cutoff = true;
       });
 
       const fit = den > 0 ? Math.round((num / den) * 100) : 0;
-      return { career: career.name, career_id: career.id, fit, below_cutoff };
+      return {
+        title: career.name,
+        career_id: career.id,
+        fit,
+        below_cutoff,
+        stream: career.stream_code,
+        color: career.display_color || '#C8860A',
+        bg: career.display_color ? career.display_color + '11' : '#FDF8F0',
+        why: career.why_text || `Strong match for your ${primary_stream} profile.`,
+        exams: career.exams || [],
+      };
     });
 
     const top_careers = careerFits.sort((a, b) => b.fit - a.fit).slice(0, 3);
 
     // ---- STEP 6: Write results ----
-    const score_json = { skill_scores, stream_scores, primary_stream, top_careers };
+    const score_json = { skill_scores, dimension_scores, stream_scores, primary_stream, top_careers };
 
     const { error: updateErr } = await db.from('test_sessions').update({
       score_json,

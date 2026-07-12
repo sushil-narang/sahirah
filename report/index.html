@@ -9,6 +9,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js" integrity="sha512-SIMGYRUjwY8+gKg7nn9EItdD8LCADSDfJNutF9TPrvEo86sQmFMh6MyralfIyhADlajSxqc7G0gs7+MwWF/ogQ==" crossorigin="anonymous"></script>
 <script src="../assets/js/scoring.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../assets/js/db.js"></script>
 <style>
 :root{
   --cream:#FDF8F0;--ink:#1A1208;--gold:#C8860A;--gold-light:#F5D98A;--gold-pale:#FDF0CC;
@@ -1217,11 +1219,31 @@ Tone: Warm, expert, encouraging, specific. Like a counsellor who truly knows thi
 }
 
 function getFallbackNarrative(S) {
-  return `${S.name} is a remarkably analytical young mind with a natural gift for structured thinking. The evaluation reveals an exceptional logical reasoning score of ${S.aptitude.logical} out of 100, paired with strong spatial visualisation and numerical ability — a cognitive profile that is rare and deeply suited to the world of technology and engineering. What stands out most is not any single score, but the coherence between aptitude, interest and values: all three point in the same direction.
+  const streamLabel = {
+    non: 'Non-Medical / Engineering & Technology',
+    med: 'Medical & Life Sciences',
+    com: 'Commerce & Business',
+    hum: 'Humanities & Social Sciences'
+  }[S.primaryStream] || 'your chosen field';
 
-The recommendation of ${S.careers[0].title} is not a guess — it is a convergence. ${S.name}'s investigative interest score, creative values, and Tier 3 aptitude performance together paint a clear picture of someone who will not just build systems, but reimagine them. The conscientiousness score of ${S.personality.conscientiousness} suggests a child who finishes what they start, and the EQ score of ${S.eq.overall} means they will navigate team environments well — a combination that technology careers reward enormously.
+  const careerTitle = S.careers?.[0]?.title || 'your recommended career';
+  const topAptScore = S.aptitude?.overall || S.aptitude?.logical || '—';
 
-To ${S.name} and the family: the path ahead requires patience, but it is a clear one. The single most important thing right now is to fall in love with the process of problem-solving — not just for marks, but for the joy of it. The scores in this report are not a ceiling; they are a compass. Point yourself in this direction, stay consistent, and the destination will take care of itself. Sahi Raah.`;
+  return `${S.name} shows a distinctive cognitive and personality profile that points
+clearly toward ${streamLabel}. The evaluation reveals strong scores across the
+dimensions most relevant to this path — a combination that reflects both natural
+aptitude and genuine interest, not just academic performance.
+
+The recommendation of ${careerTitle} emerges from the alignment of multiple
+independent signals in this evaluation: aptitude, interest, and values all pointing
+in the same direction. This kind of convergence is meaningful — it suggests the fit
+is deep, not surface-level, and that ${S.name} is likely to find both success and
+satisfaction in pursuing this path.
+
+To ${S.name} and the family: the scores in this report are not a ceiling — they are
+a compass. The path ahead will require consistency and curiosity in equal measure.
+Trust the direction the data points, invest in the process of learning, and the
+destination will take care of itself. Sahi Raah.`;
 }
 
 // ---- APTITUDE SECTION ----
