@@ -46,7 +46,7 @@ exports.handler = async (event) => {
 
     if (sessionErr || !session) throw sessionErr || new Error('Session not found');
 
-    const answers = session.answers_json || {};
+    const answers = session.answers_json || body.answers || {};
     const reg_id = session.reg_id;
 
     const { data: questions, error: qErr } = await db
