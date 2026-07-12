@@ -65,6 +65,8 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
 .rh-stat-num{font-family:var(--fd);font-size:1.6rem;font-weight:700;color:var(--gold-light);}
 .rh-stat-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:rgba(253,248,240,.4);margin-top:1px;}
 .rh-date{font-size:.72rem;color:rgba(253,248,240,.25);margin-top:.75rem;}
+.rh-logo{height:32px;margin-bottom:1rem;}
+.rh-report-id{font-size:.72rem;color:rgba(253,248,240,.4);font-family:var(--fm);margin-top:.4rem;}
 
 /* SECTION */
 .report-section{margin-bottom:2rem;}
@@ -269,19 +271,22 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
     </div>
   </div>
 
-  <!-- HERO -->
-  <div class="report-hero">
-    <div class="rh-left">
-      <div class="rh-eyebrow">Sahirah.in — Psychometric Evaluation Report</div>
-      <div class="rh-name" id="rh-name">Arjun Sharma</div>
-      <div class="rh-meta" id="rh-meta">Age 14 · Class 9 · Ludhiana, Punjab</div>
-      <div class="rh-stream-pill" id="rh-stream-pill"></div>
-      <div class="rh-date" id="rh-date"></div>
-    </div>
-    <div class="rh-right">
-      <div class="rh-stat"><div class="rh-stat-num" id="rh-overall">82</div><div class="rh-stat-label">Overall score</div></div>
-      <div class="rh-stat"><div class="rh-stat-num" id="rh-aptitude-score">88</div><div class="rh-stat-label">Aptitude depth</div></div>
-      <div class="rh-stat"><div class="rh-stat-num" id="rh-eq-score">74</div><div class="rh-stat-label">EQ score</div></div>
+  <!-- S1: COVER -->
+  <div class="report-section" id="section-cover">
+    <div class="report-hero">
+      <div class="rh-left">
+        <img src="../assets/images/sahirah-logo.png" alt="Sahirah.in" class="rh-logo"/>
+        <div class="rh-eyebrow">Psychometric Evaluation Report</div>
+        <div class="rh-name" id="rh-name">Arjun Sharma</div>
+        <div class="rh-meta" id="rh-meta">Age 14 · Class 9 · Ludhiana, Punjab</div>
+        <div class="rh-report-id" id="rh-report-id"></div>
+        <div class="rh-date" id="rh-date"></div>
+      </div>
+      <div class="rh-right">
+        <div class="rh-stat"><div class="rh-stat-num" id="rh-overall">82</div><div class="rh-stat-label">Overall score</div></div>
+        <div class="rh-stat"><div class="rh-stat-num" id="rh-aptitude-score">88</div><div class="rh-stat-label">Aptitude depth</div></div>
+        <div class="rh-stat"><div class="rh-stat-num" id="rh-eq-score">74</div><div class="rh-stat-label">EQ score</div></div>
+      </div>
     </div>
   </div>
 
@@ -985,6 +990,7 @@ async function initReport(sessionId, regId) {
   const sk = S.skill_scores;
 
   SCORES = {
+    sessionId: sessionId,
     name: [reg?.child_first_name, reg?.child_last_name].filter(Boolean).join(' ') || 'Student',
     age: reg?.child_age || '',
     cls: reg?.child_class || '',
@@ -1085,11 +1091,7 @@ function showReport() {
 // ================================================================
 // BUILD REPORT
 // ================================================================
-function buildReport() {
-  const S = SCORES;
-  // Nav
-  document.getElementById('nav-name').textContent = S.name + "'s Report";
-  // Hero
+function buildCoverPage(S) {
   document.getElementById('rh-name').textContent = S.name;
   document.getElementById('rh-meta').textContent = `Age ${S.age} · ${S.cls} · ${S.city}, ${S.state}`;
   document.getElementById('rh-overall').textContent = S.aptitude.overall;
@@ -1097,13 +1099,28 @@ function buildReport() {
   document.getElementById('rh-eq-score').textContent = S.eq.overall;
   document.getElementById('rh-date').textContent = 'Report generated: ' + new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
 
+  const reportId = 'RPT-' + new Date().getFullYear() + '-' + (S.sessionId || '').slice(0,5).toUpperCase();
+  document.getElementById('rh-report-id').textContent = 'Report ID: ' + reportId;
+}
+
+function buildReport() {
+  const S = SCORES;
+  // Nav
+  document.getElementById('nav-name').textContent = S.name + "'s Report";
+  buildCoverPage(S);
+
   const streamColors = {non:'#1A5FA8',med:'#7B2FBE',com:'#0A6B5E',hum:'#C0410A'};
   const streamNames = {non:'Non-Medical',med:'Medical',com:'Commerce',hum:'Humanities'};
   const primary = S.primaryStream;
+  // rh-stream-pill removed from the cover in the Phase 6 redesign — re-homed
+  // to S2 (Executive Summary) in Step 3. Guarded here so buildReport() doesn't
+  // break in the meantime.
   const pill = document.getElementById('rh-stream-pill');
-  pill.style.background = streamColors[primary];
-  pill.style.color = '#fff';
-  pill.innerHTML = `✓ Primary Stream: ${streamNames[primary]}`;
+  if (pill) {
+    pill.style.background = streamColors[primary];
+    pill.style.color = '#fff';
+    pill.innerHTML = `✓ Primary Stream: ${streamNames[primary]}`;
+  }
 
   buildStreamBars(S);
   buildCuriosityIndex(S);
