@@ -641,10 +641,11 @@ const APT_META = [
 // ================================================================
 // SCORE ENGINE — derives scores from real answers
 // ================================================================
+const regId = localStorage.getItem('sahirah_reg_id');
 let rawAnswers = {};
-try { rawAnswers = JSON.parse(localStorage.getItem('sahirah_answers') || '{}'); } catch(e){}
-const isDemo = Object.keys(rawAnswers).length < 5;
-const SCORES = isDemo ? getDemoScores() : computeScores(rawAnswers);
+try { rawAnswers = JSON.parse(localStorage.getItem('sahirah_answers_' + regId) || '{}'); } catch(e){}
+const hasResults = !!regId && Object.keys(rawAnswers).length >= 5;
+const SCORES = hasResults ? computeScores(rawAnswers) : null;
 
 // ---- DEMO FALLBACK ----
 function getDemoScores() {
@@ -902,17 +903,34 @@ function computeScores(ans) {
 // ================================================================
 // LOADING ANIMATION
 // ================================================================
-const loadSteps = ['ls1','ls2','ls3','ls4','ls5','ls6'];
-let loadIdx = 2;
-const loadInterval = setInterval(()=>{
-  if(loadIdx >= loadSteps.length){ clearInterval(loadInterval); showReport(); return; }
-  document.getElementById(loadSteps[loadIdx-1]).classList.remove('active');
-  document.getElementById(loadSteps[loadIdx-1]).classList.add('done');
-  if(loadIdx < loadSteps.length){
-    document.getElementById(loadSteps[loadIdx]).classList.add('active');
-  }
-  loadIdx++;
-}, 1200);
+if (!hasResults) {
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('report-content').style.display = 'block';
+  document.getElementById('report-content').innerHTML = `
+    <div style="text-align:center;padding:3rem;font-family:sans-serif;">
+      <h2 style="color:#C8860A;">Results Not Found</h2>
+      <p style="color:#6B5F52;max-width:400px;margin:1rem auto;">
+        We couldn't load your test results. This can happen if you
+        switched browsers or cleared your browser data.
+      </p>
+      <p style="color:#6B5F52;">
+        Please contact <strong>hello@sahirah.in</strong> with your
+        Registration ID and we will restore your results.
+      </p>
+    </div>`;
+} else {
+  const loadSteps = ['ls1','ls2','ls3','ls4','ls5','ls6'];
+  let loadIdx = 2;
+  const loadInterval = setInterval(()=>{
+    if(loadIdx >= loadSteps.length){ clearInterval(loadInterval); showReport(); return; }
+    document.getElementById(loadSteps[loadIdx-1]).classList.remove('active');
+    document.getElementById(loadSteps[loadIdx-1]).classList.add('done');
+    if(loadIdx < loadSteps.length){
+      document.getElementById(loadSteps[loadIdx]).classList.add('active');
+    }
+    loadIdx++;
+  }, 1200);
+}
 
 function showReport() {
   setTimeout(()=>{

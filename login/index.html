@@ -585,6 +585,7 @@ async function doLogin() {
   if(found) {
     loginAttempts = 0;
     state.currentUser = found;
+    try { localStorage.setItem('sahirah_reg_id', found.reg_id); } catch(e){}
 
     // Check if this user already submitted their evaluation
     try {
