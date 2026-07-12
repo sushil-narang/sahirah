@@ -47,6 +47,10 @@ const STREAM_WEIGHTS = {
 // CAREER FIT MATRIX
 // Career → required traits with weights
 // ============================================================
+// DEPRECATED — career weights migrated to career_profiles Supabase table.
+// These 21 entries are the initial seed. Full 100-career dataset (psycho.docx)
+// will replace this in Phase 5.
+// Do not edit these weights — edit career_profiles in Supabase directly.
 const CAREERS = {
   'Computer Science / AI':    { stream: 'non', traits: { logical:0.9, numerical:0.8, pattern:0.9, investigative:0.8, creativity:0.7 } },
   'Electronics Engineering':  { stream: 'non', traits: { logical:0.8, spatial:0.9, numerical:0.8, realistic:0.8, pattern:0.7 } },
