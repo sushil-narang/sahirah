@@ -623,6 +623,19 @@ const SUPABASE_URL  = 'https://chiobdkdhgnbtjxsscpf.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_ZWCHORwPOxp3gkWaqt722g_3W_vd6i4';
 const _db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
+const ADMIN_WRITE_SECRET = 'ef2408bdf18c907c080b7e712c0be869e9c8cd440139344bc25b1b201e057c19';
+
+async function adminWriteQuestion(payload) {
+  const res = await fetch('/.netlify/functions/admin-write-question', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-admin-secret': ADMIN_WRITE_SECRET },
+    body: JSON.stringify(payload),
+  });
+  const json = await res.json().catch(() => ({ ok: false, error: 'Invalid response' }));
+  if (!res.ok || !json.ok) throw new Error(json.error || ('HTTP ' + res.status));
+  return json;
+}
+
 let adminLoggedIn = sessionStorage.getItem('psycho_admin_auth') === '1';
 let allData = { regs: [], sessions: [], responses: [] };
 let currentView = 'overview';
@@ -1220,8 +1233,7 @@ async function saveQEdit() {
   if (isNew) q.id = nextQuestionId(actualMi);
 
   try {
-    const { error } = await _db.from('module_questions').upsert(questionToDbRow(q, moduleId), { onConflict: 'question_id' });
-    if (error) throw error;
+    await adminWriteQuestion({ action: 'upsert', row: questionToDbRow(q, moduleId) });
     if (isNew) { qbData[actualMi].push(q); qbEditRef.mi = actualMi; }
     else qbData[mi][qi] = q;
     closeQEdit();
@@ -1248,8 +1260,7 @@ async function deleteQuestion(mi, qi) {
   if (!q.id) { showAdminToast('Save failed — check connection ✗'); return; }
 
   try {
-    const { error } = await _db.from('module_questions').delete().eq('question_id', q.id);
-    if (error) throw error;
+    await adminWriteQuestion({ action: 'delete', question_id: q.id });
     qbData[mi].splice(qi, 1);
     renderQBank();
     showAdminToast('Question deleted ✓');
@@ -1323,8 +1334,7 @@ async function importQBank(e) {
     for (let i = 0; i < rows.length; i += 25) {
       const batch = rows.slice(i, i + 25);
       try {
-        const { error } = await _db.from('module_questions').upsert(batch, { onConflict: 'question_id' });
-        if (error) throw error;
+        await adminWriteQuestion({ action: 'upsert_batch', rows: batch });
         uploaded += batch.length;
       } catch (err) {
         console.error('Batch upload error:', err);
