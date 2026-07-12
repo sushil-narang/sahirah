@@ -991,7 +991,58 @@ let qbData = null;  // array of question arrays (current working copy) - now sup
 let qbFilter = 'all';
 let qbEditRef = null; // {mi, qi} or null for add mode
 
-function initQBank() {
+function isLocalDev() {
+  return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+}
+
+function dbRowToQuestion(q) {
+  return {
+    id: q.question_id, type: q.question_type, text: q.question_text, opts: q.options,
+    ans: q.ans, scale: q.scale, context: q.context, tier: q.tier, skill: q.skill,
+    stream_weight: q.stream_weight, core: q.core, scoring_scheme: q.scoring_scheme,
+    option_skills: q.option_skills, option_scores: q.option_scores, rows: q.rows, cols: q.cols,
+  };
+}
+
+function questionToDbRow(q, moduleId) {
+  return {
+    question_id: q.id, module_id: moduleId, question_text: q.text, question_type: q.type,
+    options: q.opts ?? null, ans: q.ans ?? null, scale: q.scale ?? null, context: q.context ?? null,
+    tier: q.tier ?? null, skill: q.skill ?? null, stream_weight: q.stream_weight ?? null,
+    core: q.core ?? null, scoring_scheme: q.scoring_scheme ?? null,
+    option_skills: q.option_skills ?? null, option_scores: q.option_scores ?? null,
+    rows: q.rows ?? null, cols: q.cols ?? null,
+  };
+}
+
+function nextQuestionId(actualMi) {
+  const moduleId = QB_MODULES[actualMi].id;
+  let maxNum = -1;
+  qbData[actualMi].forEach(q => {
+    const m = q.id && q.id.match(new RegExp('^' + moduleId + '_(\\d+)$'));
+    if (m) maxNum = Math.max(maxNum, parseInt(m[1], 10));
+  });
+  return moduleId + '_' + String(maxNum + 1).padStart(3, '0');
+}
+
+async function initQBank() {
+  if (isLocalDev()) { loadQbFromLocalDefaults(); return; }
+
+  try {
+    const { data, error } = await _db.from('module_questions').select('*').order('module_id').order('question_id');
+    if (error || !data || !data.length) throw error || new Error('No questions returned');
+    qbData = QB_MODULES.map(m => data.filter(q => q.module_id === m.id).map(dbRowToQuestion));
+    renderQBank();
+  } catch (e) {
+    console.error('Failed to load question bank from Supabase:', e);
+    qbData = null;
+    document.getElementById('qb-tbody').innerHTML =
+      '<tr><td colspan="7" class="t-empty">Could not load question bank from the database. Check your connection and refresh.</td></tr>';
+    document.getElementById('qb-count').textContent = 'Connection error';
+  }
+}
+
+function loadQbFromLocalDefaults() {
   const override = localStorage.getItem('psycho_questions_override');
   if (override) {
     try {
@@ -1116,15 +1167,17 @@ function highlightCorrect() {
 
 function closeQEdit() { document.getElementById('qe-overlay').classList.remove('show'); qbEditRef = null; }
 
-function saveQEdit() {
+async function saveQEdit() {
   if (!qbEditRef) return;
   const {mi, qi, isNew} = qbEditRef;
   const actualMi = isNew ? parseInt(document.getElementById('qe-module').value) : mi;
-  const type = isNew ? document.getElementById('qe-type').value : qbData[isNew ? actualMi : mi][qi].type;
+  const orig = isNew ? null : qbData[mi][qi];
+  const type = isNew ? document.getElementById('qe-type').value : orig.type;
   const text = document.getElementById('qe-question').value.trim();
   if (!text) { showAdminToast('Question text cannot be empty'); return; }
 
   const q = {type, text};
+  if (!isNew) q.id = orig.id;
   if (type === 'scenario') q.context = document.getElementById('qe-context').value.trim();
 
   if (type !== 'likert' && type !== 'matrix') {
@@ -1138,33 +1191,72 @@ function saveQEdit() {
     if (q.ans >= opts.length) q.ans = -1;
   } else if (!isNew) {
     // preserve scale/rows/cols from original
-    const orig = qbData[mi][qi];
     if (orig.scale) q.scale = orig.scale;
     if (orig.rows) { q.rows = orig.rows; q.cols = orig.cols; }
   } else {
     q.scale = ['Strongly disagree','Disagree','Neutral','Agree','Strongly agree'];
   }
 
-  if (isNew) {
-    qbData[actualMi].push(q);
-    qbEditRef.mi = actualMi; // for filter
-  } else {
-    qbData[mi][qi] = q;
+  // Carry forward DB-only fields this form never edits
+  if (!isNew) {
+    ['tier','skill','stream_weight','core','scoring_scheme','option_skills','option_scores'].forEach(f => {
+      if (orig[f] !== undefined) q[f] = orig[f];
+    });
   }
 
-  saveQbOverride();
-  closeQEdit();
-  renderQBank();
-  showAdminToast(isNew ? 'Question added ✓' : 'Question saved ✓');
+  if (isLocalDev()) {
+    if (isNew) { qbData[actualMi].push(q); qbEditRef.mi = actualMi; }
+    else qbData[mi][qi] = q;
+    saveQbOverride();
+    closeQEdit();
+    renderQBank();
+    showAdminToast(isNew ? 'Question added ✓' : 'Question saved ✓');
+    return;
+  }
+
+  if (!qbData) { showAdminToast('Save failed — check connection ✗'); return; }
+
+  const moduleId = QB_MODULES[actualMi].id;
+  if (isNew) q.id = nextQuestionId(actualMi);
+
+  try {
+    const { error } = await _db.from('module_questions').upsert(questionToDbRow(q, moduleId), { onConflict: 'question_id' });
+    if (error) throw error;
+    if (isNew) { qbData[actualMi].push(q); qbEditRef.mi = actualMi; }
+    else qbData[mi][qi] = q;
+    closeQEdit();
+    renderQBank();
+    showAdminToast(isNew ? 'Question added ✓' : 'Saved ✓');
+  } catch (e) {
+    console.error('saveQEdit Supabase error:', e);
+    showAdminToast('Save failed — check connection ✗');
+  }
 }
 
-function deleteQuestion(mi, qi) {
+async function deleteQuestion(mi, qi) {
   const q = qbData[mi][qi];
   if (!confirm(`Delete question?\n\n"${(q.text||'').substring(0,80)}"`)) return;
-  qbData[mi].splice(qi, 1);
-  saveQbOverride();
-  renderQBank();
-  showAdminToast('Question deleted ✓');
+
+  if (isLocalDev()) {
+    qbData[mi].splice(qi, 1);
+    saveQbOverride();
+    renderQBank();
+    showAdminToast('Question deleted ✓');
+    return;
+  }
+
+  if (!q.id) { showAdminToast('Save failed — check connection ✗'); return; }
+
+  try {
+    const { error } = await _db.from('module_questions').delete().eq('question_id', q.id);
+    if (error) throw error;
+    qbData[mi].splice(qi, 1);
+    renderQBank();
+    showAdminToast('Question deleted ✓');
+  } catch (e) {
+    console.error('deleteQuestion Supabase error:', e);
+    showAdminToast('Save failed — check connection ✗');
+  }
 }
 
 function saveQbOverride() {
@@ -1180,33 +1272,70 @@ function exportQBankJSON() {
   a.click();
 }
 
-function importQBank(e) {
+async function importQBank(e) {
   const file = e.target.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = function(ev) {
+  reader.onload = async function(ev) {
+    let data;
     try {
-      const data = JSON.parse(ev.target.result);
+      data = JSON.parse(ev.target.result);
       if (!Array.isArray(data) || data.length !== QB_MODULES.length) {
-        showAdminToast('Invalid JSON — expected array of ' + QB_MODULES.length + ' module objects'); return;
+        showAdminToast('Invalid JSON — expected array of ' + QB_MODULES.length + ' module objects');
+        e.target.value = ''; return;
       }
+    } catch(err) {
+      console.error('Import parse error:', err);
+      showAdminToast('Error: ' + (err.message || 'Could not parse JSON file'));
+      e.target.value = ''; return;
+    }
+
+    if (isLocalDev()) {
       let added = 0;
       data.forEach(entry => {
         const qs = Array.isArray(entry) ? entry : (Array.isArray(entry.questions) ? entry.questions : []);
         if (!qs.length) return;
-        const moduleName = entry.module;
-        const idx = moduleName ? QB_MODULES.findIndex(m => m.name === moduleName) : -1;
-        if (idx < 0) { showAdminToast('Unknown module: ' + (moduleName || '(unnamed)')); return; }
+        const idx = entry.module ? QB_MODULES.findIndex(m => m.name === entry.module) : -1;
+        if (idx < 0) { showAdminToast('Unknown module: ' + (entry.module || '(unnamed)')); return; }
         qbData[idx].push(...qs);
         added += qs.length;
       });
       localStorage.setItem('psycho_questions_override', JSON.stringify(qbData));
       renderQBank();
       showAdminToast('Imported ✓ — ' + added + ' questions added to existing bank');
-    } catch(err) {
-      console.error('Import error:', err);
-      showAdminToast('Error: ' + (err.message || 'Could not parse JSON file'));
+      e.target.value = ''; return;
     }
+
+    const rows = [];
+    data.forEach(entry => {
+      const qs = Array.isArray(entry) ? entry : (Array.isArray(entry.questions) ? entry.questions : []);
+      const idx = entry.module ? QB_MODULES.findIndex(m => m.name === entry.module) : -1;
+      if (idx < 0 || !qs.length) return;
+      const moduleId = QB_MODULES[idx].id;
+      qs.forEach(q => { if (q.id) rows.push(questionToDbRow(q, moduleId)); });
+    });
+
+    if (!rows.length) { showAdminToast('No valid questions with IDs found in file'); e.target.value = ''; return; }
+
+    showAdminToast('Uploading ' + rows.length + ' questions…');
+    let uploaded = 0;
+    const failed = [];
+    for (let i = 0; i < rows.length; i += 25) {
+      const batch = rows.slice(i, i + 25);
+      try {
+        const { error } = await _db.from('module_questions').upsert(batch, { onConflict: 'question_id' });
+        if (error) throw error;
+        uploaded += batch.length;
+      } catch (err) {
+        console.error('Batch upload error:', err);
+        failed.push(...batch.map(r => r.question_id));
+      }
+    }
+
+    showAdminToast(failed.length
+      ? `Uploaded ${uploaded}/${rows.length} — ${failed.length} failed ✗`
+      : `Uploaded ✓ — ${uploaded} questions saved`);
+    await initQBank();
     e.target.value = '';
   };
   reader.readAsText(file);
