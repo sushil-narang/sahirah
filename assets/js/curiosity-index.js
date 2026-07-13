@@ -262,7 +262,7 @@ class CuriosityIndex {
       },
       score: score.score,
       profile: score.profile,
-      dominant_type: score.dominantType,
+      dominantType: score.dominantType,
       interpretation: score.interpretation,
       all_questions: this.questions
     };
