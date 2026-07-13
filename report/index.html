@@ -384,16 +384,24 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
     </div>
   </div>
 
-  <!-- STREAM MATCH -->
-  <div class="report-section">
+  <!-- S4: STREAM COMPARISON -->
+  <div class="report-section" id="section-stream-compare">
     <div class="rs-header">
       <div class="rs-icon" style="background:#FDF0CC;">🎯</div>
-      <div class="rs-title">Stream Match Scores</div>
+      <div class="rs-title">Stream Comparison</div>
       <div class="rs-sub">Stage 1 result</div>
     </div>
-    <div class="card">
-      <div style="margin-bottom:1.25rem;" id="stream-bars"></div>
+    <div class="card" style="margin-bottom:1.25rem;">
+      <div style="max-width:420px;margin:0 auto 1rem;"><canvas id="stream-radar-chart" height="320"></canvas></div>
       <div style="background:var(--gold-pale);border:1px solid var(--gold-light);border-radius:12px;padding:.9rem 1.1rem;font-size:.82rem;line-height:1.6;" id="stream-verdict"></div>
+    </div>
+    <div class="card">
+      <table class="es-table" style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr><th class="es-label" style="text-align:left;">Stream</th><th class="es-label" style="text-align:left;">Top 2 Strengths</th><th class="es-label" style="text-align:left;">Biggest Gap</th></tr>
+        </thead>
+        <tbody id="stream-strengths-table"></tbody>
+      </table>
     </div>
   </div>
 
@@ -1001,11 +1009,15 @@ async function initReport(sessionId, regId) {
     .eq('reg_id', regId)
     .single();
 
+  const { data: streamProfiles } = await _db.from('stream_profiles').select('*');
+
   const S = session.score_json;
   const sk = S.skill_scores;
 
   SCORES = {
     sessionId: sessionId,
+    dimension_scores: S.dimension_scores || {},
+    streamProfiles: streamProfiles || [],
     name: [reg?.child_first_name, reg?.child_last_name].filter(Boolean).join(' ') || 'Student',
     age: reg?.child_age || '',
     cls: reg?.child_class || '',
@@ -1108,6 +1120,28 @@ function showReport() {
 // ================================================================
 const streamNamesFull = {non:'Non-Medical',med:'Medical',com:'Commerce',hum:'Humanities'};
 
+const DIMENSIONS = [
+  'apt_numerical','apt_logical','apt_verbal','apt_spatial','apt_pattern',
+  'int_investigative','int_artistic','int_social','int_enterprising','int_realistic','int_conventional',
+  'per_extraversion','per_agreeableness','per_conscientiousness','per_stability','per_openness',
+  'eq_empathy','eq_stress_regulation','eq_social_skill','eq_self_awareness',
+  'val_wealth','val_impact','val_recognition','val_growth','val_stability_value','val_creativity_value',
+  'emotional_resilience','leadership','divergent_thinking',
+];
+
+const DIMENSION_DISPLAY_NAMES = {
+  apt_numerical:'Numerical Ability', apt_logical:'Logical Reasoning', apt_verbal:'Verbal Aptitude',
+  apt_spatial:'Spatial Reasoning', apt_pattern:'Pattern Recognition',
+  int_investigative:'Investigative Curiosity', int_artistic:'Artistic Interest', int_social:'Social Interest',
+  int_enterprising:'Enterprising Drive', int_realistic:'Practical Orientation', int_conventional:'Conventional Interest',
+  per_extraversion:'Extraversion', per_agreeableness:'Agreeableness', per_conscientiousness:'Conscientiousness',
+  per_stability:'Emotional Stability', per_openness:'Openness to Experience',
+  eq_empathy:'Empathy', eq_stress_regulation:'Stress Regulation', eq_social_skill:'Social Skill', eq_self_awareness:'Self-Awareness',
+  val_wealth:'Wealth-Driven', val_impact:'Impact-Driven', val_recognition:'Recognition-Driven',
+  val_growth:'Growth Orientation', val_stability_value:'Stability-Seeking', val_creativity_value:'Creativity',
+  emotional_resilience:'Emotional Resilience', leadership:'Leadership', divergent_thinking:'Divergent Thinking',
+};
+
 const SKILL_DISPLAY_NAMES = {
   logical: 'Logical Reasoning', numerical: 'Numerical Ability', pattern: 'Pattern Recognition',
   spatial: 'Spatial Reasoning', verbal: 'Verbal Aptitude',
@@ -1155,7 +1189,7 @@ function buildReport() {
   buildCoverPage(S);
   buildExecutiveSummary(S);
 
-  buildStreamBars(S);
+  buildStreamComparison(S);
   buildCuriosityIndex(S);
   buildCareerCards(S);
   buildAIReport(S);
@@ -1180,19 +1214,33 @@ function buildReport() {
   applyAccessControl();
 }
 
-// ---- STREAM BARS ----
-function buildStreamBars(S) {
+// ---- S4: STREAM COMPARISON ----
+function buildStreamComparison(S) {
   const streamColors = {non:'#1A5FA8',med:'#7B2FBE',com:'#0A6B5E',hum:'#C0410A'};
   const streamNames = {non:'Non-Medical',med:'Medical',com:'Commerce',hum:'Humanities'};
-  const container = document.getElementById('stream-bars');
   const sorted = Object.entries(S.streams).sort((a,b)=>b[1]-a[1]);
-  sorted.forEach(([key,val])=>{
-    const row = document.createElement('div'); row.className='stream-bar-row';
-    row.innerHTML=`<div class="sb-label">${streamNames[key]}</div><div class="sb-track"><div class="sb-fill" style="width:0%;background:${streamColors[key]};" data-width="${val}"></div></div><div class="sb-pct" style="color:${streamColors[key]};">${val}%</div>`;
-    container.appendChild(row);
-  });
   const primary = sorted[0][0];
   const second = sorted[1];
+
+  const ctx = document.getElementById('stream-radar-chart').getContext('2d');
+  new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['Non-Medical','Medical','Commerce','Humanities'],
+      datasets: [{
+        label: 'Stream Match',
+        data: ['non','med','com','hum'].map(k => S.streams[k] ?? 0),
+        backgroundColor: 'rgba(200,134,10,0.12)', borderColor: '#C8860A',
+        borderWidth: 2, pointBackgroundColor: '#C8860A', pointRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: { r: { beginAtZero:true, max:100, ticks:{display:false}, grid:{color:'rgba(26,18,8,.08)'}, pointLabels:{font:{family:'DM Sans',size:11},color:'rgba(26,18,8,.6)'} } },
+      plugins: { legend: { display:false } }
+    }
+  });
+
   const verdictEl = document.getElementById('stream-verdict');
   verdictEl.innerHTML = '';
   const strong = document.createElement('strong');
@@ -1203,7 +1251,26 @@ function buildStreamBars(S) {
   verdictEl.appendChild(strong);
   verdictEl.appendChild(br);
   verdictEl.appendChild(span);
-  setTimeout(()=>{ document.querySelectorAll('.sb-fill').forEach(el=>{ el.style.transition='width 1.2s ease'; el.style.width=el.dataset.width+'%'; }); }, 200);
+
+  const tbody = document.getElementById('stream-strengths-table');
+  tbody.innerHTML = '';
+  ['non','med','com','hum'].forEach(code => {
+    const profile = (S.streamProfiles || []).find(p => p.stream_code === code);
+    const row = document.createElement('tr');
+    if (!profile) {
+      row.innerHTML = `<td colspan="3">${streamNames[code]} — data unavailable</td>`;
+      tbody.appendChild(row);
+      return;
+    }
+    const diffs = DIMENSIONS.map(dim => ({
+      dim, gap: (profile[dim] ?? 50) - (S.dimension_scores[dim] ?? 50),
+    }));
+    const sortedDiffs = [...diffs].sort((a,b) => a.gap - b.gap);
+    const strengths = sortedDiffs.slice(0, 2).map(d => DIMENSION_DISPLAY_NAMES[d.dim] || d.dim).join(', ');
+    const weakest = sortedDiffs[sortedDiffs.length - 1];
+    row.innerHTML = `<td class="es-value">${streamNames[code]}</td><td>${strengths}</td><td>${DIMENSION_DISPLAY_NAMES[weakest.dim] || weakest.dim}</td>`;
+    tbody.appendChild(row);
+  });
 }
 
 // ---- CURIOSITY INDEX ----
