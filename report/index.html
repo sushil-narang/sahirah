@@ -479,8 +479,8 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
   <div class="report-section premium-section" id="section-gaps">
     <div class="rs-header">
       <div class="rs-icon" style="background:#ECEAE4;">🔧</div>
-      <div class="rs-title">Skill Gap Analysis</div>
-      <div class="rs-sub">Start building now</div>
+      <div class="rs-title">Gap Analysis</div>
+      <div class="rs-sub">Vs. your top career's requirements</div>
     </div>
     <div class="card" id="skill-gaps"></div>
     <div class="lock-overlay" id="lock-gaps">
@@ -943,6 +943,7 @@ async function initReport(sessionId, regId) {
     sessionId: sessionId,
     dimension_scores: S.dimension_scores || {},
     streamProfiles: streamProfiles || [],
+    topCareerHighWeightDims: S.top_career_high_weight_dims || [],
     name: [reg?.child_first_name, reg?.child_last_name].filter(Boolean).join(' ') || 'Student',
     age: reg?.child_age || '',
     cls: reg?.child_class || '',
@@ -1067,6 +1068,38 @@ const DIMENSION_DISPLAY_NAMES = {
   emotional_resilience:'Emotional Resilience', leadership:'Leadership', divergent_thinking:'Divergent Thinking',
 };
 
+const GAP_ACTIONS = {
+  apt_numerical: 'Practice speed math, ratio-proportion, and data interpretation for 20 minutes daily.',
+  apt_logical: 'Work through syllogisms, if-then reasoning chains, and logic puzzles regularly.',
+  apt_verbal: 'Read quality newspapers daily and practise précis writing to build vocabulary and structured expression.',
+  apt_spatial: 'Practise 3D rotation problems, geometry, and visual puzzle-solving.',
+  apt_pattern: 'Solve matrix reasoning, analogies, and visual sequence puzzles to sharpen abstract thinking.',
+  int_investigative: 'Explore how-things-work content, science documentaries, and open-ended research projects.',
+  int_artistic: 'Set aside time for creative expression — sketching, writing, music, or design projects.',
+  int_social: 'Seek out group projects, volunteering, or peer mentoring to build comfort working with others.',
+  int_enterprising: 'Take on small leadership or organising roles — clubs, events, or small ventures.',
+  int_realistic: 'Get hands-on with practical, tangible projects — building, repairing, or lab-based work.',
+  int_conventional: 'Practise organising information systematically — spreadsheets, planners, or structured note-taking.',
+  per_extraversion: 'Practice initiating conversations and participating actively in group settings.',
+  per_agreeableness: 'Practise active listening and collaborative problem-solving in team settings.',
+  per_conscientiousness: 'Build a consistent daily routine with clear goals and follow-through checkpoints.',
+  per_stability: 'Practise stress-management techniques like breathing exercises and structured breaks under pressure.',
+  per_openness: 'Expose yourself to new ideas, subjects, and perspectives outside your usual interests.',
+  eq_empathy: 'Practise perspective-taking — actively imagine how others are feeling in different situations.',
+  eq_self_awareness: 'Keep a reflective journal to track emotional patterns and triggers.',
+  eq_stress_regulation: 'Build a stress-management toolkit — breathing exercises, exercise, or scheduled breaks.',
+  eq_social_skill: 'Practise clear, assertive communication in group and one-on-one settings.',
+  val_wealth: 'Explore financial literacy basics to understand how career choices connect to long-term earning.',
+  val_impact: 'Seek volunteering or community projects that connect your work to visible outcomes.',
+  val_recognition: 'Set milestone goals and share progress with mentors or peers for constructive feedback.',
+  val_growth: 'Seek out new challenges and learning opportunities that stretch current skills.',
+  val_stability_value: 'Research career paths with clear, structured progression to understand long-term stability.',
+  val_creativity_value: 'Dedicate regular time to open-ended creative projects without a fixed outcome.',
+  emotional_resilience: 'Practise reframing setbacks as learning opportunities and build a support network for tough times.',
+  leadership: 'Take on small leadership opportunities — leading a project, team, or initiative — to build confidence.',
+  divergent_thinking: 'Practise brainstorming multiple solutions to a single problem before settling on one.',
+};
+
 const SKILL_DISPLAY_NAMES = {
   logical: 'Logical Reasoning', numerical: 'Numerical Ability', pattern: 'Pattern Recognition',
   spatial: 'Spatial Reasoning', verbal: 'Verbal Aptitude',
@@ -1121,7 +1154,7 @@ function buildReport() {
   buildDeepDive(S);
   buildWildcardCareer(S);
   buildRoadmap(S);
-  buildSkillGaps(S);
+  buildGapAnalysis(S);
 
   // Apply access control after building
   applyAccessControl();
@@ -1533,11 +1566,43 @@ function buildRoadmap(S) {
 }
 
 // ---- SKILL GAPS ----
-function buildSkillGaps(S) {
+function buildGapAnalysis(S) {
   const container = document.getElementById('skill-gaps');
-  S.gaps.forEach(g=>{
-    const row=document.createElement('div'); row.className='gap-item-row';
-    row.innerHTML=`<div class="gap-priority" style="background:${g.urgency==='high'?'var(--red-light)':g.urgency==='med'?'var(--gold-pale)':'var(--teal-light)'};">${g.icon}</div><div><div class="gap-title">${g.title}</div><div class="gap-desc">${g.desc}</div><span class="gap-urgency urg-${g.urgency}">${g.urgency==='high'?'High priority':g.urgency==='med'?'Medium priority':'Low priority'}</span></div>`;
+  container.innerHTML = '';
+  const profile = (S.streamProfiles || []).find(p => p.stream_code === S.primaryStream);
+  const qualifyingDims = S.topCareerHighWeightDims || [];
+
+  const gaps = (profile ? qualifyingDims : [])
+    .map(dim => ({
+      dim,
+      studentScore: S.dimension_scores[dim] ?? 50,
+      targetScore: profile[dim] ?? 50,
+      gap: (profile[dim] ?? 50) - (S.dimension_scores[dim] ?? 50),
+    }))
+    .filter(g => g.gap > 10)
+    .sort((a,b) => b.gap - a.gap)
+    .slice(0, 3);
+
+  if (!gaps.length) {
+    container.innerHTML = `<p style="color:rgba(26,18,8,.5);text-align:center;">No significant gaps identified for your top career path — your scores align closely with what this path typically requires.</p>`;
+    return;
+  }
+
+  gaps.forEach(g => {
+    const name = DIMENSION_DISPLAY_NAMES[g.dim] || g.dim;
+    const action = GAP_ACTIONS[g.dim] || 'Focus on consistent practice in this area.';
+    const row = document.createElement('div');
+    row.style.cssText = 'background:rgba(26,18,8,.02);border-radius:12px;padding:1.1rem;margin-bottom:.85rem;';
+    row.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.5rem;">
+        <div style="font-weight:700;font-size:.95rem;color:var(--ink);">${esc(name)}</div>
+        <div style="font-size:.78rem;color:rgba(26,18,8,.5);">Gap: ${g.gap} pts</div>
+      </div>
+      <div style="display:flex;gap:1.5rem;margin-bottom:.75rem;font-size:.82rem;">
+        <div>Your score: <strong>${g.studentScore}/100</strong></div>
+        <div>Target: <strong>${g.targetScore}/100</strong></div>
+      </div>
+      <div style="font-size:.82rem;color:rgba(26,18,8,.7);background:var(--gold-pale);border-radius:10px;padding:.75rem 1rem;">${esc(action)}</div>`;
     container.appendChild(row);
   });
 }

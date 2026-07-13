@@ -222,8 +222,13 @@ exports.handler = async (event) => {
 
     const top_careers = careerFits.sort((a, b) => b.fit - a.fit).slice(0, 5);
 
+    const primaryCareerRow = (careers || []).find(c => c.id === top_careers[0]?.career_id);
+    const top_career_high_weight_dims = primaryCareerRow
+      ? DIMENSIONS.filter(dim => (primaryCareerRow['weight_' + dim] || 0) > 0.5)
+      : [];
+
     // ---- STEP 6: Write results ----
-    const score_json = { skill_scores, dimension_scores, stream_scores, primary_stream, top_careers };
+    const score_json = { skill_scores, dimension_scores, stream_scores, primary_stream, top_careers, top_career_high_weight_dims };
 
     const { error: updateErr } = await db.from('test_sessions').update({
       score_json,
