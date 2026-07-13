@@ -1525,7 +1525,8 @@ function buildDeepDive(S) {
       const name = DIMENSION_DISPLAY_NAMES[dim] || dim;
       const row = document.createElement('div');
       row.className = 'trait-row';
-      row.innerHTML = `<div class="trait-header"><span class="trait-name">${esc(name)}</span><span class="trait-score">${score}/100 · ${label}</span></div><div class="trait-track"><div class="trait-fill" style="width:0%;background:${group.color};" data-w="${score}"></div></div><div class="trait-desc">Your ${esc(name)} score of ${score}/100 reflects a ${label.toLowerCase()} level in this dimension.</div>`;
+      const article = /^[aeiou]/i.test(label) ? 'an' : 'a';
+      row.innerHTML = `<div class="trait-header"><span class="trait-name">${esc(name)}</span><span class="trait-score">${score}/100 · ${label}</span></div><div class="trait-track"><div class="trait-fill" style="width:0%;background:${group.color};" data-w="${score}"></div></div><div class="trait-desc">Your ${esc(name)} score of ${score}/100 reflects ${article} ${label.toLowerCase()} level in this dimension.</div>`;
       groupEl.appendChild(row);
     });
     container.appendChild(groupEl);
