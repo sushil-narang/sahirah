@@ -425,104 +425,19 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
     </div>
   </div>
 
-  <!-- APTITUDE RADAR — BASIC+ -->
-  <div class="report-section premium-section" id="section-aptitude">
+  <!-- S5: 29-DIMENSION DEEP DIVE -->
+  <div class="report-section premium-section" id="section-deepdive">
     <div class="rs-header">
-      <div class="rs-icon" style="background:#FDF0CC;">🧩</div>
-      <div class="rs-title">Aptitude Deep-Dive</div>
-      <div class="rs-sub">Question-level analysis</div>
+      <div class="rs-icon" style="background:#F5EEFF;">📊</div>
+      <div class="rs-title">Complete Dimension Breakdown</div>
+      <div class="rs-sub">All 29 measured dimensions</div>
     </div>
-    <div class="two-col">
-      <div class="card">
-        <div class="chart-wrap"><canvas id="radar-chart"></canvas></div>
-      </div>
-      <div class="card" id="aptitude-breakdown"></div>
-    </div>
-    <div class="card" style="margin-top:1rem;" id="aptitude-question-analysis"></div>
-    <div class="lock-overlay" id="lock-aptitude">
+    <div id="deepdive-groups"></div>
+    <div class="lock-overlay" id="lock-deepdive">
       <div class="lock-overlay-inner">
-        <div class="lo-icon">🧩</div>
-        <div class="lo-title">Aptitude Deep-Dive</div>
-        <div class="lo-sub">See your score on every aptitude question — correct, incorrect, and unanswered — broken down by cognitive trait and difficulty tier.</div>
-        <div class="lo-btns">
-          <a href="../payment/" class="lo-btn lo-btn-gold">🔓 Unlock — from ₹499</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- PERSONALITY — PREMIUM -->
-  <div class="report-section premium-section" id="section-personality">
-    <div class="rs-header">
-      <div class="rs-icon" style="background:#F5EEFF;">🧠</div>
-      <div class="rs-title">Personality Profile</div>
-      <div class="rs-sub">Big Five model</div>
-    </div>
-    <div class="card" id="personality-bars"></div>
-    <div class="lock-overlay" id="lock-personality">
-      <div class="lock-overlay-inner">
-        <div class="lo-icon">🔒</div>
-        <div class="lo-title">Deep Personality Analysis</div>
-        <div class="lo-sub">Unlock to see your Big Five trait scores, strengths analysis, and how your personality maps to career success.</div>
-        <div class="lo-btns">
-          <a href="../payment/" class="lo-btn lo-btn-gold">🔓 Unlock — from ₹499</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- EQ — PREMIUM -->
-  <div class="report-section premium-section" id="section-eq">
-    <div class="rs-header">
-      <div class="rs-icon" style="background:var(--red-light);">❤️</div>
-      <div class="rs-title">Emotional Intelligence</div>
-      <div class="rs-sub">EQ profile</div>
-    </div>
-    <div class="two-col">
-      <div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
-        <div class="eq-ring-wrap">
-          <div class="eq-ring">
-            <svg class="eq-ring-svg" width="140" height="140" viewBox="0 0 140 140">
-              <circle cx="70" cy="70" r="58" fill="none" stroke="rgba(26,18,8,.06)" stroke-width="10"/>
-              <circle id="eq-ring-circle" cx="70" cy="70" r="58" fill="none" stroke="#C0410A" stroke-width="10" stroke-dasharray="364" stroke-dashoffset="364" stroke-linecap="round" style="transition:stroke-dashoffset 1.4s ease;"/>
-            </svg>
-            <div class="eq-ring-text">
-              <div class="eq-ring-num" id="eq-num">74</div>
-              <div class="eq-ring-lbl">EQ Score</div>
-            </div>
-          </div>
-        </div>
-        <div style="font-size:.82rem;text-align:center;color:rgba(26,18,8,.5);line-height:1.5;max-width:200px;" id="eq-label-text"></div>
-      </div>
-      <div class="card" id="eq-breakdown"></div>
-    </div>
-    <div class="lock-overlay" id="lock-eq">
-      <div class="lock-overlay-inner">
-        <div class="lo-icon">❤️</div>
-        <div class="lo-title">Emotional Intelligence Breakdown</div>
-        <div class="lo-sub">Self-awareness, empathy, stress handling, and leadership EQ scores — critical for career counseling.</div>
-        <div class="lo-btns">
-          <a href="../payment/" class="lo-btn lo-btn-gold">🔓 Unlock — from ₹499</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- INTEREST CHART — PREMIUM -->
-  <div class="report-section premium-section" id="section-interest">
-    <div class="rs-header">
-      <div class="rs-icon" style="background:var(--teal-light);">🌱</div>
-      <div class="rs-title">Interest Profile</div>
-      <div class="rs-sub">RIASEC model</div>
-    </div>
-    <div class="card">
-      <div class="chart-wrap" style="height:240px;"><canvas id="interest-chart"></canvas></div>
-    </div>
-    <div class="lock-overlay" id="lock-interest">
-      <div class="lock-overlay-inner">
-        <div class="lo-icon">🌱</div>
-        <div class="lo-title">Interest Profile (RIASEC)</div>
-        <div class="lo-sub">See how your interests map across Realistic, Investigative, Artistic, Social, Enterprising, and Conventional dimensions.</div>
+        <div class="lo-icon">📊</div>
+        <div class="lo-title">Complete Dimension Breakdown</div>
+        <div class="lo-sub">See your full score across all 29 measured dimensions — aptitude, personality, EQ, interests, values, and soft skills — each with a detailed interpretation.</div>
         <div class="lo-btns">
           <a href="../payment/" class="lo-btn lo-btn-gold">🔓 Unlock — from ₹499</a>
         </div>
@@ -598,7 +513,7 @@ function applyAccessControl() {
     document.getElementById('free-banner').classList.add('show');
     document.getElementById('btn-upgrade').style.display = 'inline-flex';
     // Free: lock careers, AI, aptitude, personality, EQ, interest, roadmap, gaps
-    ['careers','ai','aptitude','personality','eq','interest','roadmap','gaps'].forEach(id => {
+    ['careers','deepdive','roadmap','gaps'].forEach(id => {
       const section = document.getElementById('section-' + id);
       const lock    = document.getElementById('lock-' + id);
       if (section) section.classList.add('locked');
@@ -611,7 +526,7 @@ function applyAccessControl() {
       <a href="../" class="rf-btn rf-btn-outline">← Back to Sahirah.in</a>`;
   } else if (IS_BASIC) {
     // Basic: unlock careers, AI, aptitude; keep personality, EQ, interest, roadmap, gaps locked
-    ['personality','eq','interest','roadmap','gaps'].forEach(id => {
+    ['deepdive','roadmap','gaps'].forEach(id => {
       const section = document.getElementById('section-' + id);
       const lock    = document.getElementById('lock-' + id);
       if (section) section.classList.add('locked');
@@ -1193,22 +1108,9 @@ function buildReport() {
   buildCuriosityIndex(S);
   buildCareerCards(S);
   buildAIReport(S);
-  buildAptitudeSection(S);
-  buildPersonalitySection(S);
-  buildEQSection(S);
-  buildInterestChart(S);
+  buildDeepDive(S);
   buildRoadmap(S);
   buildSkillGaps(S);
-
-  // Animate EQ ring
-  setTimeout(()=>{
-    const circ = document.getElementById('eq-ring-circle');
-    const circumference = 2 * Math.PI * 58;
-    const offset = circumference - (S.eq.overall / 100) * circumference;
-    circ.style.strokeDasharray = circumference;
-    circ.style.strokeDashoffset = offset;
-    document.getElementById('eq-num').textContent = S.eq.overall;
-  }, 500);
 
   // Apply access control after building
   applyAccessControl();
@@ -1504,158 +1406,47 @@ Trust the direction the data points, invest in the process of learning, and the
 destination will take care of itself. Sahi Raah.`;
 }
 
-// ---- APTITUDE SECTION ----
-function buildAptitudeSection(S) {
-  const container = document.getElementById('aptitude-breakdown');
-  const traits = [
-    {name:'Logical Reasoning', score:S.aptitude.logical, color:'#C8860A', desc:'Sequence, deduction and inferential thinking'},
-    {name:'Numerical Ability', score:S.aptitude.numerical, color:'#1A5FA8', desc:'Computation, data analysis and mathematical reasoning'},
-    {name:'Verbal Aptitude', score:S.aptitude.verbal, color:'#C0410A', desc:'Language comprehension, analogies and vocabulary'},
-    {name:'Spatial Reasoning', score:S.aptitude.spatial, color:'#0A6B5E', desc:'Visualising shapes, rotation and spatial patterns'},
-    {name:'Pattern Recognition', score:S.aptitude.pattern, color:'#7B2FBE', desc:'Identifying abstract sequences and visual rules'},
-  ];
-  traits.forEach(t=>{
-    const d = document.createElement('div'); d.className='trait-row';
-    d.innerHTML=`<div class="trait-header"><span class="trait-name">${esc(t.name)}</span><span class="trait-score">${esc(String(t.score))}/100</span></div><div class="trait-track"><div class="trait-fill" style="width:0%;background:${esc(t.color)};" data-w="${esc(String(t.score))}"></div></div><div class="trait-desc">${esc(t.desc)}</div>`;
-    container.appendChild(d);
-  });
-  setTimeout(()=>{ container.querySelectorAll('.trait-fill').forEach(el=>{ el.style.width=el.dataset.w+'%'; }); },300);
+// ---- S5: 29-DIMENSION DEEP DIVE ----
+const DIMENSION_GROUPS = [
+  { title: 'Aptitude', icon: '🧠', color: '#C8860A', dims: ['apt_logical','apt_numerical','apt_verbal','apt_spatial','apt_pattern'] },
+  { title: 'Personality', icon: '🎭', color: '#7B2FBE', dims: ['per_openness','per_conscientiousness','per_extraversion','per_agreeableness','per_stability'] },
+  { title: 'Emotional Intelligence', icon: '❤️', color: '#C0410A', dims: ['eq_empathy','eq_self_awareness','eq_stress_regulation','eq_social_skill'] },
+  { title: 'Interests', icon: '🌱', color: '#0A6B5E', dims: ['int_realistic','int_investigative','int_artistic','int_social','int_enterprising','int_conventional'] },
+  { title: 'Values', icon: '⭐', color: '#1A5FA8', dims: ['val_wealth','val_impact','val_recognition','val_growth','val_stability_value','val_creativity_value'] },
+  { title: 'Soft Skills', icon: '🤝', color: '#5F5E5A', dims: ['emotional_resilience','leadership','divergent_thinking'] },
+];
 
-  // Radar chart
-  const ctx = document.getElementById('radar-chart').getContext('2d');
-  new Chart(ctx, {
-    type:'radar',
-    data:{
-      labels:['Logical','Numerical','Verbal','Spatial','Pattern'],
-      datasets:[{
-        label:'Aptitude',
-        data:[S.aptitude.logical, S.aptitude.numerical, S.aptitude.verbal, S.aptitude.spatial, S.aptitude.pattern],
-        backgroundColor:'rgba(200,134,10,0.12)',
-        borderColor:'#C8860A',
-        borderWidth:2,
-        pointBackgroundColor:'#C8860A',
-        pointRadius:4,
-      }]
-    },
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      scales:{r:{beginAtZero:true,max:100,ticks:{display:false},grid:{color:'rgba(26,18,8,.08)'},pointLabels:{font:{family:'DM Sans',size:11},color:'rgba(26,18,8,.6)'}}},
-      plugins:{legend:{display:false}}
-    }
-  });
+function getScoreLabel(score) {
+  if (score >= 85) return 'Exceptional';
+  if (score >= 70) return 'Strong';
+  if (score >= 50) return 'Average';
+  return 'Developing';
+}
 
-  // Per-question analysis grid
-  const qaContainer = document.getElementById('aptitude-question-analysis');
-  if (qaContainer && S.aptAnalysis && S.aptAnalysis.length) {
-    const correct   = S.aptAnalysis.filter(q=>q.status==='correct').length;
-    const incorrect = S.aptAnalysis.filter(q=>q.status==='incorrect').length;
-    const skipped   = S.aptAnalysis.filter(q=>q.status==='unanswered').length;
+function buildDeepDive(S) {
+  const container = document.getElementById('deepdive-groups');
+  container.innerHTML = '';
+  DIMENSION_GROUPS.forEach(group => {
+    const groupEl = document.createElement('div');
+    groupEl.className = 'card';
+    groupEl.style.marginBottom = '1.25rem';
+    const heading = document.createElement('div');
+    heading.style.cssText = 'font-weight:700;font-size:1rem;margin-bottom:1rem;color:' + group.color + ';';
+    heading.textContent = group.icon + ' ' + group.title;
+    groupEl.appendChild(heading);
 
-    const TRAIT_COLORS = {logical:'#C8860A',numerical:'#1A5FA8',verbal:'#C0410A',spatial:'#0A6B5E',pattern:'#7B2FBE'};
-    const STATUS_ICON  = {correct:'✓',incorrect:'✗',unanswered:'—'};
-
-    const header = document.createElement('div');
-    header.style.cssText='margin-bottom:1rem;';
-    header.innerHTML = `<div style="font-size:.85rem;font-weight:600;margin-bottom:.6rem;">Question-by-Question Breakdown</div>
-      <div class="apt-summary-row">
-        <span class="apt-summary-chip" style="background:#E0F2EE;color:#0A6B5E;">✓ ${correct} Correct</span>
-        <span class="apt-summary-chip" style="background:#FFF0EB;color:#C0410A;">✗ ${incorrect} Incorrect</span>
-        <span class="apt-summary-chip" style="background:rgba(26,18,8,.05);color:rgba(26,18,8,.5);">— ${skipped} Skipped</span>
-      </div>
-      <div class="apt-legend">
-        <div class="apt-legend-item"><div class="apt-legend-dot" style="background:#E0F2EE;border:1px solid rgba(10,107,94,.3);"></div>Correct</div>
-        <div class="apt-legend-item"><div class="apt-legend-dot" style="background:#FFF0EB;border:1px solid rgba(192,65,10,.3);"></div>Incorrect</div>
-        <div class="apt-legend-item"><div class="apt-legend-dot" style="background:rgba(26,18,8,.05);border:1px solid rgba(26,18,8,.1);"></div>Unanswered</div>
-        <div style="color:rgba(26,18,8,.35);font-size:.68rem;margin-left:auto;">Colour of dot = trait</div>
-      </div>`;
-    qaContainer.appendChild(header);
-
-    [[1,0,7],[2,8,15],[3,16,23]].forEach(([tier,from,to])=>{
-      const section = document.createElement('div'); section.className='apt-grid-section';
-      const label   = document.createElement('div'); label.className='apt-tier-label';
-      label.textContent=`Tier ${tier} — ${tier===1?'Foundation (Q1–Q8)':tier===2?'Intermediate (Q9–Q16)':'Advanced (Q17–Q24)'}`;
-      section.appendChild(label);
-
-      const grid = document.createElement('div'); grid.className='apt-grid';
-      S.aptAnalysis.slice(from, to+1).forEach(q=>{
-        const tile = document.createElement('div');
-        tile.className='apt-tile ' + q.status;
-        tile.title = `Q${q.i+1} · ${q.trait} · Tier ${q.tier} · ${q.status.charAt(0).toUpperCase()+q.status.slice(1)}`;
-        const dot = document.createElement('span');
-        dot.style.cssText=`display:block;width:8px;height:8px;border-radius:50%;background:${TRAIT_COLORS[q.trait]||'#888'};position:absolute;top:5px;right:5px;`;
-        tile.style.position='relative';
-        tile.innerHTML=`<div class="apt-tile-status">${STATUS_ICON[q.status]}</div><div class="apt-tile-num">Q${q.i+1}</div>`;
-        tile.appendChild(dot);
-        grid.appendChild(tile);
-      });
-      section.appendChild(grid);
-      qaContainer.appendChild(section);
+    group.dims.forEach(dim => {
+      const score = S.dimension_scores[dim] ?? 50;
+      const label = getScoreLabel(score);
+      const name = DIMENSION_DISPLAY_NAMES[dim] || dim;
+      const row = document.createElement('div');
+      row.className = 'trait-row';
+      row.innerHTML = `<div class="trait-header"><span class="trait-name">${esc(name)}</span><span class="trait-score">${score}/100 · ${label}</span></div><div class="trait-track"><div class="trait-fill" style="width:0%;background:${group.color};" data-w="${score}"></div></div><div class="trait-desc">Your ${esc(name)} score of ${score}/100 reflects a ${label.toLowerCase()} level in this dimension.</div>`;
+      groupEl.appendChild(row);
     });
-  }
-}
-
-// ---- PERSONALITY ----
-function buildPersonalitySection(S) {
-  const container = document.getElementById('personality-bars');
-  const traits = [
-    {name:'Openness to Experience', score:S.personality.openness, color:'#7B2FBE', desc:'Curiosity, creativity and willingness to explore new ideas. A score of '+S.personality.openness+' suggests a mind that actively seeks new knowledge and experiences.'},
-    {name:'Conscientiousness', score:S.personality.conscientiousness, color:'#0A6B5E', desc:'Organisation, discipline and follow-through. This high score of '+S.personality.conscientiousness+' predicts academic persistence and reliability — critical for engineering.'},
-    {name:'Extraversion', score:S.personality.extraversion, color:'#1A5FA8', desc:'Social energy and outward engagement. A moderate score indicates a balanced introvert-extrovert, comfortable in teams but also capable of deep independent focus.'},
-    {name:'Agreeableness', score:S.personality.agreeableness, color:'#C8860A', desc:'Cooperation, trust and empathy in relationships. This score supports effective teamwork and collaboration in professional environments.'},
-    {name:'Emotional Stability', score:100-S.personality.neuroticism, color:'#C0410A', desc:'Calmness and resilience under pressure. Lower neuroticism translates to higher emotional stability — a significant asset in competitive environments like JEE.'},
-  ];
-  traits.forEach(t=>{
-    const d=document.createElement('div'); d.className='trait-row';
-    d.innerHTML=`<div class="trait-header"><span class="trait-name">${esc(t.name)}</span><span class="trait-score">${esc(String(t.score))}/100</span></div><div class="trait-track"><div class="trait-fill" style="width:0%;background:${esc(t.color)};" data-w="${esc(String(t.score))}"></div></div><div class="trait-desc">${esc(t.desc)}</div>`;
-    container.appendChild(d);
+    container.appendChild(groupEl);
   });
-  setTimeout(()=>{ container.querySelectorAll('.trait-fill').forEach(el=>{ el.style.width=el.dataset.w+'%'; }); },400);
-}
-
-// ---- EQ ----
-function buildEQSection(S) {
-  const eqLabels = {
-    74:'Good — above average emotional intelligence with clear strengths in self-awareness and leadership.',
-    78:'Strong — well above average. Empathy and self-awareness are standout traits.',
-    60:'Developing — key EQ skills are present but benefit from active development.',
-  };
-  document.getElementById('eq-label-text').textContent = eqLabels[S.eq.overall] || `Score of ${S.eq.overall}/100 — solid emotional intelligence with specific areas for growth.`;
-
-  const container = document.getElementById('eq-breakdown');
-  const dims = [
-    {name:'Self-Awareness', score:S.eq.selfAwareness, desc:'Recognising own emotions and their impact'},
-    {name:'Empathy', score:S.eq.empathy, desc:'Understanding and sharing others\' feelings'},
-    {name:'Stress Handling', score:S.eq.stressHandling, desc:'Staying calm and effective under pressure'},
-    {name:'Leadership', score:S.eq.leadership, desc:'Motivating and guiding others naturally'},
-  ];
-  dims.forEach(d=>{
-    const div=document.createElement('div');
-    div.innerHTML=`<div class="eq-sub-row"><span class="eq-sub-label">${d.name}</span><span class="eq-sub-val">${d.score}/100</span></div><div class="eq-sub-bar"><div class="eq-sub-fill" style="width:0%;background:#C0410A;" data-w="${d.score}"></div></div><div style="font-size:.72rem;color:rgba(26,18,8,.4);margin-bottom:.6rem;">${d.desc}</div>`;
-    container.appendChild(div);
-  });
-  setTimeout(()=>{ container.querySelectorAll('.eq-sub-fill').forEach(el=>{ el.style.transition='width 1.2s ease'; el.style.width=el.dataset.w+'%'; }); },500);
-}
-
-// ---- INTEREST CHART ----
-function buildInterestChart(S) {
-  const ctx = document.getElementById('interest-chart').getContext('2d');
-  new Chart(ctx, {
-    type:'bar',
-    data:{
-      labels:['Realistic','Investigative','Artistic','Social','Enterprising','Conventional'],
-      datasets:[{
-        data:[S.interest.realistic, S.interest.investigative, S.interest.artistic, S.interest.social, S.interest.enterprising, S.interest.conventional],
-        backgroundColor:['#1A5FA833','#C8860A33','#7B2FBE33','#C0410A33','#0A6B5E33','#88888833'],
-        borderColor:['#1A5FA8','#C8860A','#7B2FBE','#C0410A','#0A6B5E','#888888'],
-        borderWidth:2, borderRadius:8,
-      }]
-    },
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' Score: '+c.raw}}},
-      scales:{y:{beginAtZero:true,max:100,ticks:{font:{family:'DM Mono',size:10}},grid:{color:'rgba(26,18,8,.05)'}},x:{ticks:{font:{family:'DM Sans',size:11}},grid:{display:false}}}
-    }
-  });
+  setTimeout(()=>{ container.querySelectorAll('.trait-fill').forEach(el=>{ el.style.width = el.dataset.w + '%'; }); }, 300);
 }
 
 // ---- ROADMAP ----
