@@ -1148,7 +1148,7 @@ function buildExecutiveSummary(S) {
 
   const [dominantKey, dominantScore] = Object.entries(S.traitScores || {}).sort((a,b) => b[1]-a[1])[0] || ['—', 0];
   document.getElementById('es-trait').textContent =
-    `${SKILL_DISPLAY_NAMES[dominantKey] || dominantKey} (${dominantScore}/100)`;
+    `${SKILL_DISPLAY_NAMES[dominantKey] || dominantKey} (${Math.min(100, dominantScore)}/100)`;
 }
 
 function buildCoverPage(S) {

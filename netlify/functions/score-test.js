@@ -77,6 +77,7 @@ exports.handler = async (event) => {
     if (qErr || !questions || !questions.length) throw qErr || new Error('No questions found');
 
     // ---- STEP 2: Score each answered question by its scoring_scheme ----
+    const clampScore = s => Math.min(100, Math.max(0, Math.round(s)));
     const contributions = [];               // [{skill, score, weight}]
     const skillStreamWeight = {};            // skill -> stream_weight object
     const categoricalTally = {};             // skill -> count
@@ -88,21 +89,21 @@ exports.handler = async (event) => {
 
       switch (q.scoring_scheme) {
         case 'correct_answer': {
-          const score = Number(given) === q.ans ? 100 : 0;
+          const score = clampScore(Number(given) === q.ans ? 100 : 0);
           contributions.push({ skill: q.skill, score, weight: q.stream_weight });
           break;
         }
         case 'likert_scale': {
           const idx = Number(given);
           const n = q.scale?.length || 5;
-          const score = (idx / (n - 1)) * 100;
+          const score = clampScore((idx / (n - 1)) * 100);
           contributions.push({ skill: q.skill, score, weight: q.stream_weight });
           break;
         }
         case 'matrix_scale': {
           const rowVals = Object.values(given).map(Number);
           const n = 5;
-          const score = (rowVals.reduce((a, b) => a + b, 0) / rowVals.length / (n - 1)) * 100;
+          const score = clampScore((rowVals.reduce((a, b) => a + b, 0) / rowVals.length / (n - 1)) * 100);
           contributions.push({ skill: q.skill, score, weight: q.stream_weight });
           break;
         }
@@ -112,7 +113,7 @@ exports.handler = async (event) => {
           break;
         }
         case 'quality_scale': {
-          const score = q.option_scores?.[Number(given)] ?? 0;
+          const score = clampScore(q.option_scores?.[Number(given)] ?? 0);
           contributions.push({ skill: q.skill, score, weight: q.stream_weight });
           break;
         }
@@ -129,13 +130,13 @@ exports.handler = async (event) => {
     });
     const skill_scores = {};
     Object.entries(skillGroups).forEach(([skill, scores]) => {
-      skill_scores[skill] = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+      skill_scores[skill] = clampScore(scores.reduce((a, b) => a + b, 0) / scores.length);
     });
 
     const maxTally = Math.max(0, ...Object.values(categoricalTally));
     if (maxTally > 0) {
       Object.entries(categoricalTally).forEach(([skill, count]) => {
-        skill_scores[skill] = Math.round((count / maxTally) * 100);
+        skill_scores[skill] = clampScore((count / maxTally) * 100);
       });
     }
 
