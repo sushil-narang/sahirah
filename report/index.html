@@ -1449,9 +1449,12 @@ Write 3 paragraphs (plain text, no markdown, no bullet points):
 Tone: Warm, expert, encouraging, specific. Like a counsellor who truly knows this child. Use "Arjun" (or the student's name) naturally. Keep each paragraph 3-4 sentences. Do not use lists or headers.`;
 
   const narrativeEl = document.getElementById('ai-narrative-text');
+  const avanyaController = new AbortController();
+  const avanyaTimeout = setTimeout(() => avanyaController.abort(), 8000);
   try {
     const res = await fetch('/.netlify/functions/avanya', {
       method:'POST',
+      signal: avanyaController.signal,
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
         model:'claude-haiku-4-5-20251001',
@@ -1459,11 +1462,13 @@ Tone: Warm, expert, encouraging, specific. Like a counsellor who truly knows thi
         messages:[{role:'user',content:prompt}]
       })
     });
+    clearTimeout(avanyaTimeout);
     if (!res.ok) throw new Error('avanya ' + res.status);
     const data = await res.json();
     const text = data.content?.[0]?.text || getFallbackNarrative(S);
     renderNarrative(narrativeEl, text);
   } catch(e) {
+    clearTimeout(avanyaTimeout);
     renderNarrative(narrativeEl, getFallbackNarrative(S));
   }
 }
