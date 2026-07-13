@@ -11,6 +11,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="../assets/js/db.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 :root{
   --cream:#FDF8F0;--ink:#1A1208;--gold:#C8860A;--gold-light:#F5D98A;--gold-pale:#FDF0CC;
@@ -74,6 +75,7 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
 
 /* SECTION */
 .report-section{margin-bottom:2rem;}
+.report-section:not(#section-cover){page-break-before:always;}
 .rs-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;}
 .rs-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
 .rs-title{font-family:var(--fd);font-size:1.3rem;font-weight:700;}
@@ -1632,194 +1634,22 @@ async function downloadPDF() {
   btn.textContent = '⏳ Generating PDF…';
   btn.disabled = true;
   try {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
-    const S = SCORES;
-    const streamNames = {non:'Non-Medical',med:'Medical',com:'Commerce',hum:'Humanities'};
-    const streamColors = {non:[26,95,168],med:[123,47,190],com:[10,107,94],hum:[192,65,10]};
-    const sc = streamColors[S.primaryStream] || [26,18,8];
-    const W = 210, margin = 16;
-    let y = 0;
-
-    // Cover page
-    doc.setFillColor(26,18,8); doc.rect(0,0,W,297,'F');
-    doc.setFillColor(...sc); doc.rect(0,0,W,6,'F');
-    doc.setTextColor(245,217,138); doc.setFontSize(28); doc.setFont('helvetica','bold');
-    doc.text('Sahirah.in', W/2, 50, {align:'center'});
-    doc.setFontSize(11); doc.setTextColor(200,150,50);
-    doc.text('SAHI RAAH — THE RIGHT PATH', W/2, 60, {align:'center'});
-    doc.setFillColor(255,255,255,20); doc.setDrawColor(255,255,255,30);
-    doc.roundedRect(margin, 80, W-margin*2, 90, 8, 8, 'S');
-    doc.setTextColor(253,248,240); doc.setFontSize(22); doc.setFont('helvetica','bold');
-    doc.text('Psychometric Evaluation', W/2, 105, {align:'center'});
-    doc.text('Report', W/2, 117, {align:'center'});
-    doc.setFontSize(13); doc.setFont('helvetica','normal'); doc.setTextColor(200,200,180);
-    doc.text(S.name, W/2, 133, {align:'center'});
-    doc.setFontSize(10); doc.setTextColor(150,140,120);
-    doc.text(`Age ${S.age} · ${S.cls} · ${S.city}, ${S.state}`, W/2, 142, {align:'center'});
-    doc.setFontSize(10);
-    doc.text('Primary Stream: ' + streamNames[S.primaryStream], W/2, 155, {align:'center'});
-    doc.setFontSize(9); doc.setTextColor(100,90,80);
-    doc.text('Generated: ' + new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}), W/2, 280, {align:'center'});
-
-    // Page 2 — Stream + Careers
-    doc.addPage();
-    const drawHeader = (title, sub) => {
-      doc.setFillColor(...sc); doc.rect(0,0,W,1.5,'F');
-      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...sc);
-      doc.text('SAHIRAH.IN REPORT — ' + S.name.toUpperCase(), margin, 10);
-      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(160,150,130);
-      doc.text(new Date().toLocaleDateString('en-IN'), W-margin, 10, {align:'right'});
-      doc.setFillColor(245,235,210); doc.rect(0,14,W,12,'F');
-      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(26,18,8);
-      doc.text(title, margin, 23);
-      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(150,130,100);
-      doc.text(sub, W-margin, 23, {align:'right'});
-      return 34;
-    };
-
-    y = drawHeader('STREAM MATCH SCORES','Stage 1 Result');
-    const streamOrder = Object.entries(S.streams).sort((a,b)=>b[1]-a[1]);
-    const sColors = {non:[26,95,168],med:[123,47,190],com:[10,107,94],hum:[192,65,10]};
-    const sNames = {non:'Non-Medical',med:'Medical',com:'Commerce',hum:'Humanities'};
-    streamOrder.forEach(([k,v])=>{
-      const c = sColors[k];
-      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(26,18,8);
-      doc.text(sNames[k], margin, y+5);
-      doc.setFillColor(240,235,225); doc.roundedRect(margin+40,y,100,5,1,1,'F');
-      doc.setFillColor(...c); doc.roundedRect(margin+40,y,v,5,1,1,'F');
-      doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...c);
-      doc.text(v+'%', margin+145, y+5);
-      y += 12;
-    });
-
-    y += 6;
-    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(26,18,8);
-    doc.text('TOP CAREER RECOMMENDATIONS', margin, y); y += 8;
-    S.careers.forEach((c,i)=>{
-      const cc = sColors[S.primaryStream];
-      doc.setFillColor(248,243,233); doc.roundedRect(margin,y,W-margin*2,28,4,4,'F');
-      doc.setFillColor(...cc); doc.roundedRect(margin,y,3,28,1.5,1.5,'F');
-      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(26,18,8);
-      doc.text(`#${i+1}  ${c.title}`, margin+7, y+8);
-      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...cc);
-      doc.text(`${c.fit}% fit`, W-margin-4, y+8, {align:'right'});
-      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(100,90,80);
-      const lines = doc.splitTextToSize(c.why, W-margin*2-12);
-      doc.text(lines.slice(0,2), margin+7, y+15);
-      doc.setFontSize(7.5); doc.setTextColor(...cc);
-      doc.text('Exams: ' + c.exams.join(', '), margin+7, y+24);
-      y += 34;
-    });
-
-    // Page 3 — Aptitude + Personality
-    doc.addPage();
-    y = drawHeader('APTITUDE PROFILE','Cognitive Map');
-    const aptTraits = [
-      {name:'Logical Reasoning', score:S.aptitude.logical, color:[200,134,10]},
-      {name:'Numerical Ability', score:S.aptitude.numerical, color:[26,95,168]},
-      {name:'Verbal Aptitude', score:S.aptitude.verbal, color:[192,65,10]},
-      {name:'Spatial Reasoning', score:S.aptitude.spatial, color:[10,107,94]},
-      {name:'Pattern Recognition', score:S.aptitude.pattern, color:[123,47,190]},
-    ];
-    aptTraits.forEach(t=>{
-      doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(26,18,8);
-      doc.text(t.name, margin, y+4);
-      doc.setFillColor(235,230,220); doc.roundedRect(margin+55,y,100,5,1,1,'F');
-      doc.setFillColor(...t.color); doc.roundedRect(margin+55,y,t.score,5,1,1,'F');
-      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...t.color);
-      doc.text(t.score+'/100', margin+160, y+4);
-      y+=10;
-    });
-
-    y+=6;
-    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(26,18,8);
-    doc.text('PERSONALITY PROFILE', margin, y); y+=8;
-    const persTraits=[
-      {name:'Openness',score:S.personality.openness,color:[123,47,190]},
-      {name:'Conscientiousness',score:S.personality.conscientiousness,color:[10,107,94]},
-      {name:'Extraversion',score:S.personality.extraversion,color:[26,95,168]},
-      {name:'Agreeableness',score:S.personality.agreeableness,color:[200,134,10]},
-      {name:'Emotional Stability',score:100-S.personality.neuroticism,color:[192,65,10]},
-    ];
-    persTraits.forEach(t=>{
-      doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(26,18,8);
-      doc.text(t.name, margin, y+4);
-      doc.setFillColor(235,230,220); doc.roundedRect(margin+55,y,100,5,1,1,'F');
-      doc.setFillColor(...t.color); doc.roundedRect(margin+55,y,t.score,5,1,1,'F');
-      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...t.color);
-      doc.text(t.score+'/100', margin+160, y+4);
-      y+=10;
-    });
-
-    // Page 4 — EQ + Roadmap + Skill Gaps
-    doc.addPage();
-    y = drawHeader('EQ & ROADMAP','Emotional Intelligence & Path Forward');
-    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(26,18,8);
-    doc.text(`Emotional Intelligence Score: ${S.eq.overall}/100`, margin, y); y+=8;
-    const eqDims=[
-      {name:'Self-Awareness',score:S.eq.selfAwareness},{name:'Empathy',score:S.eq.empathy},
-      {name:'Stress Handling',score:S.eq.stressHandling},{name:'Leadership',score:S.eq.leadership}
-    ];
-    eqDims.forEach(d=>{
-      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(26,18,8);
-      doc.text(d.name, margin, y+4);
-      doc.setFillColor(235,230,220); doc.roundedRect(margin+45,y,80,4,1,1,'F');
-      doc.setFillColor(192,65,10); doc.roundedRect(margin+45,y,d.score*0.8,4,1,1,'F');
-      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(192,65,10);
-      doc.text(d.score+'/100', margin+130, y+4);
-      y+=9;
-    });
-
-    y+=6;
-    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(26,18,8);
-    doc.text('ENTRANCE EXAM ROADMAP', margin, y); y+=8;
-    S.roadmap.forEach((step,i)=>{
-      const cc=sColors[S.primaryStream];
-      doc.setFillColor(248,243,233); doc.roundedRect(margin,y,W-margin*2,22,3,3,'F');
-      doc.setFillColor(...cc); doc.roundedRect(margin,y,2.5,22,1,1,'F');
-      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...cc);
-      doc.text(step.class, margin+6, y+6);
-      doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(26,18,8);
-      doc.text(step.title, margin+6, y+13);
-      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(100,90,80);
-      doc.text('Exams: '+step.exams.join(', '), margin+6, y+19);
-      y+=26;
-    });
-
-    y+=4;
-    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(26,18,8);
-    doc.text('SKILL GAP ANALYSIS', margin, y); y+=8;
-    S.gaps.forEach(g=>{
-      doc.setFillColor(248,243,233); doc.roundedRect(margin,y,W-margin*2,18,3,3,'F');
-      const uc=g.urgency==='high'?[192,65,10]:g.urgency==='med'?[200,134,10]:[10,107,94];
-      doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(26,18,8);
-      doc.text(g.title, margin+5, y+7);
-      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(100,90,80);
-      const lines=doc.splitTextToSize(g.desc, W-margin*2-10);
-      doc.text(lines[0], margin+5, y+13);
-      doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...uc);
-      doc.text(g.urgency.toUpperCase()+' PRIORITY', W-margin-5, y+7, {align:'right'});
-      y+=22;
-    });
-
-    // Footer on all pages
-    const pageCount = doc.getNumberOfPages();
-    for(let p=1;p<=pageCount;p++){
-      doc.setPage(p);
-      doc.setFillColor(26,18,8); doc.rect(0,289,W,8,'F');
-      doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(120,110,100);
-      doc.text('Sahirah.in — Sahi Raah, The Right Path | Confidential Report', margin, 295);
-      doc.text(`Page ${p} of ${pageCount}`, W-margin, 295, {align:'right'});
-    }
-
-    doc.save(`Sahirah_Report_${S.name.replace(/\s/g,'_')}.pdf`);
-  } catch(e) {
-    console.error(e);
-    alert('PDF generation encountered an issue. Please use the Print option as an alternative.');
+    const element = document.getElementById('printable');
+    await html2pdf().set({
+      margin: 0,
+      filename: `${(SCORES.name || 'Student').replace(/\s+/g,'_')}_Sahirah_Report.pdf`,
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css', 'legacy'] },
+    }).from(element).save();
+  } catch (e) {
+    console.error('PDF generation failed:', e);
+    alert('Could not generate PDF. Please try again or use Print Report instead.');
+  } finally {
+    btn.textContent = '⬇ Download PDF';
+    btn.disabled = false;
   }
-  btn.textContent = '⬇ Download PDF';
-  btn.disabled = false;
 }
 
 // Mark test complete in localStorage
