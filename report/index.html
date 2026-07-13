@@ -1279,7 +1279,7 @@ function buildCuriosityIndex(S) {
 
   // Populate profile
   const profileEl = document.getElementById('curiosity-profile');
-  profileEl.textContent = curiosityData.profile + ' — ' + curiosityData.dominantType;
+  profileEl.textContent = curiosityData.profile + ' — ' + (curiosityData.dominantType || curiosityData.dominant_type || 'Balanced');
 
   // Populate interpretation
   const interpEl = document.getElementById('curiosity-interpretation');
