@@ -682,6 +682,8 @@ nav{position:sticky;top:0;z-index:100;padding:0 5%;background:rgba(253,248,240,0
           <div class="cc-row"><span class="cc-key">Test portal</span><span class="cc-val"><a href="../login/" style="color:var(--gold);font-weight:600;">Open Test Portal →</a></span></div>
         </div>
 
+        <p id="email-status" style="font-size:.82rem;color:rgba(26,18,8,.55);margin:.75rem 0 1.5rem;"></p>
+
         <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
           <a href="../login/" class="btn-next">Go to Test Portal →</a>
           <button class="btn-next" onclick="window.print()" style="background:transparent;border:1.5px solid var(--border);color:var(--ink);">🖨 Print confirmation</button>
@@ -1147,20 +1149,35 @@ async function submitForm() {
   }
 
   // Send login credentials email via Netlify function (non-fatal — credentials shown on screen too)
-  fetch('/.netlify/functions/send-email', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      to_email:   email,
-      to_name:    document.getElementById('parent-name').value.trim(),
-      child_name: fn + ' ' + ln,
-      reg_id:     regId,
-      login_id:   loginId,
-      password:   password,
-      slot:       document.getElementById('sum-slot').textContent,
-      portal_url: window.location.origin + '/login',
-    }),
-  }).catch(e => console.warn('Email send failed:', e));
+  try {
+    const emailRes = await fetch('/.netlify/functions/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to_email:   email,
+        to_name:    document.getElementById('parent-name').value.trim(),
+        child_name: fn + ' ' + ln,
+        reg_id:     regId,
+        login_id:   loginId,
+        password:   password,
+        slot:       document.getElementById('sum-slot').textContent,
+        portal_url: window.location.origin + '/login',
+      }),
+    });
+    const emailData = await emailRes.json();
+    if (!emailData.ok) {
+      console.warn('Email delivery failed:', emailData.error);
+      document.getElementById('email-status').textContent =
+        '⚠️ Email delivery failed. Please screenshot your credentials above.';
+    } else {
+      document.getElementById('email-status').textContent =
+        '✅ Credentials sent to ' + email;
+    }
+  } catch(e) {
+    console.warn('Email send error:', e);
+    document.getElementById('email-status').textContent =
+      '⚠️ Could not send email. Please screenshot your credentials above.';
+  }
 
   document.getElementById('step4').classList.remove('active');
   document.getElementById('step5').classList.add('active');

@@ -50,7 +50,7 @@ exports.handler = async (event) => {
         from: FROM_ADDRESS,
         to: [to_email],
         reply_to: REPLY_TO,
-        subject: `Your Sahirah.in login credentials — ${child_name || 'Evaluation'}`,
+        subject: `Your Sahirah.in Login Credentials — ${(child_name || 'Evaluation').split(' ')[0]}`,
         html,
       }),
     });
@@ -73,8 +73,8 @@ exports.handler = async (event) => {
 function buildEmailHtml({ to_name, child_name, reg_id, login_id, password, slot, portal_url }) {
   const name = to_name || 'Parent';
   const childStr = child_name || 'your child';
-  const slotStr = slot && slot !== '—' ? slot : 'Your scheduled slot';
-  const url = portal_url || 'https://sahirah.in/login';
+  const hasRealSlot = slot && !['—', 'instant', 'demo_instant', 'To be scheduled'].includes(slot);
+  const url = portal_url || 'https://sahirah.in/login/';
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -125,14 +125,14 @@ function buildEmailHtml({ to_name, child_name, reg_id, login_id, password, slot,
           </td></tr>
         </table>
 
-        <!-- SLOT INFO -->
+        ${hasRealSlot ? `<!-- SLOT INFO -->
         <table width="100%" cellpadding="0" cellspacing="0" style="background:#FDF0CC;border:1px solid #F5D98A;border-radius:12px;padding:14px 18px;margin-bottom:24px;">
           <tr><td>
             <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#C8860A;margin-bottom:4px;">Scheduled Slot</div>
-            <div style="font-size:16px;font-weight:700;color:#1A1208;">${esc(slotStr)}</div>
+            <div style="font-size:16px;font-weight:700;color:#1A1208;">${esc(slot)}</div>
             <div style="font-size:12px;color:rgba(26,18,8,.5);margin-top:3px;">The test portal will be accessible from your scheduled time.</div>
           </td></tr>
-        </table>
+        </table>` : ''}
 
         <!-- CTA -->
         <div style="text-align:center;margin-bottom:24px;">
@@ -141,7 +141,7 @@ function buildEmailHtml({ to_name, child_name, reg_id, login_id, password, slot,
 
         <p style="margin:0 0 8px;font-size:13px;color:rgba(26,18,8,.5);line-height:1.7;">
           Use the Login ID and Password above when signing in at <a href="${esc(url)}" style="color:#0A6B5E;">${esc(url)}</a>.
-          The 2-hour evaluation window begins at your scheduled slot time.
+          ${hasRealSlot ? 'The 2-hour evaluation window begins at your scheduled slot time.' : 'You can begin your 2-hour evaluation any time by logging in.'}
         </p>
         <p style="margin:0;font-size:13px;color:rgba(26,18,8,.5);line-height:1.7;">
           Need help? Reply to this email or contact us at <a href="mailto:contact@sahirah.in" style="color:#0A6B5E;">contact@sahirah.in</a>
