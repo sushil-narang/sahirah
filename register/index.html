@@ -130,6 +130,16 @@ nav{position:sticky;top:0;z-index:100;padding:0 5%;background:rgba(253,248,240,0
 .slot-dates::-webkit-scrollbar{display:none;}
 .slot-date-btn{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:.7rem .9rem;background:#fff;border:1.5px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s;min-width:64px;}
 .slot-date-btn.active{background:var(--ink);border-color:var(--ink);}
+.instant-start-card{display:flex;gap:1rem;align-items:center;padding:1.25rem 1.5rem;background:#fff;border:2px solid var(--border);border-radius:16px;cursor:pointer;transition:all .2s;margin-bottom:1rem;}
+.instant-start-card.active{border-color:var(--gold);background:var(--gold-pale);}
+.isc-icon{font-size:1.8rem;flex-shrink:0;}
+.isc-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--ink);}
+.isc-desc{font-size:.82rem;color:rgba(26,18,8,.6);margin-top:2px;}
+.slot-divider{text-align:center;font-size:.75rem;color:rgba(26,18,8,.35);text-transform:uppercase;letter-spacing:.06em;margin:1.5rem 0;}
+.start-now-cta{background:var(--gold-pale);border:1px solid var(--gold-light);border-radius:14px;padding:1.5rem;text-align:center;margin-bottom:1.5rem;}
+.start-now-cta p{margin:0 0 .85rem;font-size:.9rem;color:var(--ink);}
+.start-now-cta .hint{margin-top:.85rem;margin-bottom:0;font-size:.78rem;color:rgba(26,18,8,.5);}
+.btn-gold{display:inline-block;background:var(--gold);color:#fff;text-decoration:none;padding:.85rem 1.75rem;border-radius:100px;font-weight:700;font-size:.9rem;}
 .slot-date-btn .sd-day{font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:rgba(26,18,8,.4);}
 .slot-date-btn.active .sd-day{color:rgba(253,248,240,.5);}
 .slot-date-btn .sd-date{font-family:var(--fd);font-size:1.3rem;font-weight:700;color:var(--ink);}
@@ -565,8 +575,18 @@ nav{position:sticky;top:0;z-index:100;padding:0 5%;background:rgba(253,248,240,0
     <!-- STEP 3: SLOT PICKER -->
     <div class="form-section" id="step3">
       <div class="section-eyebrow">Step 3 of 4</div>
-      <h2 class="section-title">Choose your<br/>appointment slot</h2>
-      <p class="section-sub">Select a date and time that works best for your child. The evaluation takes 2 hours — choose a time when they can sit in a quiet, comfortable space without interruptions.</p>
+      <h2 class="section-title">When should your child<br/>take the evaluation?</h2>
+      <p class="section-sub">Start immediately, or schedule a time that works better. The evaluation takes 2 hours — choose a time when they can sit in a quiet, comfortable space without interruptions.</p>
+
+      <div class="instant-start-card" id="instant-start-card" onclick="selectInstantStart()">
+        <div class="isc-icon">⚡</div>
+        <div class="isc-body">
+          <div class="isc-title">Start Right Now</div>
+          <div class="isc-desc">Take your evaluation immediately after registration. <strong>(Recommended)</strong></div>
+        </div>
+      </div>
+
+      <div class="slot-divider">or schedule for later</div>
 
       <div style="margin-bottom:2rem;">
         <div style="font-size:.8rem;font-weight:600;color:rgba(26,18,8,.5);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;">Select a date</div>
@@ -683,6 +703,8 @@ nav{position:sticky;top:0;z-index:100;padding:0 5%;background:rgba(253,248,240,0
         </div>
 
         <p id="email-status" style="font-size:.82rem;color:rgba(26,18,8,.55);margin:.75rem 0 1.5rem;"></p>
+
+        <div id="post-reg-cta"></div>
 
         <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
           <a href="../login/" class="btn-next">Go to Test Portal →</a>
@@ -818,7 +840,7 @@ function validateStep(step) {
     return ok;
   }
   if(step === 3) {
-    if(!selectedSlot){ alert('Please select an appointment slot before continuing.'); return false; }
+    if(!selectedSlot){ alert('Please choose to start now or select a slot.'); return false; }
   }
   if(step === 4) {
     if(!document.getElementById('agree-terms').checked){ alert('Please agree to the Terms of Use and Privacy Policy to continue.'); return false; }
@@ -851,6 +873,15 @@ const timeSlots = [
   {time:'06:00 PM', slots:4, full:false},
 ];
 
+function selectInstantStart() {
+  selectedSlot = 'instant';
+  document.getElementById('instant-start-card').classList.add('active');
+  document.querySelectorAll('.slot-date-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('input[name="slot"]').forEach(r => r.checked = false);
+  document.getElementById('sum-slot').textContent = 'Start Immediately';
+  document.getElementById('conf-slot').textContent = 'Start Immediately';
+}
+
 function buildSlots() {
   const container = document.getElementById('slot-dates');
   container.innerHTML = '';
@@ -858,7 +889,7 @@ function buildSlots() {
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const today = new Date();
   let firstClickDone = false;
-  for(let i=0; i<=14; i++) {
+  for(let i=0; i<=7; i++) {
     const d = new Date(today); d.setDate(today.getDate()+i);
     if(d.getDay()===0) continue; // skip Sundays
     // For today: only show if at least one time slot is still available
@@ -869,14 +900,15 @@ function buildSlots() {
     btn.innerHTML = `<span class="sd-day">${isToday?'Today':days[d.getDay()]}</span><span class="sd-date">${d.getDate()}</span><span class="sd-month">${months[d.getMonth()]}</span>`;
     btn.onclick = () => selectDate(btn, d, months, isToday);
     container.appendChild(btn);
-    if(!firstClickDone) { btn.click(); firstClickDone=true; }
+    if(!firstClickDone) { buildTimeSlots(d, months, isToday); firstClickDone=true; }
   }
+  if (selectedSlot === null) selectInstantStart();
 }
 
-// Returns true if today has at least one time slot available (30-min buffer from now)
+// Returns true if today has at least one time slot available (60-min buffer from now)
 function hasAvailableSlotsToday() {
   const nowMin = new Date().getHours()*60 + new Date().getMinutes();
-  return timeSlots.some(ts => !ts.full && parseSlotMinutes(ts.time) >= nowMin + 30);
+  return timeSlots.some(ts => !ts.full && parseSlotMinutes(ts.time) >= nowMin + 60);
 }
 
 // Parse "08:00 AM" / "02:00 PM" → total minutes since midnight
@@ -891,6 +923,7 @@ function parseSlotMinutes(timeStr) {
 function selectDate(btn, d, months, isToday) {
   document.querySelectorAll('.slot-date-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  document.getElementById('instant-start-card').classList.remove('active');
   selectedDate = d;
   selectedSlot = null;
   buildTimeSlots(d, months, isToday);
@@ -905,8 +938,8 @@ function buildTimeSlots(d, months, isToday) {
 
   timeSlots.forEach((ts, idx) => {
     const slotMin = parseSlotMinutes(ts.time);
-    // On today: disable slots that are less than 30 minutes from now
-    const isPast = isToday && slotMin < nowMin + 30;
+    // On today: disable slots that are less than 60 minutes from now
+    const isPast = isToday && slotMin < nowMin + 60;
     const isFull = ts.full || isPast;
     const wrap = document.createElement('div');
     wrap.className = 'slot-time-btn' + (isFull ? ' full' : '');
@@ -917,6 +950,7 @@ function buildTimeSlots(d, months, isToday) {
       anyAvailable = true;
       wrap.querySelector('input').addEventListener('change', () => {
         selectedSlot = ts.time;
+        document.getElementById('instant-start-card').classList.remove('active');
         const ms = months_arr;
         document.getElementById('sum-slot').textContent = `${d.getDate()} ${ms[d.getMonth()]} · ${ts.time}`;
         document.getElementById('conf-slot').textContent = `${d.getDate()} ${ms[d.getMonth()]} · ${ts.time}`;
@@ -1205,6 +1239,20 @@ async function submitForm() {
     console.warn('Email send error:', e);
     document.getElementById('email-status').textContent =
       '⚠️ Could not send email. Please screenshot your credentials above.';
+  }
+
+  const ctaEl = document.getElementById('post-reg-cta');
+  if (selectedSlot === 'instant') {
+    ctaEl.innerHTML = `
+      <div class="start-now-cta">
+        <p>You're all set! Your credentials have been saved above.</p>
+        <a href="../login/" class="btn-gold">→ Start Your Evaluation Now</a>
+        <p class="hint">Login with the credentials above to begin immediately.</p>
+      </div>`;
+  } else {
+    ctaEl.innerHTML = `
+      <p>Your evaluation is scheduled for <strong>${document.getElementById('sum-slot').textContent}</strong>.</p>
+      <p>Log in at <a href="../login/">sahirah.in/login</a> at your scheduled time.</p>`;
   }
 
   document.getElementById('step4').classList.remove('active');

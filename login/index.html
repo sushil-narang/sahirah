@@ -644,17 +644,21 @@ async function doLogin() {
       }
     } catch(e) {}
 
-    const slotDate = parseSlotDate(found.slot);
     const now2 = new Date();
     document.getElementById('screen-login').classList.remove('active');
-    if (slotDate && slotDate > now2) {
-      // Slot is in the future — show countdown waiting screen
-      state.slotTime = slotDate;
-      showWaiting();
+    if (found.slot === 'instant' || found.slot === 'demo_instant') {
+      startTest(); // bypass all time checks
     } else {
-      // Slot time has passed (or no slot set) — allow test to start
-      state.slotTime = new Date(now2.getTime() + 2000);
-      startTest();
+      const slotDate = parseSlotDate(found.slot);
+      if (slotDate && slotDate > now2) {
+        // Slot is in the future — show countdown waiting screen
+        state.slotTime = slotDate;
+        showWaiting();
+      } else {
+        // Slot time has passed (or no slot set) — allow test to start
+        state.slotTime = new Date(now2.getTime() + 2000);
+        startTest();
+      }
     }
   } else {
     loginAttempts++;
