@@ -50,7 +50,7 @@ exports.handler = async (event) => {
         from: FROM_ADDRESS,
         to: [to_email],
         reply_to: REPLY_TO,
-        subject: `Your Sahirah.in Login Credentials — ${(child_name || 'Evaluation').split(' ')[0]}`,
+        subject: `Your Sahirah.in Login Credentials — ${child_name || 'Evaluation'}`,
         html,
       }),
     });
