@@ -1167,20 +1167,26 @@ function buildReport() {
   const S = SCORES;
   // Nav
   document.getElementById('nav-name').textContent = S.name + "'s Report";
-  buildCoverPage(S);
-  buildExecutiveSummary(S);
 
-  buildStreamComparison(S);
-  buildCuriosityIndex(S);
-  buildCareerCards(S);
-  buildAIReport(S);
-  buildDeepDive(S);
-  buildWildcardCareer(S);
-  buildGapAnalysis(S);
-  buildRoadmap(S);
-
-  // Apply access control after building
-  applyAccessControl();
+  // Each section builds independently — a failure in one must never
+  // blank out every section that comes after it.
+  const builders = [
+    () => buildCoverPage(S),
+    () => buildExecutiveSummary(S),
+    () => buildStreamComparison(S),
+    () => buildCuriosityIndex(S),
+    () => buildCareerCards(S),
+    () => buildAIReport(S),
+    () => buildDeepDive(S),
+    () => buildWildcardCareer(S),
+    () => buildGapAnalysis(S),
+    () => buildRoadmap(S),
+    () => applyAccessControl(),
+  ];
+  builders.forEach((fn, i) => {
+    try { fn(); }
+    catch(e) { console.error('buildReport step ' + i + ' failed:', e); }
+  });
 }
 
 // ---- S4: STREAM COMPARISON ----
@@ -1257,7 +1263,7 @@ function buildCuriosityIndex(S) {
 
   // If no data, hide the curiosity sub-section only — the static
   // methodology text above it must stay visible regardless.
-  if (!curiosityData || curiosityData.total === 0) {
+  if (!curiosityData || typeof curiosityData.score !== 'number' || !curiosityData.distribution) {
     const section = document.getElementById('curiosity-subsection');
     if (section) section.style.display = 'none';
     return;
@@ -1301,6 +1307,7 @@ function buildCuriosityIndex(S) {
     };
 
     curiosityData.all_questions.forEach(q => {
+      const category = q.category || 'UNCATEGORIZED';
       const qEl = document.createElement('div');
       qEl.style.cssText = `
         display: flex;
@@ -1309,7 +1316,7 @@ function buildCuriosityIndex(S) {
         padding: 0.75rem;
         background: rgba(26, 18, 8, 0.02);
         border-radius: 8px;
-        border-left: 3px solid ${categoryColors[q.question_category] || '#999'};
+        border-left: 3px solid ${categoryColors[category] || '#999'};
       `;
 
       const categoryBadge = document.createElement('span');
@@ -1319,7 +1326,7 @@ function buildCuriosityIndex(S) {
         justify-content: center;
         width: 24px;
         height: 24px;
-        background: ${categoryColors[q.question_category] || '#999'};
+        background: ${categoryColors[category] || '#999'};
         color: white;
         border-radius: 50%;
         font-weight: 700;
@@ -1327,7 +1334,7 @@ function buildCuriosityIndex(S) {
         flex-shrink: 0;
         font-family: 'DM Mono', monospace;
       `;
-      categoryBadge.textContent = q.question_category.charAt(0);
+      categoryBadge.textContent = category.charAt(0);
 
       const textEl = document.createElement('div');
       textEl.style.cssText = `
@@ -1343,7 +1350,7 @@ function buildCuriosityIndex(S) {
         line-height: 1.5;
         word-break: break-word;
       `;
-      questionText.textContent = q.question_text;
+      questionText.textContent = q.text || '';
 
       const moduleText = document.createElement('p');
       moduleText.style.cssText = `
@@ -1351,7 +1358,7 @@ function buildCuriosityIndex(S) {
         font-size: 0.7rem;
         color: rgba(26, 18, 8, 0.4);
       `;
-      moduleText.textContent = 'Asked in: ' + q.module_name;
+      moduleText.textContent = 'Asked in: ' + (q.module || '—');
 
       textEl.appendChild(questionText);
       textEl.appendChild(moduleText);
