@@ -43,3 +43,29 @@ END;
 -- why_text intentionally left at its '' default — real per-career copy
 -- comes from psycho.docx in Phase 5. The generic fallback sentence built
 -- into score-test.js's enrichment step covers this until then.
+
+-- STEP 4: Seed degrees per career (mechanical, factual — same category as
+-- exams above). Added for Phase 6 Step 7 (S6 Wildcard / S7 career breakdown).
+UPDATE career_profiles SET degrees = CASE id
+  WHEN 'c001' THEN 'B.Tech Computer Science, B.Tech AI & ML, BS Computer Science'
+  WHEN 'c002' THEN 'B.Tech Electronics & Communication, B.Tech Electrical Engineering'
+  WHEN 'c003' THEN 'B.Tech Civil Engineering'
+  WHEN 'c004' THEN 'B.Tech Mechanical Engineering'
+  WHEN 'c005' THEN 'B.Arch'
+  WHEN 'c006' THEN 'B.Tech Robotics, B.Tech Mechatronics'
+  WHEN 'c007' THEN 'MBBS'
+  WHEN 'c008' THEN 'BDS'
+  WHEN 'c009' THEN 'B.Pharm'
+  WHEN 'c010' THEN 'B.Tech Biotechnology, B.Sc Biotechnology'
+  WHEN 'c011' THEN 'BPT (Bachelor of Physiotherapy)'
+  WHEN 'c012' THEN 'BA Political Science, BA Public Administration (any degree + UPSC)'
+  WHEN 'c013' THEN 'BA LLB, LLB'
+  WHEN 'c014' THEN 'B.Des'
+  WHEN 'c015' THEN 'BA Journalism & Mass Communication'
+  WHEN 'c016' THEN 'BA Psychology, BSc Psychology'
+  WHEN 'c017' THEN 'B.Com + CA'
+  WHEN 'c018' THEN 'B.Com + CS'
+  WHEN 'c019' THEN 'BBA, B.Com + MBA'
+  WHEN 'c020' THEN 'B.Com + CFA, BBA Finance'
+  WHEN 'c021' THEN 'BBA, B.Com (any degree)'
+END;

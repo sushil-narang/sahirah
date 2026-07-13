@@ -209,6 +209,7 @@ exports.handler = async (event) => {
         bg: career.display_color ? career.display_color + '11' : '#FDF8F0',
         why: career.why_text || `Strong match for your ${primary_stream} profile.`,
         exams: career.exams || [],
+        degrees: career.degrees || '',
         reality_check_dim,
         reality_check_score,
       };
