@@ -705,7 +705,7 @@ function getSessionForReg(regId) {
   const sessions = allData.sessions.filter(s => s.reg_id === regId);
   if (!sessions.length) return null;
   // Prefer the most recent completed session; fall back to most recent overall
-  const completed = sessions.filter(s => s.status === 'completed').sort((a, b) => new Date(b.completed_at) - new Date(a.completed_at));
+  const completed = sessions.filter(s => s.status === 'scored').sort((a, b) => new Date(b.completed_at) - new Date(a.completed_at));
   if (completed.length) return completed[0];
   return sessions.sort((a, b) => new Date(b.started_at) - new Date(a.started_at))[0];
 }
@@ -713,7 +713,7 @@ function getSessionForReg(regId) {
 function getStatus(regId) {
   const sessions = allData.sessions.filter(s => s.reg_id === regId);
   if (!sessions.length) return 'registered';
-  if (sessions.some(s => s.status === 'completed')) return 'completed';
+  if (sessions.some(s => s.status === 'scored')) return 'completed';
   return 'in_progress';
 }
 
@@ -826,7 +826,7 @@ function renderUsers() {
 function renderCompleted() {
   const tbody = document.getElementById('completed-tbody');
   const completedSess = allData.sessions
-    .filter(s => s.status === 'completed')
+    .filter(s => s.status === 'scored')
     .filter(s => {
       if (!searchTerm) return true;
       const r = allData.regs.find(x => x.reg_id === s.reg_id);
@@ -1500,7 +1500,7 @@ function infoRow(label, val) {
 
 function viewReport(reg) {
   const sess = getSessionForReg(reg.reg_id);
-  const status = sess ? sess.status : 'registered';
+  const status = sess ? (sess.status === 'scored' ? 'completed' : sess.status) : 'registered';
 
   document.getElementById('rm-title').textContent = childName(reg) + ' — Registration Detail';
   document.getElementById('rm-meta').innerHTML =
@@ -1643,7 +1643,7 @@ async function downloadReportPDF() {
 
 async function viewFullReport(reg) {
   const sess = getSessionForReg(reg.reg_id);
-  if (!sess || sess.status !== 'completed') { viewReport(reg); return; }
+  if (!sess || sess.status !== 'scored') { viewReport(reg); return; }
   showAdminToast('Loading full report…');
   try {
     const { data: responses } = await _db
