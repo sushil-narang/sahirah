@@ -1666,11 +1666,14 @@ async function downloadPDF() {
 }
 
 async function prepareForPDFCapture() {
-  // Wait for the Avanya narrative to finish (max 5s), else proceed with whatever is showing
+  // Wait for the Avanya narrative to finish (max 5s); if still loading, swap to fallback text
   const narrativeEl = document.getElementById('ai-narrative-text');
   const start = Date.now();
   while (narrativeEl.querySelector('.ain-typing') && Date.now() - start < 5000) {
     await new Promise(r => setTimeout(r, 200));
+  }
+  if (narrativeEl.querySelector('.ain-typing')) {
+    renderNarrative(narrativeEl, getFallbackNarrative(SCORES));
   }
 
   // Skip the CSS transition and jump dimension bars straight to their final width
