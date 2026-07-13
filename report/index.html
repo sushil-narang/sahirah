@@ -1639,6 +1639,7 @@ async function downloadPDF() {
   btn.textContent = '⏳ Generating PDF…';
   btn.disabled = true;
   try {
+    await prepareForPDFCapture();
     const element = document.getElementById('printable');
     await html2pdf().set({
       margin: 0,
@@ -1646,7 +1647,7 @@ async function downloadPDF() {
       image: { type: 'jpeg', quality: 0.95 },
       html2canvas: { scale: 2, useCORS: true },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['css', 'legacy'] },
+      pagebreak: { mode: ['css'] },
     }).from(element).save();
   } catch (e) {
     console.error('PDF generation failed:', e);
@@ -1655,6 +1656,29 @@ async function downloadPDF() {
     btn.textContent = '⬇ Download PDF';
     btn.disabled = false;
   }
+}
+
+async function prepareForPDFCapture() {
+  // Wait for the Avanya narrative to finish (max 5s), else proceed with whatever is showing
+  const narrativeEl = document.getElementById('ai-narrative-text');
+  const start = Date.now();
+  while (narrativeEl.querySelector('.ain-typing') && Date.now() - start < 5000) {
+    await new Promise(r => setTimeout(r, 200));
+  }
+
+  // Skip the CSS transition and jump dimension bars straight to their final width
+  document.querySelectorAll('.trait-fill').forEach(el => {
+    el.style.transition = 'none';
+    el.style.width = (el.dataset.w || 0) + '%';
+  });
+
+  // Force every Chart.js instance to paint its final frame with no animation
+  if (window.Chart && Chart.instances) {
+    Object.values(Chart.instances).forEach(c => c.update('none'));
+  }
+
+  // Let layout/paint settle before html2canvas walks the DOM
+  await new Promise(r => setTimeout(r, 500));
 }
 
 // Mark test complete in localStorage
