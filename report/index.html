@@ -405,26 +405,6 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
     </div>
   </div>
 
-  <!-- TOP CAREERS — BASIC+ -->
-  <div class="report-section premium-section" id="section-careers">
-    <div class="rs-header">
-      <div class="rs-icon" style="background:#E8F2FF;">🏆</div>
-      <div class="rs-title">Top Career Recommendations</div>
-      <div class="rs-sub">Stage 2 result</div>
-    </div>
-    <div class="three-col" id="career-cards"></div>
-    <div class="lock-overlay" id="lock-careers">
-      <div class="lock-overlay-inner">
-        <div class="lo-icon">🏆</div>
-        <div class="lo-title">Your Top Career Matches</div>
-        <div class="lo-sub">Unlock to see your top 3 personalised career recommendations with fit scores, reasoning, and entrance exam roadmap.</div>
-        <div class="lo-btns">
-          <a href="../payment/" class="lo-btn lo-btn-gold">🔓 Unlock — from ₹499</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- S5: 29-DIMENSION DEEP DIVE -->
   <div class="report-section premium-section" id="section-deepdive">
     <div class="rs-header">
@@ -453,6 +433,26 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
       <div class="rs-sub">You never considered this</div>
     </div>
     <div class="card" id="wildcard-card" style="border:2px dashed var(--gold);background:linear-gradient(135deg,#fff,var(--gold-pale));"></div>
+  </div>
+
+  <!-- S7: TOP CAREER RECOMMENDATIONS -->
+  <div class="report-section premium-section" id="section-careers">
+    <div class="rs-header">
+      <div class="rs-icon" style="background:#E8F2FF;">🏆</div>
+      <div class="rs-title">Top Career Recommendations</div>
+      <div class="rs-sub">Stage 2 result</div>
+    </div>
+    <div id="career-cards"></div>
+    <div class="lock-overlay" id="lock-careers">
+      <div class="lock-overlay-inner">
+        <div class="lo-icon">🏆</div>
+        <div class="lo-title">Your Top Career Matches</div>
+        <div class="lo-sub">Unlock to see your top 5 personalised career recommendations with fit scores, reasoning, and entrance exam roadmap.</div>
+        <div class="lo-btns">
+          <a href="../payment/" class="lo-btn lo-btn-gold">🔓 Unlock — from ₹499</a>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ROADMAP — PREMIUM -->
@@ -1313,20 +1313,43 @@ function buildCuriosityIndex(S) {
 // ---- CAREER CARDS ----
 function buildCareerCards(S) {
   const container = document.getElementById('career-cards');
-  S.careers.forEach((c, i)=>{
+  container.innerHTML = '';
+  S.careers.forEach((c, i) => {
     const card = document.createElement('div');
-    card.className='career-card';
-    card.style.cssText=`background:${c.bg};border-color:${c.color}33;`;
-    card.innerHTML=`
-      <div class="cc-rank">#${i+1}</div>
-      <div class="cc-fit-ring" style="border-color:${esc(c.color)};">
-        <div class="cc-fit-num" style="color:${esc(c.color)};">${esc(String(c.fit))}%</div>
-        <div class="cc-fit-label" style="color:${esc(c.color)};">fit</div>
+    card.style.cssText = `background:${c.bg};border:1px solid ${c.color}33;border-radius:16px;padding:1.5rem;margin-bottom:1rem;`;
+
+    const topDimsText = (c.top_dimensions || []).map(d => DIMENSION_DISPLAY_NAMES[d] || d).join(', ');
+    const realityCheckHtml = c.reality_check_dim
+      ? `<div style="background:rgba(192,65,10,.06);border:1px solid rgba(192,65,10,.15);border-radius:10px;padding:.75rem 1rem;margin-top:.75rem;font-size:.82rem;color:rgba(26,18,8,.7);"><strong style="color:var(--red);">Reality check:</strong> Your ${esc(DIMENSION_DISPLAY_NAMES[c.reality_check_dim] || c.reality_check_dim)} score is ${c.reality_check_score}/100 — worth strengthening for this path.</div>`
+      : `<div style="background:rgba(10,107,94,.06);border:1px solid rgba(10,107,94,.15);border-radius:10px;padding:.75rem 1rem;margin-top:.75rem;font-size:.82rem;color:rgba(26,18,8,.7);"><strong style="color:var(--teal);">Reality check:</strong> No significant gaps found for this path — strong all-round fit.</div>`;
+
+    card.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem;">
+        <div>
+          <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:${esc(c.color)};letter-spacing:.06em;">#${i+1} Match</div>
+          <div style="font-family:var(--fd);font-size:1.3rem;font-weight:700;color:var(--ink);">${esc(c.title)}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-family:var(--fd);font-size:1.5rem;font-weight:700;color:${esc(c.color)};">${c.fit}%</div>
+          <div style="font-size:.65rem;text-transform:uppercase;color:rgba(26,18,8,.4);">fit</div>
+        </div>
       </div>
-      <div class="cc-title">${esc(c.title)}</div>
-      <div class="cc-stream" style="color:${esc(c.color)};">${esc(c.stream)}</div>
-      <div class="cc-why">${esc(c.why)}</div>
-      <div class="cc-exams">${c.exams.map(e=>`<span class="cc-exam" style="background:${esc(c.color)}22;color:${esc(c.color)};">${esc(e)}</span>`).join('')}</div>`;
+      <div style="background:rgba(26,18,8,.06);border-radius:100px;height:8px;overflow:hidden;margin-bottom:1rem;">
+        <div style="height:100%;width:${c.fit}%;background:${esc(c.color)};border-radius:100px;"></div>
+      </div>
+      <div style="font-size:.85rem;color:rgba(26,18,8,.7);margin-bottom:.75rem;">${esc(c.why)}</div>
+      <div style="font-size:.78rem;color:rgba(26,18,8,.55);margin-bottom:.5rem;"><strong>Top matching dimensions:</strong> ${esc(topDimsText)}</div>
+      ${realityCheckHtml}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;">
+        <div>
+          <div style="font-size:.7rem;text-transform:uppercase;color:rgba(26,18,8,.4);margin-bottom:.25rem;">Degrees</div>
+          <div style="font-size:.8rem;color:rgba(26,18,8,.7);">${esc(c.degrees || '—')}</div>
+        </div>
+        <div>
+          <div style="font-size:.7rem;text-transform:uppercase;color:rgba(26,18,8,.4);margin-bottom:.25rem;">Entrance Exams</div>
+          <div>${c.exams.map(e=>`<span class="cc-exam" style="background:${esc(c.color)}22;color:${esc(c.color)};">${esc(e)}</span>`).join('')}</div>
+        </div>
+      </div>`;
     container.appendChild(card);
   });
 }

@@ -180,12 +180,14 @@ exports.handler = async (event) => {
       let reality_check_dim = null;
       let reality_check_score = null;
       let reality_check_weight = -1;
+      const dimensionWeights = [];
 
       DIMENSIONS.forEach(dim => {
         const w = career['weight_' + dim] || 0;
         const s = dimension_scores[dim] ?? 50;
         num += s * w;
         den += 100 * w;
+        dimensionWeights.push({ dim, weight: w });
 
         const minReq = career['min_req_' + dim] || 0;
         if (minReq > 0 && (dimension_scores[dim] ?? 0) < minReq) below_cutoff = true;
@@ -197,6 +199,8 @@ exports.handler = async (event) => {
           reality_check_score = s;
         }
       });
+
+      const top_dimensions = [...dimensionWeights].sort((a,b) => b.weight - a.weight).slice(0,3).map(d => d.dim);
 
       const fit = den > 0 ? Math.round((num / den) * 100) : 0;
       return {
@@ -210,6 +214,7 @@ exports.handler = async (event) => {
         why: career.why_text || `Strong match for your ${primary_stream} profile.`,
         exams: career.exams || [],
         degrees: career.degrees || '',
+        top_dimensions,
         reality_check_dim,
         reality_check_score,
       };
