@@ -445,6 +445,16 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
     </div>
   </div>
 
+  <!-- S6: WILDCARD CAREER -->
+  <div class="report-section" id="section-wildcard">
+    <div class="rs-header">
+      <div class="rs-icon" style="background:#FDF0CC;">🎲</div>
+      <div class="rs-title">Wildcard Career</div>
+      <div class="rs-sub">You never considered this</div>
+    </div>
+    <div class="card" id="wildcard-card" style="border:2px dashed var(--gold);background:linear-gradient(135deg,#fff,var(--gold-pale));"></div>
+  </div>
+
   <!-- ROADMAP — PREMIUM -->
   <div class="report-section premium-section" id="section-roadmap">
     <div class="rs-header">
@@ -1109,6 +1119,7 @@ function buildReport() {
   buildCareerCards(S);
   buildAIReport(S);
   buildDeepDive(S);
+  buildWildcardCareer(S);
   buildRoadmap(S);
   buildSkillGaps(S);
 
@@ -1447,6 +1458,32 @@ function buildDeepDive(S) {
     container.appendChild(groupEl);
   });
   setTimeout(()=>{ container.querySelectorAll('.trait-fill').forEach(el=>{ el.style.width = el.dataset.w + '%'; }); }, 300);
+}
+
+// ---- S6: WILDCARD CAREER ----
+function buildWildcardCareer(S) {
+  const container = document.getElementById('wildcard-card');
+  const wc = S.careers?.[3];
+  if (!wc) {
+    container.innerHTML = `<p style="color:rgba(26,18,8,.5);text-align:center;">No wildcard career available for this stream.</p>`;
+    return;
+  }
+  container.innerHTML = `
+    <div style="text-align:center;margin-bottom:1rem;">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:.5rem;">🎲 You Never Considered This</div>
+      <div style="font-family:var(--fd);font-size:1.6rem;font-weight:700;color:var(--ink);">${esc(wc.title)}</div>
+      <div style="font-size:1.1rem;font-weight:700;color:${esc(wc.color)};margin-top:.25rem;">${wc.fit}% fit</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.25rem;">
+      <div>
+        <div style="font-size:.72rem;text-transform:uppercase;color:rgba(26,18,8,.4);margin-bottom:.3rem;">Degrees</div>
+        <div style="font-size:.85rem;color:rgba(26,18,8,.75);">${esc(wc.degrees || '—')}</div>
+      </div>
+      <div>
+        <div style="font-size:.72rem;text-transform:uppercase;color:rgba(26,18,8,.4);margin-bottom:.3rem;">Entrance Exams</div>
+        <div>${(wc.exams||[]).map(e=>`<span class="cc-exam" style="background:${esc(wc.color)}22;color:${esc(wc.color)};">${esc(e)}</span>`).join('')}</div>
+      </div>
+    </div>`;
 }
 
 // ---- ROADMAP ----
