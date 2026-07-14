@@ -1539,7 +1539,7 @@ const MODULE_SKILL_NAMES = {
   pattern:'Pattern Recognition',
   openness:'Openness to Experience', conscientiousness:'Conscientiousness',
   extraversion:'Extraversion', agreeableness:'Agreeableness',
-  neuroticism:'Emotional Stability',
+  neuroticism:'Emotional Stability', emotionalStability:'Emotional Stability',
   selfAwareness:'Self-Awareness', empathy:'Empathy',
   stressHandling:'Stress Regulation', leadership:'Leadership Tendency',
   realistic:'Practical Orientation', investigative:'Investigative Curiosity',
@@ -1580,7 +1580,9 @@ function buildModuleSummary(group, S) {
     sourceObj = { logical: S.aptitude.logical, numerical: S.aptitude.numerical, verbal: S.aptitude.verbal, spatial: S.aptitude.spatial, pattern: S.aptitude.pattern };
     desc = `Measures raw reasoning ability — how ${name}'s brain processes problems, patterns and logic.`;
   } else if (group.title === 'Personality') {
-    sourceObj = { openness: S.personality.openness, conscientiousness: S.personality.conscientiousness, extraversion: S.personality.extraversion, agreeableness: S.personality.agreeableness, neuroticism: S.personality.neuroticism };
+    // neuroticism is inverted-scale (100 - stability) — invert it back before
+    // averaging, else a well-adjusted low-neuroticism student drags the score down.
+    sourceObj = { openness: S.personality.openness, conscientiousness: S.personality.conscientiousness, extraversion: S.personality.extraversion, agreeableness: S.personality.agreeableness, emotionalStability: 100 - S.personality.neuroticism };
     desc = `Reveals the stable traits that shape how ${name} works, communicates and relates to others.`;
   } else if (group.title === 'Emotional Intelligence') {
     sourceObj = { selfAwareness: S.eq.selfAwareness, empathy: S.eq.empathy, stressHandling: S.eq.stressHandling, leadership: S.eq.leadership };
@@ -1598,10 +1600,13 @@ function buildModuleSummary(group, S) {
     };
     desc = `Real-life scenarios revealing ${name}'s decision-making instincts, leadership style and behaviour under pressure.`;
   } else if (group.title === 'Soft Skills') {
+    // emotional_resilience/divergent_thinking are dormant-module skills — a
+    // 50 here is the unscored default, not a real result, so it's excluded
+    // the same way missing/undefined values are.
     sourceObj = {};
-    ['emotional_resilience','leadership','divergent_thinking'].forEach(k => {
-      const v = S.dimension_scores[k];
-      if (typeof v === 'number') sourceObj[k] = v;
+    ['emotional_resilience','divergent_thinking'].forEach(k => {
+      const v = S.traitScores[k];
+      if (v !== undefined && v !== null && v !== 50) sourceObj[k] = v;
     });
     desc = `Cross-domain capabilities that amplify performance in any career — resilience under pressure and original thinking.`;
   } else {
