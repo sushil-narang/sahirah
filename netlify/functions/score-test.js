@@ -221,6 +221,11 @@ exports.handler = async (event) => {
 
     if (qErr || !questions || !questions.length) throw qErr || new Error('No questions found');
 
+    // TODO: skills with < 3 questions produce 0 scores that are
+    // hidden in reports per Part E zero-score rule.
+    // Affected: apt_verbal (1 question), apt_spatial (3 questions)
+    // Fix: add more questions to these skills in the question bank.
+
     // ---- STEP 2: Score each answered question by its scoring_scheme ----
     const clampScore = s => Math.min(100, Math.max(0, Math.round(s)));
     const contributions = [];               // [{skill, score, weight}]

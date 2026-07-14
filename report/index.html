@@ -378,10 +378,9 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
   <div class="report-section premium-section" id="section-deepdive">
     <div class="rs-header">
       <div class="rs-icon" style="background:#F5EEFF;">📊</div>
-      <div class="rs-title">Complete Dimension Breakdown</div>
-      <div class="rs-sub">All 29 measured dimensions</div>
+      <div class="rs-title">How Your Mind Works</div>
+      <div class="rs-sub">A complete portrait across every dimension we measured</div>
     </div>
-    <div style="background:var(--gold-pale);border:1px solid var(--gold-light);border-radius:12px;padding:.9rem 1.1rem;font-size:.82rem;line-height:1.6;margin-bottom:1.25rem;" id="deepdive-summary"></div>
     <div id="deepdive-groups"></div>
     <div class="lock-overlay" id="lock-deepdive">
       <div class="lock-overlay-inner">
@@ -1610,20 +1609,14 @@ function buildDeepDive(S) {
   const container = document.getElementById('deepdive-groups');
   container.innerHTML = '';
 
-  const deepdiveSummaryEl = document.getElementById('deepdive-summary');
-  if (deepdiveSummaryEl) {
-    const [topDim, topScore] = Object.entries(S.dimension_scores || {}).sort((a,b)=>b[1]-a[1])[0] || ['—', 0];
-    const topDimName = DIMENSION_DISPLAY_NAMES[topDim] || topDim;
-    const aptEntries = [
-      ['apt_logical', S.aptitude.logical], ['apt_numerical', S.aptitude.numerical],
-      ['apt_verbal', S.aptitude.verbal], ['apt_spatial', S.aptitude.spatial], ['apt_pattern', S.aptitude.pattern],
-    ].sort((a,b)=>b[1]-a[1]);
-    const secondAptName = DIMENSION_DISPLAY_NAMES[aptEntries[1][0]] || aptEntries[1][0];
-    const aptLabel = getScoreLabel(S.aptitude.overall).toLowerCase();
-    deepdiveSummaryEl.textContent = `${S.name}'s profile shows ${topDimName} as the standout strength. The overall aptitude level is ${aptLabel}, with particular depth in ${secondAptName}.`;
-  }
+  const SOFT_SKILLS_DIMS = ['emotional_resilience', 'divergent_thinking', 'leadership'];
 
   DIMENSION_GROUPS.forEach(group => {
+    if (group.title === 'Soft Skills') {
+      const softSkillsAreDormant = SOFT_SKILLS_DIMS.every(dim => (S.dimension_scores[dim] ?? 50) === 50);
+      if (softSkillsAreDormant) return;
+    }
+
     const groupEl = document.createElement('div');
     groupEl.className = 'card';
     groupEl.style.marginBottom = '1.25rem';
@@ -1637,6 +1630,10 @@ function buildDeepDive(S) {
 
     group.dims.forEach(dim => {
       const score = S.dimension_scores[dim] ?? 50;
+
+      // ZERO-SCORE RULE (Part E): insufficient question coverage — never shown
+      if (score === 0) return;
+
       const label = getScoreLabel(score);
       const name = DIMENSION_DISPLAY_NAMES[dim] || dim;
       const row = document.createElement('div');
