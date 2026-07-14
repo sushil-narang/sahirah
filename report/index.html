@@ -409,7 +409,7 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
   <div class="report-section premium-section" id="section-careers">
     <div class="rs-header">
       <div class="rs-icon" style="background:#E8F2FF;">🏆</div>
-      <div class="rs-title">Top Career Recommendations</div>
+      <div class="rs-title" id="careers-title">Top Career Recommendations</div>
       <div class="rs-sub">Stage 2 result</div>
     </div>
     <div style="background:var(--gold-pale);border:1px solid var(--gold-light);border-radius:12px;padding:.9rem 1.1rem;font-size:.82rem;line-height:1.6;margin-bottom:1.25rem;" id="careers-summary"></div>
@@ -1277,15 +1277,32 @@ function buildStreamComparison(S) {
 }
 
 // ---- CAREER CARDS ----
+function fitDots(blended) {
+  if (blended >= 80) return { filled: 5, label: 'Excellent Match' };
+  if (blended >= 70) return { filled: 4, label: 'Strong Match' };
+  if (blended >= 60) return { filled: 3, label: 'Good Match' };
+  return { filled: 2, label: 'Emerging Match' };
+}
+
 function buildCareerCards(S) {
   const container = document.getElementById('career-cards');
   container.innerHTML = '';
+
+  const titleEl = document.getElementById('careers-title');
+  if (titleEl) titleEl.textContent = `The Careers That Fit ${S.name}'s Profile`;
 
   const careersSummaryEl = document.getElementById('careers-summary');
   if (careersSummaryEl) {
     const n = S.careers.length;
     const streamName = streamNamesFull[S.primaryStream] || S.primaryStream;
-    careersSummaryEl.textContent = `These ${n} careers were selected from the ${streamName} stream by matching your 29-dimension profile against ${n} career archetypes. Each recommendation reflects a genuine alignment — not just one strong score, but a consistent pattern across aptitude, personality, and values.`;
+    let intro = `These ${n} careers were selected from the ${streamName} stream by matching your 29-dimension profile against ${n} career archetypes. Each recommendation reflects a genuine alignment — not just one strong score, but a consistent pattern across aptitude, personality, and values.`;
+
+    if ((S.confidenceLevel === 'low' || S.confidenceLevel === 'very_low') && S.wildcard?.title) {
+      intro += S.confidenceLevel === 'very_low'
+        ? ` Given the balance in ${S.name}'s profile across streams, careers from multiple directions are worth exploring — including ${S.wildcard.title}. We recommend a counselling session to discuss further.`
+        : ` Given the balance in ${S.name}'s profile, ${S.wildcard.title} from ${streamNamesFull[S.wildcard.stream] || S.wildcard.stream} is also worth exploring.`;
+    }
+    careersSummaryEl.textContent = intro;
   }
 
   S.careers.forEach((c, i) => {
@@ -1293,9 +1310,19 @@ function buildCareerCards(S) {
     card.style.cssText = `background:${c.bg};border:1px solid ${c.color}33;border-radius:16px;padding:1.5rem;margin-bottom:1rem;`;
 
     const topDimsText = (c.top_dimensions || []).map(d => DIMENSION_DISPLAY_NAMES[d] || d).join(', ');
-    const realityCheckHtml = c.reality_check_dim
-      ? `<div style="background:rgba(192,65,10,.06);border:1px solid rgba(192,65,10,.15);border-radius:10px;padding:.75rem 1rem;margin-top:.75rem;font-size:.82rem;color:rgba(26,18,8,.7);"><strong style="color:var(--red);">Reality check:</strong> ${esc(DIMENSION_DISPLAY_NAMES[c.reality_check_dim] || c.reality_check_dim)} is worth strengthening for this path.</div>`
-      : `<div style="background:rgba(10,107,94,.06);border:1px solid rgba(10,107,94,.15);border-radius:10px;padding:.75rem 1rem;margin-top:.75rem;font-size:.82rem;color:rgba(26,18,8,.7);"><strong style="color:var(--teal);">Reality check:</strong> No significant areas to strengthen for this path — strong all-round fit.</div>`;
+
+    const d1 = DIMENSION_DISPLAY_NAMES[c.top_dimensions?.[0]];
+    const d2 = DIMENSION_DISPLAY_NAMES[c.top_dimensions?.[1]];
+    const whyText = (d1 && d2)
+      ? `${c.title} demands ${d1} and ${d2} — exactly where ${S.name}'s profile is strongest.`
+      : c.why;
+
+    const buildNextHtml = c.below_cutoff && c.reality_check_dim
+      ? `<div style="background:rgba(192,65,10,.06);border:1px solid rgba(192,65,10,.15);border-radius:10px;padding:.75rem 1rem;margin-top:.75rem;font-size:.82rem;color:rgba(26,18,8,.7);"><strong style="color:var(--red);">One area to strengthen:</strong> ${esc(DIMENSION_DISPLAY_NAMES[c.reality_check_dim] || c.reality_check_dim)} — ${esc(S.name)}'s current level is developing, and this is important in ${esc(c.title)}. The good news: this builds quickly with deliberate practice.</div>`
+      : '';
+
+    const { filled, label } = fitDots(c.blended || 0);
+    const dotsHtml = `<span style="color:${esc(c.color)};">${'⬤'.repeat(filled)}</span><span style="color:rgba(26,18,8,.2);">${'○'.repeat(5 - filled)}</span>`;
 
     card.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem;">
@@ -1304,12 +1331,13 @@ function buildCareerCards(S) {
           <div style="font-family:var(--fd);font-size:1.3rem;font-weight:700;color:var(--ink);">${esc(c.title)}</div>
         </div>
       </div>
-      <div style="background:rgba(26,18,8,.06);border-radius:100px;height:8px;overflow:hidden;margin-bottom:1rem;">
-        <div style="height:100%;width:${c.fit}%;background:${esc(c.color)};border-radius:100px;"></div>
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;">
+        <span style="font-size:1rem;letter-spacing:2px;">${dotsHtml}</span>
+        <span style="font-size:.78rem;font-weight:600;color:rgba(26,18,8,.6);">${label}</span>
       </div>
-      <div style="font-size:.85rem;color:rgba(26,18,8,.7);margin-bottom:.75rem;">${esc(c.why)}</div>
+      <div style="font-size:.85rem;color:rgba(26,18,8,.7);margin-bottom:.75rem;">${esc(whyText)}</div>
       <div style="font-size:.78rem;color:rgba(26,18,8,.55);margin-bottom:.5rem;"><strong>Top matching dimensions:</strong> ${esc(topDimsText)}</div>
-      ${realityCheckHtml}
+      ${buildNextHtml}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;">
         <div>
           <div style="font-size:.7rem;text-transform:uppercase;color:rgba(26,18,8,.4);margin-bottom:.25rem;">Degrees</div>
