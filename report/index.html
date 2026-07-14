@@ -56,12 +56,12 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
 
 /* HERO BAND */
 .report-hero{background:var(--ink);border-radius:24px;padding:2.5rem;margin-bottom:2rem;display:flex;align-items:flex-start;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
-.rh-left{}
+.rh-left{flex:1;min-width:0;}
 .rh-eyebrow{font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(253,248,240,.4);margin-bottom:.5rem;}
 .rh-name{font-family:var(--fd);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;color:var(--cream);margin-bottom:.25rem;}
 .rh-meta{font-size:.85rem;color:rgba(253,248,240,.5);margin-bottom:1.25rem;}
 .rh-stream-pill{display:inline-flex;align-items:center;gap:8px;padding:.5rem 1.25rem;border-radius:100px;font-size:.82rem;font-weight:700;}
-.rh-right{display:flex;flex-direction:column;gap:.6rem;min-width:200px;}
+.rh-right{display:flex;flex-direction:column;gap:.6rem;flex:0 0 220px;}
 .rh-stat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:.85rem 1.1rem;}
 .rh-stat-num{font-family:var(--fd);font-size:1.6rem;font-weight:700;color:var(--gold-light);}
 .rh-stat-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:rgba(253,248,240,.4);margin-top:1px;}
@@ -427,7 +427,7 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
     <div class="rs-header">
       <div class="rs-icon" style="background:#ECEAE4;">🔧</div>
       <div class="rs-title">What to Build Next</div>
-      <div class="rs-sub">Vs. your top career's requirements</div>
+      <div class="rs-sub" id="gaps-sub">Vs. your top career's requirements</div>
     </div>
     <div style="background:var(--gold-pale);border:1px solid var(--gold-light);border-radius:12px;padding:.9rem 1.1rem;font-size:.82rem;line-height:1.6;margin-bottom:1.25rem;" id="gaps-summary"></div>
     <div class="card" id="skill-gaps"></div>
@@ -1558,7 +1558,7 @@ function buildDeepDive(S) {
       const row = document.createElement('div');
       row.className = 'trait-row';
       const article = /^[aeiou]/i.test(label) ? 'an' : 'a';
-      row.innerHTML = `<div class="trait-header"><span class="trait-name">${esc(name)}</span><span class="trait-score">${label}</span></div><div class="trait-track"><div class="trait-fill" style="width:0%;background:${group.color};" data-w="${score}"></div></div><div class="trait-desc">Your ${esc(name)} score of ${score}/100 reflects ${article} ${label.toLowerCase()} level in this dimension.</div>`;
+      row.innerHTML = `<div class="trait-header"><span class="trait-name">${esc(name)}</span><span class="trait-score">${label}</span></div><div class="trait-track"><div class="trait-fill" style="width:0%;background:${group.color};" data-w="${score}"></div></div><div class="trait-desc">Your ${esc(name)} reflects ${article} ${label.toLowerCase()} level in this area.</div>`;
       groupEl.appendChild(row);
     });
     container.appendChild(groupEl);
@@ -1622,6 +1622,8 @@ function buildGapAnalysis(S) {
   container.innerHTML = '';
   const summaryEl = document.getElementById('gaps-summary');
   const topCareerTitle = S.careers?.[0]?.title || 'your top career';
+  const subEl = document.getElementById('gaps-sub');
+  if (subEl) subEl.textContent = `Focused areas for ${topCareerTitle}`;
   const profile = (S.streamProfiles || []).find(p => p.stream_code === S.primaryStream);
   const qualifyingDims = S.topCareerHighWeightDims || [];
 
@@ -1637,13 +1639,13 @@ function buildGapAnalysis(S) {
     .slice(0, 3);
 
   if (!gaps.length) {
-    container.innerHTML = `<p style="color:rgba(26,18,8,.5);text-align:center;">No significant gaps identified for your top career path — your scores align closely with what this path typically requires.</p>`;
-    if (summaryEl) summaryEl.textContent = `Your profile shows no significant gaps against ${topCareerTitle}'s typical requirements — a strong all-round match.`;
+    container.innerHTML = `<p style="color:rgba(26,18,8,.5);text-align:center;">No significant areas to strengthen identified for your top career path — your scores align closely with what this path typically requires.</p>`;
+    if (summaryEl) summaryEl.textContent = `Your profile shows no significant areas to strengthen against ${topCareerTitle}'s typical requirements — a strong all-round match.`;
     return;
   }
 
   if (summaryEl) {
-    summaryEl.textContent = `To reach your full potential in ${topCareerTitle}, focus on bridging these ${gaps.length} key gaps. These are the dimensions where your current score falls below what top performers in ${topCareerTitle} typically show.`;
+    summaryEl.textContent = `To reach your full potential in ${topCareerTitle}, focus on bridging these ${gaps.length} key areas to strengthen. These are the dimensions where focused effort will make the biggest difference for ${topCareerTitle}.`;
   }
 
   gaps.forEach(g => {
