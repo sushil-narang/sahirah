@@ -398,11 +398,12 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
   <div class="report-section" id="section-wildcard">
     <div class="rs-header">
       <div class="rs-icon" style="background:#FDF0CC;">🎲</div>
-      <div class="rs-title">Wildcard Career</div>
+      <div class="rs-title">A Path You Probably Haven't Considered</div>
       <div class="rs-sub">You never considered this</div>
     </div>
     <div style="background:var(--gold-pale);border:1px solid var(--gold-light);border-radius:12px;padding:.9rem 1.1rem;font-size:.82rem;line-height:1.6;margin-bottom:1.25rem;" id="wildcard-summary"></div>
     <div class="card" id="wildcard-card" style="border:2px dashed var(--gold);background:linear-gradient(135deg,#fff,var(--gold-pale));"></div>
+    <div style="background:var(--gold-pale);border:1px solid var(--gold-light);border-radius:12px;padding:.9rem 1.1rem;font-size:.82rem;line-height:1.6;margin-top:1.25rem;" id="wildcard-fit-note"></div>
   </div>
 
   <!-- S7: TOP CAREER RECOMMENDATIONS -->
@@ -1677,31 +1678,58 @@ function buildDeepDive(S) {
 
 // ---- S6: WILDCARD CAREER ----
 function buildWildcardCareer(S) {
+  const streamLabels = {
+    non: 'Engineering & Technology',
+    med: 'Medical & Life Sciences',
+    com: 'Business & Commerce',
+    hum: 'Humanities & Social Sciences',
+  };
   const container = document.getElementById('wildcard-card');
   const summaryEl = document.getElementById('wildcard-summary');
-  const wc = S.wildcard;
-  if (!wc) {
+  const fitNoteEl = document.getElementById('wildcard-fit-note');
+  const W = S.wildcard;
+
+  if (summaryEl) {
+    const primaryStreamName = streamLabels[S.primaryStream] || S.primaryStream;
+    summaryEl.textContent = `Every career guidance process has a built-in blind spot — it tends to show you paths that are already on your radar. This recommendation comes from a completely different direction. ${S.name}'s data suggests a surprising fit that most students in ${primaryStreamName} would never explore.`;
+  }
+
+  if (!W) {
     container.innerHTML = `<p style="color:rgba(26,18,8,.5);text-align:center;">No wildcard career available for this stream.</p>`;
-    if (summaryEl) summaryEl.style.display = 'none';
+    if (fitNoteEl) fitNoteEl.style.display = 'none';
     return;
   }
-  if (summaryEl) {
-    const topDims = (wc.top_dimensions || []).slice(0, 2).map(d => DIMENSION_DISPLAY_NAMES[d] || d).join(' and ');
-    summaryEl.textContent = `Based on your ${topDims}, ${wc.title} is a surprisingly strong fit. Most students in your position never explore this path — but your profile says otherwise.`;
+
+  if (fitNoteEl) {
+    const wStream = streamLabels[W.stream] || W.stream;
+    const wDim1 = DIMENSION_DISPLAY_NAMES[W.top_dimensions?.[0]];
+    const wDim2 = DIMENSION_DISPLAY_NAMES[W.top_dimensions?.[1]];
+    fitNoteEl.style.display = 'block';
+    fitNoteEl.textContent = (wDim1 && wDim2)
+      ? `${W.title} comes from ${wStream} — a direction ${S.name} may not have considered at all. The fit is driven by ${wDim1} and ${wDim2}, which are genuine strengths in ${S.name}'s profile.`
+      : `${W.title} comes from ${wStream} — a direction ${S.name} may not have considered at all.`;
   }
+
+  const { filled, label } = fitDots(W.blended ?? W.fit ?? 0);
+  const dotsHtml = `<span style="color:${esc(W.color)};">${'⬤'.repeat(filled)}</span><span style="color:rgba(26,18,8,.2);">${'○'.repeat(5 - filled)}</span>`;
+
   container.innerHTML = `
     <div style="text-align:center;margin-bottom:1rem;">
       <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:.5rem;">🎲 You Never Considered This</div>
-      <div style="font-family:var(--fd);font-size:1.6rem;font-weight:700;color:var(--ink);">${esc(wc.title)}</div>
+      <div style="font-family:var(--fd);font-size:1.6rem;font-weight:700;color:var(--ink);">${esc(W.title)}</div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:1.25rem;">
+      <span style="font-size:1rem;letter-spacing:2px;">${dotsHtml}</span>
+      <span style="font-size:.78rem;font-weight:600;color:rgba(26,18,8,.6);">${label}</span>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.25rem;">
       <div>
         <div style="font-size:.72rem;text-transform:uppercase;color:rgba(26,18,8,.4);margin-bottom:.3rem;">Degrees</div>
-        <div style="font-size:.85rem;color:rgba(26,18,8,.75);">${esc(wc.degrees || '—')}</div>
+        <div style="font-size:.85rem;color:rgba(26,18,8,.75);">${esc(W.degrees || '—')}</div>
       </div>
       <div>
         <div style="font-size:.72rem;text-transform:uppercase;color:rgba(26,18,8,.4);margin-bottom:.3rem;">Entrance Exams</div>
-        <div>${(wc.exams||[]).map(e=>`<span class="cc-exam" style="background:${esc(wc.color)}22;color:${esc(wc.color)};">${esc(e)}</span>`).join('')}</div>
+        <div>${(W.exams||[]).map(e=>`<span class="cc-exam" style="background:${esc(W.color)}22;color:${esc(W.color)};">${esc(e)}</span>`).join('')}</div>
       </div>
     </div>`;
 }
