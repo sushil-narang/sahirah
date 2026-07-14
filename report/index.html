@@ -1046,35 +1046,22 @@ const DIMENSION_DISPLAY_NAMES = {
 };
 
 const GAP_ACTIONS = {
-  apt_numerical: 'Practice speed math, ratio-proportion, and data interpretation for 20 minutes daily.',
-  apt_logical: 'Work through syllogisms, if-then reasoning chains, and logic puzzles regularly.',
-  apt_verbal: 'Read quality newspapers daily and practise précis writing to build vocabulary and structured expression.',
-  apt_spatial: 'Practise 3D rotation problems, geometry, and visual puzzle-solving.',
-  apt_pattern: 'Solve matrix reasoning, analogies, and visual sequence puzzles to sharpen abstract thinking.',
-  int_investigative: 'Explore how-things-work content, science documentaries, and open-ended research projects.',
-  int_artistic: 'Set aside time for creative expression — sketching, writing, music, or design projects.',
-  int_social: 'Seek out group projects, volunteering, or peer mentoring to build comfort working with others.',
-  int_enterprising: 'Take on small leadership or organising roles — clubs, events, or small ventures.',
-  int_realistic: 'Get hands-on with practical, tangible projects — building, repairing, or lab-based work.',
-  int_conventional: 'Practise organising information systematically — spreadsheets, planners, or structured note-taking.',
-  per_extraversion: 'Practice initiating conversations and participating actively in group settings.',
-  per_agreeableness: 'Practise active listening and collaborative problem-solving in team settings.',
-  per_conscientiousness: 'Build a consistent daily routine with clear goals and follow-through checkpoints.',
-  per_stability: 'Practise stress-management techniques like breathing exercises and structured breaks under pressure.',
-  per_openness: 'Expose yourself to new ideas, subjects, and perspectives outside your usual interests.',
-  eq_empathy: 'Practise perspective-taking — actively imagine how others are feeling in different situations.',
-  eq_self_awareness: 'Keep a reflective journal to track emotional patterns and triggers.',
-  eq_stress_regulation: 'Build a stress-management toolkit — breathing exercises, exercise, or scheduled breaks.',
-  eq_social_skill: 'Practise clear, assertive communication in group and one-on-one settings.',
-  val_wealth: 'Explore financial literacy basics to understand how career choices connect to long-term earning.',
-  val_impact: 'Seek volunteering or community projects that connect your work to visible outcomes.',
-  val_recognition: 'Set milestone goals and share progress with mentors or peers for constructive feedback.',
-  val_growth: 'Seek out new challenges and learning opportunities that stretch current skills.',
-  val_stability_value: 'Research career paths with clear, structured progression to understand long-term stability.',
-  val_creativity_value: 'Dedicate regular time to open-ended creative projects without a fixed outcome.',
-  emotional_resilience: 'Practise reframing setbacks as learning opportunities and build a support network for tough times.',
-  leadership: 'Take on small leadership opportunities — leading a project, team, or initiative — to build confidence.',
-  divergent_thinking: 'Practise brainstorming multiple solutions to a single problem before settling on one.',
+  apt_numerical: "Practice speed arithmetic and ratio/proportion problems for 20 minutes daily. Khan Academy's Math section and RS Aggarwal Quantitative Aptitude are ideal starting points.",
+  apt_logical: "Solve one logical reasoning puzzle daily — apps like Lumosity or Brilliant.org build this systematically. NTSE previous papers have excellent logical reasoning sections.",
+  apt_verbal: "Read one editorial from The Hindu or Indian Express daily. Solve 10 vocabulary questions per day — Norman Lewis's 'Word Power Made Easy' is the gold standard for Indian students.",
+  apt_spatial: "Practice mental rotation exercises and geometric puzzles. NID/NATA preparation books contain excellent spatial reasoning practice sets — even if you are not pursuing design, the exercises build this muscle effectively.",
+  apt_pattern: "Solve number series and pattern recognition problems from any competitive exam practice book — SSC, NTSE, or JEE Mains sections on sequences work well.",
+  per_conscientiousness: "Build a consistent daily study schedule and track completion for 30 consecutive days. The habit of reliable follow-through is itself a skill — it develops through practice, not willpower.",
+  per_stability: "Practise one structured stress management technique — box breathing (inhale 4 counts, hold 4, exhale 4, hold 4) before high-pressure situations. This is a trainable response, not a fixed personality trait.",
+  eq_empathy: "Volunteer in a community service role — peer tutoring, elderly care, or community health work. Genuine empathy grows through genuine contact with people whose experiences differ from yours.",
+  eq_stress_regulation: "Learn and practise one evidence-based stress regulation technique consistently for 6 weeks — box breathing, progressive muscle relaxation, or the 5-4-3-2-1 grounding method before every test or presentation.",
+  val_growth: "Seek one new learning experience per month outside your regular curriculum — a workshop, an online course, a skill you have never tried. Growth orientation builds through the deliberate habit of stepping outside the familiar.",
+  sit_leadership: "Take on a formal leadership role in school this year — class representative, club president, or project lead. Leadership capability develops through practice in real situations with real stakes, not through personality alone.",
+  sit_integrity: "Reflect weekly on one decision you made and whether it aligned with your stated values. Integrity is a practice of alignment between values and actions — it strengthens through conscious, repeated attention.",
+  sit_adaptability: "Deliberately put yourself in one unfamiliar situation per month — a new subject, a different group, an unexpected role. Adaptability builds through exposure to the unexpected, not through reading about it.",
+  sit_collaboration: "Join or lead one team project outside your comfort zone this term. Notice where friction arises in the team and practise addressing it directly and constructively.",
+  emotional_resilience: "Build a regular physical exercise habit — 30 minutes of moderate exercise four times per week. Physical and mental resilience develop together; this is one of the most well-replicated findings in psychological research.",
+  divergent_thinking: "Set aside 20 minutes weekly for completely open-ended creative work — drawing, writing, building, composing. No goal, no output required. Divergent thinking grows in unstructured time when the brain is not optimising for a specific answer.",
 };
 
 const SKILL_DISPLAY_NAMES = {
@@ -1792,7 +1779,7 @@ function buildGapAnalysis(S) {
     row.style.cssText = 'background:rgba(26,18,8,.02);border-radius:12px;padding:1.1rem;margin-bottom:.85rem;';
     row.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.5rem;">
-        <div style="font-weight:700;font-size:.95rem;color:var(--ink);">${esc(name)}</div>
+        <div style="font-weight:700;font-size:.95rem;color:var(--ink);">${esc(name)}: Room to Grow</div>
       </div>
       <div style="display:flex;gap:1.5rem;margin-bottom:.75rem;font-size:.82rem;">
         <div>Your level: <strong>${getScoreLabel(g.studentScore)}</strong></div>
