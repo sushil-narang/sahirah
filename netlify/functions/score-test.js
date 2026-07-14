@@ -352,8 +352,10 @@ exports.handler = async (event) => {
         const minReq = career['min_req_' + dim] || 0;
         if (minReq > 0 && (dimension_scores[dim] ?? 0) < minReq) below_cutoff = true;
 
-        // Reality check: this career's highest-weighted dimension where the student scored below 70
-        if (w > 0 && s < 70 && w > reality_check_weight) {
+        // Reality check: this career's highest-weighted dimension where the student scored below 70.
+        // s > 0 excludes insufficient-question-coverage dimensions (score is exactly 0, not a real
+        // weakness) from ever winning this flag — 0 would otherwise dominate every comparison.
+        if (w > 0 && s > 0 && s < 70 && w > reality_check_weight) {
           reality_check_weight = w;
           reality_check_dim = dim;
           reality_check_score = s;
