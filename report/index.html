@@ -1072,6 +1072,8 @@ const DIMENSION_DISPLAY_NAMES = {
   val_wealth:'Wealth-Driven', val_impact:'Impact-Driven', val_recognition:'Recognition-Driven',
   val_growth:'Growth Orientation', val_stability_value:'Stability-Seeking', val_creativity_value:'Creativity',
   emotional_resilience:'Emotional Resilience', leadership:'Leadership', divergent_thinking:'Divergent Thinking',
+  sit_leadership:'Leadership Judgement', sit_integrity:'Integrity',
+  sit_adaptability:'Adaptability', sit_collaboration:'Collaboration',
 };
 
 const GAP_ACTIONS = {
@@ -1509,6 +1511,7 @@ const DIMENSION_GROUPS = [
   { title: 'Emotional Intelligence', icon: '❤️', color: '#C0410A', dims: ['eq_empathy','eq_self_awareness','eq_stress_regulation','eq_social_skill'] },
   { title: 'Interests', icon: '🌱', color: '#0A6B5E', dims: ['int_realistic','int_investigative','int_artistic','int_social','int_enterprising','int_conventional'] },
   { title: 'Values', icon: '⭐', color: '#1A5FA8', dims: ['val_wealth','val_impact','val_recognition','val_growth','val_stability_value','val_creativity_value'] },
+  { title: 'Situational Judgement', icon: '⚖️', color: '#2D7A1F', dims: ['sit_leadership','sit_integrity','sit_adaptability','sit_collaboration'] },
   { title: 'Soft Skills', icon: '🤝', color: '#5F5E5A', dims: ['emotional_resilience','leadership','divergent_thinking'] },
 ];
 
@@ -1517,6 +1520,147 @@ function getScoreLabel(score) {
   if (score >= 70) return 'Strong';
   if (score >= 50) return 'Average';
   return 'Developing';
+}
+
+// ---- MODULE SUMMARY CARDS ----
+function avgScore(obj) {
+  const vals = Object.values(obj).filter(v => typeof v === 'number');
+  if (!vals.length) return NaN;
+  return Math.round(vals.reduce((a,b)=>a+b,0) / vals.length);
+}
+function topKey(obj) {
+  const entries = Object.entries(obj).filter(([,v]) => typeof v === 'number');
+  if (!entries.length) return null;
+  return entries.sort((a,b)=>b[1]-a[1])[0][0];
+}
+const MODULE_SKILL_NAMES = {
+  logical:'Logical Reasoning', numerical:'Numerical Ability',
+  verbal:'Verbal Aptitude', spatial:'Spatial Reasoning',
+  pattern:'Pattern Recognition',
+  openness:'Openness to Experience', conscientiousness:'Conscientiousness',
+  extraversion:'Extraversion', agreeableness:'Agreeableness',
+  neuroticism:'Emotional Stability',
+  selfAwareness:'Self-Awareness', empathy:'Empathy',
+  stressHandling:'Stress Regulation', leadership:'Leadership Tendency',
+  realistic:'Practical Orientation', investigative:'Investigative Curiosity',
+  artistic:'Artistic Interest', social:'Social Interest',
+  enterprising:'Enterprising Drive', conventional:'Conventional Interest',
+  wealth:'Wealth-Driven', impact:'Impact-Driven',
+  recognition:'Recognition-Driven', growth:'Growth Orientation',
+  stability:'Stability-Seeking', creativity:'Creativity',
+  sit_leadership:'Leadership Judgement', sit_integrity:'Integrity',
+  sit_adaptability:'Adaptability', sit_collaboration:'Collaboration',
+  emotional_resilience:'Emotional Resilience',
+  divergent_thinking:'Divergent Thinking',
+};
+function moduleSkillName(key) { return MODULE_SKILL_NAMES[key] || key; }
+
+const RIASEC_IMPLICATIONS = {
+  investigative: 'analysis, research and discovery',
+  artistic: 'creativity, expression and design',
+  social: 'helping, teaching and connecting with people',
+  enterprising: 'leadership, business and persuasion',
+  realistic: 'building, making and working with systems',
+  conventional: 'organising, structuring and precision work',
+};
+const VALUE_IMPLICATIONS = {
+  wealth: 'financial growth and clear reward for performance',
+  impact: 'meaningful work where contributions are visible',
+  recognition: 'achievement, status and being seen as excellent',
+  growth: 'continuous learning and career progression',
+  stability: 'security, structure and long-term certainty',
+  creativity: 'freedom to create, innovate and experiment',
+};
+
+function buildModuleSummary(group, S) {
+  let sourceObj, desc, summary;
+  const name = S.name;
+
+  if (group.title === 'Aptitude') {
+    sourceObj = { logical: S.aptitude.logical, numerical: S.aptitude.numerical, verbal: S.aptitude.verbal, spatial: S.aptitude.spatial, pattern: S.aptitude.pattern };
+    desc = `Measures raw reasoning ability — how ${name}'s brain processes problems, patterns and logic.`;
+  } else if (group.title === 'Personality') {
+    sourceObj = { openness: S.personality.openness, conscientiousness: S.personality.conscientiousness, extraversion: S.personality.extraversion, agreeableness: S.personality.agreeableness, neuroticism: S.personality.neuroticism };
+    desc = `Reveals the stable traits that shape how ${name} works, communicates and relates to others.`;
+  } else if (group.title === 'Emotional Intelligence') {
+    sourceObj = { selfAwareness: S.eq.selfAwareness, empathy: S.eq.empathy, stressHandling: S.eq.stressHandling, leadership: S.eq.leadership };
+    desc = `Assesses empathy, self-awareness and how ${name} handles pressure, conflict and the emotions of others.`;
+  } else if (group.title === 'Interests') {
+    sourceObj = S.interest;
+    desc = `Identifies what ${name} is naturally drawn to — where curiosity becomes sustained motivation.`;
+  } else if (group.title === 'Values') {
+    sourceObj = S.values;
+    desc = `Uncovers what ${name} truly wants from a career — the deeper motivations that sustain effort over years.`;
+  } else if (group.title === 'Situational Judgement') {
+    sourceObj = {
+      sit_leadership: S.dimension_scores.sit_leadership, sit_integrity: S.dimension_scores.sit_integrity,
+      sit_adaptability: S.dimension_scores.sit_adaptability, sit_collaboration: S.dimension_scores.sit_collaboration,
+    };
+    desc = `Real-life scenarios revealing ${name}'s decision-making instincts, leadership style and behaviour under pressure.`;
+  } else if (group.title === 'Soft Skills') {
+    sourceObj = {};
+    ['emotional_resilience','leadership','divergent_thinking'].forEach(k => {
+      const v = S.dimension_scores[k];
+      if (typeof v === 'number') sourceObj[k] = v;
+    });
+    desc = `Cross-domain capabilities that amplify performance in any career — resilience under pressure and original thinking.`;
+  } else {
+    return null;
+  }
+
+  const score = avgScore(sourceObj);
+  if (Number.isNaN(score)) return null;   // no real data for this group — skip the card, leave bars as-is
+  const label = getScoreLabel(score);
+  const top = moduleSkillName(topKey(sourceObj));
+
+  if (group.title === 'Aptitude') {
+    if (label === 'Exceptional') summary = `${name} shows exceptional reasoning ability — a rare cognitive edge for technical and analytical careers.`;
+    else if (label === 'Strong') summary = `${name} demonstrates solid analytical thinking, with ${top} as the standout skill.`;
+    else if (label === 'Average') summary = `${name}'s reasoning is developing well — ${top} shows the most promise.`;
+    else summary = `Clear room to grow here — consistent practice with reasoning exercises will build this rapidly.`;
+  } else if (group.title === 'Personality') {
+    const sorted = Object.entries(sourceObj).filter(([,v]) => typeof v === 'number').sort((a,b)=>b[1]-a[1]);
+    const top1 = moduleSkillName(sorted[0]?.[0]), top2 = moduleSkillName(sorted[1]?.[0]);
+    if (label === 'Exceptional') summary = `An exceptionally well-rounded personality — ${name} combines ${top1} and ${top2} at rare levels.`;
+    else if (label === 'Strong') summary = `A mature, balanced personality with particular strength in ${top1}.`;
+    else if (label === 'Average') summary = `A solid personality foundation with natural strength in ${top1}.`;
+    else summary = `Personality develops strongly through experience — entirely normal and expected at this age.`;
+  } else if (group.title === 'Emotional Intelligence') {
+    if (label === 'Exceptional') summary = `${name}'s emotional intelligence is a standout strength — especially ${top}.`;
+    else if (label === 'Strong') summary = `Good emotional awareness with real strength in ${top}.`;
+    else if (label === 'Average') summary = `Growing emotional maturity — self-awareness is the key skill to develop at this stage.`;
+    else summary = `EQ builds naturally with experience — this score will improve significantly over time.`;
+  } else if (group.title === 'Interests') {
+    const sorted = Object.entries(sourceObj).filter(([,v]) => typeof v === 'number').sort((a,b)=>b[1]-a[1]);
+    const top1Key = sorted[0]?.[0], top2Key = sorted[1]?.[0];
+    const implication = RIASEC_IMPLICATIONS[top1Key] || '';
+    summary = `${name}'s dominant interests are ${moduleSkillName(top1Key)} and ${moduleSkillName(top2Key)}, pointing toward careers that combine ${implication}.`;
+  } else if (group.title === 'Values') {
+    const topValKey = topKey(sourceObj);
+    summary = `${name} is primarily ${moduleSkillName(topValKey)}-oriented. ${name} will thrive in environments that offer ${VALUE_IMPLICATIONS[topValKey] || ''}.`;
+  } else if (group.title === 'Situational Judgement') {
+    if (label === 'Exceptional') summary = `Excellent situational judgement — ${name} naturally excels at ${top} in high-pressure situations.`;
+    else if (label === 'Strong') summary = `Good decision-making instincts with strength in ${top}.`;
+    else if (label === 'Average') summary = `Developing situational awareness — strong foundation in ${top}.`;
+    else summary = `This area grows rapidly through structured experience and reflection.`;
+  } else if (group.title === 'Soft Skills') {
+    if (label === 'Exceptional') summary = `${name} has an exceptional soft-skills profile — particularly ${top}.`;
+    else if (label === 'Strong') summary = `Strong soft skills with ${top} as the standout capability.`;
+    else if (label === 'Average') summary = `Good foundation with clear room to develop further.`;
+    else summary = `These capabilities grow significantly through structured activities and deliberate practice.`;
+  }
+
+  const card = document.createElement('div');
+  card.className = 'module-summary-card';
+  card.style.cssText = `background:${group.color}26;border-left:3px solid ${group.color};border-radius:8px;padding:12px 16px;margin-bottom:16px;`;
+  card.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <span style="font-weight:600;font-size:0.95rem;">${esc(group.title)}</span>
+      <span style="font-size:0.8rem;color:${group.color};font-weight:600;">${score}/100 · ${label}</span>
+    </div>
+    <p style="font-size:0.8rem;color:#6B5F52;margin:0 0 4px 0;font-style:italic;">${esc(desc)}</p>
+    <p style="font-size:0.85rem;color:#1A1208;margin:0;">${esc(summary)}</p>`;
+  return card;
 }
 
 function buildDeepDive(S) {
@@ -1544,6 +1688,9 @@ function buildDeepDive(S) {
     heading.style.cssText = 'font-weight:700;font-size:1rem;margin-bottom:1rem;color:' + group.color + ';';
     heading.textContent = group.icon + ' ' + group.title;
     groupEl.appendChild(heading);
+
+    const summaryCard = buildModuleSummary(group, S);
+    if (summaryCard) groupEl.appendChild(summaryCard);
 
     group.dims.forEach(dim => {
       const score = S.dimension_scores[dim] ?? 50;
