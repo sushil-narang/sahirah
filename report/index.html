@@ -452,8 +452,8 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
   <div class="report-section premium-section" id="section-roadmap">
     <div class="rs-header">
       <div class="rs-icon" style="background:#E8F2FF;">🗺️</div>
-      <div class="rs-title">Your Entrance Exam Roadmap</div>
-      <div class="rs-sub">Personalised path</div>
+      <div class="rs-title">Your Path From Here</div>
+      <div class="rs-sub">A step-by-step roadmap to your recommended career</div>
     </div>
     <div class="card" id="roadmap-content"></div>
     <div class="lock-overlay" id="lock-roadmap">
@@ -1738,6 +1738,42 @@ function buildRoadmap(S) {
       <div>${step.exams.map(e=>`<span class="cc-exam" style="background:${step.color}22;color:${step.color};">${esc(e)}</span>`).join('')}</div>`;
     container.appendChild(card);
   });
+
+  const closing = document.createElement('div');
+  closing.style.cssText = `
+    margin-top: 2rem;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, #FDF8F0 0%, #FDF0CC 100%);
+    border-left: 4px solid var(--gold, #C8860A);
+    border-radius: 12px;
+    font-family: 'Playfair Display', Georgia, serif;
+  `;
+  const firstName = (SCORES.name || '').split(' ')[0];
+  const streamFull = {
+    non: 'Engineering & Technology',
+    med: 'Medical & Life Sciences',
+    com: 'Business & Commerce',
+    hum: 'Humanities & Social Sciences'
+  }[SCORES.primaryStream] || SCORES.primaryStream;
+
+  closing.innerHTML = `
+    <p style="font-size:1rem;line-height:1.7;color:#1A1208;margin:0 0 1rem 0;">
+      The path ahead is long — and it will ask more of
+      <strong>${esc(firstName)}</strong> than any single test
+      can measure. But the data in this report points in a
+      clear direction. ${esc(firstName)} has the cognitive wiring,
+      the emotional maturity, and the values alignment to thrive
+      in <strong>${esc(streamFull)}</strong>.
+    </p>
+    <p style="font-size:1rem;line-height:1.7;color:#1A1208;margin:0 0 1rem 0;">
+      Trust the process. Be consistent. Stay curious.
+    </p>
+    <p style="font-size:1.1rem;font-weight:700;color:#C8860A;
+              margin:0;letter-spacing:0.02em;">
+      Sahi Raah — The Right Path.
+    </p>
+  `;
+  container.appendChild(closing);
 }
 
 // ---- SKILL GAPS ----
