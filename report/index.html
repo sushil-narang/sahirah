@@ -1674,9 +1674,16 @@ async function downloadPDF() {
       margin: 0,
       filename: `${(SCORES.name || 'Student').replace(/\s+/g,'_')}_Sahirah_Report.pdf`,
       image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        scrollX: 0,
+        scrollY: -window.scrollY,
+        windowWidth: document.documentElement.scrollWidth,
+      },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['avoid-all', 'css'] },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
     }).from(element).save();
   } catch (e) {
     console.error('PDF generation failed:', e);
