@@ -288,6 +288,20 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
         <div class="rh-report-id" id="rh-report-id"></div>
         <div class="rh-date" id="rh-date"></div>
       </div>
+      <div class="rh-right">
+        <div class="rh-stat">
+          <div class="rh-stat-label">Wired For</div>
+          <div style="font-family:var(--fd);font-size:clamp(0.75rem, 2vw, 1.1rem);font-weight:700;color:var(--gold-light);margin-top:2px;white-space:normal;word-break:break-word;" id="rh-stream-headline"></div>
+        </div>
+        <div class="rh-stat">
+          <div class="rh-stat-label">Standout Strength</div>
+          <div style="font-family:var(--fd);font-size:clamp(0.75rem, 2vw, 1.1rem);font-weight:700;color:var(--gold-light);margin-top:2px;white-space:normal;word-break:break-word;" id="rh-strength-headline"></div>
+        </div>
+        <div class="rh-stat">
+          <div class="rh-stat-label">Recommended Path</div>
+          <div style="font-family:var(--fd);font-size:clamp(0.75rem, 2vw, 1.1rem);font-weight:700;color:var(--gold-light);margin-top:2px;white-space:normal;word-break:break-word;" id="rh-path-headline"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1091,6 +1105,31 @@ function buildCoverPage(S) {
 
   const reportId = 'RPT-' + new Date().getFullYear() + '-' + (S.sessionId || '').slice(0,5).toUpperCase();
   document.getElementById('rh-report-id').textContent = 'Report ID: ' + reportId;
+
+  // Box 1 — stream headline
+  const streamLabels = {
+    non: 'Engineering & Technology',
+    med: 'Medical & Life Sciences',
+    com: 'Business & Commerce',
+    hum: 'Humanities & Social Sciences',
+  };
+  document.getElementById('rh-stream-headline').textContent = streamLabels[S.primaryStream] || S.primaryStream;
+
+  // Box 2 — standout strength, excluding dormant-default 50s and 0-score (insufficient coverage) skills
+  const DORMANT_SKILLS = ['emotional_resilience', 'divergent_thinking', 'leadership_readiness', 'visual', 'auditory', 'reading_writing', 'kinesthetic'];
+  const isDormantDefault = (key, val) => DORMANT_SKILLS.includes(key) && val === 50;
+  const strengthEntries = Object.entries(S.traitScores || {})
+    .filter(([k, v]) => !isDormantDefault(k, v) && v > 0)
+    .sort(([,a],[,b]) => b - a);
+  const [topSkillKey] = strengthEntries[0] || ['—', 0];
+  document.getElementById('rh-strength-headline').textContent = SKILL_DISPLAY_NAMES[topSkillKey] || topSkillKey;
+
+  // Box 3 — recommended path
+  const topCareer = S.careers?.[0];
+  const topExam = topCareer?.exams?.[0];
+  document.getElementById('rh-path-headline').textContent = topCareer
+    ? (topExam ? `${topCareer.title} → ${topExam}` : topCareer.title)
+    : '—';
 }
 
 function buildReport() {
