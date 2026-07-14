@@ -37,6 +37,151 @@ const SKILL_TO_DIMENSION = {
   collaboration: 'sit_collaboration',
 };
 
+// Each stream is an array of 25 slots, index = position_index (0-based).
+// Each slot is an array of career_profiles.name substrings (case-insensitive)
+// that should claim that position. Empty array = no real career_profiles row
+// matches this ladder position. A name can appear in exactly one slot per
+// stream — collisions are resolved at match time by longest-substring-wins
+// (see findLadderPosition), not by array order.
+const LADDER_NAME_MAP = {
+  non: [
+    /* 0  CS / AI Engineer               */ ['Software Developer', 'Machine Learning', 'Cloud Architect', 'DevOps Engineer', 'Cybersecurity Analyst', 'Network Engineer'],
+    /* 1  Electronics Engineer           */ ['Electrical Engineer'],
+    /* 2  Mechanical Engineer            */ ['Mechanical Engineer'],
+    /* 3  Civil Engineer                 */ ['Civil Engineer'],
+    /* 4  Aerospace Engineer             */ ['Aerospace Engineer'],
+    /* 5  Chemical Engineer              */ ['Chemical Engineer'],
+    /* 6  Architecture (B.Arch)          */ ['Architect'],
+    /* 7  Product / Industrial Design    */ ['Product Designer', 'Industrial Designer'],
+    /* 8  Data Scientist                 */ ['Data Scientist'],
+    /* 9  Marine Engineer (Merchant Navy)*/ ['Marine Engineer'],
+    /* 10 Naval Architect                */ ['Naval Architect'],
+    /* 11 Nautical Science Officer       */ ['Nautical Science Officer'],
+    /* 12 Robotics / Mechatronics        */ [],
+    /* 13 Biotech / Bioinformatics       */ ['Bioinformatician'],
+    /* 14 Automobile Engineer            */ ['Automobile Engineer'],
+    /* 15 Embedded Systems Engineer      */ ['Embedded Systems'],
+    /* 16 Quant Developer / FinTech      */ ['Quant Developer'],
+    /* 17 Environmental Science          */ [],
+    /* 18 Geologist / Earth Scientist    */ ['Geologist'],
+    /* 19 Research Physicist             */ ['Physicist'],
+    /* 20 Nuclear Engineer               */ ['Nuclear Engineer'],
+    /* 21 Defence / NDA                  */ ['Defense Services'],
+    /* 22 Pilot (CPL)                    */ ['Commercial Pilot'],
+    /* 23 Climate Scientist              */ ['Meteorologist'],
+    /* 24 Industrial Designer (remaining)*/ [],
+  ],
+  med: [
+    /* 0  MBBS (General Physician)       */ ['General Physician'],
+    /* 1  BDS (Dentistry)                */ ['Dentist'],
+    /* 2  BPT (Physiotherapy)            */ ['Physiotherapist'],
+    /* 3  B.Pharm (Pharmacy)             */ ['Pharmacologist'],
+    /* 4  B.Sc Nursing                   */ [],
+    /* 5  MBBS → Cardiology (DM)         */ ['Cardiologist'],
+    /* 6  MBBS → Neurology (DM)          */ ['Neurologist'],
+    /* 7  MBBS → Surgery (MS)            */ ['General Surgeon'],
+    /* 8  MBBS → Anaesthesiology (MD)    */ ['Anesthesiologist'],
+    /* 9  MBBS → Radiology (MD)          */ ['Radiologist'],
+    /* 10 MBBS → Dermatology (MD)        */ ['Dermatologist'],
+    /* 11 MBBS → Psychiatry (MD)         */ ['Psychiatrist'],
+    /* 12 MBBS → Paediatrics (MD)        */ ['Pediatrician'],
+    /* 13 MBBS → Obstetrics (MD/MS)      */ ['Gynecologist'],
+    /* 14 MBBS → Pathology (MD)          */ ['Pathologist'],
+    /* 15 MBBS → General Medicine (MD)   */ [],
+    /* 16 BVSc (Veterinary)              */ ['Veterinarian'],
+    /* 17 BAMS (Ayurveda)                */ ['BAMS Practitioner'],
+    /* 18 BHMS (Homeopathy)              */ ['BHMS Practitioner'],
+    /* 19 BASLP (Audiology / Speech)     */ ['Speech-Language'],
+    /* 20 B.Optom (Optometry)            */ ['Optometrist'],
+    /* 21 BMLT (Medical Lab Technology)  */ ['Medical Lab'],
+    /* 22 B.Sc Radiology Technology      */ ['Radiology Technologist'],
+    /* 23 B.Sc Cardiovascular Technology */ ['Cardiovascular Technologist'],
+    /* 24 Hospital Administrator (MBA)   */ ['Hospital Administrator'],
+  ],
+  com: [
+    /* 0  CA (Chartered Accountant)      */ ['Chartered Accountant'],
+    /* 1  MBA / Management Consultant    */ ['Management Consultant'],
+    /* 2  CS (Company Secretary)         */ ['Company Secretary'],
+    /* 3  CFA / Investment Banking       */ ['Investment Banker'],
+    /* 4  Actuary                        */ ['Actuary'],
+    /* 5  Economist                      */ ['Economist'],
+    /* 6  Marketing Manager              */ ['Marketing Manager'],
+    /* 7  Product Manager                */ ['Product Manager'],
+    /* 8  HR Business Partner            */ ['HR Business'],
+    /* 9  Entrepreneur / Biz Development */ ['Entrepreneur', 'Business Development Executive'],
+    /* 10 Operations Manager             */ ['Operations Manager'],
+    /* 11 Financial Analyst              */ ['Financial Analyst'],
+    /* 12 Risk Manager (FRM)             */ ['Risk Manager'],
+    /* 13 Wealth Manager                 */ ['Wealth Manager'],
+    /* 14 Tax Consultant                 */ ['Tax Consultant'],
+    /* 15 Corporate Strategy Analyst     */ ['Corporate Strategy'],
+    /* 16 Commercial Banker / Banking PO */ ['Commercial Banker', 'Banking PO'],
+    /* 17 Insurance Underwriter          */ ['Insurance Underwriter'],
+    /* 18 Cost Accountant (CMA)          */ ['Cost Accountant'],
+    /* 19 Retail Store Manager           */ ['Retail Store'],
+    /* 20 International Business         */ [],
+    /* 21 Real Estate Manager            */ ['Real Estate'],
+    /* 22 Digital Marketing Specialist   */ ['Digital Marketing'],
+    /* 23 Event Manager                  */ [],
+    /* 24 Logistics / Supply Chain       */ [],
+  ],
+  hum: [
+    /* 0  IAS / Civil Services (UPSC)    */ ['Civil Servant'],
+    /* 1  Corporate Lawyer               */ ['Corporate Lawyer'],
+    /* 2  Litigation Lawyer              */ ['Litigation Lawyer'],
+    /* 3  B.Des / UX / Graphic Design    */ ['Graphic Designer', 'UX Researcher'],
+    /* 4  Journalism                     */ ['Investigative Journalist'],
+    /* 5  Clinical Psychologist          */ ['Clinical Psychologist'],
+    /* 6  Diplomat (IFS)                 */ ['Diplomat'],
+    /* 7  Public Policy Analyst          */ ['Public Policy'],
+    /* 8  Social Worker (MSW)            */ ['Social Worker'],
+    /* 9  Urban Planner / Architect      */ ['Urban Planner'],
+    /* 10 Creative Director              */ ['Creative Director'],
+    /* 11 Film Director                  */ ['Film Director'],
+    /* 12 PR Specialist                  */ ['PR Specialist'],
+    /* 13 Content Writer / Author        */ [],
+    /* 14 Fashion Designer (NIFT)        */ ['Fashion Designer'],
+    /* 15 Interior Designer              */ ['Interior Designer'],
+    /* 16 Game Designer                  */ ['Game Designer'],
+    /* 17 Music Composer                 */ ['Music Composer'],
+    /* 18 Animator / VFX Artist          */ ['Animator'],
+    /* 19 Academic / Researcher          */ ['Professor'],
+    /* 20 Archaeologist                  */ ['Archaeologist'],
+    /* 21 Hotel Manager (BHM)            */ ['Hotel Manager'],
+    /* 22 Event Manager (Humanities)     */ ['Event Manager'],
+    /* 23 Mass Communication             */ [],
+    /* 24 Social Media / Influencer      */ [],
+  ],
+};
+
+// Returns the ladder position_index for a career name within a stream's ladder,
+// or null if nothing matches. Longest matching substring wins, so specific names
+// (e.g. 'Naval Architect') correctly beat generic ones (e.g. 'Architect').
+function findLadderPosition(careerName, ladder) {
+  const lower = careerName.toLowerCase();
+  let best = null; // { index, len }
+  ladder.forEach((names, index) => {
+    names.forEach(n => {
+      if (lower.includes(n.toLowerCase())) {
+        if (!best || n.length > best.len) best = { index, len: n.length };
+      }
+    });
+  });
+  return best ? best.index : null;
+}
+
+// priority_rank_score = (25 - position_index) / 25 × 100. Unmatched careers get
+// 25 — neutral, competes purely on dimension fit.
+function getPriorityScore(careerName, streamCode) {
+  const ladder = LADDER_NAME_MAP[streamCode] || [];
+  const idx = findLadderPosition(careerName, ladder);
+  return idx === null ? 25 : (25 - idx) / 25 * 100;
+}
+
+function getBlendedScore(priorityScore, fitScore) {
+  return Math.round(priorityScore * 0.4 + fitScore * 0.6);
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
@@ -167,11 +312,20 @@ exports.handler = async (event) => {
     });
     const primary_stream = Object.entries(stream_scores).sort((a, b) => b[1] - a[1])[0][0];
 
-    // ---- STEP 5: Stage 2 — career fit (primary stream only) ----
+    // ---- confidence_level: how decisively primary_stream won ----
+    const topStreamScore = stream_scores[primary_stream];
+    let confidence_level;
+    if (topStreamScore >= 55) confidence_level = 'high';
+    else if (topStreamScore >= 40) confidence_level = 'moderate';
+    else if (topStreamScore >= 30) confidence_level = 'low';
+    else confidence_level = 'very_low';
+
+    // ---- STEP 5: Stage 2 — career fit, all streams ----
+    // Fetches every stream's careers (not just primary_stream) so the wildcard
+    // can be picked from anywhere outside primary_stream.
     const { data: careers, error: careerErr } = await db
       .from('career_profiles')
-      .select('*')
-      .eq('stream_code', primary_stream);
+      .select('*');
 
     if (careerErr) throw careerErr;
 
@@ -204,15 +358,18 @@ exports.handler = async (event) => {
       const top_dimensions = [...dimensionWeights].sort((a,b) => b.weight - a.weight).slice(0,3).map(d => d.dim);
 
       const fit = den > 0 ? Math.round((num / den) * 100) : 0;
+      const priorityScore = getPriorityScore(career.name, career.stream_code);
+      const blended = getBlendedScore(priorityScore, fit);
       return {
         title: career.name,
         career_id: career.id,
-        fit,
+        fit,        // internal only — never shown to the user; blended drives ranking/display
+        blended,
         below_cutoff,
         stream: career.stream_code,
         color: career.display_color || '#C8860A',
         bg: career.display_color ? career.display_color + '11' : '#FDF8F0',
-        why: career.why_text || `Strong match for your ${primary_stream} profile.`,
+        why: career.why_text || `Strong match for your ${career.stream_code} profile.`,
         exams: career.exams || [],
         degrees: career.degrees || '',
         top_dimensions,
@@ -221,7 +378,16 @@ exports.handler = async (event) => {
       };
     });
 
-    const top_careers = careerFits.sort((a, b) => b.fit - a.fit).slice(0, 5);
+    const top_careers = careerFits
+      .filter(c => c.stream === primary_stream)
+      .sort((a, b) => b.blended - a.blended)
+      .slice(0, 5);
+
+    // Single highest-blended career from any stream other than primary_stream —
+    // the global best among non-primary careers, not the best-of-each-stream.
+    const wildcard_career = careerFits
+      .filter(c => c.stream !== primary_stream)
+      .sort((a, b) => b.blended - a.blended)[0] || null;
 
     const primaryCareerRow = (careers || []).find(c => c.id === top_careers[0]?.career_id);
     const top_career_high_weight_dims = primaryCareerRow
@@ -229,7 +395,10 @@ exports.handler = async (event) => {
       : [];
 
     // ---- STEP 6: Write results ----
-    const score_json = { skill_scores, dimension_scores, stream_scores, primary_stream, top_careers, top_career_high_weight_dims };
+    const score_json = {
+      skill_scores, dimension_scores, stream_scores, primary_stream,
+      confidence_level, top_careers, wildcard_career, top_career_high_weight_dims,
+    };
 
     const { error: updateErr } = await db.from('test_sessions').update({
       score_json,
@@ -255,9 +424,11 @@ exports.handler = async (event) => {
         success: true,
         session_id,
         primary_stream,
+        confidence_level,
         stream_scores,
         skill_scores,
         top_careers: top_careers.slice(0, 3),
+        wildcard_career,
       }),
     };
   } catch (err) {
