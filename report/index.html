@@ -1253,13 +1253,15 @@ function buildStreamComparison(S) {
       tbody.appendChild(row);
       return;
     }
-    const diffs = DIMENSIONS.map(dim => ({
-      dim, gap: (profile[dim] ?? 50) - (S.dimension_scores[dim] ?? 50),
-    }));
+    const diffs = DIMENSIONS
+      .filter(dim => (S.dimension_scores[dim] ?? 50) !== 0)  // never flag an insufficient-coverage (0-score) dim as a strength or a gap
+      .map(dim => ({
+        dim, gap: (profile[dim] ?? 50) - (S.dimension_scores[dim] ?? 50),
+      }));
     const sortedDiffs = [...diffs].sort((a,b) => a.gap - b.gap);
     const strengths = sortedDiffs.slice(0, 2).map(d => DIMENSION_DISPLAY_NAMES[d.dim] || d.dim).join(', ');
     const weakest = sortedDiffs[sortedDiffs.length - 1];
-    row.innerHTML = `<td class="es-value">${streamNames[code]}</td><td>${strengths}</td><td>${DIMENSION_DISPLAY_NAMES[weakest.dim] || weakest.dim}</td>`;
+    row.innerHTML = `<td class="es-value">${streamNames[code]}</td><td>${strengths}</td><td>${weakest ? (DIMENSION_DISPLAY_NAMES[weakest.dim] || weakest.dim) : '—'}</td>`;
     tbody.appendChild(row);
   });
 }
@@ -1626,11 +1628,13 @@ function buildDeepDive(S) {
   container.innerHTML = '';
 
   const SOFT_SKILLS_DIMS = ['emotional_resilience', 'divergent_thinking', 'leadership'];
+  let renderedDimensionCount = 0;
+  let excludedDimensionCount = 0; // zero-score or dormant-module — intentional, not a bug
 
   DIMENSION_GROUPS.forEach(group => {
     if (group.title === 'Soft Skills') {
       const softSkillsAreDormant = SOFT_SKILLS_DIMS.every(dim => (S.dimension_scores[dim] ?? 50) === 50);
-      if (softSkillsAreDormant) return;
+      if (softSkillsAreDormant) { excludedDimensionCount += group.dims.length; return; }
     }
 
     const groupEl = document.createElement('div');
@@ -1648,8 +1652,9 @@ function buildDeepDive(S) {
       const score = S.dimension_scores[dim] ?? 50;
 
       // ZERO-SCORE RULE (Part E): insufficient question coverage — never shown
-      if (score === 0) return;
+      if (score === 0) { excludedDimensionCount++; return; }
 
+      renderedDimensionCount++;
       const label = getScoreLabel(score);
       const name = DIMENSION_DISPLAY_NAMES[dim] || dim;
       const row = document.createElement('div');
@@ -1660,6 +1665,12 @@ function buildDeepDive(S) {
     });
     container.appendChild(groupEl);
   });
+
+  const totalDims = DIMENSION_GROUPS.reduce((sum, g) => sum + g.dims.length, 0);
+  if (renderedDimensionCount + excludedDimensionCount !== totalDims) {
+    console.error(`[buildDeepDive] Dimension count mismatch: rendered ${renderedDimensionCount} + excluded ${excludedDimensionCount} !== expected ${totalDims}. A dimension may be silently missing from the report.`);
+  }
+
   setTimeout(()=>{ container.querySelectorAll('.trait-fill').forEach(el=>{ el.style.width = el.dataset.w + '%'; }); }, 300);
 }
 
