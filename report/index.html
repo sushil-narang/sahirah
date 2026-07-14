@@ -319,6 +319,11 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
         <tr><td class="es-label">Dominant Trait</td><td class="es-value" id="es-trait"></td></tr>
       </table>
     </div>
+    <div class="card" id="counsellor-note" style="display:none;border-left:4px solid var(--gold);background:var(--gold-pale);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:1.25rem;">
+      <div style="font-size:1.3rem;margin-bottom:.5rem;">💬</div>
+      <p id="counsellor-note-text" style="font-size:.85rem;line-height:1.6;color:rgba(26,18,8,.75);margin:0 0 .85rem;"></p>
+      <a href="https://sahirah.in/register" class="rf-btn rf-btn-gold" style="display:inline-flex;">Book a Counselling Session →</a>
+    </div>
     <div class="ai-narrative">
       <div class="ain-header">
         <div class="ain-avatar">A</div>
@@ -922,6 +927,7 @@ async function initReport(sessionId, regId) {
     primaryStream: S.primary_stream,
     careers: S.top_careers,
     wildcard: S.wildcard_career,
+    confidenceLevel: S.confidence_level || 'low',
 
     aptitude: {
       logical: sk.logical ?? 50, numerical: sk.numerical ?? 50, verbal: sk.verbal ?? 50,
@@ -1085,18 +1091,51 @@ const SKILL_DISPLAY_NAMES = {
   adaptability: 'Adaptability', collaboration: 'Collaboration',
 };
 
+const DORMANT_SKILLS = ['emotional_resilience', 'divergent_thinking', 'leadership_readiness', 'visual', 'auditory', 'reading_writing', 'kinesthetic'];
+const isDormantDefault = (key, val) => DORMANT_SKILLS.includes(key) && val === 50;
+
 function buildExecutiveSummary(S) {
+  const streamLabels = {
+    non: 'Engineering & Technology',
+    med: 'Medical & Life Sciences',
+    com: 'Business & Commerce',
+    hum: 'Humanities & Social Sciences',
+  };
+  const confidenceLabels = {
+    high: 'Clear fit',
+    moderate: 'Strong lean',
+    low: 'Emerging direction',
+    very_low: 'Balanced profile',
+  };
   document.getElementById('es-stream').textContent =
-    `${streamNamesFull[S.primaryStream] || S.primaryStream}`;
+    `${streamLabels[S.primaryStream] || S.primaryStream} — ${confidenceLabels[S.confidenceLevel] || confidenceLabels.low}`;
 
   const topCareer = S.careers?.[0];
+  const blended = topCareer?.blended || 0;
+  const matchLabel = blended >= 80 ? 'Excellent match'
+    : blended >= 70 ? 'Strong match'
+    : blended >= 60 ? 'Good match'
+    : 'Emerging match';
   document.getElementById('es-career').textContent = topCareer
-    ? `${topCareer.title}`
+    ? `${topCareer.title} — ${matchLabel}`
     : '—';
 
-  const [dominantKey] = Object.entries(S.traitScores || {}).sort((a,b) => b[1]-a[1])[0] || ['—', 0];
-  document.getElementById('es-trait').textContent =
-    `${SKILL_DISPLAY_NAMES[dominantKey] || dominantKey}`;
+  const strengthEntries = Object.entries(S.traitScores || {})
+    .filter(([k, v]) => !isDormantDefault(k, v) && v > 0)
+    .sort(([,a],[,b]) => b - a);
+  const [topSkillKey] = strengthEntries[0] || ['—', 0];
+  document.getElementById('es-trait').textContent = SKILL_DISPLAY_NAMES[topSkillKey] || topSkillKey;
+
+  const noteEl = document.getElementById('counsellor-note');
+  if (noteEl) {
+    if (S.confidenceLevel === 'very_low') {
+      document.getElementById('counsellor-note-text').textContent =
+        `${S.name}'s profile is unusually balanced across all four streams — a rare finding that means the final choice of stream depends heavily on personal interest and conversation, not data alone. We strongly recommend a one-on-one counselling session alongside this report to explore this further.`;
+      noteEl.style.display = 'block';
+    } else {
+      noteEl.style.display = 'none';
+    }
+  }
 }
 
 function buildCoverPage(S) {
@@ -1117,8 +1156,6 @@ function buildCoverPage(S) {
   document.getElementById('rh-stream-headline').textContent = streamLabels[S.primaryStream] || S.primaryStream;
 
   // Box 2 — standout strength, excluding dormant-default 50s and 0-score (insufficient coverage) skills
-  const DORMANT_SKILLS = ['emotional_resilience', 'divergent_thinking', 'leadership_readiness', 'visual', 'auditory', 'reading_writing', 'kinesthetic'];
-  const isDormantDefault = (key, val) => DORMANT_SKILLS.includes(key) && val === 50;
   const strengthEntries = Object.entries(S.traitScores || {})
     .filter(([k, v]) => !isDormantDefault(k, v) && v > 0)
     .sort(([,a],[,b]) => b - a);
@@ -1289,22 +1326,48 @@ function renderNarrative(el, text) {
 
 // ---- AI NARRATIVE ----
 async function buildAIReport(S) {
-  const prompt = `You are Avanya, the AI counsellor for Sahirah.in — India's psychometric platform for school children. Write a warm, personalised, insightful assessment narrative for ${S.name}, age ${S.age}, ${S.cls}, from ${S.city}.
+  const streamFullNames = {
+    non: 'Engineering & Technology',
+    med: 'Medical & Life Sciences',
+    com: 'Business & Commerce',
+    hum: 'Humanities & Social Sciences',
+  };
 
-Their scores:
-- Primary stream: ${S.primaryStream === 'non' ? 'Non-Medical' : S.primaryStream} (${S.streams[S.primaryStream]}% match)
-- Top career: ${S.careers[0].title} (${S.careers[0].fit}% fit)
-- Aptitude overall: ${S.aptitude.overall}/100, Logical: ${S.aptitude.logical}, Numerical: ${S.aptitude.numerical}, Verbal: ${S.aptitude.verbal}, Spatial: ${S.aptitude.spatial}
-- Personality: Openness ${S.personality.openness}, Conscientiousness ${S.personality.conscientiousness}, Extraversion ${S.personality.extraversion}, Agreeableness ${S.personality.agreeableness}
-- EQ: ${S.eq.overall}/100
-- Top value: ${Object.entries(S.values).sort((a,b)=>b[1]-a[1])[0][0]}
+  const top3Skills = Object.entries(S.traitScores || {})
+    .filter(([k, v]) => !isDormantDefault(k, v) && v > 0)
+    .sort(([,a],[,b]) => b - a)
+    .slice(0, 3)
+    .map(([k]) => SKILL_DISPLAY_NAMES[k] || k);
 
-Write 3 paragraphs (plain text, no markdown, no bullet points):
-1. Who this child is — their cognitive strengths and personality in warm, specific, human language
-2. Why the recommended career path is the right fit — connect the data dots in an insightful, non-obvious way
-3. One piece of heartfelt, specific advice for the child and their parent about the journey ahead
+  const topInterest = Object.entries(S.interest || {}).sort(([,a],[,b]) => b - a)[0]?.[0];
+  const topValue = Object.entries(S.values || {}).sort(([,a],[,b]) => b - a)[0]?.[0];
+  const topEQ = Object.entries(S.eq || {}).sort(([,a],[,b]) => b - a)[0]?.[0];
 
-Tone: Warm, expert, encouraging, specific. Like a counsellor who truly knows this child. Use "Arjun" (or the student's name) naturally. Keep each paragraph 3-4 sentences. Do not use lists or headers.`;
+  const prompt = `You are Avanya, the AI counsellor for Sahirah.in. Write a warm, personal, deeply insightful assessment for ${S.name}, a Class ${S.cls} student from ${S.city}.
+
+Their psychometric profile:
+- Primary stream: ${streamFullNames[S.primaryStream]}
+- Top 3 strengths: ${top3Skills.join(', ')}
+- Dominant interest: ${moduleSkillName(topInterest)}
+- Core value: ${moduleSkillName(topValue)}
+- Strongest EQ dimension: ${moduleSkillName(topEQ)}
+- Top career recommendation: ${S.careers[0]?.title}
+- Second career recommendation: ${S.careers[1]?.title}
+
+Write EXACTLY 3 paragraphs. No headers. No bullet points. Pure prose.
+
+Paragraph 1 — Cognitive and personality portrait:
+Describe HOW ${S.name} thinks and operates, based on their specific strengths. Be specific — name the actual traits. Make ${S.name} feel genuinely seen and understood. Reference their top strengths and what they mean in practice. Do not use generic praise — be precise.
+
+Paragraph 2 — Why this career path fits:
+Explain specifically why ${streamFullNames[S.primaryStream]} and ${S.careers[0]?.title} emerged as the recommendation — connecting their specific traits to what that career actually demands. Name the career explicitly. Make the connection feel inevitable, not arbitrary.
+
+Paragraph 3 — A personal message to ${S.name} and the family:
+Warm, direct, encouraging. Acknowledge this is a significant moment. Remind them that scores are a compass, not a ceiling. End with the phrase: "Sahi Raah."
+
+Tone: warm, wise, specific, personal. Never generic. Never corporate. Write as if you have spent months understanding ${S.name}. Length: 180-220 words total.
+
+IMPORTANT: Never mention specific numbers or scores. Never say '94 out of 100' or 'scored highly'. Instead say 'exceptional', 'particularly strong', 'a standout quality'. The narrative should feel like a wise counsellor speaking, not a data report.`;
 
   const narrativeEl = document.getElementById('ai-narrative-text');
   const avanyaController = new AbortController();
