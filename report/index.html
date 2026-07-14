@@ -1817,32 +1817,60 @@ function buildGapAnalysis(S) {
 // ================================================================
 async function downloadPDF() {
   const btn = document.getElementById('btn-pdf');
-  btn.textContent = '⏳ Generating PDF…';
-  btn.disabled = true;
+  const originalText = btn ? btn.innerHTML : '';
+  if (btn) btn.innerHTML = '⏳ Preparing PDF...';
+
+  // Scroll to top and wait for layout to settle
+  window.scrollTo(0, 0);
+  await new Promise(resolve => setTimeout(resolve, 800));
+
+  // Ensure Avanya narrative and dimension bars are ready
+  await prepareForPDFCapture();
+
+  const element = document.getElementById('printable');
+  if (!element) {
+    console.error('Printable element not found');
+    if (btn) btn.innerHTML = originalText;
+    return;
+  }
+
+  const name = (SCORES?.name || 'Student').replace(/\s+/g, '_');
+  const filename = `${name}_Sahirah_Report.pdf`;
+
   try {
-    await prepareForPDFCapture();
-    const element = document.getElementById('printable');
     await html2pdf().set({
-      margin: 0,
-      filename: `${(SCORES.name || 'Student').replace(/\s+/g,'_')}_Sahirah_Report.pdf`,
-      image: { type: 'jpeg', quality: 0.95 },
+      margin: [10, 10, 10, 10],
+      filename: filename,
+      image: { type: 'jpeg', quality: 0.92 },
       html2canvas: {
         scale: 2,
         useCORS: true,
         logging: false,
         scrollX: 0,
-        scrollY: -window.scrollY,
-        windowWidth: document.documentElement.scrollWidth,
+        scrollY: 0,
+        windowWidth: 1200,
+        onclone: (doc) => {
+          const ls = doc.getElementById('loading-screen');
+          if (ls) ls.style.display = 'none';
+          const footer = doc.getElementById('report-footer');
+          if (footer) footer.style.display = 'none';
+        }
       },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait'
+      },
+      pagebreak: {
+        mode: ['css', 'legacy'],
+        avoid: ['.module-summary-card', '.career-card', '.gap-item']
+      }
     }).from(element).save();
-  } catch (e) {
+  } catch(e) {
     console.error('PDF generation failed:', e);
-    alert('Could not generate PDF. Please try again or use Print Report instead.');
+    alert('PDF generation failed. Please use the Print button instead.');
   } finally {
-    btn.textContent = '⬇ Download PDF';
-    btn.disabled = false;
+    if (btn) btn.innerHTML = originalText;
   }
 }
 
