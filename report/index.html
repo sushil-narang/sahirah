@@ -357,7 +357,7 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
   <div class="report-section" id="section-stream-compare">
     <div class="rs-header">
       <div class="rs-icon" style="background:#FDF0CC;">🎯</div>
-      <div class="rs-title">Stream Comparison</div>
+      <div class="rs-title">The Direction Your Mind Points</div>
       <div class="rs-sub">Stage 1 result</div>
     </div>
     <div class="card" style="margin-bottom:1.25rem;">
@@ -367,7 +367,7 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
     <div class="card">
       <table class="es-table" style="width:100%;border-collapse:collapse;">
         <thead>
-          <tr><th class="es-label" style="text-align:left;">Stream</th><th class="es-label" style="text-align:left;">Top 2 Strengths</th><th class="es-label" style="text-align:left;">Needs Work</th></tr>
+          <tr><th class="es-label" style="text-align:left;">If you choose</th><th class="es-label" style="text-align:left;">You'll excel because</th><th class="es-label" style="text-align:left;">You'll need to build</th></tr>
         </thead>
         <tbody id="stream-strengths-table"></tbody>
       </table>
@@ -1198,7 +1198,12 @@ function buildReport() {
 // ---- S4: STREAM COMPARISON ----
 function buildStreamComparison(S) {
   const streamColors = {non:'#1A5FA8',med:'#7B2FBE',com:'#0A6B5E',hum:'#C0410A'};
-  const streamNames = {non:'Non-Medical',med:'Medical',com:'Commerce',hum:'Humanities'};
+  const streamNames = {
+    non: 'Engineering & Technology',
+    med: 'Medical & Life Sciences',
+    com: 'Business & Commerce',
+    hum: 'Humanities & Social Sciences',
+  };
   const sorted = Object.entries(S.streams).sort((a,b)=>b[1]-a[1]);
   // Trust the server-computed primary stream — jsonb doesn't preserve key
   // order on round-trip, so re-deriving "primary" from a client-side sort
@@ -1227,14 +1232,29 @@ function buildStreamComparison(S) {
 
   const verdictEl = document.getElementById('stream-verdict');
   verdictEl.innerHTML = '';
+  const verdictTextByConfidence = {
+    high: `The data speaks clearly. ${S.name}'s aptitude, interests, personality and values all converge on ${streamNames[primary]}. This is not a close call — it is a consistent signal across six independent dimensions of assessment.`,
+    moderate: `${S.name}'s profile shows a meaningful lean toward ${streamNames[primary]}, with genuine strength in ${streamNames[second[0]]} as well. Both paths are worth exploring — the final choice will come down to the specific subject ${S.name} finds most compelling, not any single test result.`,
+    low: `${S.name} has a genuinely versatile mind — one that carries real aptitude across multiple domains. The slight lean toward ${streamNames[primary]} is worth noting, but this is a profile that could thrive in more than one direction. A counselling conversation is the right next step alongside this report.`,
+    very_low: `${S.name}'s scores are unusually balanced across all four streams — which is itself a meaningful finding. This is a rare cognitive profile that carries aptitude and interest in multiple directions simultaneously. We strongly recommend a one-on-one counselling session to explore this further.`,
+  };
   const strong = document.createElement('strong');
   strong.textContent = `Primary stream identified: ${streamNames[primary]}`;
   const br = document.createElement('br');
   const span = document.createElement('span');
-  span.textContent = `Your aptitude depth, interests and personality profile strongly align with the ${streamNames[primary]} stream. ${second[1] > 15 ? `There is a secondary affinity with ${streamNames[second[0]]} (${second[1]}%) worth keeping in mind as an alternate path.` : 'All other streams score significantly lower, confirming this is a clear and confident match.'}`;
+  span.textContent = verdictTextByConfidence[S.confidenceLevel] || verdictTextByConfidence.low;
   verdictEl.appendChild(strong);
   verdictEl.appendChild(br);
   verdictEl.appendChild(span);
+  if (S.confidenceLevel === 'very_low') {
+    const link = document.createElement('a');
+    link.href = 'https://sahirah.in/register';
+    link.textContent = 'Book a Counselling Session →';
+    link.className = 'rf-btn rf-btn-gold';
+    link.style.cssText = 'display:inline-flex;margin-top:.75rem;';
+    verdictEl.appendChild(document.createElement('br'));
+    verdictEl.appendChild(link);
+  }
 
   const tbody = document.getElementById('stream-strengths-table');
   tbody.innerHTML = '';
