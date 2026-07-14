@@ -31,10 +31,10 @@ const SKILL_TO_DIMENSION = {
   social_skill: 'eq_social_skill', stress_regulation: 'eq_stress_regulation',
   creativity_value: 'val_creativity_value', growth: 'val_growth', impact: 'val_impact',
   recognition: 'val_recognition', stability_value: 'val_stability_value', wealth: 'val_wealth',
-  leadership_judgement: 'leadership',
-  integrity: 'eq_self_awareness',
-  adaptability: 'per_stability',
-  collaboration: 'eq_social_skill',
+  leadership_judgement: 'sit_leadership',
+  integrity: 'sit_integrity',
+  adaptability: 'sit_adaptability',
+  collaboration: 'sit_collaboration',
 };
 
 exports.handler = async (event) => {
