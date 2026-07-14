@@ -921,6 +921,7 @@ async function initReport(sessionId, regId) {
     streams: S.stream_scores,
     primaryStream: S.primary_stream,
     careers: S.top_careers,
+    wildcard: S.wildcard_career,
 
     aptitude: {
       logical: sk.logical ?? 50, numerical: sk.numerical ?? 50, verbal: sk.verbal ?? 50,
@@ -1570,7 +1571,7 @@ function buildDeepDive(S) {
 function buildWildcardCareer(S) {
   const container = document.getElementById('wildcard-card');
   const summaryEl = document.getElementById('wildcard-summary');
-  const wc = S.careers?.[3];
+  const wc = S.wildcard;
   if (!wc) {
     container.innerHTML = `<p style="color:rgba(26,18,8,.5);text-align:center;">No wildcard career available for this stream.</p>`;
     if (summaryEl) summaryEl.style.display = 'none';
