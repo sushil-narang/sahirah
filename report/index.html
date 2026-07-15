@@ -76,6 +76,17 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
 /* SECTION */
 .report-section{margin-bottom:2rem;}
 .rs-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;page-break-after:avoid;}
+#section-wildcard, #section-gaps {
+  page-break-before: always;
+  break-before: page;
+}
+#section-wildcard .rs-header,
+#section-gaps .rs-header {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  break-after: avoid;
+  page-break-after: avoid;
+}
 .rs-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
 .rs-title{font-family:var(--fd);font-size:1.3rem;font-weight:700;}
 .rs-sub{font-size:.8rem;color:rgba(26,18,8,.45);margin-left:auto;font-family:var(--fm);}
@@ -911,6 +922,7 @@ async function initReport(sessionId, regId) {
     .single();
 
   const { data: streamProfiles } = await _db.from('stream_profiles').select('*');
+  const streamIdeal = (streamProfiles || []).find(p => p.stream_code === session.primary_stream) || {};
 
   const S = session.score_json;
   const sk = S.skill_scores;
@@ -919,6 +931,7 @@ async function initReport(sessionId, regId) {
     sessionId: sessionId,
     dimension_scores: S.dimension_scores || {},
     streamProfiles: streamProfiles || [],
+    streamIdeal,
     topCareerHighWeightDims: S.top_career_high_weight_dims || [],
     name: [reg?.child_first_name, reg?.child_last_name].filter(Boolean).join(' ') || 'Student',
     age: reg?.child_age || '',
@@ -1580,6 +1593,10 @@ function buildModuleSummary(group, S) {
     if (label === 'Exceptional') summary = `${name} shows exceptional reasoning ability — a rare cognitive edge for technical and analytical careers.`;
     else if (label === 'Strong') summary = `${name} demonstrates solid analytical thinking, with ${top} as the standout skill.`;
     else if (label === 'Average') summary = `${name}'s reasoning is developing well — ${top} shows the most promise.`;
+    else if (S.primaryStream === 'med') {
+      const firstName = (S.name || '').split(' ')[0];
+      summary = `${firstName}'s aptitude scores are currently at a developing stage — and this matters directly for the Medical path. NEET UG, the gateway to MBBS, demands strong numerical reasoning and logical problem-solving under strict time pressure. This is the one area in ${firstName}'s profile that calls for immediate, deliberate attention. The encouraging reality: aptitude is the most trainable dimension in this report. Two to three years of consistent, structured practice before Class 12 can close this gap significantly — but the work needs to start now.`;
+    }
     else summary = `Clear room to grow here — consistent practice with reasoning exercises will build this rapidly.`;
   } else if (group.title === 'Personality') {
     const sorted = Object.entries(sourceObj).filter(([,v]) => typeof v === 'number').sort((a,b)=>b[1]-a[1]);
@@ -1742,7 +1759,9 @@ function buildRoadmap(S) {
   container.innerHTML = '';
   S.roadmap.forEach((step, i) => {
     const card = document.createElement('div');
-    card.style.cssText = `background:${step.bg};border:1px solid ${step.color}33;border-radius:16px;padding:1.5rem;margin-bottom:1rem;`;
+    card.className = 'rm-step-card';
+    card.style.cssText = `background:${step.bg};border:1px solid ${step.color}33;border-radius:16px;padding:1.5rem;margin-bottom:1rem;page-break-inside:avoid;break-inside:avoid;`
+      + (i > 0 ? 'break-before:avoid;page-break-before:avoid;' : '');
     card.innerHTML = `
       <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem;">
         <div style="width:28px;height:28px;border-radius:50%;background:${step.color};color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:.78rem;font-weight:700;flex-shrink:0;">${i+1}</div>
@@ -1799,18 +1818,25 @@ function buildGapAnalysis(S) {
   const topCareerTitle = S.careers?.[0]?.title || 'your top career';
   const subEl = document.getElementById('gaps-sub');
   if (subEl) subEl.textContent = `Focused areas for ${topCareerTitle}`;
-  const profile = (S.streamProfiles || []).find(p => p.stream_code === S.primaryStream);
+  const streamIdeal = S.streamIdeal || {};
   const qualifyingDims = S.topCareerHighWeightDims || [];
+  const GAP_DORMANT_SKILLS = ['emotional_resilience', 'divergent_thinking', 'leadership'];
 
-  const gaps = (profile ? qualifyingDims : [])
+  const gaps = qualifyingDims
+    .filter(dim => {
+      const score = S.dimension_scores[dim] ?? 50;
+      if (score === 0) return false; // insufficient question coverage — not a real gap
+      if (GAP_DORMANT_SKILLS.includes(dim) && score === 50) return false; // dormant-default, not a real score
+      return true;
+    })
     .map(dim => ({
       dim,
       studentScore: S.dimension_scores[dim] ?? 50,
-      targetScore: profile[dim] ?? 50,
-      gap: (profile[dim] ?? 50) - (S.dimension_scores[dim] ?? 50),
+      targetScore: streamIdeal[dim] ?? 0,
+      gap: (streamIdeal[dim] ?? 0) - (S.dimension_scores[dim] ?? 50),
     }))
-    .filter(g => g.gap > 10)
-    .sort((a,b) => b.gap - a.gap)
+    .filter(g => g.gap > 15)
+    .sort((a,b) => b.gap - a.gap || a.dim.localeCompare(b.dim))
     .slice(0, 3);
 
   if (!gaps.length) {
@@ -1892,7 +1918,7 @@ async function downloadPDF() {
       },
       pagebreak: {
         mode: ['avoid-all', 'css'],
-        avoid: ['.module-summary-card', '.trait-row', '.rs-header']
+        avoid: ['.module-summary-card', '.trait-row', '.rs-header', '.rm-step-card']
       }
     }).from(element).save();
   } catch(e) {
