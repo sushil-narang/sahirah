@@ -337,9 +337,6 @@ exports.handler = async (event) => {
     const careerFits = (careers || []).map(career => {
       let num = 0, den = 0;
       let below_cutoff = false;
-      let reality_check_dim = null;
-      let reality_check_score = null;
-      let reality_check_weight = -1;
       const dimensionWeights = [];
 
       DIMENSIONS.forEach(dim => {
@@ -351,18 +348,26 @@ exports.handler = async (event) => {
 
         const minReq = career['min_req_' + dim] || 0;
         if (minReq > 0 && (dimension_scores[dim] ?? 0) < minReq) below_cutoff = true;
-
-        // Reality check: this career's highest-weighted dimension where the student scored below 70.
-        // s > 0 excludes insufficient-question-coverage dimensions (score is exactly 0, not a real
-        // weakness) from ever winning this flag — 0 would otherwise dominate every comparison.
-        if (w > 0 && s > 0 && s < 70 && w > reality_check_weight) {
-          reality_check_weight = w;
-          reality_check_dim = dim;
-          reality_check_score = s;
-        }
       });
 
-      const top_dimensions = [...dimensionWeights].sort((a,b) => b.weight - a.weight).slice(0,3).map(d => d.dim);
+      // Zero-score dims (insufficient question coverage) are excluded from both
+      // selections below — a 0 is missing data, not a real strength or weakness,
+      // and must never be presented to the student as either.
+      const stableSort = (a, b) => b.weight - a.weight || a.dim.localeCompare(b.dim);
+
+      const top_dimensions = dimensionWeights
+        .filter(d => d.weight > 0 && (dimension_scores[d.dim] ?? 0) > 0)
+        .sort(stableSort)
+        .slice(0, 3)
+        .map(d => d.dim);
+
+      // Reality check: this career's highest-weighted dimension where the student
+      // scored below 70 (and above 0 — see zero-score note above).
+      const realityCheckCandidates = dimensionWeights
+        .filter(d => d.weight > 0 && (dimension_scores[d.dim] ?? 0) > 0 && (dimension_scores[d.dim] ?? 0) < 70)
+        .sort(stableSort);
+      const reality_check_dim = realityCheckCandidates[0]?.dim ?? null;
+      const reality_check_score = reality_check_dim ? dimension_scores[reality_check_dim] : null;
 
       const fit = den > 0 ? Math.round((num / den) * 100) : 0;
       const priorityScore = getPriorityScore(career.name, career.stream_code);
@@ -385,16 +390,18 @@ exports.handler = async (event) => {
       };
     });
 
+    const blendedSort = (a, b) => b.blended - a.blended || String(a.career_id).localeCompare(String(b.career_id));
+
     const top_careers = careerFits
       .filter(c => c.stream === primary_stream)
-      .sort((a, b) => b.blended - a.blended)
+      .sort(blendedSort)
       .slice(0, 5);
 
     // Single highest-blended career from any stream other than primary_stream —
     // the global best among non-primary careers, not the best-of-each-stream.
     const wildcard_career = careerFits
       .filter(c => c.stream !== primary_stream)
-      .sort((a, b) => b.blended - a.blended)[0] || null;
+      .sort(blendedSort)[0] || null;
 
     const primaryCareerRow = (careers || []).find(c => c.id === top_careers[0]?.career_id);
     const top_career_high_weight_dims = primaryCareerRow

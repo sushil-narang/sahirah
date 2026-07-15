@@ -1626,6 +1626,24 @@ function buildDeepDive(S) {
   const container = document.getElementById('deepdive-groups');
   container.innerHTML = '';
 
+  const hiddenDims = DIMENSION_GROUPS
+    .flatMap(g => g.dims)
+    .filter(dim => (S.dimension_scores?.[dim] ?? 0) === 0);
+
+  if (hiddenDims.length > 0) {
+    const note = document.createElement('p');
+    note.style.cssText = `
+      font-size: 0.8rem;
+      color: #9B8E82;
+      font-style: italic;
+      margin: 0 0 1.5rem 0;
+      padding: 0.5rem 1rem;
+      border-left: 2px solid #D4C9B8;
+    `;
+    note.textContent = `Note: ${hiddenDims.length} dimension(s) could not be scored in this evaluation due to limited question coverage in the question bank — they will appear in future evaluations as more questions are added.`;
+    container.appendChild(note);
+  }
+
   const SOFT_SKILLS_DIMS = ['emotional_resilience', 'divergent_thinking', 'leadership'];
   let renderedDimensionCount = 0;
   let excludedDimensionCount = 0; // zero-score or dormant-module — intentional, not a bug
