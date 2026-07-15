@@ -346,7 +346,7 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
     </div>
     <div class="card" style="margin-bottom:1.25rem;">
       <p style="font-size:.9rem;line-height:1.7;color:rgba(26,18,8,.7);">
-        185 questions · 29 psychological dimensions · 100 career archetypes ·
+        185 questions · 28 measured dimensions · 100 career archetypes ·
         Weighted similarity algorithm · Aligned with Big Five and RIASEC frameworks
       </p>
     </div>
@@ -385,7 +385,7 @@ nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64
       <div class="lock-overlay-inner">
         <div class="lo-icon">📊</div>
         <div class="lo-title">Complete Dimension Breakdown</div>
-        <div class="lo-sub">See your full score across all 29 measured dimensions — aptitude, personality, EQ, interests, values, and soft skills — each with a detailed interpretation.</div>
+        <div class="lo-sub">See your full score across all 28 measured dimensions — aptitude, personality, EQ, interests, values, and soft skills — each with a detailed interpretation.</div>
         <div class="lo-btns">
           <a href="../payment/" class="lo-btn lo-btn-gold">🔓 Unlock — from ₹499</a>
         </div>
@@ -1626,15 +1626,15 @@ function buildDeepDive(S) {
   const container = document.getElementById('deepdive-groups');
   container.innerHTML = '';
 
-  const SOFT_SKILLS_DIMS = ['emotional_resilience', 'divergent_thinking', 'leadership'];
+  const DORMANT_SKILLS = ['emotional_resilience', 'divergent_thinking', 'leadership'];
+  const isHidden = (dim, score) => score === 0 || (DORMANT_SKILLS.includes(dim) && score === 50);
+
   let renderedDimensionCount = 0;
-  let excludedDimensionCount = 0; // zero-score or dormant-module — intentional, not a bug
+  let excludedDimensionCount = 0; // zero-score or dormant-default — intentional, not a bug
 
   DIMENSION_GROUPS.forEach(group => {
-    if (group.title === 'Soft Skills') {
-      const softSkillsAreDormant = SOFT_SKILLS_DIMS.every(dim => (S.dimension_scores[dim] ?? 50) === 50);
-      if (softSkillsAreDormant) { excludedDimensionCount += group.dims.length; return; }
-    }
+    const renderableDims = group.dims.filter(dim => !isHidden(dim, S.dimension_scores[dim] ?? 50));
+    if (renderableDims.length === 0) { excludedDimensionCount += group.dims.length; return; }
 
     const groupEl = document.createElement('div');
     groupEl.className = 'card';
@@ -1650,8 +1650,9 @@ function buildDeepDive(S) {
     group.dims.forEach(dim => {
       const score = S.dimension_scores[dim] ?? 50;
 
-      // ZERO-SCORE RULE (Part E): insufficient question coverage — never shown
-      if (score === 0) { excludedDimensionCount++; return; }
+      // Hide zero-score (insufficient question coverage) and dormant-default
+      // (module not yet active) dimensions — neither reflects a real score.
+      if (isHidden(dim, score)) { excludedDimensionCount++; return; }
 
       renderedDimensionCount++;
       const label = getScoreLabel(score);
