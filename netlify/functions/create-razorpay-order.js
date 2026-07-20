@@ -7,7 +7,13 @@
 //   3. In Netlify → Site Settings → Environment Variables → add:
 //        RAZORPAY_KEY_ID     = rzp_test_XXXXXXXXXXXX  (or rzp_live_XXX for production)
 //        RAZORPAY_KEY_SECRET = your_key_secret
+//        PRICE_BASIC         = 499
+//        PRICE_PREMIUM       = 1499
 //   4. Also add RAZORPAY_KEY_ID to the payment page JS (frontend uses it to open checkout)
+
+const PRICE_BASIC   = parseInt(process.env.PRICE_BASIC)   || 499;
+const PRICE_PREMIUM = parseInt(process.env.PRICE_PREMIUM) || 1499;
+const PLAN_PRICES = { basic: PRICE_BASIC, premium: PRICE_PREMIUM };
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -36,6 +42,18 @@ exports.handler = async (event) => {
       statusCode: 400,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ok: false, error: 'Invalid amount' }),
+    };
+  }
+
+  // Guardrail: never create an order for more than the real plan price —
+  // coupon-discounted amounts are always <= this, so legitimate discounts
+  // still work. This does not validate the coupon itself server-side.
+  const maxAllowed = PLAN_PRICES[body.plan];
+  if (maxAllowed && amountPaise > maxAllowed * 100) {
+    return {
+      statusCode: 400,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ok: false, error: 'Amount exceeds plan price' }),
     };
   }
 
