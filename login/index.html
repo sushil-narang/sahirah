@@ -37,6 +37,8 @@ body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16
 .lc-field input{width:100%;background:#FAFAF7;border:1.5px solid var(--border);border-radius:10px;padding:.75rem 1rem;font-size:.9rem;color:var(--ink);font-family:var(--fb);outline:none;transition:border-color .2s;}
 .lc-field input:focus{border-color:var(--gold);background:#fff;}
 .lc-field input.err{border-color:var(--red);}
+.lc-field-input-standalone{width:100%;background:#FAFAF7;border:1.5px solid var(--border);border-radius:10px;padding:.75rem 1rem;font-size:.9rem;color:var(--ink);font-family:var(--fb);outline:none;transition:border-color .2s;}
+.lc-field-input-standalone:focus{border-color:var(--gold);background:#fff;}
 .lc-err{background:var(--red-light);border:1px solid rgba(192,65,10,.2);border-radius:10px;padding:.75rem 1rem;font-size:.82rem;color:var(--red);margin-bottom:1rem;display:none;}
 .lc-err.show{display:block;}
 .btn-login{width:100%;background:var(--ink);color:var(--cream);border:none;border-radius:100px;padding:.9rem;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .25s;margin-top:.5rem;}
@@ -247,6 +249,18 @@ body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16
     <div class="lc-timelock">
       <div class="lc-timelock-icon">🔒</div>
       <div class="lc-timelock-text"><strong>Time-locked access:</strong> The test portal opens only at your scheduled appointment time. If you log in early, you will see a countdown to your test start.</div>
+    </div>
+
+    <div style="text-align:center;margin-top:1.25rem;">
+      <p style="font-size:0.85rem;color:#6B5F52;">
+        Didn't receive your credentials?
+        <a href="#" onclick="showResendForm(event)" style="color:#C8860A;font-weight:600;">Resend login details</a>
+      </p>
+      <div id="resend-form" style="display:none;margin-top:0.75rem;">
+        <input type="email" id="resend-email" placeholder="Enter your registered email address" class="lc-field-input-standalone"/>
+        <button onclick="doResend()" class="btn-login" style="margin-top:.6rem;">Send my credentials →</button>
+        <p id="resend-status" style="margin-top:0.5rem;font-size:0.85rem;"></p>
+      </div>
     </div>
 
     <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid rgba(26,18,8,.08);text-align:center;display:flex;justify-content:space-between;font-size:.78rem;">
@@ -668,6 +682,39 @@ async function doLogin() {
     document.getElementById('login-id').classList.add('err');
     document.getElementById('login-pass').classList.add('err');
     setTimeout(()=>{ document.getElementById('login-id').classList.remove('err'); document.getElementById('login-pass').classList.remove('err'); }, 2000);
+  }
+}
+
+// ================================================================
+// RESEND CREDENTIALS
+// ================================================================
+function showResendForm(e) {
+  e.preventDefault();
+  document.getElementById('resend-form').style.display = 'block';
+}
+
+async function doResend() {
+  const email = document.getElementById('resend-email').value;
+  const statusEl = document.getElementById('resend-status');
+  statusEl.textContent = 'Sending...';
+  statusEl.style.color = '#6B5F52';
+  try {
+    const res = await fetch('/.netlify/functions/resend-credentials', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      statusEl.textContent = '✅ Credentials sent — please check your email.';
+      statusEl.style.color = '#3B6D11';
+    } else {
+      statusEl.textContent = '❌ ' + (data.error || 'Something went wrong. Email contact@sahirah.in');
+      statusEl.style.color = '#A32D2D';
+    }
+  } catch(e) {
+    statusEl.textContent = '❌ Could not connect. Please try again.';
+    statusEl.style.color = '#A32D2D';
   }
 }
 
