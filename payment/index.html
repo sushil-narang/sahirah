@@ -981,8 +981,10 @@ async function grantAccess(accessType, amountPaid, razorpayPaymentId) {
 
   // Standalone flow — save payment to Supabase immediately
   try {
-    const user  = JSON.parse(localStorage.getItem('sahirah_user') || 'null');
-    const regId = user?.reg_id || null;
+    // sahirah_user is never actually populated for a logged-in session —
+    // login/index.html only sets the flat sahirah_reg_id key. Reading
+    // that directly instead of the unreliable user?.reg_id.
+    const regId = localStorage.getItem('sahirah_reg_id') || null;
     if (regId) {
       await SahirahDB.savePaymentRecord({
         reg_id:          regId,
@@ -1001,6 +1003,22 @@ async function grantAccess(accessType, amountPaid, razorpayPaymentId) {
         await SahirahDB.incrementCouponUsage(appliedCode).catch(() => {});
       }
       await SahirahDB.updateRegistrationAccess(regId, accessType, appliedCode || null, schoolId || null, counselorId || null).catch(() => {});
+
+      // Send payment receipt email — only for actual paid transactions.
+      // parent_name/parent_email/child_name are omitted; send-receipt.js
+      // looks them up server-side from the registrations table via reg_id.
+      if (amountPaid > 0 && razorpayPaymentId) {
+        fetch('/.netlify/functions/send-receipt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            reg_id:     regId,
+            payment_id: razorpayPaymentId,
+            amount:     amountPaid,
+            plan_type:  accessType === 'premium' ? 'Premium + Counselling' : 'Basic Report',
+          }),
+        }).catch(e => console.warn('Receipt email failed:', e));
+      }
     }
   } catch(e) { console.error('Access record save failed:', e); }
 

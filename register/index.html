@@ -1206,6 +1206,26 @@ async function submitForm() {
       await SahirahDB.updateRegistrationAccess(regId, _payInfo.plan, _payInfo.couponCode || null, null, null);
       localStorage.setItem('sahirah_access_type', _payInfo.plan);
     } catch(e) { console.warn('Payment record save failed:', e); }
+
+    // Send payment receipt email — only for actual paid transactions
+    // (free/scholarship access has no razorpayId). Soft failure — never
+    // blocks registration or report access.
+    if (_payInfo.razorpayId) {
+      fetch('/.netlify/functions/send-receipt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reg_id:       regId,
+          parent_name:  document.getElementById('parent-name').value.trim(),
+          parent_email: email,
+          child_name:   fn + ' ' + ln,
+          payment_id:   _payInfo.razorpayId,
+          amount:       _payInfo.amount,
+          plan_type:    _payInfo.planName,
+        }),
+      }).catch(e => console.warn('Receipt email failed:', e));
+    }
+
     localStorage.removeItem('sahirah_payment_info');
     localStorage.removeItem('sahirah_pending_reg');
   }
