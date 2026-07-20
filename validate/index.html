@@ -367,7 +367,7 @@ const SKILL_TAXONOMY = [
 const SKILL_LABELS = Object.fromEntries(SKILL_TAXONOMY.map(s => [s.key, s.label]));
 
 let STATE = {
-  token: localStorage.getItem('sahirah_validator_token') || null,
+  token: new URLSearchParams(location.search).get('token') || localStorage.getItem('sahirah_validator_token') || null,
   validatorId: localStorage.getItem('sahirah_validator_id') || null,
   validatorName: localStorage.getItem('sahirah_validator_name') || null,
   allQuestions: [],
@@ -416,6 +416,7 @@ async function init() {
     if (res.success) {
       STATE.validatorId = res.validator_id;
       STATE.validatorName = res.validator_name;
+      localStorage.setItem('sahirah_validator_token', STATE.token);
       localStorage.setItem('sahirah_validator_id', res.validator_id);
       localStorage.setItem('sahirah_validator_name', res.validator_name);
       await enterOverview();
