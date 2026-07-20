@@ -337,6 +337,7 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
       <div class="sb-item" onclick="showView('coupons')"><span class="sb-item-icon">🎟️</span>Coupon Codes</div>
       <div class="sb-item" onclick="showView('counselors')"><span class="sb-item-icon">👤</span>Counselors</div>
       <div class="sb-item" onclick="showView('qbank')"><span class="sb-item-icon">🗂️</span>Question Bank</div>
+      <div class="sb-item" onclick="showView('validators')"><span class="sb-item-icon">🧑‍🔬</span>Validators <span class="sb-badge" id="badge-validators">0</span></div>
       <div class="sb-item" onclick="showView('discovery')"><span class="sb-item-icon">🔍</span>Discovery Qs</div>
       <div class="sb-item" onclick="showView('profile')"><span class="sb-item-icon">⚙️</span>Profile</div>
     </div>
@@ -488,6 +489,22 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
           <table class="t-table">
             <thead><tr><th>#</th><th>Name</th><th>Code</th><th>Email</th><th>City</th><th>Commission</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody id="counselors-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- VALIDATORS -->
+      <div class="page-view" id="view-validators">
+        <div class="table-wrap">
+          <div class="table-head">
+            <h3>Validators <span id="validators-count" style="font-family:var(--fm);font-size:.72rem;color:rgba(26,18,8,.35);margin-left:.4rem;font-weight:400;"></span></h3>
+            <div class="th-actions">
+              <button class="btn-sm" style="background:var(--gold-pale);color:var(--gold);border:1.5px solid rgba(200,134,10,.2);" onclick="openInviteValidator()">+ Invite Validator</button>
+            </div>
+          </div>
+          <table class="t-table">
+            <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Expertise</th><th>Institution</th><th>Reviewed</th><th>Last Active</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="validators-tbody"></tbody>
           </table>
         </div>
       </div>
@@ -879,13 +896,13 @@ function showView(name) {
   document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + name)?.classList.add('active');
   document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
-  const allViews = ['overview','users','completed','inprogress','schools','coupons','counselors','qbank','discovery','profile'];
+  const allViews = ['overview','users','completed','inprogress','schools','coupons','counselors','qbank','validators','discovery','profile'];
   const idx = allViews.indexOf(name);
   document.querySelectorAll('.sb-item')[idx]?.classList.add('active');
   const titles = {
     overview:'Overview', users:'Registered Users', completed:'Completed Tests', inprogress:'Tests In Progress',
     schools:'Schools', coupons:'Coupon Codes', counselors:'Counselors / Franchise',
-    qbank:'Question Bank', discovery:'Discovery Questions', profile:'Profile'
+    qbank:'Question Bank', validators:'Validators', discovery:'Discovery Questions', profile:'Profile'
   };
   document.getElementById('tb-title').textContent = titles[name] || name;
   if (name === 'qbank') { if (!qbData) initQBank(); else renderQBank(); }
@@ -893,6 +910,7 @@ function showView(name) {
   if (name === 'schools') loadSchools();
   if (name === 'coupons') loadCoupons();
   if (name === 'counselors') loadCounselors();
+  if (name === 'validators') loadValidators();
 }
 
 // ================================================================
@@ -2925,6 +2943,130 @@ async function toggleCounselorActive(id, active) {
   await _db.from('counselors').update({ is_active: active }).eq('id', id);
   showAdminToast(active ? 'Counselor activated.' : 'Counselor deactivated.');
   loadCounselors();
+}
+
+// ================================================================
+// VALIDATORS
+// ================================================================
+let allValidators = [];
+const VALIDATOR_EXPERTISE_OPTIONS = ['Clinical Psychology','Educational Psychology','Career Counselling','Psychiatry','School Counselling','Child Development','Other'];
+
+async function loadValidators() {
+  try {
+    const { data } = await _db.from('validators').select('*').order('created_at', { ascending: false });
+    allValidators = data || [];
+  } catch(e) { allValidators = []; }
+  renderValidators();
+}
+
+function renderValidators() {
+  const tbody = document.getElementById('validators-tbody');
+  document.getElementById('validators-count').textContent = `(${allValidators.length})`;
+  const badge = document.getElementById('badge-validators');
+  if (badge) badge.textContent = allValidators.length;
+  if (!allValidators.length) {
+    tbody.innerHTML = '<tr><td colspan="9" class="t-empty">No validators yet. Click "+ Invite Validator" to add one.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = allValidators.map((v, i) => `
+    <tr>
+      <td style="color:rgba(26,18,8,.3);font-family:var(--fm);font-size:.68rem;">${i+1}</td>
+      <td><strong>${escAdmin(v.name)}</strong></td>
+      <td style="font-size:.78rem;">${escAdmin(v.email)}</td>
+      <td style="font-size:.78rem;">${escAdmin(v.expertise||'—')}</td>
+      <td style="font-size:.78rem;">${escAdmin(v.institution||'—')}</td>
+      <td style="font-family:var(--fm);font-size:.78rem;">${v.questions_reviewed||0}</td>
+      <td style="font-size:.72rem;color:rgba(26,18,8,.5);">${v.last_active_at ? new Date(v.last_active_at).toLocaleDateString() : '—'}</td>
+      <td><span class="status-badge ${v.is_active?'s-scheduled':'s-reg'}">${v.is_active?'Active':'Inactive'}</span></td>
+      <td>
+        <button class="btn-sm btn-sm-outline" onclick="copyValidatorLink('${v.access_token}')">Copy Link</button>
+        <button class="${v.is_active?'toggle-on':'toggle-off'}" onclick='toggleValidatorActive("${v.id}",${!v.is_active})'>${v.is_active?'Deactivate':'Activate'}</button>
+      </td>
+    </tr>`).join('');
+}
+
+async function toggleValidatorActive(id, active) {
+  try {
+    const { error } = await _db.from('validators').update({ is_active: active }).eq('id', id);
+    if (error) throw error;
+    showAdminToast(active ? 'Validator activated.' : 'Validator deactivated.');
+    loadValidators();
+  } catch(e) { showAdminToast('Error: ' + (e.message || 'Could not update validator.')); }
+}
+
+function copyValidatorLink(token) {
+  const link = `https://sahirah.in/validate/?token=${token}`;
+  navigator.clipboard.writeText(link).then(
+    () => showAdminToast('Link copied to clipboard.'),
+    () => showAdminToast(link)
+  );
+}
+
+function openInviteValidator() {
+  const modal = document.createElement('div');
+  modal.className = 'form-overlay show';
+  modal.id = 'add-validator-modal';
+  modal.onclick = e => { if (e.target === modal) modal.remove(); };
+  modal.innerHTML = `<div class="form-modal">
+    <div class="fm-header"><div class="fm-title">Invite Validator</div><button class="fm-close" onclick="this.closest('.form-overlay').remove()">✕</button></div>
+    <div class="fm-field"><label>Name</label><input id="fm-val-name" type="text" placeholder="Validator full name"/></div>
+    <div class="fm-field"><label>Email</label><input id="fm-val-email" type="email" placeholder="validator@email.com"/></div>
+    <div class="fm-field"><label>Expertise</label>
+      <select id="fm-val-expertise">
+        <option value="">Select…</option>
+        ${VALIDATOR_EXPERTISE_OPTIONS.map(e => `<option>${e}</option>`).join('')}
+      </select>
+    </div>
+    <div class="fm-field"><label>Institution / Organisation (optional)</label><input id="fm-val-institution" type="text"/></div>
+    <div class="fm-footer">
+      <button class="btn-fm-cancel" onclick="this.closest('.form-overlay').remove()">Cancel</button>
+      <button class="btn-fm-save" id="fm-val-submit" onclick="saveInviteValidator()">Invite →</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+}
+
+async function saveInviteValidator() {
+  const name = document.getElementById('fm-val-name').value.trim();
+  const email = document.getElementById('fm-val-email').value.trim();
+  const expertise = document.getElementById('fm-val-expertise').value;
+  const institution = document.getElementById('fm-val-institution').value.trim();
+  if (!name || !email || !expertise) { showAdminToast('Name, email, and expertise are required.'); return; }
+
+  const btn = document.getElementById('fm-val-submit');
+  btn.disabled = true; btn.textContent = 'Sending…';
+
+  try {
+    const res = await fetch('/.netlify/functions/validator-auth', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'register', name, email, expertise, institution: institution || null }),
+    }).then(r => r.json());
+
+    if (!res.success) {
+      btn.disabled = false; btn.textContent = 'Invite →';
+      showAdminToast('Error: ' + (res.error || 'Could not invite validator.'));
+      return;
+    }
+    showValidatorLinkResult(res.validator_name, res.access_token);
+    loadValidators();
+  } catch(e) {
+    btn.disabled = false; btn.textContent = 'Invite →';
+    showAdminToast('Error: Could not reach the server.');
+  }
+}
+
+function showValidatorLinkResult(name, token) {
+  const link = `https://sahirah.in/validate/?token=${token}`;
+  const modal = document.getElementById('add-validator-modal');
+  if (!modal) return;
+  modal.querySelector('.form-modal').innerHTML = `
+    <div class="fm-header"><div class="fm-title">Validator Invited</div><button class="fm-close" onclick="this.closest('.form-overlay').remove()">✕</button></div>
+    <p style="font-size:.85rem;color:rgba(26,18,8,.65);margin-bottom:1rem;">${escAdmin(name)} has been added. Share this link with them:</p>
+    <div class="fm-field"><input type="text" value="${escAdmin(link)}" readonly style="font-family:var(--fm);font-size:.78rem;" onclick="this.select();"/></div>
+    <div class="fm-footer">
+      <button class="btn-fm-cancel" onclick="this.closest('.form-overlay').remove()">Done</button>
+      <button class="btn-fm-save" onclick="copyValidatorLink('${token}')">📋 Copy Link</button>
+    </div>`;
 }
 
 function escAdmin(s) {
