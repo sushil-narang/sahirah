@@ -39,11 +39,11 @@ exports.handler = async (event) => {
 async function handleRegister(db, body) {
   const { name, email, phone, expertise, institution } = body;
 
-  if (!name || !email || !phone || !expertise) {
+  if (!name || !email || !expertise) {
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ success: false, error: 'name, email, phone, and expertise are required' }),
+      body: JSON.stringify({ success: false, error: 'name, email, and expertise are required' }),
     };
   }
 

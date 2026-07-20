@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co; img-src 'self' data:; frame-ancestors 'none';"/>
+<title>Question Bank Validation Portal — Sahirah.in</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/supabase-js/2.39.3/umd/supabase.min.js"></script>
+<script src="../assets/js/db.js"></script>
+<style>
+:root{
+  --cream:#FDF8F0;--ink:#1A1208;--gold:#C8860A;--gold-light:#F5D98A;--gold-pale:#FDF0CC;
+  --teal:#0A6B5E;--teal-light:#E0F2EE;--border:rgba(26,18,8,0.1);--shadow:0 4px 32px rgba(26,18,8,0.08);
+  --blue:#1A5FA8;--blue-light:#E8F2FF;--red:#C0410A;--red-light:#FFF0EB;--green:#2D7A1F;--green-light:#E8F5E4;
+  --fd:'Playfair Display',Georgia,serif;--fb:'DM Sans',sans-serif;--fm:'DM Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.6;}
+
+nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64px;display:flex;align-items:center;gap:.85rem;position:sticky;top:0;z-index:100;}
+.nav-logo-img{height:30px;}
+.nav-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--ink);}
+.nav-title span{color:var(--gold);}
+.nav-sub{font-size:.72rem;color:rgba(26,18,8,.45);margin-left:.6rem;padding-left:.6rem;border-left:1px solid var(--border);}
+
+.vv-wrap{max-width:760px;margin:0 auto;padding:2.5rem 5% 5rem;}
+.vv-screen{display:none;}
+
+/* CARD */
+.vv-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:2rem;box-shadow:var(--shadow);}
+
+/* SCREEN 1 — WELCOME */
+.vw-header{text-align:center;margin-bottom:2rem;}
+.vw-title{font-family:var(--fd);font-size:1.9rem;font-weight:700;margin-bottom:.5rem;}
+.vw-sub{color:rgba(26,18,8,.6);font-size:.95rem;max-width:520px;margin:0 auto;line-height:1.7;}
+.vw-field{margin-bottom:1.1rem;}
+.vw-label{display:block;font-size:.82rem;font-weight:600;margin-bottom:.4rem;color:rgba(26,18,8,.75);}
+.vw-input,.vw-select,.vw-textarea{width:100%;padding:.7rem .9rem;border:1.5px solid var(--border);border-radius:10px;font-family:var(--fb);font-size:.92rem;background:#fff;color:var(--ink);}
+.vw-input:focus,.vw-select:focus,.vw-textarea:focus{outline:none;border-color:var(--gold);}
+.vw-check-row{display:flex;align-items:flex-start;gap:.6rem;margin:1.3rem 0;font-size:.85rem;color:rgba(26,18,8,.75);}
+.vw-check-row input{margin-top:3px;flex-shrink:0;}
+.vw-error{color:var(--red);font-size:.82rem;margin-bottom:1rem;min-height:1.2em;}
+.vw-submit{width:100%;background:var(--ink);color:var(--cream);border:none;padding:.9rem;border-radius:100px;font-size:.95rem;font-weight:600;cursor:pointer;transition:background .2s;}
+.vw-submit:hover{background:var(--gold);color:var(--ink);}
+.vw-submit:disabled{opacity:.6;cursor:not-allowed;}
+
+/* SCREEN 2 — OVERVIEW */
+.ov-header{margin-bottom:1.5rem;}
+.ov-title{font-family:var(--fd);font-size:1.6rem;font-weight:700;margin-bottom:.3rem;}
+.ov-banner{background:var(--teal-light);border:1px solid rgba(10,107,94,.2);color:var(--teal);border-radius:12px;padding:.85rem 1.1rem;font-size:.85rem;margin-bottom:1.25rem;}
+.ov-overall{background:var(--gold-pale);border:1px solid var(--gold-light);border-radius:14px;padding:1.1rem 1.3rem;margin-bottom:1.5rem;}
+.ov-overall-text{font-size:.88rem;font-weight:700;margin-bottom:.5rem;}
+.ov-bar-track{height:8px;border-radius:100px;background:rgba(26,18,8,.08);overflow:hidden;}
+.ov-bar-fill{height:100%;background:var(--gold);border-radius:100px;transition:width .4s;}
+.ov-jump-btn{display:inline-flex;margin-top:.85rem;background:var(--ink);color:var(--cream);border:none;padding:.55rem 1.1rem;border-radius:100px;font-size:.8rem;font-weight:600;cursor:pointer;}
+.mc-grid{display:grid;gap:.9rem;}
+.mc-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.25rem 1.4rem;}
+.mc-top{display:flex;align-items:center;gap:.85rem;margin-bottom:.85rem;}
+.mc-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;}
+.mc-title{font-weight:700;font-size:.98rem;}
+.mc-sub{font-size:.78rem;color:rgba(26,18,8,.5);}
+.mc-badge{margin-left:auto;background:var(--teal-light);color:var(--teal);font-size:.72rem;font-weight:700;padding:.3rem .65rem;border-radius:100px;}
+.mc-bar{height:6px;border-radius:100px;background:rgba(26,18,8,.08);overflow:hidden;margin-bottom:.9rem;}
+.mc-bar-fill{height:100%;border-radius:100px;transition:width .4s;}
+.mc-btn{width:100%;background:transparent;border:1.5px solid var(--border);padding:.6rem;border-radius:100px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.mc-btn:hover{background:rgba(26,18,8,.03);}
+
+/* SCREEN 3 — REVIEW */
+.rv-topbar{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1.25rem;font-size:.82rem;}
+.rv-module-badge{padding:.3rem .75rem;border-radius:100px;font-weight:700;font-size:.78rem;}
+.rv-qpos{font-weight:600;color:rgba(26,18,8,.7);}
+.rv-overall-wrap{margin-left:auto;text-align:right;min-width:160px;}
+.rv-overall-text{font-size:.75rem;color:rgba(26,18,8,.5);margin-bottom:.3rem;}
+.rv-overall-bar-track{height:5px;border-radius:100px;background:rgba(26,18,8,.08);overflow:hidden;}
+.rv-overall-bar-fill{height:100%;background:var(--gold);border-radius:100px;transition:width .4s;}
+
+.rv-qid{font-family:var(--fm);font-size:.72rem;color:rgba(26,18,8,.4);margin-bottom:.5rem;}
+.rv-type-badge{display:inline-block;background:rgba(26,18,8,.06);color:rgba(26,18,8,.6);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:.2rem .55rem;border-radius:100px;margin-left:.5rem;}
+.rv-context{font-style:italic;color:rgba(26,18,8,.6);font-size:.88rem;background:rgba(26,18,8,.03);border-radius:10px;padding:.8rem 1rem;margin:.75rem 0;}
+.rv-qtext{font-family:var(--fd);font-size:1.25rem;font-weight:700;line-height:1.5;margin:.75rem 0 1.1rem;}
+.rv-opt{display:flex;align-items:center;gap:.7rem;padding:.65rem .9rem;border:1px solid var(--border);border-radius:10px;margin-bottom:.5rem;font-size:.88rem;}
+.rv-opt-correct{background:var(--teal-light);border-color:rgba(10,107,94,.3);}
+.rv-opt-letter{font-family:var(--fm);font-weight:700;color:var(--gold);width:1.2rem;flex-shrink:0;}
+.rv-opt-check{margin-left:auto;color:var(--teal);font-weight:700;}
+.rv-scale-row{display:flex;flex-wrap:wrap;gap:.5rem;}
+.rv-scale-chip{background:var(--blue-light);color:var(--blue);font-size:.8rem;font-weight:600;padding:.4rem .8rem;border-radius:100px;}
+.rv-note{color:rgba(26,18,8,.5);font-size:.85rem;font-style:italic;}
+.rv-meta{background:rgba(26,18,8,.03);border-radius:12px;padding:1rem 1.15rem;font-size:.8rem;color:rgba(26,18,8,.65);display:flex;flex-direction:column;gap:.4rem;margin-top:1.1rem;}
+.rv-meta strong{color:rgba(26,18,8,.85);}
+
+.rv-fb-section{margin-top:1.75rem;padding-top:1.5rem;border-top:1px solid var(--border);}
+.rv-fb-title{font-family:var(--fd);font-size:1.1rem;font-weight:700;margin-bottom:1.25rem;}
+.rv-fb-block{margin-bottom:1.4rem;}
+.rv-fb-q{font-size:.85rem;font-weight:600;margin-bottom:.6rem;}
+.rv-stars{font-size:1.6rem;letter-spacing:.15em;cursor:pointer;color:rgba(26,18,8,.15);}
+.rv-stars .star.active{color:var(--gold);}
+.rv-toggle-row{display:flex;gap:.6rem;}
+.rv-toggle-btn{flex:1;padding:.65rem;border-radius:10px;border:1.5px solid var(--border);background:#fff;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.rv-toggle-btn.active{border-color:var(--teal);background:var(--teal-light);color:var(--teal);}
+.rv-toggle-btn[data-no].active{border-color:var(--red);background:var(--red-light);color:var(--red);}
+.rv-diff-row{display:flex;gap:.6rem;}
+.rv-diff-btn{flex:1;padding:.65rem;border-radius:10px;border:1.5px solid var(--border);background:#fff;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.rv-diff-btn.active{border-color:var(--gold);background:var(--gold-pale);}
+.rv-decision-row{display:flex;flex-direction:column;gap:.6rem;}
+.rv-decision-btn{padding:.9rem 1.1rem;border-radius:12px;border:1.5px solid var(--border);background:#fff;font-size:.9rem;font-weight:700;cursor:pointer;text-align:left;transition:all .2s;}
+.rv-decision-btn[data-decision="approved"].active{border-color:var(--teal);background:var(--teal-light);color:var(--teal);}
+.rv-decision-btn[data-decision="needs_revision"].active{border-color:var(--gold);background:var(--gold-pale);color:#8a5a06;}
+.rv-decision-btn[data-decision="reject"].active{border-color:var(--red);background:var(--red-light);color:var(--red);}
+.rv-remarks-count{font-size:.72rem;color:rgba(26,18,8,.4);text-align:right;margin-top:.3rem;}
+.rv-error{color:var(--red);font-size:.85rem;margin:1rem 0;min-height:1.2em;}
+
+.rv-nav{display:flex;justify-content:space-between;gap:1rem;margin-top:1.5rem;}
+.rv-nav-btn{padding:.75rem 1.4rem;border-radius:100px;font-size:.88rem;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#fff;}
+.rv-nav-btn:disabled{opacity:.4;cursor:not-allowed;}
+.rv-save-btn{background:var(--ink);color:var(--cream);border:none;}
+.rv-save-btn:hover{background:var(--gold);color:var(--ink);}
+
+.rv-dotmap{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1.75rem;padding-top:1.25rem;border-top:1px solid var(--border);}
+.rv-dot{width:12px;height:12px;border-radius:50%;background:rgba(26,18,8,.12);cursor:pointer;flex-shrink:0;}
+.rv-dot.reviewed{background:var(--gold);}
+.rv-dot.current{outline:2px solid var(--ink);outline-offset:2px;}
+
+/* MODULE / ALL COMPLETE */
+.done-icon{font-size:2.5rem;text-align:center;margin-bottom:.75rem;}
+.done-title{font-family:var(--fd);font-size:1.5rem;font-weight:700;text-align:center;margin-bottom:.6rem;}
+.done-text{text-align:center;color:rgba(26,18,8,.65);font-size:.92rem;line-height:1.7;margin-bottom:1rem;}
+.done-breakdown{text-align:center;font-weight:700;color:var(--ink);margin-bottom:1.5rem;}
+.done-stats{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin:1.5rem 0;}
+.done-stat{background:rgba(26,18,8,.03);border-radius:12px;padding:1rem;text-align:center;}
+.done-stat-val{font-family:var(--fd);font-size:1.5rem;font-weight:700;color:var(--gold);}
+.done-stat-label{font-size:.72rem;color:rgba(26,18,8,.5);text-transform:uppercase;letter-spacing:.05em;margin-top:.2rem;}
+.done-btns{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-top:1.5rem;}
+.done-btn{padding:.75rem 1.5rem;border-radius:100px;font-size:.88rem;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;}
+.done-btn-gold{background:var(--ink);color:var(--cream);border:none;}
+.done-btn-gold:hover{background:var(--gold);color:var(--ink);}
+.done-btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--ink);}
+</style>
+</head>
+<body>
+
+<nav>
+  <img src="../assets/images/sahirah-logo.png" alt="Sahi Raah" class="nav-logo-img"/>
+  <span class="nav-title">Sahir<span>ah</span>.in</span>
+  <span class="nav-sub">Question Bank Validation Portal</span>
+</nav>
+
+<div class="vv-wrap">
+
+  <!-- SCREEN 1 — WELCOME + IDENTITY -->
+  <div id="screen-welcome" class="vv-screen">
+    <div class="vv-card">
+      <div class="vw-header">
+        <div class="vw-title">Question Bank Validation Portal</div>
+        <div class="vw-sub">Your expert feedback helps us build a better, more accurate assessment for Indian school students.</div>
+      </div>
+      <form id="welcome-form">
+        <div class="vw-field">
+          <label class="vw-label">Full Name *</label>
+          <input type="text" id="vw-name" class="vw-input" required/>
+        </div>
+        <div class="vw-field">
+          <label class="vw-label">Email Address *</label>
+          <input type="email" id="vw-email" class="vw-input" required/>
+        </div>
+        <div class="vw-field">
+          <label class="vw-label">Phone Number *</label>
+          <input type="tel" id="vw-phone" class="vw-input" placeholder="10-digit Indian mobile number" required/>
+        </div>
+        <div class="vw-field">
+          <label class="vw-label">Area of Expertise *</label>
+          <select id="vw-expertise" class="vw-select" required>
+            <option value="">Select…</option>
+            <option>Clinical Psychology</option>
+            <option>Educational Psychology</option>
+            <option>Career Counselling</option>
+            <option>Psychiatry</option>
+            <option>School Counselling</option>
+            <option>Child Development</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="vw-field">
+          <label class="vw-label">Institution / Organisation</label>
+          <input type="text" id="vw-institution" class="vw-input"/>
+        </div>
+        <div class="vw-check-row">
+          <input type="checkbox" id="vw-confirm" required/>
+          <label for="vw-confirm">I confirm I will provide independent, honest feedback based on my professional expertise.</label>
+        </div>
+        <div class="vw-error" id="welcome-error"></div>
+        <button type="submit" class="vw-submit" id="vw-submit">Begin Review →</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCREEN 2 — MODULE OVERVIEW -->
+  <div id="screen-overview" class="vv-screen">
+    <div class="ov-header">
+      <div class="ov-title">Welcome, <span id="ov-name"></span>. Let's begin the review.</div>
+    </div>
+    <div class="ov-banner" id="ov-welcome-back" style="display:none;"></div>
+    <div class="ov-overall">
+      <div class="ov-overall-text" id="ov-overall-text"></div>
+      <div class="ov-bar-track"><div class="ov-bar-fill" id="ov-overall-bar" style="width:0%;"></div></div>
+      <button class="ov-jump-btn" id="ov-jump-btn">Start with first incomplete module →</button>
+    </div>
+    <div class="mc-grid" id="module-cards"></div>
+  </div>
+
+  <!-- SCREEN 3 — QUESTION REVIEW -->
+  <div id="screen-review" class="vv-screen">
+    <div class="rv-topbar">
+      <span class="rv-module-badge" id="rv-module-badge"></span>
+      <span class="rv-qpos" id="rv-qpos"></span>
+      <div class="rv-overall-wrap">
+        <div class="rv-overall-text" id="rv-overall"></div>
+        <div class="rv-overall-bar-track"><div class="rv-overall-bar-fill" id="rv-overall-bar" style="width:0%;"></div></div>
+      </div>
+    </div>
+
+    <div class="vv-card">
+      <div>
+        <span class="rv-qid" id="rv-qid"></span>
+        <span class="rv-type-badge" id="rv-type-badge"></span>
+      </div>
+      <div class="rv-context" id="rv-context" style="display:none;"></div>
+      <div class="rv-qtext" id="rv-qtext"></div>
+      <div id="rv-options"></div>
+      <div class="rv-meta" id="rv-meta"></div>
+
+      <div class="rv-fb-section">
+        <div class="rv-fb-title">Your Expert Assessment</div>
+
+        <div class="rv-fb-block">
+          <div class="rv-fb-q">How clearly is this question written for a Class 7-10 student?</div>
+          <div class="rv-stars" id="rv-stars">
+            <span class="star" data-n="1" onclick="setClarity(1)">★</span><span class="star" data-n="2" onclick="setClarity(2)">★</span><span class="star" data-n="3" onclick="setClarity(3)">★</span><span class="star" data-n="4" onclick="setClarity(4)">★</span><span class="star" data-n="5" onclick="setClarity(5)">★</span>
+          </div>
+        </div>
+
+        <div class="rv-fb-block">
+          <div class="rv-fb-q" id="rv-skill-question">Is this the correct skill being measured?</div>
+          <div class="rv-toggle-row">
+            <button type="button" class="rv-toggle-btn" data-yes onclick="setSkillCorrect(true)">✓ Yes, correct</button>
+            <button type="button" class="rv-toggle-btn" data-no onclick="setSkillCorrect(false)">✗ No, incorrect</button>
+          </div>
+          <div class="vw-field" id="rv-suggested-skill-wrap" style="display:none;margin-top:.75rem;">
+            <label class="vw-label">What skill does this question actually measure?</label>
+            <select class="vw-select" id="rv-suggested-skill" onchange="STATE.fb.suggestedSkill=this.value;"></select>
+          </div>
+        </div>
+
+        <div class="rv-fb-block">
+          <div class="rv-fb-q">How appropriate is this difficulty for Class 7-10?</div>
+          <div class="rv-diff-row">
+            <button type="button" class="rv-diff-btn" data-n="2" onclick="setDifficulty(2)">Too Easy</button>
+            <button type="button" class="rv-diff-btn" data-n="3" onclick="setDifficulty(3)">Just Right</button>
+            <button type="button" class="rv-diff-btn" data-n="4" onclick="setDifficulty(4)">Too Hard</button>
+          </div>
+        </div>
+
+        <div class="rv-fb-block">
+          <div class="rv-fb-q">Review Decision</div>
+          <div class="rv-decision-row">
+            <button type="button" class="rv-decision-btn" data-decision="approved" onclick="setDecision('approved')">✅ Approve this question</button>
+            <button type="button" class="rv-decision-btn" data-decision="needs_revision" onclick="setDecision('needs_revision')">⚠️ Flag for Revision</button>
+            <button type="button" class="rv-decision-btn" data-decision="reject" onclick="setDecision('reject')">❌ Reject — Remove entirely</button>
+          </div>
+        </div>
+
+        <div class="rv-fb-block">
+          <div class="rv-fb-q">Remarks (optional)</div>
+          <textarea class="vw-textarea" id="rv-remarks" rows="3" maxlength="500" placeholder="Optional — share any specific observations..." oninput="document.getElementById('rv-remarks-count').textContent = this.value.length + ' / 500';"></textarea>
+          <div class="rv-remarks-count" id="rv-remarks-count">0 / 500</div>
+        </div>
+
+        <div class="rv-error" id="rv-error"></div>
+
+        <div class="rv-nav">
+          <button type="button" class="rv-nav-btn" id="rv-prev-btn" onclick="prevQuestion()">← Previous Question</button>
+          <button type="button" class="rv-nav-btn rv-save-btn" id="rv-save-btn" onclick="saveAndNext()">Save &amp; Next →</button>
+        </div>
+
+        <div class="rv-dotmap" id="rv-dotmap"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULE COMPLETE (sub-state of the review flow) -->
+  <div id="screen-module-complete" class="vv-screen">
+    <div class="vv-card">
+      <div class="done-icon">🎉</div>
+      <div class="done-title" id="mc-title"></div>
+      <div class="done-text" id="mc-count"></div>
+      <div class="done-breakdown" id="mc-breakdown"></div>
+      <div class="done-btns">
+        <button class="done-btn done-btn-gold" onclick="backToOverviewFromModuleComplete()">Back to Module Overview →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 4 — ALL COMPLETE -->
+  <div id="screen-complete" class="vv-screen">
+    <div class="vv-card">
+      <div class="done-icon">🎉</div>
+      <div class="done-title">Review Complete!</div>
+      <div class="done-text">Thank you, <span id="ac-name"></span>. Your expert feedback on all <span id="ac-total"></span> questions has been recorded and will directly improve the accuracy of Sahirah.in's psychometric assessment.</div>
+      <div class="done-stats">
+        <div class="done-stat"><div class="done-stat-val" id="ac-approved"></div><div class="done-stat-label">Approved</div></div>
+        <div class="done-stat"><div class="done-stat-val" id="ac-flagged"></div><div class="done-stat-label">Flagged for Revision</div></div>
+        <div class="done-stat"><div class="done-stat-val" id="ac-rejected"></div><div class="done-stat-label">Rejected</div></div>
+        <div class="done-stat"><div class="done-stat-val" id="ac-avg-clarity"></div><div class="done-stat-label">Avg. Clarity / 5</div></div>
+      </div>
+      <div class="done-text">Your feedback has been securely stored. The Sahirah.in team will review your input and reach out if we have any questions.</div>
+      <div class="done-btns">
+        <button class="done-btn done-btn-outline" onclick="backToOverviewFromComplete()">← Back to Overview</button>
+        <a class="done-btn done-btn-gold" href="https://sahirah.in/">Visit Sahirah.in →</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const MODULES = [
+  { id: 'aptitude',    title: 'Aptitude',                 icon: '🧠', color: '#C8860A' },
+  { id: 'personality', title: 'Personality',               icon: '🎭', color: '#7B2FBE' },
+  { id: 'interest',    title: 'Interests',                 icon: '🌱', color: '#0A6B5E' },
+  { id: 'eq',          title: 'Emotional Intelligence',    icon: '❤️', color: '#C0410A' },
+  { id: 'values',      title: 'Values',                    icon: '⭐', color: '#1A5FA8' },
+  { id: 'situational', title: 'Situational Judgement',     icon: '⚖️', color: '#2D7A1F' },
+];
+
+const SKILL_TAXONOMY = [
+  { key: 'logical', label: 'Logical Reasoning' },
+  { key: 'numerical', label: 'Numerical Ability' },
+  { key: 'pattern', label: 'Pattern Recognition' },
+  { key: 'spatial', label: 'Spatial Reasoning' },
+  { key: 'verbal', label: 'Verbal Aptitude' },
+  { key: 'agreeableness', label: 'Agreeableness' },
+  { key: 'conscientiousness', label: 'Conscientiousness' },
+  { key: 'extraversion', label: 'Extraversion' },
+  { key: 'openness', label: 'Openness to Experience' },
+  { key: 'stability', label: 'Emotional Stability' },
+  { key: 'artistic', label: 'Artistic Interest' },
+  { key: 'conventional', label: 'Conventional Interest' },
+  { key: 'enterprising', label: 'Enterprising Drive' },
+  { key: 'investigative', label: 'Investigative Curiosity' },
+  { key: 'realistic', label: 'Practical / Realistic Orientation' },
+  { key: 'social', label: 'Social Interest' },
+  { key: 'empathy', label: 'Empathy' },
+  { key: 'self_awareness', label: 'Self-Awareness' },
+  { key: 'social_skill', label: 'Social Skill' },
+  { key: 'stress_regulation', label: 'Stress Regulation' },
+  { key: 'creativity_value', label: 'Creativity (Value)' },
+  { key: 'growth', label: 'Growth Orientation' },
+  { key: 'impact', label: 'Impact-Driven' },
+  { key: 'recognition', label: 'Recognition-Driven' },
+  { key: 'stability_value', label: 'Stability-Seeking (Value)' },
+  { key: 'wealth', label: 'Wealth-Driven' },
+  { key: 'leadership_judgement', label: 'Leadership Judgement' },
+  { key: 'integrity', label: 'Integrity' },
+  { key: 'adaptability', label: 'Adaptability' },
+  { key: 'collaboration', label: 'Collaboration' },
+];
+const SKILL_LABELS = Object.fromEntries(SKILL_TAXONOMY.map(s => [s.key, s.label]));
+
+let STATE = {
+  token: localStorage.getItem('sahirah_validator_token') || null,
+  validatorId: localStorage.getItem('sahirah_validator_id') || null,
+  validatorName: localStorage.getItem('sahirah_validator_name') || null,
+  allQuestions: [],
+  feedbackByQid: {},
+  currentModuleId: null,
+  currentQuestions: [],
+  currentIndex: 0,
+  questionLoadTime: null,
+  fb: { clarity: null, skillCorrect: null, suggestedSkill: null, difficulty: null, decision: null },
+  showWelcomeBackOnce: null,
+};
+
+function esc(s) {
+  return String(s ?? '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.vv-screen').forEach(el => el.style.display = 'none');
+  document.getElementById(id).style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+async function callFn(name, body) {
+  try {
+    const res = await fetch(`/.netlify/functions/${name}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    return await res.json();
+  } catch (e) {
+    return { success: false, error: 'Network error — please try again.' };
+  }
+}
+
+// ---- INIT ----
+async function init() {
+  const suggestedSkillSelect = document.getElementById('rv-suggested-skill');
+  suggestedSkillSelect.innerHTML = '<option value="">Select…</option>' +
+    SKILL_TAXONOMY.map(s => `<option value="${esc(s.key)}">${esc(s.label)}</option>`).join('');
+
+  if (STATE.token) {
+    const res = await callFn('validator-auth', { action: 'verify', token: STATE.token });
+    if (res.success) {
+      STATE.validatorId = res.validator_id;
+      STATE.validatorName = res.validator_name;
+      localStorage.setItem('sahirah_validator_id', res.validator_id);
+      localStorage.setItem('sahirah_validator_name', res.validator_name);
+      await enterOverview();
+      return;
+    }
+    localStorage.removeItem('sahirah_validator_token');
+    localStorage.removeItem('sahirah_validator_id');
+    localStorage.removeItem('sahirah_validator_name');
+    STATE.token = null;
+  }
+  showScreen('screen-welcome');
+}
+
+// ---- SCREEN 1: REGISTER ----
+document.getElementById('welcome-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('welcome-error');
+  errEl.textContent = '';
+
+  const name = document.getElementById('vw-name').value.trim();
+  const email = document.getElementById('vw-email').value.trim();
+  const phone = document.getElementById('vw-phone').value.trim();
+  const expertise = document.getElementById('vw-expertise').value;
+  const institution = document.getElementById('vw-institution').value.trim();
+  const confirmed = document.getElementById('vw-confirm').checked;
+
+  if (!name || !email || !phone || !expertise) { errEl.textContent = 'Please fill all required fields.'; return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Please enter a valid email address.'; return; }
+  if (!/^[6-9]\d{9}$/.test(phone)) { errEl.textContent = 'Please enter a valid 10-digit Indian mobile number.'; return; }
+  if (!confirmed) { errEl.textContent = 'Please confirm you will provide independent, honest feedback.'; return; }
+
+  const btn = document.getElementById('vw-submit');
+  btn.disabled = true; btn.textContent = 'Please wait…';
+
+  const res = await callFn('validator-auth', {
+    action: 'register', name, email, phone, expertise,
+    institution: institution || null,
+  });
+
+  btn.disabled = false; btn.textContent = 'Begin Review →';
+
+  if (!res.success) { errEl.textContent = res.error || 'Something went wrong. Please try again.'; return; }
+
+  STATE.token = res.access_token;
+  STATE.validatorId = res.validator_id;
+  STATE.validatorName = res.validator_name;
+  localStorage.setItem('sahirah_validator_token', res.access_token);
+  localStorage.setItem('sahirah_validator_id', res.validator_id);
+  localStorage.setItem('sahirah_validator_name', res.validator_name);
+
+  STATE.showWelcomeBackOnce = res.is_returning
+    ? `Welcome back, ${res.validator_name}! You have reviewed ${res.questions_reviewed} questions. Continuing from where you left off.`
+    : null;
+
+  await enterOverview();
+});
+
+// ---- SCREEN 2: OVERVIEW ----
+async function enterOverview() {
+  document.getElementById('ov-name').textContent = STATE.validatorName;
+
+  const { data: questions, error: qErr } = await _db
+    .from('module_questions')
+    .select('*')
+    .in('module_id', MODULES.map(m => m.id))
+    .order('module_id')
+    .order('question_id');
+  if (qErr) { alert('Could not load questions. Please refresh and try again.'); return; }
+  STATE.allQuestions = questions || [];
+
+  const { data: feedback } = await _db
+    .from('question_feedback')
+    .select('*')
+    .eq('validator_id', STATE.validatorId);
+  STATE.feedbackByQid = {};
+  (feedback || []).forEach(f => { STATE.feedbackByQid[f.question_id] = f; });
+
+  const bannerEl = document.getElementById('ov-welcome-back');
+  if (STATE.showWelcomeBackOnce) {
+    bannerEl.textContent = STATE.showWelcomeBackOnce;
+    bannerEl.style.display = 'block';
+    STATE.showWelcomeBackOnce = null;
+  } else {
+    bannerEl.style.display = 'none';
+  }
+
+  renderModuleOverview();
+  showScreen('screen-overview');
+}
+
+function renderModuleOverview() {
+  const container = document.getElementById('module-cards');
+  container.innerHTML = '';
+  let totalQ = 0, totalReviewed = 0, firstIncomplete = null;
+
+  MODULES.forEach(m => {
+    const qs = STATE.allQuestions.filter(q => q.module_id === m.id);
+    const reviewed = qs.filter(q => STATE.feedbackByQid[q.question_id]).length;
+    totalQ += qs.length; totalReviewed += reviewed;
+    if (firstIncomplete === null && reviewed < qs.length) firstIncomplete = m.id;
+
+    const pct = qs.length ? Math.round((reviewed / qs.length) * 100) : 0;
+    const complete = qs.length > 0 && reviewed === qs.length;
+    const btnLabel = reviewed === 0 ? 'Start →' : (complete ? 'Review Again →' : 'Continue →');
+
+    const card = document.createElement('div');
+    card.className = 'mc-card';
+    card.innerHTML = `
+      <div class="mc-top">
+        <div class="mc-icon" style="background:${m.color}22;color:${m.color};">${m.icon}</div>
+        <div>
+          <div class="mc-title">${esc(m.title)}</div>
+          <div class="mc-sub">${qs.length} questions · ${reviewed} reviewed</div>
+        </div>
+        ${complete ? '<span class="mc-badge">✅ Complete</span>' : ''}
+      </div>
+      <div class="mc-bar"><div class="mc-bar-fill" style="width:${pct}%;background:${m.color};"></div></div>
+      <button class="mc-btn" style="border-color:${m.color};color:${m.color};" onclick="startModule('${m.id}')">${btnLabel}</button>`;
+    container.appendChild(card);
+  });
+
+  document.getElementById('ov-overall-text').textContent = `${totalReviewed} of ${totalQ} questions reviewed`;
+  document.getElementById('ov-overall-bar').style.width = totalQ ? `${Math.round(totalReviewed / totalQ * 100)}%` : '0%';
+
+  const jumpBtn = document.getElementById('ov-jump-btn');
+  if (firstIncomplete) {
+    jumpBtn.style.display = 'inline-flex';
+    jumpBtn.onclick = () => startModule(firstIncomplete);
+  } else {
+    jumpBtn.style.display = 'none';
+  }
+}
+
+// ---- SCREEN 3: QUESTION REVIEW ----
+function startModule(moduleId) {
+  STATE.currentModuleId = moduleId;
+  STATE.currentQuestions = STATE.allQuestions.filter(q => q.module_id === moduleId);
+  const idx = STATE.currentQuestions.findIndex(q => !STATE.feedbackByQid[q.question_id]);
+  STATE.currentIndex = idx === -1 ? 0 : idx;
+  showScreen('screen-review');
+  loadQuestion();
+}
+
+const TYPE_LABELS = { mcq: 'MCQ', likert: 'Likert', matrix: 'Matrix', scenario: 'Scenario' };
+
+function loadQuestion() {
+  const q = STATE.currentQuestions[STATE.currentIndex];
+  const m = MODULES.find(mm => mm.id === STATE.currentModuleId);
+  STATE.questionLoadTime = Date.now();
+
+  const badge = document.getElementById('rv-module-badge');
+  badge.textContent = `${m.icon} ${m.title}`;
+  badge.style.background = m.color + '22';
+  badge.style.color = m.color;
+  document.getElementById('rv-qpos').textContent = `Question ${STATE.currentIndex + 1} of ${STATE.currentQuestions.length}`;
+
+  const totalReviewed = STATE.allQuestions.filter(qq => STATE.feedbackByQid[qq.question_id]).length;
+  document.getElementById('rv-overall').textContent = `${totalReviewed} of ${STATE.allQuestions.length} reviewed`;
+  document.getElementById('rv-overall-bar').style.width = `${Math.round(totalReviewed / STATE.allQuestions.length * 100)}%`;
+
+  document.getElementById('rv-qid').textContent = q.question_id;
+  document.getElementById('rv-type-badge').textContent = TYPE_LABELS[q.question_type] || q.question_type || '—';
+
+  const ctxEl = document.getElementById('rv-context');
+  if (q.context) { ctxEl.style.display = 'block'; ctxEl.textContent = q.context; }
+  else { ctxEl.style.display = 'none'; }
+
+  document.getElementById('rv-qtext').textContent = q.question_text;
+
+  const optsEl = document.getElementById('rv-options');
+  optsEl.innerHTML = '';
+  if (q.question_type === 'mcq' || q.question_type === 'scenario') {
+    const letters = ['A','B','C','D','E','F'];
+    (q.options || []).forEach((opt, i) => {
+      const isCorrect = typeof q.ans === 'number' && q.ans >= 0 && q.ans === i;
+      const row = document.createElement('div');
+      row.className = 'rv-opt' + (isCorrect ? ' rv-opt-correct' : '');
+      row.innerHTML = `<span class="rv-opt-letter">${letters[i] || i+1}</span><span>${esc(opt)}</span>${isCorrect ? '<span class="rv-opt-check">✓</span>' : ''}`;
+      optsEl.appendChild(row);
+    });
+    if (!(typeof q.ans === 'number' && q.ans >= 0)) {
+      const note = document.createElement('div');
+      note.className = 'rv-note';
+      note.textContent = 'No single correct answer';
+      optsEl.appendChild(note);
+    }
+  } else if (q.question_type === 'likert') {
+    const row = document.createElement('div');
+    row.className = 'rv-scale-row';
+    (q.scale || []).forEach(s => {
+      const chip = document.createElement('span');
+      chip.className = 'rv-scale-chip';
+      chip.textContent = s;
+      row.appendChild(chip);
+    });
+    optsEl.appendChild(row);
+  } else if (q.question_type === 'matrix') {
+    const note = document.createElement('div');
+    note.className = 'rv-note';
+    note.textContent = `Matrix question — ${(q.rows || []).length} rows`;
+    optsEl.appendChild(note);
+  }
+
+  const skillLabel = SKILL_LABELS[q.skill] || q.skill || '—';
+  const sw = q.stream_weight || {};
+  let metaHtml = `
+    <div><strong>Skill tag:</strong> ${esc(q.skill || '—')} (${esc(skillLabel)})</div>
+    <div><strong>Scoring scheme:</strong> ${esc(q.scoring_scheme || '—')}</div>
+    <div><strong>Stream weights:</strong> Non-Med ${sw.non ?? '—'} · Med ${sw.med ?? '—'} · Com ${sw.com ?? '—'} · Hum ${sw.hum ?? '—'}</div>
+    <div><strong>Core question:</strong> ${q.core === false ? 'No' : 'Yes'}</div>`;
+  if (q.option_skills && q.option_skills.length) {
+    metaHtml += `<div><strong>Options map to:</strong> ${q.option_skills.map(s => esc(SKILL_LABELS[s] || s)).join(', ')}</div>`;
+  }
+  if (q.option_scores && q.option_scores.length) {
+    metaHtml += `<div><strong>Option quality scores:</strong> ${esc(q.option_scores.join(', '))}</div>`;
+  }
+  document.getElementById('rv-meta').innerHTML = metaHtml;
+
+  document.getElementById('rv-skill-question').textContent = `Is "${skillLabel}" the correct skill being measured?`;
+
+  resetFeedbackForm();
+  const existing = STATE.feedbackByQid[q.question_id];
+  if (existing) prefillFeedbackForm(existing);
+
+  document.getElementById('rv-prev-btn').disabled = STATE.currentIndex === 0;
+  document.getElementById('rv-error').textContent = '';
+  renderDotMap();
+}
+
+function resetFeedbackForm() {
+  STATE.fb = { clarity: null, skillCorrect: null, suggestedSkill: null, difficulty: null, decision: null };
+  document.querySelectorAll('#rv-stars .star').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.rv-toggle-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('rv-suggested-skill-wrap').style.display = 'none';
+  document.getElementById('rv-suggested-skill').value = '';
+  document.querySelectorAll('.rv-diff-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.rv-decision-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('rv-remarks').value = '';
+  document.getElementById('rv-remarks-count').textContent = '0 / 500';
+}
+
+function prefillFeedbackForm(fb) {
+  if (fb.clarity_rating) setClarity(fb.clarity_rating);
+  if (typeof fb.skill_correct === 'boolean') setSkillCorrect(fb.skill_correct);
+  if (fb.suggested_skill) {
+    STATE.fb.suggestedSkill = fb.suggested_skill;
+    document.getElementById('rv-suggested-skill').value = fb.suggested_skill;
+  }
+  if (fb.difficulty_appropriate) setDifficulty(fb.difficulty_appropriate);
+  if (fb.review_decision) setDecision(fb.review_decision);
+  document.getElementById('rv-remarks').value = fb.remarks || '';
+  document.getElementById('rv-remarks-count').textContent = `${(fb.remarks || '').length} / 500`;
+}
+
+function setClarity(n) {
+  STATE.fb.clarity = n;
+  document.querySelectorAll('#rv-stars .star').forEach(s => {
+    s.classList.toggle('active', parseInt(s.dataset.n, 10) <= n);
+  });
+}
+
+function setSkillCorrect(val) {
+  STATE.fb.skillCorrect = val;
+  document.querySelector('.rv-toggle-btn[data-yes]').classList.toggle('active', val === true);
+  document.querySelector('.rv-toggle-btn[data-no]').classList.toggle('active', val === false);
+  document.getElementById('rv-suggested-skill-wrap').style.display = val === false ? 'block' : 'none';
+  if (val === true) { STATE.fb.suggestedSkill = null; document.getElementById('rv-suggested-skill').value = ''; }
+}
+
+function setDifficulty(n) {
+  STATE.fb.difficulty = n;
+  document.querySelectorAll('.rv-diff-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.n, 10) === n);
+  });
+}
+
+function setDecision(val) {
+  STATE.fb.decision = val;
+  document.querySelectorAll('.rv-decision-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.decision === val);
+  });
+}
+
+function renderDotMap() {
+  const wrap = document.getElementById('rv-dotmap');
+  wrap.innerHTML = '';
+  STATE.currentQuestions.forEach((q, i) => {
+    const dot = document.createElement('span');
+    dot.className = 'rv-dot' + (STATE.feedbackByQid[q.question_id] ? ' reviewed' : '') + (i === STATE.currentIndex ? ' current' : '');
+    dot.title = q.question_id;
+    dot.onclick = () => { STATE.currentIndex = i; loadQuestion(); };
+    wrap.appendChild(dot);
+  });
+}
+
+function prevQuestion() {
+  if (STATE.currentIndex > 0) { STATE.currentIndex--; loadQuestion(); }
+}
+
+async function saveAndNext() {
+  const errEl = document.getElementById('rv-error');
+  errEl.textContent = '';
+  const fb = STATE.fb;
+
+  if (!fb.clarity || fb.skillCorrect === null || !fb.difficulty || !fb.decision) {
+    errEl.textContent = 'Please complete all required fields: clarity rating, skill tag, difficulty, and review decision.';
+    return;
+  }
+  if (fb.skillCorrect === false && !fb.suggestedSkill) {
+    errEl.textContent = 'Please select the skill this question actually measures.';
+    return;
+  }
+
+  const q = STATE.currentQuestions[STATE.currentIndex];
+  const timeSpent = Math.round((Date.now() - STATE.questionLoadTime) / 1000);
+  const remarks = document.getElementById('rv-remarks').value.trim() || null;
+
+  const btn = document.getElementById('rv-save-btn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  const res = await callFn('submit-feedback', {
+    access_token: STATE.token,
+    question_id: q.question_id,
+    validator_id: STATE.validatorId,
+    clarity_rating: fb.clarity,
+    skill_correct: fb.skillCorrect,
+    suggested_skill: fb.skillCorrect === false ? fb.suggestedSkill : null,
+    difficulty_appropriate: fb.difficulty,
+    review_decision: fb.decision,
+    time_spent_seconds: timeSpent,
+    remarks,
+  });
+
+  btn.disabled = false; btn.textContent = 'Save & Next →';
+
+  if (!res.success) { errEl.textContent = res.error || 'Could not save — please try again.'; return; }
+
+  // Track whether this question already had feedback before this save —
+  // an UPSERT on an existing row doesn't grow the total, so revising a
+  // question during "Review Again" must never re-trigger the completion
+  // screen after just one edit.
+  const hadFeedbackBefore = !!STATE.feedbackByQid[q.question_id];
+
+  STATE.feedbackByQid[q.question_id] = {
+    question_id: q.question_id, validator_id: STATE.validatorId,
+    clarity_rating: fb.clarity, skill_correct: fb.skillCorrect,
+    suggested_skill: fb.skillCorrect === false ? fb.suggestedSkill : null,
+    difficulty_appropriate: fb.difficulty, review_decision: fb.decision, remarks,
+  };
+
+  const totalReviewed = STATE.allQuestions.filter(qq => STATE.feedbackByQid[qq.question_id]).length;
+  const justCompletedEverything = !hadFeedbackBefore && totalReviewed >= STATE.allQuestions.length;
+  if (justCompletedEverything) { showAllComplete(); return; }
+
+  if (STATE.currentIndex === STATE.currentQuestions.length - 1) { showModuleComplete(); return; }
+
+  let nextIdx = -1;
+  for (let i = STATE.currentIndex + 1; i < STATE.currentQuestions.length; i++) {
+    if (!STATE.feedbackByQid[STATE.currentQuestions[i].question_id]) { nextIdx = i; break; }
+  }
+  STATE.currentIndex = nextIdx === -1 ? STATE.currentIndex + 1 : nextIdx;
+  loadQuestion();
+}
+
+// ---- MODULE COMPLETE ----
+function showModuleComplete() {
+  const qs = STATE.currentQuestions;
+  const m = MODULES.find(mm => mm.id === STATE.currentModuleId);
+  let approved = 0, flagged = 0, rejected = 0;
+  qs.forEach(q => {
+    const f = STATE.feedbackByQid[q.question_id];
+    if (!f) return;
+    if (f.review_decision === 'approved') approved++;
+    else if (f.review_decision === 'needs_revision') flagged++;
+    else if (f.review_decision === 'reject') rejected++;
+  });
+  document.getElementById('mc-title').textContent = `${m.title} complete!`;
+  document.getElementById('mc-count').textContent = `You reviewed ${qs.length} questions in this module.`;
+  document.getElementById('mc-breakdown').textContent = `${approved} Approved · ${flagged} Flagged · ${rejected} Rejected`;
+  showScreen('screen-module-complete');
+}
+
+function backToOverviewFromModuleComplete() {
+  renderModuleOverview();
+  showScreen('screen-overview');
+}
+
+// ---- SCREEN 4: ALL COMPLETE ----
+function showAllComplete() {
+  let approved = 0, flagged = 0, rejected = 0, claritySum = 0, clarityCount = 0;
+  STATE.allQuestions.forEach(q => {
+    const f = STATE.feedbackByQid[q.question_id];
+    if (!f) return;
+    if (f.review_decision === 'approved') approved++;
+    else if (f.review_decision === 'needs_revision') flagged++;
+    else if (f.review_decision === 'reject') rejected++;
+    if (typeof f.clarity_rating === 'number') { claritySum += f.clarity_rating; clarityCount++; }
+  });
+  const total = STATE.allQuestions.length;
+  const pct = n => total ? Math.round((n / total) * 100) : 0;
+
+  document.getElementById('ac-name').textContent = STATE.validatorName;
+  document.getElementById('ac-total').textContent = total;
+  document.getElementById('ac-approved').textContent = `${approved} (${pct(approved)}%)`;
+  document.getElementById('ac-flagged').textContent = `${flagged} (${pct(flagged)}%)`;
+  document.getElementById('ac-rejected').textContent = `${rejected} (${pct(rejected)}%)`;
+  document.getElementById('ac-avg-clarity').textContent = clarityCount ? (claritySum / clarityCount).toFixed(1) : '—';
+  showScreen('screen-complete');
+}
+
+function backToOverviewFromComplete() {
+  renderModuleOverview();
+  showScreen('screen-overview');
+}
+
+init();
+</script>
+</body>
+</html>
