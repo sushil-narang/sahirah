@@ -658,6 +658,9 @@ nav{position:sticky;top:0;z-index:100;padding:0 5%;background:rgba(253,248,240,0
         <div class="sum-row"><span class="sum-label">Duration</span><span class="sum-val">2 hours (120 minutes)</span></div>
         <div class="sum-row"><span class="sum-label">Language</span><span class="sum-val" id="sum-lang">English</span></div>
         <div class="sum-row"><span class="sum-label">Device</span><span class="sum-val" id="sum-device">—</span></div>
+        <div style="margin-top:0.75rem;padding:0.65rem 0.9rem;background:#FDF0CC;border-radius:8px;font-size:0.88rem;color:#856404;">
+          💳 <strong>Report fee:</strong> ₹<span id="confirm-basic-price">699</span> (Basic) or ₹<span id="confirm-premium-price">1,499</span> (Premium) — payable after completing the evaluation
+        </div>
       </div>
 
       <div class="sum-highlight">
@@ -1322,7 +1325,19 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   tryResume();
+  loadConfirmPrices();
 });
+
+async function loadConfirmPrices() {
+  try {
+    const res = await fetch('/.netlify/functions/get-prices');
+    const prices = await res.json();
+    document.getElementById('confirm-basic-price').textContent = prices.basic.toLocaleString('en-IN');
+    document.getElementById('confirm-premium-price').textContent = prices.premium.toLocaleString('en-IN');
+  } catch(e) {
+    // Fetch failed — static fallback text already in the HTML stays as-is
+  }
+}
 
 function applyDiscoveryOverride() {
   const ovr = localStorage.getItem('discovery_questions_override');
