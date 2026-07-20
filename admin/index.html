@@ -90,6 +90,7 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
 .table-head{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.4rem;border-bottom:1px solid var(--border);}
 .table-head h3{font-size:.88rem;font-weight:700;}
 .th-actions{display:flex;gap:.5rem;}
+.th-select{padding:.38rem .7rem;border-radius:100px;border:1.5px solid var(--border);font-size:.72rem;font-family:var(--fb);background:#fff;color:rgba(26,18,8,.7);cursor:pointer;}
 .btn-sm{display:inline-flex;align-items:center;gap:4px;padding:.38rem .85rem;border-radius:100px;font-size:.72rem;font-weight:600;border:none;cursor:pointer;font-family:var(--fb);transition:all .2s;}
 .btn-sm-outline{background:transparent;border:1.5px solid var(--border);color:rgba(26,18,8,.6);}
 .btn-sm-outline:hover{border-color:var(--teal);color:var(--teal);}
@@ -338,6 +339,7 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
       <div class="sb-item" onclick="showView('counselors')"><span class="sb-item-icon">👤</span>Counselors</div>
       <div class="sb-item" onclick="showView('qbank')"><span class="sb-item-icon">🗂️</span>Question Bank</div>
       <div class="sb-item" onclick="showView('validators')"><span class="sb-item-icon">🧑‍🔬</span>Validators <span class="sb-badge" id="badge-validators">0</span></div>
+      <div class="sb-item" onclick="showView('validator-feedback')"><span class="sb-item-icon">📋</span>Validator Feedback</div>
       <div class="sb-item" onclick="showView('discovery')"><span class="sb-item-icon">🔍</span>Discovery Qs</div>
       <div class="sb-item" onclick="showView('profile')"><span class="sb-item-icon">⚙️</span>Profile</div>
     </div>
@@ -505,6 +507,34 @@ body{background:#F2EEE6;color:var(--ink);font-family:var(--fb);font-size:15px;di
           <table class="t-table">
             <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Expertise</th><th>Institution</th><th>Reviewed</th><th>Last Active</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody id="validators-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- VALIDATOR FEEDBACK -->
+      <div class="page-view" id="view-validator-feedback">
+        <div class="table-wrap">
+          <div class="table-head">
+            <h3>Validator Feedback <span id="vf-count" style="font-family:var(--fm);font-size:.72rem;color:rgba(26,18,8,.35);margin-left:.4rem;font-weight:400;"></span></h3>
+            <div class="th-actions">
+              <select id="vf-filter-module" class="th-select" onchange="renderValidatorFeedback()"></select>
+              <select id="vf-filter-decision" class="th-select" onchange="renderValidatorFeedback()">
+                <option value="">All Decisions</option>
+                <option value="approved">Approved</option>
+                <option value="needs_revision">Flagged</option>
+                <option value="reject">Rejected</option>
+              </select>
+              <select id="vf-filter-minval" class="th-select" onchange="renderValidatorFeedback()">
+                <option value="1">Min 1 Validator</option>
+                <option value="2">Min 2 Validators</option>
+                <option value="3">Min 3+ Validators</option>
+              </select>
+              <button class="btn-sm btn-sm-outline" onclick="exportValidatorFeedbackCSV()">⬇ Export CSV</button>
+            </div>
+          </div>
+          <table class="t-table">
+            <thead><tr><th></th><th>Question ID</th><th>Module</th><th>Skill Tag</th><th>Avg Clarity</th><th>Validators</th><th>Approved</th><th>Flagged</th><th>Rejected</th><th>Tag Agreement</th><th>Actions</th></tr></thead>
+            <tbody id="vf-tbody"></tbody>
           </table>
         </div>
       </div>
@@ -896,13 +926,14 @@ function showView(name) {
   document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + name)?.classList.add('active');
   document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
-  const allViews = ['overview','users','completed','inprogress','schools','coupons','counselors','qbank','validators','discovery','profile'];
+  const allViews = ['overview','users','completed','inprogress','schools','coupons','counselors','qbank','validators','validator-feedback','discovery','profile'];
   const idx = allViews.indexOf(name);
   document.querySelectorAll('.sb-item')[idx]?.classList.add('active');
   const titles = {
     overview:'Overview', users:'Registered Users', completed:'Completed Tests', inprogress:'Tests In Progress',
     schools:'Schools', coupons:'Coupon Codes', counselors:'Counselors / Franchise',
-    qbank:'Question Bank', validators:'Validators', discovery:'Discovery Questions', profile:'Profile'
+    qbank:'Question Bank', validators:'Validators', 'validator-feedback':'Validator Feedback',
+    discovery:'Discovery Questions', profile:'Profile'
   };
   document.getElementById('tb-title').textContent = titles[name] || name;
   if (name === 'qbank') { if (!qbData) initQBank(); else renderQBank(); }
@@ -911,6 +942,7 @@ function showView(name) {
   if (name === 'coupons') loadCoupons();
   if (name === 'counselors') loadCounselors();
   if (name === 'validators') loadValidators();
+  if (name === 'validator-feedback') loadValidatorFeedback();
 }
 
 // ================================================================
@@ -3067,6 +3099,159 @@ function showValidatorLinkResult(name, token) {
       <button class="btn-fm-cancel" onclick="this.closest('.form-overlay').remove()">Done</button>
       <button class="btn-fm-save" onclick="copyValidatorLink('${token}')">📋 Copy Link</button>
     </div>`;
+}
+
+// ================================================================
+// VALIDATOR FEEDBACK
+// ================================================================
+let vfFeedback = [], vfValidatorNames = {}, vfQuestionMeta = {}, vfExpanded = new Set();
+const VALIDATOR_MODULES = QB_MODULES.slice(0, 6);
+
+async function loadValidatorFeedback() {
+  try {
+    const [{ data: feedback }, { data: validators }, { data: questions }] = await Promise.all([
+      _db.from('question_feedback').select('*'),
+      _db.from('validators').select('id,name'),
+      _db.from('module_questions').select('question_id,module_id,skill').in('module_id', VALIDATOR_MODULES.map(m => m.id)),
+    ]);
+    vfFeedback = feedback || [];
+    vfValidatorNames = Object.fromEntries((validators || []).map(v => [v.id, v.name]));
+    vfQuestionMeta = Object.fromEntries((questions || []).map(q => [q.question_id, q]));
+  } catch(e) { vfFeedback = []; vfValidatorNames = {}; vfQuestionMeta = {}; }
+
+  const moduleSel = document.getElementById('vf-filter-module');
+  if (moduleSel && !moduleSel.dataset.filled) {
+    moduleSel.innerHTML = '<option value="">All Modules</option>' +
+      VALIDATOR_MODULES.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+    moduleSel.dataset.filled = '1';
+  }
+  renderValidatorFeedback();
+}
+
+function aggregateVfByQuestion() {
+  const byQ = {};
+  vfFeedback.forEach(f => { (byQ[f.question_id] = byQ[f.question_id] || []).push(f); });
+  return Object.entries(byQ).map(([qid, rows]) => {
+    const meta = vfQuestionMeta[qid] || {};
+    const clarityVals = rows.filter(r => typeof r.clarity_rating === 'number');
+    const avgClarity = clarityVals.length ? clarityVals.reduce((s, r) => s + r.clarity_rating, 0) / clarityVals.length : 0;
+    const approved = rows.filter(r => r.review_decision === 'approved').length;
+    const flagged = rows.filter(r => r.review_decision === 'needs_revision').length;
+    const rejected = rows.filter(r => r.review_decision === 'reject').length;
+    const skillCorrectCount = rows.filter(r => r.skill_correct === true).length;
+    return {
+      question_id: qid, module_id: meta.module_id || '—', skill: meta.skill || '—',
+      avgClarity, validatorsCount: rows.length, approved, flagged, rejected,
+      tagAgreement: rows.length ? Math.round((skillCorrectCount / rows.length) * 100) : 0,
+      approvalRate: rows.length ? approved / rows.length : 0,
+      isResolved: rows.every(r => r.status === 'resolved'),
+      rows,
+    };
+  });
+}
+
+function vfRowColor(a) {
+  if (a.avgClarity >= 4 && a.approvalRate >= 0.67) return 'green';
+  if (a.avgClarity < 3 || a.approvalRate < 0.5) return 'red';
+  return 'amber';
+}
+
+function renderValidatorFeedback() {
+  const moduleFilter = document.getElementById('vf-filter-module')?.value || '';
+  const decisionFilter = document.getElementById('vf-filter-decision')?.value || '';
+  const minVal = parseInt(document.getElementById('vf-filter-minval')?.value || '1', 10);
+
+  let agg = aggregateVfByQuestion();
+  if (moduleFilter) agg = agg.filter(a => a.module_id === moduleFilter);
+  if (decisionFilter === 'approved') agg = agg.filter(a => a.approved > 0);
+  else if (decisionFilter === 'needs_revision') agg = agg.filter(a => a.flagged > 0);
+  else if (decisionFilter === 'reject') agg = agg.filter(a => a.rejected > 0);
+  agg = agg.filter(a => a.validatorsCount >= minVal);
+  agg.sort((a, b) => a.question_id.localeCompare(b.question_id));
+
+  document.getElementById('vf-count').textContent = `(${agg.length})`;
+  const tbody = document.getElementById('vf-tbody');
+  if (!agg.length) { tbody.innerHTML = '<tr><td colspan="11" class="t-empty">No feedback matches these filters yet.</td></tr>'; return; }
+
+  const colorBg = { green: 'rgba(10,107,94,.06)', amber: 'rgba(200,134,10,.07)', red: 'rgba(192,65,10,.06)' };
+  const diffLabel = { 2: 'Too Easy', 3: 'Just Right', 4: 'Too Hard' };
+  const decisionLabel = { approved: '✅ Approved', needs_revision: '⚠️ Flagged', reject: '❌ Rejected' };
+
+  tbody.innerHTML = agg.map(a => {
+    const color = vfRowColor(a);
+    const moduleName = (VALIDATOR_MODULES.find(m => m.id === a.module_id) || {}).name || a.module_id;
+    const expanded = vfExpanded.has(a.question_id);
+    const detailRow = expanded ? `
+      <tr><td colspan="11" style="background:#FAFAF7;padding:0;">
+        <table class="t-table" style="margin:0;">
+          <thead><tr><th>Validator</th><th>Clarity</th><th>Skill Correct?</th><th>Suggested Skill</th><th>Difficulty</th><th>Decision</th><th>Remarks</th><th>Time Spent</th></tr></thead>
+          <tbody>
+            ${a.rows.map(r => `
+              <tr>
+                <td>${escAdmin(vfValidatorNames[r.validator_id] || r.validator_id)}</td>
+                <td>${r.clarity_rating ?? '—'}</td>
+                <td>${r.skill_correct === true ? '✓ Yes' : (r.skill_correct === false ? '✗ No' : '—')}</td>
+                <td>${escAdmin(r.suggested_skill || '—')}</td>
+                <td>${diffLabel[r.difficulty_appropriate] || '—'}</td>
+                <td>${decisionLabel[r.review_decision] || '—'}</td>
+                <td style="max-width:220px;">${escAdmin(r.remarks || '—')}</td>
+                <td>${r.time_spent_seconds ? r.time_spent_seconds + 's' : '—'}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </td></tr>` : '';
+
+    return `
+      <tr style="background:${colorBg[color]};cursor:pointer;" onclick="toggleVfExpand('${a.question_id}', event)">
+        <td>${expanded ? '▼' : '▶'}</td>
+        <td style="font-family:var(--fm);font-size:.75rem;">${escAdmin(a.question_id)}</td>
+        <td style="font-size:.78rem;">${escAdmin(moduleName)}</td>
+        <td style="font-size:.78rem;">${escAdmin(a.skill)}</td>
+        <td>${a.avgClarity.toFixed(1)}</td>
+        <td>${a.validatorsCount}</td>
+        <td>${a.approved}</td>
+        <td>${a.flagged}</td>
+        <td>${a.rejected}</td>
+        <td>${a.tagAgreement}%</td>
+        <td onclick="event.stopPropagation();">
+          ${a.isResolved ? '<span class="status-badge s-scheduled">Resolved</span>' : `<button class="btn-sm btn-sm-outline" onclick="markQuestionResolved('${a.question_id}')">Mark as Revised</button>`}
+        </td>
+      </tr>${detailRow}`;
+  }).join('');
+}
+
+function toggleVfExpand(qid) {
+  if (vfExpanded.has(qid)) vfExpanded.delete(qid); else vfExpanded.add(qid);
+  renderValidatorFeedback();
+}
+
+async function markQuestionResolved(qid) {
+  try {
+    const { error } = await _db.from('question_feedback').update({ status: 'resolved' }).eq('question_id', qid);
+    if (error) throw error;
+    showAdminToast(`Marked ${qid} as revised.`);
+    vfFeedback.forEach(f => { if (f.question_id === qid) f.status = 'resolved'; });
+    renderValidatorFeedback();
+  } catch(e) { showAdminToast('Error: ' + (e.message || 'Could not update.')); }
+}
+
+function exportValidatorFeedbackCSV() {
+  const rows = [['Question ID','Module','Skill Tag','Validator','Clarity Rating','Skill Correct','Suggested Skill','Difficulty','Review Decision','Time Spent (s)','Remarks','Status','Submitted At']];
+  vfFeedback.forEach(f => {
+    const meta = vfQuestionMeta[f.question_id] || {};
+    rows.push([
+      f.question_id, meta.module_id || '', meta.skill || '',
+      vfValidatorNames[f.validator_id] || f.validator_id,
+      f.clarity_rating ?? '', f.skill_correct === true ? 'Yes' : (f.skill_correct === false ? 'No' : ''),
+      f.suggested_skill || '', f.difficulty_appropriate ?? '', f.review_decision || '',
+      f.time_spent_seconds ?? '', f.remarks || '', f.status || '', f.created_at || '',
+    ]);
+  });
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'validator-feedback.csv';
+  a.click();
 }
 
 function escAdmin(s) {
