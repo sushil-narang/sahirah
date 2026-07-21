@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none';"/>
+<title>Contact Us — Sahirah.in</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --cream:#FDF8F0;--ink:#1A1208;--gold:#C8860A;--gold-light:#F5D98A;--gold-pale:#FDF0CC;
+  --teal:#0A6B5E;--red:#C0410A;--border:rgba(26,18,8,0.1);--shadow:0 4px 32px rgba(26,18,8,0.08);
+  --fd:'Playfair Display',Georgia,serif;--fb:'DM Sans',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.6;}
+
+nav{background:#fff;border-bottom:1px solid var(--border);padding:0 5%;height:64px;display:flex;align-items:center;position:sticky;top:0;z-index:100;}
+.nav-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.nav-logo img{height:40px;width:auto;display:block;}
+.nav-logo-text{font-family:var(--fd);font-size:1.15rem;font-weight:700;color:var(--ink);}
+.nav-logo-text span{color:var(--gold);}
+
+.legal-wrap{max-width:640px;margin:0 auto;padding:3.5rem 5% 5rem;}
+.legal-head{margin-bottom:2rem;text-align:center;}
+.legal-eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;}
+.legal-title{font-family:var(--fd);font-size:clamp(2rem,5vw,2.6rem);font-weight:700;margin-bottom:.5rem;}
+.legal-sub{color:rgba(26,18,8,.55);font-size:1rem;max-width:480px;margin:0 auto;}
+
+.cf-direct{background:var(--gold-pale);border:1px solid var(--gold-light);border-radius:14px;padding:1rem 1.25rem;text-align:center;font-size:.9rem;color:rgba(26,18,8,.75);margin-bottom:2rem;}
+.cf-direct a{color:var(--gold);font-weight:700;text-decoration:none;}
+.cf-direct a:hover{text-decoration:underline;}
+
+.cf-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:2rem;box-shadow:var(--shadow);}
+.cf-field{margin-bottom:1.1rem;}
+.cf-label{display:block;font-size:.82rem;font-weight:600;margin-bottom:.4rem;color:rgba(26,18,8,.75);}
+.cf-input,.cf-textarea{width:100%;padding:.7rem .9rem;border:1.5px solid var(--border);border-radius:10px;font-family:var(--fb);font-size:.92rem;background:#FAFAF7;color:var(--ink);outline:none;transition:border-color .2s;}
+.cf-input:focus,.cf-textarea:focus{border-color:var(--gold);background:#fff;}
+.cf-textarea{resize:vertical;min-height:120px;}
+.cf-error{color:var(--red);font-size:.82rem;margin-bottom:1rem;min-height:1.2em;}
+.cf-submit{width:100%;background:var(--ink);color:var(--cream);border:none;padding:.9rem;border-radius:100px;font-size:.95rem;font-weight:600;cursor:pointer;transition:background .2s;}
+.cf-submit:hover{background:var(--gold);color:var(--ink);}
+.cf-submit:disabled{opacity:.6;cursor:not-allowed;}
+.cf-status{margin-top:1rem;font-size:.85rem;text-align:center;min-height:1.2em;}
+
+footer{background:var(--ink);color:var(--cream);padding:3rem 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.fl{display:flex;align-items:center;gap:8px;}
+.fl-logo-box{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:6px 10px;display:inline-flex;align-items:center;}
+.fl-logo-box img{height:44px;width:auto;display:block;}
+.flinks{display:flex;gap:1.75rem;flex-wrap:wrap;}
+.flinks a{color:rgba(253,248,240,.35);text-decoration:none;font-size:.82rem;transition:color .2s;}
+.flinks a:hover{color:var(--gold-light);}
+.fcp{font-size:.72rem;color:rgba(253,248,240,.2);width:100%;text-align:center;margin-top:1rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.06);}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../" class="nav-logo">
+    <img src="../assets/images/sahirah-logo.png" alt="Sahi Raah"/>
+    <div class="nav-logo-text">Sahir<span>ah</span>.in</div>
+  </a>
+</nav>
+
+<div class="legal-wrap">
+  <div class="legal-head">
+    <div class="legal-eyebrow">Get in Touch</div>
+    <h1 class="legal-title">Contact Us</h1>
+    <p class="legal-sub">Questions about the evaluation, a payment, or anything else — we're happy to help.</p>
+  </div>
+
+  <div class="cf-direct">
+    Prefer email? Write to us directly at <a href="mailto:contact@sahirah.in">contact@sahirah.in</a>
+  </div>
+
+  <div class="cf-card">
+    <form id="contact-form">
+      <div class="cf-field">
+        <label class="cf-label">Your Name *</label>
+        <input type="text" id="cf-name" class="cf-input" required/>
+      </div>
+      <div class="cf-field">
+        <label class="cf-label">Email Address *</label>
+        <input type="email" id="cf-email" class="cf-input" required/>
+      </div>
+      <div class="cf-field">
+        <label class="cf-label">Message *</label>
+        <textarea id="cf-message" class="cf-textarea" required placeholder="How can we help?"></textarea>
+      </div>
+      <div class="cf-error" id="cf-error"></div>
+      <button type="submit" class="cf-submit" id="cf-submit">Send Message →</button>
+      <div class="cf-status" id="cf-status"></div>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <div class="fl">
+    <a href="../" class="fl-logo-box">
+      <img src="../assets/images/sahirah-logo.png" alt="Sahi Raah"/>
+    </a>
+  </div>
+  <div class="flinks"><a href="../#">About</a><a href="../#how">How it works</a><a href="/privacy/">Privacy Policy</a><a href="/terms/">Terms of Use</a><a href="/contact/">Contact</a></div>
+  <div class="fcp">© 2025 Sahirah.in · Sahi Raah — The Right Path · Built with science, designed with love, for India's children.</div>
+</footer>
+
+<script>
+function isValidEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e); }
+
+document.getElementById('contact-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('cf-error');
+  const statusEl = document.getElementById('cf-status');
+  errEl.textContent = '';
+  statusEl.textContent = '';
+
+  const name = document.getElementById('cf-name').value.trim();
+  const email = document.getElementById('cf-email').value.trim();
+  const message = document.getElementById('cf-message').value.trim();
+
+  if (!name || !email || !message) { errEl.textContent = 'Please fill all required fields.'; return; }
+  if (!isValidEmail(email)) { errEl.textContent = 'Please enter a valid email address.'; return; }
+
+  const btn = document.getElementById('cf-submit');
+  btn.disabled = true; btn.textContent = 'Sending…';
+
+  try {
+    const res = await fetch('/.netlify/functions/send-contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, message }),
+    });
+    const data = await res.json();
+
+    btn.disabled = false; btn.textContent = 'Send Message →';
+
+    if (data.success) {
+      statusEl.style.color = '#3B6D11';
+      statusEl.textContent = '✅ Message sent — we\'ll get back to you soon.';
+      document.getElementById('contact-form').reset();
+    } else {
+      statusEl.style.color = '#A32D2D';
+      statusEl.textContent = '❌ ' + (data.error || 'Something went wrong. Please email contact@sahirah.in directly.');
+    }
+  } catch (err) {
+    btn.disabled = false; btn.textContent = 'Send Message →';
+    statusEl.style.color = '#A32D2D';
+    statusEl.textContent = '❌ Could not connect. Please email contact@sahirah.in directly.';
+  }
+});
+</script>
+</body>
+</html>
