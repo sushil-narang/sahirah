@@ -622,6 +622,9 @@ nav{position:sticky;top:0;z-index:100;padding:0 5%;background:rgba(253,248,240,0
             <option>Tablet</option>
             <option>Mobile phone</option>
           </select>
+          <div id="mobile-warning" style="display:none;background:#FFF3CD;border:1px solid #FFC107;border-radius:8px;padding:0.85rem 1rem;margin-top:0.5rem;font-size:0.875rem;color:#856404;line-height:1.55;">
+            ⚠️ <strong>Mobile phones are not recommended</strong> for this evaluation. The 2-hour test involves reading detailed questions and selecting answers carefully — this is significantly harder on a small screen and may affect the quality of your results. If at all possible, please use a laptop or desktop computer for the best experience.
+          </div>
         </div>
       </div>
 
@@ -1326,6 +1329,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
   tryResume();
   loadConfirmPrices();
+
+  document.getElementById('test-device').addEventListener('change', function() {
+    const warn = document.getElementById('mobile-warning');
+    warn.style.display = this.value === 'Mobile phone' ? 'block' : 'none';
+  });
 });
 
 async function loadConfirmPrices() {
